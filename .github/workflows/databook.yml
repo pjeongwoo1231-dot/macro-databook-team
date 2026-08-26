@@ -1,0 +1,53 @@
+# 배치 위치: .github/workflows/databook.yml
+# 매주 자동으로 Data Book + 뉴스 다이제스트를 생성해 저장소(=옵시디언 vault)에 커밋한다.
+# 팀원은 Obsidian Git으로 pull만 하면 최신 데이터가 들어온다. 아무도 수동 실행 안 해도 됨.
+
+name: Weekly Data Book
+
+on:
+  schedule:
+    # 매주 월요일 08:00 KST (= 일요일 23:00 UTC). cron은 UTC 기준.
+    - cron: "0 23 * * 0"
+  workflow_dispatch: {}   # 저장소 Actions 탭에서 수동 실행도 가능
+
+permissions:
+  contents: write   # 생성물 커밋용
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 체크아웃
+        uses: actions/checkout@v4
+
+      - name: Python 설치
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: 의존성 설치
+        run: pip install pyyaml requests feedparser
+
+      - name: Data Book + 뉴스 생성
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+          ECOS_API_KEY: ${{ secrets.ECOS_API_KEY }}
+          KOSIS_API_KEY: ${{ secrets.KOSIS_API_KEY }}
+          DATA_GO_KR_KEY: ${{ secrets.DATA_GO_KR_KEY }}
+          # 저장소 루트를 vault로 삼는다 → Macro/ 가 저장소 루트에 생성됨
+          OBSIDIAN_VAULT_PATH: ${{ github.workspace }}
+        run: |
+          python -m databook run
+          python -m databook.news || echo "news 실패 — Data Book은 유지"
+
+      - name: 결과 커밋
+        run: |
+          git config user.name "databook-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add Macro/   # output/은 .gitignore 대상 — vault(Macro/)만 커밋
+          if git diff --cached --quiet; then
+            echo "변경 없음 — 커밋 skip"
+          else
+            git commit -m "Data Book $(date -u +%Y-%m-%d)"
+            git push
+          fi

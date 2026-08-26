@@ -1,0 +1,2326 @@
+# Macro Data Book 지표 → API 매핑 (SSOT) — 최종본 v2 (학회 4팀 재편)
+# 팀원 macro-databook v1(A·B·C, D제외)을 학회 현재 구조로 재편:
+#   team_1 = 성장·경기 (+구리)   team_2 = 물가·정책·금리 (+유가·가스)
+#   team_3 = 유동성·신용·심리 (+금·은)   team_4 = 글로벌·지정학·무역 (니치원자재·운임·무효화트리거)
+# tier: 1 = 해석 필수 / 2 = 수치 인용만
+# method: api | scrape | manual | derived
+#
+# ★ 팀원 v1의 검증된 코드는 그대로 보존(ECOS/KOSIS/data_go_kr 실호출 확인분).
+#   재편은 "팀 재배치 + 원자재/CLI/4팀 신규"만. 신규는 대부분 기존 fred/yahoo_finance fetcher 재사용 → 새 코드 최소.
+# ⚠ "확인" 표시 series/코드는 최초 실행 시 실제 API로 검증할 것.
+
+sources:
+  fred:
+    base_url: https://api.stlouisfed.org/fred/series/observations
+    auth: FRED_API_KEY
+  ecos:
+    base_url: https://ecos.bok.or.kr/api/StatisticSearch
+    auth: ECOS_API_KEY
+  kosis:
+    base_url: https://kosis.kr/openapi/Param/statisticsParameterData.do
+    auth: KOSIS_API_KEY
+  fiscaldata:
+    base_url: https://api.fiscaldata.treasury.gov/services/api/fiscal_service
+    auth: none
+  treasurydirect:
+    base_url: https://www.treasurydirect.gov/TA_WS/securities
+    auth: none
+  cftc_socrata:
+    base_url: https://publicreporting.cftc.gov/resource
+    auth: none
+  coingecko:
+    base_url: https://api.coingecko.com/api/v3
+    auth: none
+  defillama:
+    base_url: https://stablecoins.llama.fi
+    auth: none
+  upbit:
+    base_url: https://api.upbit.com/v1
+    auth: none
+  binance:
+    base_url: https://api.binance.com/api/v3
+    auth: none
+  data_go_kr:
+    base_url: https://apis.data.go.kr
+    auth: DATA_GO_KR_KEY
+  yahoo_finance:
+    base_url: https://query1.finance.yahoo.com/v8/finance/chart
+    auth: none
+    note: 팀원 v1이 MOVE·SKEW에 이미 사용 중 — 원자재·선물지수 심볼도 동일 fetcher 재사용
+  worldbank:
+    base_url: https://api.worldbank.org/v2/country
+    auth: none
+    note: 키 불필요·무료. 비OECD국(사우디·UAE·카자흐·나이지리아·튀르키예) GDP·CPI — 단 연간 데이터만
+  dbnomics:
+    base_url: https://api.db.nomics.world/v22/series
+    auth: none
+    note: 무료 애그리게이터(93개 기관) — 중국 NBS PMI·M2, ECB M3 등. 시리즈 코드는 db_series로 지정
+  eurostat:
+    base_url: https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data
+    auth: none
+    note: EU 공식 배포 API(JSON-stat). dataset + filters로 지정, time 외 모든 차원을 값 1개로 좁힐 것.
+      유로존 집계는 EA21(2026-01 불가리아 가입) — EA20/EA19는 2025-12에서 끊긴다
+  ecb:
+    base_url: https://data-api.ecb.europa.eu/service/data
+    auth: none
+    note: ECB Data Portal SDMX-JSON. ecb_key = 'DATASET/SERIES_KEY'. 정책금리·€STR은 당일 반영,
+      단 ICP(HICP) 계열은 2025-12에서 멈춰 있으므로 물가는 Eurostat ei_cphi_m을 쓸 것
+  bcb:
+    base_url: https://api.bcb.gov.br/dados/serie
+    auth: none
+    note: 브라질중앙은행 SGS — Selic 등, sgs 번호로 지정
+  fed_rss:
+    base_url: https://www.federalreserve.gov/feeds
+    auth: none
+    note: FOMC 보도자료(press_monetary)·연설(speeches) RSS — 제목·날짜·링크 자동
+  boj_stat:
+    base_url: https://www.stat-search.boj.or.jp
+    auth: none
+    note: 일본은행 통계 페이지 스크레이프 (M2 전년비)
+  cboe:
+    base_url: https://www.cboe.com/us/options/market_statistics/daily/
+    auth: none
+    note: Put/Call 일일 통계 페이지 파싱
+  eia:
+    base_url: https://api.eia.gov/v2
+    auth: EIA_API_KEY
+    note: 미설정 시 DEMO_KEY 폴백(레이트리밋) — eia.gov/opendata 무료 발급 권장
+  opinet:
+    base_url: https://www.opinet.co.kr/api
+    auth: OPINET_API_KEY
+    note: 국내 유가 — opinet.co.kr 오픈API 무료 즉시 발급
+
+# ═════════════════════ team_1 : 성장·경기 (Growth & Cycle) ═════════════════════
+team_1:
+  - name: 실질 GDP
+    tier: 2
+    method: api
+    source: fred
+    series_id: GDPC1
+  - name: GDPNow
+    tier: 1
+    method: api
+    source: fred
+    series_id: GDPNOW
+  - name: OECD 경기선행지수 CLI (미국)
+    tier: 2
+    method: api
+    source: dbnomics
+    db_series: OECD/DSD_STES@DF_CLI/USA.M.LI.IX._Z.AA.IX._Z.H
+    db_labels: ["미국 CLI (진폭조정, 100=추세)"]
+    note: 확인 완료(2026-08-26, 최신 2026-05) — FRED USALOLITONOSTSAM은 OECD MEI 폐지로 2024-01에서 정지.
+      OECD 신규 데이터셋(DSD_STES) 원천으로 교체. 2년 7개월치 공백이 이걸로 메워진다
+  - name: OECD 경기선행지수 CLI (한국·중국)
+    tier: 2
+    method: api
+    source: dbnomics
+    db_series:
+      - OECD/DSD_STES@DF_CLI/KOR.M.LI.IX._Z.AA.IX._Z.H
+      - OECD/DSD_STES@DF_CLI/CHN.M.LI.IX._Z.AA.IX._Z.H
+    db_labels: ["한국 CLI", "중국 CLI"]
+    note: 확인 완료(2026-08-26, 최신 2026-05) — FRED 미러(KOR/CHNLOLITONOSTSAM) 2024-01 정지분 교체.
+      중국 CLI는 공식 PMI가 미러 정지 상태라 당분간 중국 경기의 1차 판정선 역할을 한다
+  - name: ISM 제조업/서비스업 PMI
+    tier: 1
+    method: news
+    news_queries: ["ISM manufacturing PMI report", "ISM services PMI report"]
+    note: >-
+      자동 헤드라인(2026-07-20, Google News)으로 전환 — ISM 원자료 자체는 유료(licensed)라 공식 API 없고
+      DBnomics·investing.com·FRED 경로 전부 막힘(상세 이력 하단). 뉴스 헤드라인엔 보통 발표 수치가 그대로
+      실리므로(예: "ISM Manufacturing PMI rises to 53.3") 실질적 대체 가능 — 단 원문 대조 권장.
+      [이력] DBnomics ISM/pmi/pm 2025-09부터 피드 파손(값이 10대로 붕괴, PMI 정상범위 30~70 위반).
+      investing.com 403(Cloudflare)·tradingeconomics 무료키 410 폐지·FRED는 라이선스로 시리즈 삭제.
+  - name: 지역 연준 제조업지수 (필라델피아·뉴욕·댈러스)
+    tier: 1
+    method: api
+    source: fred
+    series_id: [GACDFSA066MSFRBPHI, GACDISA066MSFRBNY, BACTSAMFRBDAL]
+    note: 확인 완료(2026-08-26) — 필라델피아 2026-08 47.4 · 엠파이어 2026-08 20.6 · 댈러스 2026-07 1.3.
+      ISM은 유료라 위 항목이 뉴스 헤드라인뿐인데, 이 셋은 무료이고 오히려 ISM보다 먼저 나온다.
+      ⚠ 확산지수(증가-감소 응답 순차)라 ISM의 50 기준선과 스케일이 다르다 — 0이 중립선이며
+      수준을 ISM처럼 읽으면 안 되고 방향·전환점만 쓴다.
+      ⚠ 지역 편중(북동부·텍사스)이 있어 전국 대표성은 ISM보다 약하다.
+      캔자스시티·리치먼드 연준 지수는 FRED에서 서베이 계열을 찾지 못했다(2026-08-26 검색, 고용 계열만 반환)
+  - name: 지역 연준 제조업 평균 (ISM 대용)
+    tier: 1
+    method: derived
+    formula: (필라델피아 + 엠파이어 + 댈러스) ÷ 3 — 위 항목에서 이미 수집
+    note: 0이 중립. 단순평균이라 가중치 근거가 없다 — ISM 대체가 아니라 방향 확인용 보조선으로만 쓴다.
+      세 지수의 기준월이 어긋나면(댈러스가 한 달 늦는 경우가 있다) 계산하지 않고 실패로 표시한다
+  - name: 산업생산
+    tier: 2
+    method: api
+    source: fred
+    series_id: INDPRO
+  - name: NFP (비농업 고용)
+    vault_node: 실업률
+    tier: 1
+    method: api
+    source: fred
+    series_id: PAYEMS
+  - name: 실업률
+    tier: 1
+    method: api
+    source: fred
+    series_id: UNRATE
+  - name: 경제활동참가율
+    tier: 2
+    method: api
+    source: fred
+    series_id: CIVPART
+  - name: 생산가능인구 (CNP16OV)
+    tier: 2
+    method: api
+    source: fred
+    series_id: CNP16OV
+    note: 확인 완료(2026-08-26, 2026-07 275,282천) — 실업률 하락이 취업 때문인지 노동시장
+      이탈 때문인지 가르는 분모. 이게 없으면 실업률 변화를 분해할 수 없다
+  - name: 경제활동인구 (CLF16OV)
+    tier: 2
+    method: api
+    source: fred
+    series_id: CLF16OV
+    note: 확인 완료(2026-08-26, 2026-07 169,094천) — 참가율 × 생산가능인구. 아래 분해 파생의 입력
+  - name: 실업률 변화 분해 (취업 기여 vs 참가율 기여)
+    tier: 1
+    method: derived
+    formula: 실업률 변화를 참가율 고정 반사실과 대조 — 참가율이 전월 그대로였다면 실업률이 얼마였을까
+    note: 2026-07 실업률 4.1%는 5개월 연속 개선이지만 같은 기간 참가율이 61.9→61.4로 떨어졌다.
+      "고용이 늘어서 내린 것"과 "구직을 포기해서 내린 것"은 정책 함의가 정반대다.
+      Sahm Rule은 실업률 하나만 보므로 이 구분을 통과시킨다 — 반사실 계산이 필요한 이유
+  - name: 주간 근로시간 (AWHAETP)
+    tier: 2
+    method: api
+    source: fred
+    series_id: AWHAETP
+    note: 확인 완료(2026-08-26, 2026-07 34.3시간) — 기업은 해고보다 시간을 먼저 줄인다.
+      임시직(TEMPHELPS)과 함께 고용 둔화의 선행 신호로 본다
+  - name: JOLTS 구인건수
+    vault_node: 실업률
+    tier: 1
+    method: api
+    source: fred
+    series_id: JTSJOL
+    note: 'v/u 비율의 분자. 2026-08-12 tier 2→1 승격 — Bernanke & Blanchard(2023): 2021년 연준과 비판자가 똑같이 실업률·총고용을 보다가 과열을 놓쳤고, 과열을 드러낸 것은 v/u였다'
+  - name: 실업자 수 (v/u 분모)
+    tier: 2
+    method: api
+    source: fred
+    series_id: UNEMPLOY
+    note: 'v/u 비율의 분모. 단위 천명 — JTSJOL과 같은 단위라 그대로 나눌 수 있다'
+  - name: v/u 비율 (구인/실업자, 노동시장 과열)
+    tier: 1
+    method: derived
+    formula: JTSJOL ÷ UNEMPLOY (둘 다 천명 단위, FRED)
+    note: 'Bernanke & Blanchard(2023) 핵심 변수. **실업률로는 과열이 보이지 않는다** — 실업률은 분모(경제활동인구)에 민감해 노동공급 축소로 생긴 과열을 완화로 읽는다. v/u는 수요÷공급 비율이라 이 함정을 피한다. BB 모형에서 노동시장 충격은 상품시장 충격보다 작지만 **지속성이 길어** 정책 반응을 요구한다. 2001년 이전은 Barnichon(2010) 보간이 필요하나 FRED 계열만으로 2001~ 구간은 산출 가능. ⚠ JOLTS 구인건수 자체의 측정 문제(허수 공고)는 BB가 다루지 않는다'
+  - name: 신규 실업수당 청구건수
+    tier: 1
+    method: api
+    source: fred
+    series_id: ICSA
+  - name: 시간당 임금 (AHE)
+    tier: 2
+    method: api
+    source: fred
+    series_id: CES0500000003
+    note: 물가(team_2 단위노동비용)와 교차
+  - name: 고용비용지수 (ECI)
+    tier: 2
+    method: api
+    source: fred
+    series_id: ECIALLCIV
+  - name: Sahm Rule
+    tier: 2
+    method: api
+    source: fred
+    series_id: SAHMREALTIME
+  - name: 소매판매
+    tier: 2
+    method: api
+    source: fred
+    series_id: RSAFS
+    note: ⚠ 명목이다. 물가가 오르면 실질 소비가 줄어도 늘어난 것처럼 보인다 — 아래 실질 계열과 반드시 함께 볼 것
+  - name: 실질 소매판매 (RRSFS)
+    tier: 1
+    method: api
+    source: fred
+    series_id: RRSFS
+    note: 확인 완료(2026-08-26, 2026-07 229,439) — 명목 RSAFS를 대체하는 게 아니라 병치한다.
+      "명목은 늘었는데 실질은 줄었다"가 보여야 소비 판단이 인플레에 오염되지 않는다
+  - name: 미시간 소비자심리
+    tier: 2
+    method: api
+    source: fred
+    series_id: UMCSENT
+  - name: 카드 연체율
+    tier: 2
+    method: api
+    source: fred
+    series_id: DRCCLACBS
+    note: 분기
+  - name: 초과저축 소진
+    tier: 2
+    method: news
+    news_queries: ["San Francisco Fed excess savings household"]
+    note: 자동 헤드라인(2026-07-20, Google News) — SF Fed 추정치는 비정기 블로그 발행이라 구조화 API 없음. 최신 리포트 헤드라인으로 대체
+  - name: 설비투자 (코어 자본재 수주)
+    tier: 2
+    method: api
+    source: fred
+    series_id: NEWORDER
+  - name: 미국 TFP (Fernald, 가동률 조정)
+    tier: 1
+    method: api
+    source: frbsf_tfp
+    columns: [dLP, dtfp, dtfp_util, dk]
+    points: 4
+    vault_node: 총요소생산성 (TFP)
+    note: 'DataBook에 **생산성 지표가 없던 공백**을 메운다. RegimeView 2기둥("생산성이 모순을 해소한다", 확신도 상)이 생산성 위에 서 있는데 근거 데이터가 수집되지 않고 있었다. **핵심은 dLP와 dtfp_util을 갈라 보는 것** — 노동생산성(dLP)은 자본심화(dk)만으로도 오른다. 기술 개선 여부는 TFP(dtfp), 경기적 가동률을 걷어낸 것은 가동률조정 TFP(dtfp_util)로 본다. Fernald(2014, FRBSF WP 2012-19)가 Basu-Fernald-Kimball(2006) 방법으로 구현한 표준 계열. ⚠ 분기 데이터이고 BEA 개정에 따라 **과거치가 소급 수정**된다 — 주간 트리거 불가. 가동률 조정은 모형 기반 추정이라 BFK 가정에 의존. 미국 business sector 기준이라 **BLS 비농업 노동생산성과 정의가 다르다**(섞지 말 것). 2026:Q2 기준 dLP +1.20 · dtfp −0.34 · **dtfp_util −2.19** · dk +3.19 — 노동생산성은 오르는데 기술은 안 좋아지고 있다'
+  - name: 재고 사이클 (재고/판매 비율)
+    tier: 2
+    method: api
+    source: fred
+    series_id: ISRATIO
+    # 볼트의 [[원자재 재고]]는 LME 구리 등 실물 원자재 재고 노드다.
+    # 여기 ISRATIO는 기업 재고/판매 비율이라 다른 개념 — 자동 매칭을 끈다.
+    vault_node: "-"
+  - name: 기업이익
+    tier: 2
+    method: api
+    source: fred
+    series_id: CP
+    note: 분기. 어닝 가이던스 톤은 수동
+  - name: 어닝 시즌 가이던스 톤
+    tier: 2
+    method: news
+    news_queries: ["S&P 500 earnings season guidance outlook", "어닝시즌 실적 가이던스"]
+    note: 자동 헤드라인(2026-07-20, 네이버+Google News) — 톤(긍정/부정) 해석은 사람 몫, 헤드라인만 자동 수집
+  - name: 주택 착공 / 허가
+    tier: 2
+    method: api
+    source: fred
+    series_id: [HOUST, PERMIT]
+  - name: 신규 / 기존주택 판매
+    tier: 2
+    method: api
+    source: fred
+    series_id: [HSN1F, EXHOSLUSM495S]
+  - name: 모기지 30Y 금리
+    tier: 2
+    method: api
+    source: fred
+    series_id: MORTGAGE30US
+  - name: 케이스-실러 주택가격
+    max_age_days: 130   # 3개월 이동평균 + 2개월 지연 발표라 기본 임계로는 상시 오탐
+    tier: 2
+    method: api
+    source: fred
+    series_id: CSUSHPINSA
+  - name: 구리 (Dr.Copper, 성장 가격 교차검증)
+    tier: 1
+    method: scrape
+    source: yahoo_finance
+    symbol: "HG=F"
+    note: 글로벌 산업 성장 선행. 야후 chart API(팀원 MOVE·SKEW와 동일 fetcher)
+  - name: 구리/금 비율 (성장 vs 공포 레짐 신호)
+    tier: 1
+    method: derived
+    formula: HG=F ÷ GC=F (둘 다 이미 수집 중 — 3팀 금 지표 재사용)
+    note: 상승=리스크온·성장, 하락=둔화 공포. 레짐 전환의 고전적 가격 신호
+  - name: 잠재GDP·산출갭 (CBO)
+    vault_node: 산출갭
+    tier: 1
+    method: api
+    source: fred
+    series_id: [GDPPOT, GDPC1]
+    note: >-
+      2026-08-21 신설. [[잠재성장률]]·[[산출갭]] 노드가 **Data Book 미수집**으로 적어둔 계열이다.
+      CBO 실질 잠재GDP(GDPPOT)와 실질GDP(GDPC1)를 함께 받아 갭을 계산할 수 있게 한다.
+      ⚠ **잠재GDP는 관측이 아니라 CBO 추정**이고 개정된다 — [[잠재성장률]] 규칙 "관측값이 아니라 추정 부산물"이 그대로 적용된다.
+      ⚠ GDPPOT는 **미래 구간까지 값이 있다**(CBO 전망). 최신 관측일이 미래로 찍히므로 실적치와 섞지 말 것.
+      ⚠ 한국 산출갭은 여기 없다 — Huh In(2023)이 쓴 GDP갭은 별도 추정이다.
+  - name: 설비가동률 (미국)
+    vault_node: 설비가동률
+    tier: 2
+    method: api
+    source: fred
+    series_id: TCU
+    note: >-
+      2026-08-21 신설. [[설비가동률]] 노드가 status proposed · **Data Book 미수집** 상태였다.
+      ⚠ 이 노드의 판정 규칙은 **근거 부족**이다 — 설비가동률을 설명변수로 검증한 문헌이 볼트에 없다.
+      **계열이 생겼다고 판정 근거가 생긴 것은 아니다.** Hall & Jorgenson(1967) 명제대로 **사용자비용과 함께** 본다.
+  - name: 자연실업률 (CBO, NROU)
+    vault_node: 실업률
+    tier: 2
+    method: api
+    source: fred
+    series_id: NROU
+    note: >-
+      2026-08-21 신설. 실업갭(실업률 − 자연실업률) 계산용.
+      ⚠ **자연실업률은 추정치**이고 CBO가 사후 개정한다.
+      ⚠ [[실업률]] 규칙대로 **한국 물가 전망에는 쓰지 않는다** — 한국에서 실업률·고용률은 3개 물가 지표 어느 것과도 비유의였다.
+      미국 필립스 곡선 논의에서만 쓴다.
+      ⚠ GDPPOT와 같이 **미래 구간 전망치가 포함**된다.
+  - name: 침체확률 모델 (Chauvet-Piger)
+    tier: 2
+    method: api
+    source: fred
+    series_id: RECPROUSM156N   # 미검증 — Smoothed U.S. Recession Probabilities
+    unit: "%"
+    note: ⚠ 단위가 퍼센트다 — 0.6은 60%가 아니라 0.6%. 절대수준(1% 미만)과 상대변화(0.18→0.6, 3배)는
+      둘 다 사실이므로 어느 쪽을 말하는지 반드시 밝힐 것. 커브 역전·Sahm Rule과 삼각 검증용
+  - name: 주간경제지수 WEI (NY연준)
+    tier: 2
+    method: api
+    source: fred
+    series_id: WEI   # 미검증
+    note: 주간 고빈도 성장 추적 — GDPNow(분기 추정)보다 세션 주기와 맞음
+  - name: 임시직 고용
+    vault_node: 실업률
+    tier: 2
+    method: api
+    source: fred
+    series_id: TEMPHELPS   # 미검증
+    note: 침체 선행지표 — 기업은 정리해고 전에 임시직부터 줄인다
+  - name: 개인저축률·실질가처분소득
+    tier: 2
+    method: api
+    source: fred
+    series_id: [PSAVERT, DSPIC96]   # 미검증
+    note: 수동 슬롯 "초과저축 소진"의 자동 프록시 — 소비 여력 판정
+  # ── 미국 주가지수 선물 (5단계 프레임워크 ②가격검증의 "주가지수" 항목. 확인 완료 2026-07-18) ──
+  - name: S&P500 선물 (E-mini)
+    tier: 1
+    method: scrape
+    source: yahoo_finance
+    symbol: "ES=F"
+    note: 확인 완료 — 시장이 성장 레짐을 가격에 어떻게 반영하는지의 대표 지표
+  - name: 나스닥100 선물
+    tier: 2
+    method: scrape
+    source: yahoo_finance
+    symbol: "NQ=F"
+    note: 확인 완료 — 성장주·AI 테마 민감도
+  - name: 다우존스 선물
+    tier: 2
+    method: scrape
+    source: yahoo_finance
+    symbol: "YM=F"
+    note: 확인 완료
+  - name: 러셀2000 선물 (소형주)
+    tier: 2
+    method: scrape
+    source: yahoo_finance
+    symbol: "RTY=F"
+    note: 확인 완료 — 소형주는 경기민감도가 높아 대형주(S&P500)와 괴리 시 국면 전환 신호로 유용
+  - name: 글로벌 성장 (중국 공식 PMI)
+    tier: 2
+    method: api
+    source: dbnomics
+    db_series: [NBS/M_A0B01/A0B0101, NBS/M_A0B02/A0B0201]
+    db_labels: ["중국 제조업 PMI", "중국 비제조업 PMI"]
+    note: ⛔ 갱신정지 확인(2026-08-26) — DBnomics·NBS 미러가 2026-02에서 멈췄다.
+      같은 미러의 소매판매(2025-12)·산업생산(2025-12)·고정자산투자(데이터셋 404)까지
+      전부 무너져 있어 NBS 미러 전체를 신뢰하지 않는다. NBS 직접 API는 WAF 403,
+      차이신 PMI는 유료 — 무료 자동 경로가 없다는 것이 결론이다.
+      대체 판정선 — 중국 CLI(OECD, 2026-05 갱신 중) + 한국 대중 수출(관세청 10일·20일)
+      + 구리 가격. 이 세 개로 중국 경기를 판정하고, PMI 값은 기준월을 반드시 명시해 인용할 것
+  # ── 주요국 GDP (미검증 — OECD MEI 계열, FRED 미러. 최초 실행 시 실제 키로 확인) ──
+  - name: 유로존 실질GDP (QoQ)
+    tier: 2
+    method: api
+    source: eurostat
+    dataset: namq_10_gdp
+    filters: {unit: CLV_PCH_PRE, s_adj: SCA, na_item: B1GQ, geo: EA21}
+    label: 유로존 GDP QoQ(%)
+    note: 확인 완료(2026-08-26, 최신 2026Q2 +0.4%) — FRED CLVMNACSCAB1GQEA19은 EA19 계열이라
+      2026-01 불가리아 가입 이후 죽는다. 유로존 집계는 EA21
+  # ── 유럽 실물 (Eurostat 원천 직접 — 2026-08-26 실호출 검증. geo는 반드시 EA21) ──
+  - name: 유로존 산업생산
+    tier: 1
+    method: api
+    source: eurostat
+    dataset: ei_isin_m
+    filters: {indic: IS-IP, nace_r2: B-D, s_adj: SCA, unit: I2021, geo: EA21}
+    label: 유로존 산업생산(2021=100)
+    note: 확인 완료(2026-08-26) — 독일 산업생산과 짝으로 볼 것. YoY 계열(PCH_SM)은 미게시라 지수 레벨
+  - name: 독일 산업생산
+    tier: 1
+    method: api
+    source: eurostat
+    dataset: ei_isin_m
+    filters: {indic: IS-IP, nace_r2: B-D, s_adj: SCA, unit: I2021, geo: DE}
+    label: 독일 산업생산(2021=100)
+    note: 확인 완료(2026-08-26) — 글로벌 제조업 사이클(독일→유로존→중국수요→한국수출→구리)의 시작점
+  - name: 유로존 소매판매
+    tier: 2
+    method: api
+    source: eurostat
+    dataset: sts_trtu_m
+    filters: {indic_bt: VOL_SLS, nace_r2: G47, s_adj: SCA, unit: I21, geo: EA21}
+    label: 유로존 소매판매량(2021=100)
+    note: 확인 완료(2026-08-26) — PCH_SM(전년비) 조합은 EA21에 미게시라 지수 레벨로 수집
+  - name: 유로존 실업률
+    tier: 2
+    method: api
+    source: eurostat
+    dataset: une_rt_m
+    filters: {s_adj: SA, age: TOTAL, sex: T, unit: PC_ACT, geo: EA21}
+    label: 유로존 실업률(%)
+    note: 확인 완료(2026-08-26, 6.3%) — ECB 반응함수의 노동시장 측 입력
+  - name: 일본 실질GDP
+    tier: 2
+    method: api
+    source: fred
+    series_id: JPNRGDPEXP
+    note: 확인 완료(2026-08-26) — 최신 관측 2026Q2, 갱신 2026-08-16. 분기 계열이라 속보는 내각부 1차 QE 발표를 뉴스로 본다
+  - name: 일본 단칸 업황판단 DI (대기업)
+    tier: 2
+    method: api
+    source: boj_api
+    db: CO
+    codes: ["TK99F1000601GCQ01000", "TK99F2000601GCQ01000", "TK99F1000601GCQ11000", "TK99F2000601GCQ11000"]
+    labels: ["대기업 제조업 실적", "대기업 비제조업 실적", "대기업 제조업 예측", "대기업 비제조업 예측"]
+    freq: Q
+    points: 5
+    note: '2026-08-26 신설 — BOJ 공식 API(CO, 단칸). **실적치와 예측치를 같이 받는 게 핵심**이다: 단칸의 정보는 수준이 아니라 **실적−예측 갭**(기업이 스스로 틀린 방향)에 있다. 실측 2026Q2 제조업 **+22** · 비제조업 **+37**. ⚠ 분기 공표(4·7·10·12월 초)라 반응이 느리다 — ISM/PMI 같은 월간 지표의 대체재가 아니다'
+  - name: 중국 실물 (소매판매·서비스생산·고정자산투자·부동산투자)
+    tier: 2
+    method: api
+    source: dbnomics
+    db_series: ["NBS/M_A0701/A070104", "NBS/M_A0501/A050102", "NBS/M_A0401/A040102", "NBS/M_A0601/A060102"]
+    db_labels: ["소매판매 누계증가율(%)", "서비스업생산지수 누계증가율(%)", "고정자산투자 누계증가율(%)", "부동산개발투자 누계증가율(%)"]
+    note: '2026-08-26 신설 — NBS 월간(DBnomics 미러). **부동산개발투자를 같은 줄에 두는 게 요점**이다: 실측 2026-02 소매 **+2.8%** · 서비스생산 **+5.0%**(2025-12) · 고정자산투자 **+1.8%** · 부동산개발투자 **−11.1%** — 총투자가 겨우 플러스인 건 부동산의 두 자릿수 감소를 제조업 투자가 메우고 있기 때문이다. **"중국 투자가 살아났다"를 총계로 말하지 말 것.** ⚠ 누계(연초누계) 증가율이라 월별 모멘텀이 아니다 — 월 단위 변화를 보려면 누계에서 역산해야 한다. ⚠⚠ **NBS 미러는 2026-08-26 기준 2026-02까지다(약 6개월 지연).** NBS 공식 API(data.stats.gov.cn)는 WAF 403으로 막혀 우회 경로가 없다. **속보 판단에 쓰지 말고 구조·추세 확인용으로만** 쓸 것 — 중국에서 당월에 가까운 자동 계열은 관세청(GACC) 무역통계뿐이다.'
+  - name: 중국 실업률 (도시조사·청년)
+    tier: 2
+    method: api
+    source: dbnomics
+    db_series: ["NBS/M_A0E01/A0E0101", "NBS/M_A0E01/A0E0105"]
+    db_labels: ["도시조사실업률(%)", "청년실업률 16~24세(%)"]
+    note: '2026-08-26 신설 — NBS 월간. **전체 실업률은 5%대에서 거의 안 움직여 판정력이 없다** — 정보는 청년실업률에 있다. 실측 2026-02 전체 **5.3%** / 청년 **16.1%**. ⚠ 청년실업률은 2023-06(21.3%) 이후 공표가 중단됐다가 **재학생 제외로 정의를 바꿔 2024-01 재개**됐다 — 2023년 이전 값과 직접 비교하지 말 것. ⚠⚠ **NBS 미러는 2026-08-26 기준 2026-02까지다(약 6개월 지연).** NBS 공식 API(data.stats.gov.cn)는 WAF 403으로 막혀 우회 경로가 없다. **속보 판단에 쓰지 말고 구조·추세 확인용으로만** 쓸 것 — 중국에서 당월에 가까운 자동 계열은 관세청(GACC) 무역통계뿐이다.'
+  - name: 일본 기계수주 (선박·전력 제외 민수)
+    tier: 2
+    method: api
+    source: e_stat
+    stats_data_id: "0003355222"
+    points: 6
+    scale: 0.000001
+    series:
+      - label: "민수(선박·전력 제외) 계절조정, 조엔"
+        filters: {cdCat01: "160", cdCat02: "100"}
+      - label: "민수(선박·전력 제외) 원계열, 조엔"
+        filters: {cdCat01: "160", cdCat02: "110"}
+    note: '2026-08-26 신설 — 내각부 기계수주(e-Stat, 長期系列 主要需要者別 월차). **일본에서 설비투자를 6~9개월 앞서 보는 계열**이고, BOJ 단칸(분기)보다 빠르다. 「선박·전력 제외 민수」가 시장이 보는 헤드라인 — 선박·전력은 건당 금액이 커서 원계열을 통째로 흔든다. 실측 2026-06 계절조정 **1.056조엔**. ⚠ **원계열은 월별 진폭이 크다**(2026-03 1.63조엔 → 2026-05 0.80조엔) — 방향 판단은 계절조정으로, 전년비는 원계열로 한다. e-Stat 갱신 2026-08-19로 이 파트에서 가장 최신인 계열'
+  - name: 일본 광공업생산 (재별 지수)
+    tier: 2
+    method: api
+    source: e_stat
+    stats_data_id: "0004052185"
+    points: 6
+    series:
+      - label: "광공업 전체(2020=100, 계절조정)"
+        filters: {cdCat01: "0001000"}
+      - label: "최종수요재"
+        filters: {cdCat01: "0002000"}
+      - label: "생산재"
+        filters: {cdCat01: "0039000"}
+    note: '2026-08-26 신설 — METI 광공업지수(e-Stat, 財別 계절조정 월차). **최종수요재와 생산재를 갈라 보는 게 요점**이다: 생산재는 공급망 상류라 최종수요재보다 먼저 꺾인다. 실측 2026-03 전체 **102.0** · 최종수요재 102.2 · 생산재 101.4. ⚠⚠ **약 5개월 지연**이다 — e-Stat의 이 표는 2026-06-03 갱신에 2026-03까지만 있다(METI는 자기 사이트에 월 단위로 더 빨리 올리지만 파일 다운로드가 HTTP 202로 막힌다, 2026-08-26 확인). **속보 판단에 쓰지 말고 추세 확인용으로만** 쓸 것. 최신 수치는 METI 보도자료 PDF를 직접 볼 것'
+  - name: 일본 소매판매·주택착공 (전년비)
+    tier: 2
+    method: api
+    source: dbnomics
+    yoy: true
+    db_series: ["OECD/DSD_STES@DF_INDSERV/JPN.M.TOVM.IX.G47.Y._Z._Z.N", "OECD/DSD_STES@DF_INDSERV/JPN.M.WSDW.IX.F41.Y._Z._Z.N"]
+    db_labels: ["소매판매량(계절조정)", "주택착공(계절조정)"]
+    note: '2026-08-26 신설 — OECD 단기경제지표(DBnomics 미러, 키 불필요). **e-Stat 경로가 죽어서 OECD로 우회한 자리**다: 商業動態統計(소매)는 e-Stat에 2024년치까지밖에 없다(전체 1,466개 표를 페이징해 확인). 실측 2026-03 소매판매량 **−0.05%** · 주택착공 **−30.1%**. ⚠ 지수 레벨이라 전년비는 계산값이다. ⚠ 약 4~5개월 지연(OECD 색인 2026-06-10) — 광공업생산과 같은 한계다. ⚠ 소매"판매량"(수량)이라 명목 판매액과 다르다 — 물가가 오르면 금액과 부호가 갈릴 수 있다'
+  - name: 일본 가계소비·가처분소득 (분기)
+    tier: 2
+    method: api
+    source: e_stat
+    stats_data_id: "0003000799"
+    points: 5
+    yoy: true
+    series:
+      - label: "소비지출(총세대)"
+        filters: {cdCat01: "059", cdCat02: "11"}
+      - label: "가처분소득(근로자세대)"
+        filters: {cdCat01: "233", cdCat02: "12"}
+    note: '2026-08-26 신설 — 총무성 가계조사(e-Stat, 用途分類 총수·전국, 분기). **소득과 소비를 나란히 두는 게 요점**이다: 실측 2026Q2 소비지출 **+0.8%** / 가처분소득 **+3.4%** — 소득이 3배 빠르게 느는데 소비가 안 따라온다(저축으로 간다). 여기에 코어 CPI +1.8%를 겹치면 **실질 소비는 마이너스**다. BOJ가 "임금→소비→물가" 선순환을 확인하려는 자리이므로, 이 격차가 유지되는 한 정상화 논거가 약해진다. ⚠ **명목 금액이라 전년비는 계산값**이고, 총무성이 공표하는 「실질 소비지출 전년비」와 다르다 — 실질치 인용은 원문 대조 후. ⚠ 분기 계열이고 표본 가계조사라 진폭이 크다'
+  - name: 일본 임금 (현금급여총액·춘투 인상률)
+    vault_node: "-"
+    tier: 1
+    method: manual
+    note: '**자동화 경로 없음(2026-08-26 확인) — 수동 입력 슬롯.** 毎月勤労統計은 e-Stat 갱신이 **2021-10에 멈췄고**(統計コード 00450071, 552개 표 전수 확인) 다른 통계코드도 없다. 춘투 인상률은 애초에 統計가 아니라 連合 집계다. 그런데 **일본 매크로에서 임금은 빼놓을 수 없다** — BOJ 정상화의 전제가 "임금 상승이 서비스 물가로 전가되는가"이고, 그 판정은 SPPI(자동 수집 중)와 이 임금 계열의 대조로만 된다. 입력처: 毎月勤労統計 보도자료 https://www.mhlw.go.jp/toukei/list/30-1a.html · 連合 춘투 집계 https://www.jtuc-rengo.or.jp/activity/roudou/shuntou/ . 채울 값: 현금급여총액 전년비(명목·실질) · 소정내급여 전년비 · 춘투 평균 인상률(%). ⚠ 毎月勤労統計은 2018년 부정통계 사건 이후 표본 교체 때마다 단절이 있다 — 전년비를 길게 이어 볼 때 주의'
+  - name: 일본 실업률 (계절조정)
+    tier: 2
+    method: api
+    source: dbnomics
+    db_series: ["STATJP/MIm/M.UR.B.PCT.SA"]
+    db_labels: ["실업률(계절조정,%)"]
+    note: '2026-08-26 신설 — 총무성 노동력조사(DBnomics STATJP 미러, 키 불필요). 실측 2026-06 **2.5%**. ⚠ 일본 실업률은 2%대에서 거의 움직이지 않아 **경기 판정력이 약하다** — 노동시장은 실업률이 아니라 단칸 고용인원판단 DI·유효구인배율로 본다. 이 계열은 수준 확인용'
+  - name: 중국 GDP성장률 (연간)
+    tier: 2
+    method: api
+    source: worldbank
+    country_iso3: CHN
+    indicator_code: NY.GDP.MKTP.KD.ZG
+    note: FRED 분기 시리즈는 2023Q3 스테일 — World Bank 연간으로 전환. 분기 속보는 국가통계국 발표를 뉴스로
+  - name: 영국 실질GDP
+    tier: 2
+    method: api
+    source: fred
+    series_id: NGDPRSAXDCGBQ   # 미검증
+  # ── 신흥국 핵심국 GDP (미검증. 브라질·멕시코·남아공은 OECD 회원이라 상대적으로 신뢰도 높음) ──
+  - name: 브라질 실질GDP
+    tier: 2
+    method: api
+    source: fred
+    series_id: NGDPRSAXDCBRQ   # 확인 완료(2026-07-18, 최신 2026Q1)
+  - name: 멕시코 실질GDP
+    tier: 2
+    method: api
+    source: fred
+    series_id: NGDPRSAXDCMXQ   # 확인 완료(2026-07-18, 최신 2026Q1)
+  - name: 남아공 실질GDP
+    tier: 2
+    method: api
+    source: fred
+    series_id: NGDPRSAXDCZAQ   # 확인 완료(2026-07-18, 최신 2026Q1)
+  - name: 러시아 GDP성장률 (연간)
+    tier: 2
+    method: api
+    source: worldbank
+    country_iso3: RUS
+    indicator_code: NY.GDP.MKTP.KD.ZG
+    note: 확인 완료(2026-07-18, 2025년 +1.0%) — FRED 시리즈는 2023년 스테일이라 World Bank로 전환
+  # World Bank Open Data — 키 불필요, 무료, 실호출 확인 완료(2026-07-18). 단 연간 데이터만 제공(월/분기 아님).
+  - name: 사우디아라비아 GDP성장률 (연간)
+    tier: 2
+    method: api
+    source: worldbank
+    country_iso3: SAU
+    indicator_code: NY.GDP.MKTP.KD.ZG
+    note: 확인 완료 — World Bank, 연간 데이터
+  - name: UAE GDP성장률 (연간)
+    tier: 2
+    method: api
+    source: worldbank
+    country_iso3: ARE
+    indicator_code: NY.GDP.MKTP.KD.ZG
+    note: 확인 완료 — World Bank, 연간 데이터
+  - name: 카자흐스탄 GDP성장률 (연간)
+    tier: 2
+    method: api
+    source: worldbank
+    country_iso3: KAZ
+    indicator_code: NY.GDP.MKTP.KD.ZG
+    note: 확인 완료 — World Bank, 연간 데이터
+  - name: 나이지리아 GDP성장률 (연간)
+    tier: 2
+    method: api
+    source: worldbank
+    country_iso3: NGA
+    indicator_code: NY.GDP.MKTP.KD.ZG
+    note: 확인 완료 — World Bank, 연간 데이터
+  - name: 튀르키예 GDP성장률 (연간)
+    tier: 2
+    method: api
+    source: worldbank
+    country_iso3: TUR
+    indicator_code: NY.GDP.MKTP.KD.ZG
+    note: 확인 완료 — World Bank, 연간 데이터
+  - name: 한국 산업활동동향 (전산업·광공업 생산지수)
+    tier: 2
+    method: api
+    source: kosis
+    org_id: "101"
+    tbl_id: DT_1JH20202   # 확인 완료 (팀원 v1)
+    filter: {itm_id: [T1], c1: ["1", "1B"]}
+  - name: 국내 소비 (소매판매액지수, 계절조정)
+    tier: 2
+    method: api
+    source: kosis
+    org_id: "101"
+    tbl_id: DT_1K41012   # 확인 완료
+    filter: {itm_id: [T3], c1: [G0]}
+  - name: 국내 고용 (취업자·실업률)
+    tier: 2
+    method: api
+    source: kosis
+    org_id: "101"
+    tbl_id: DT_1DA7001S   # 확인 완료
+    filter: {c1: ["0"], itm_nm: [취업자, 실업률]}
+  - name: 한국 수출입 (월별 총괄)
+    tier: 1
+    method: api
+    source: ecos
+    stat_code: 901Y118
+    item_code: ["T002", "T004"]   # 확인 완료 — 수출·수입 금액(월)
+  - name: 한국 품목별 수출 (반도체)
+    tier: 1
+    method: api
+    source: data_go_kr
+    endpoint: https://apis.data.go.kr/1220000/Itemtrade/getItemtradeList
+    hs_code: "8542"   # 확인 완료
+  - name: 한국 20일 수출 (10일 단위 잠정치, 총액·반도체)
+    tier: 1
+    method: api
+    source: data_go_kr
+    endpoint: https://apis.data.go.kr/1220000/prlstMmUtPrviExpAcrs/getPrlstMmUtPrviExpAcrs
+    note: 확인 완료. 파라미터 strtYymm/endYymm, 단위 천 USD. itemUsdAmt00=총액, 01=반도체
+  - name: 한국 20일 수입 (10일 단위 잠정치, 총액)
+    tier: 2
+    method: api
+    source: data_go_kr
+    endpoint: https://apis.data.go.kr/1220000/prlstMmUtPrviImpAcrs/getPrlstMmUtPrviImpAcrs
+    note: 확인 완료. 총액만 사용
+
+# ═════════════════════ team_2 : 물가·정책·금리 (Inflation·Policy·Rates) ═════════════════════
+team_2:
+  # ── 인플레이션 ──
+  - name: CPI (헤드라인 / 코어)
+    tier: 1
+    method: api
+    source: fred
+    series_id: [CPIAUCSL, CPILFESL]
+    note: '⚠ 헤드라인−코어 갭은 "식품·에너지 꼬리의 두께"까지만 말한다. Ball & Mankiw(1995): 공급충격의 본질은 특정 품목이 아니라 상대가격 변화 분포의 비대칭이며, 왜도 기반 지표가 식품·에너지 상대가격보다 성과가 좋다. 공급충격 통제에는 아래 중위·절사평균 계열을 쓸 것'
+  - name: 중위 CPI (Cleveland Fed)
+    tier: 1
+    method: api
+    source: fred
+    series_id: MEDCPIM158SFRBCLE
+    note: 'Ball & Mankiw(1995)의 직접 구현. 메뉴비용 하에서 큰 상대가격 변화가 총물가에 불비례적으로 실리므로, 품목을 이름으로 지목(코어)하는 대신 분포의 꼬리를 제거한다. 2021~22 중고차·신차 급등은 식품도 에너지도 아니라 코어에 그대로 들어갔다 — 중위·절사평균은 그것을 걸러낸다'
+  - name: 절사평균 CPI 16% (Cleveland Fed)
+    tier: 2
+    method: api
+    source: fred
+    series_id: TRMMEANCPIM158SFRBCLE
+    note: '분포 상하위 16%를 잘라낸 평균. 중위 CPI보다 정보 손실이 적다. ⚠ 절사 비율 16%의 선택은 자의적이며 Ball & Mankiw가 정당화한 바 없다'
+  - name: 절사평균 PCE (Dallas Fed)
+    tier: 2
+    method: api
+    source: fred
+    series_id: PCETRIM12M159SFRBDAL
+    note: 'PCE 기준 절사평균. 연준 공식 물가지표가 PCE라 정책 대응 판정에는 이쪽이 정합적'
+  - name: CPI 서비스ex에너지 (근원서비스, 슈퍼코어 근사)
+    tier: 2
+    method: api
+    source: bls
+    series_id: CUSR0000SASLE
+    note: BLS API 직접 수집(무키 접속, 등록 시 한도 상승). 완전한 슈퍼코어(주거비 추가 제외)는 BLS 가중치 결합 산출 필요 — 근사치로 사용
+  - name: CPI 주거비 (Shelter)
+    tier: 2
+    method: api
+    source: fred
+    series_id: CUSR0000SAH1
+  - name: PCE (헤드라인 / 코어)
+    tier: 1
+    method: api
+    source: fred
+    series_id: [PCEPI, PCEPILFE]
+  - name: PPI (최종수요)
+    tier: 2
+    method: api
+    source: fred
+    series_id: PPIFIS
+  - name: 수입물가
+    tier: 2
+    method: api
+    source: fred
+    series_id: IR
+  - name: 기대인플레 서베이 (미시간 1Y)
+    tier: 2
+    method: api
+    source: fred
+    series_id: MICH
+    vault_node: BEI (기대인플레이션)
+  - name: 한국 기대인플레이션 (한은 소비자동향조사)
+    tier: 1
+    method: api
+    source: ecos
+    stat_code: 511Y003
+    item_code: ["FMB", "FMA"]
+    vault_node: BEI (기대인플레이션)
+    note: 'FMB=향후1년 기대인플레이션율(2002.02~) · FMA=물가인식(지난 1년, 2013.01~). 2026-08-15 신설. T2(5y5y>2.50)는 시장 기반이라 가계 기대와 갈릴 수 있어 병행 지표로 편입 — RegimeView 7차 대조 ②의 숙제. 읽는 법: 기대(FMB)가 인식(FMA)을 하회하면 앵커 유지, 상회로 뒤집히면 후향적 기대가 앞으로 밀리는 국면. 근거 = 2025 Households Inflation Expectations(BOJ 25-E-6, 생애경험 +1%p → 기대 +0.357%p) · 한국에서 금리 인상은 기대인플레이션을 낮추지 못한다 · 한국 인플레이션 동학은 CPI가 아니라 PPI로 봐야 정합적이다'
+  # ── 정책·금리 ──
+  - name: 미 기준금리 (목표 상단)
+    tier: 1
+    method: api
+    source: fred
+    series_id: DFEDTARU
+  - name: 실효연방기금금리 (EFFR)
+    tier: 1
+    method: api
+    source: fred
+    series_id: FEDFUNDS
+  - name: 미 국채 2Y
+    vault_node: 장단기 금리차
+    tier: 1
+    method: api
+    source: fred
+    series_id: DGS2
+  - name: 미 국채 10Y
+    vault_node: 장단기 금리차
+    tier: 1
+    method: api
+    source: fred
+    series_id: DGS10
+  - name: 미 국채 커브 전 만기 (Nelson-Siegel 추정용)
+    vault_node: 장단기 금리차
+    tier: 2
+    method: api
+    source: fred
+    series_id: ['DGS1MO', 'DGS3MO', 'DGS6MO', 'DGS1', 'DGS3', 'DGS5', 'DGS7', 'DGS20']
+    note: 'Diebold-Li 3요인(레벨·기울기·곡률) 추정용. DGS2/10/30만으로는 3요인이 정확식별되어 잔차가 0이 된다(2026-08-05 추가)'
+  - name: 미 국채 30Y
+    vault_node: 장단기 금리차
+    tier: 1
+    method: api
+    source: fred
+    series_id: DGS30
+  - name: 커브 2s10s
+    vault_node: 장단기 금리차
+    tier: 1
+    method: api
+    source: fred
+    series_id: T10Y2Y
+    note: 파생 검산용 — DGS10−DGS2와 대조
+  - name: 커브 3m10y
+    vault_node: 장단기 금리차
+    tier: 1
+    method: api
+    source: fred
+    series_id: T10Y3M
+  - name: 실질금리 (10Y TIPS)
+    tier: 1
+    method: api
+    source: fred
+    series_id: DFII10
+  - name: 텀프리미엄 (ACM 10Y)
+    vault_node: 장단기 금리차
+    tier: 2
+    method: api
+    source: fred
+    series_id: THREEFYTP10
+  - name: 미 10년물 국채선물
+    tier: 2
+    method: scrape
+    source: yahoo_finance
+    symbol: "ZN=F"
+    note: 확인 완료 — 채권시장의 금리 포지셔닝을 가격으로 교차검증 (DGS10과 역방향 움직임 확인용)
+  - name: BEI 10Y
+    tier: 1
+    method: api
+    source: fred
+    series_id: T10YIE
+  - name: 기대인플레이션 모형추정 (클리블랜드 연준 10Y)
+    vault_node: BEI (기대인플레이션)
+    tier: 2
+    method: api
+    source: fred
+    series_id: EXPINF10YR
+    note: >-
+      2026-08-21 신설. [[BEI (기대인플레이션)]] 노드는 **BEI에 유동성 프리미엄이 섞인다**는 한계를 갖고 있다.
+      클리블랜드 연준 추정치는 국채·인플레스왑·서베이를 결합해 **그 프리미엄을 분리**한 모형 산출물이라,
+      시장 BEI와 **나란히 놓고 차이를 본다**.
+      ⚠ **모형 추정치다.** 관측된 시장가격이 아니라 가정에 의존한다 — 두 계열이 갈릴 때 어느 쪽이 맞다고 단정하지 않는다.
+      ⚠ 한국에는 대응 계열이 없다.
+  - name: 5y5y 포워드 기대인플레
+    vault_node: BEI (기대인플레이션)
+    tier: 1
+    method: api
+    source: fred
+    series_id: T5YIFR
+  - name: Fed 선물 내재금리 경로 (FedWatch 대용)
+    vault_node: 기준금리
+    tier: 1
+    method: scrape
+    source: fedfunds_futures
+    note: Fed 선물(ZQ) 가격으로 내재금리 직접 계산 (팀원 v1 검증)
+  - name: 미 재정적자 / 국가부채
+    tier: 2
+    method: api
+    source: fiscaldata
+    endpoint: /v2/accounting/od/debt_to_penny
+  - name: TGA 잔고 (일별, DTS)
+    vault_node: 글로벌 유동성
+    tier: 2
+    method: api
+    source: fiscaldata
+    endpoint: /v1/accounting/dts/operating_cash_balance
+    note: team_3 순유동성 계산에도 사용
+  - name: 국채 입찰 결과 (응찰률·간접낙찰)
+    tier: 2
+    method: api
+    source: treasurydirect
+    endpoint: /auctioned
+  - name: QRA 분기 발행 계획
+    tier: 2
+    method: news
+    news_queries: ["Treasury quarterly refunding announcement"]
+    note: 자동 헤드라인(2026-07-20, Google News) — 재무부 QRA 발표문 자체는 PDF라 구조화 API 없음, 헤드라인으로 발표 시점 포착
+  - name: FOMC 성명·의사록·점도표(SEP)
+    vault_node: 통화정책
+    tier: 1
+    method: api
+    source: fed_rss
+    feed: press_monetary
+    note: 확인 완료(2026-07-18) — Fed 통화정책 보도자료 RSS, 최신 3건 제목·날짜·링크 자동. 스탠스 해석은 사람 몫
+  - name: 연준 인사 발언 스탠스·잭슨홀
+    vault_node: 통화정책
+    tier: 2
+    method: api
+    source: fed_rss
+    feed: speeches
+    note: 확인 완료(2026-07-18) — Fed 연설 RSS, 최신 3건 자동. 스탠스 해석은 사람 몫
+  - name: ECB 예금금리
+    tier: 2
+    method: api
+    source: ecb
+    ecb_key: FM/D.U2.EUR.4F.KR.DFR.LEV
+    ecb_labels: ["ECB 예금금리(%)"]
+    note: 확인 완료(2026-08-26, 당일치 2.25%) — FRED ECBDFR 미러에서 ECB 원천으로 교체(키 불필요·당일 반영)
+  - name: 유로존 €STR (단기시장금리)
+    tier: 2
+    method: api
+    source: ecb
+    ecb_key: EST/B.EU000A2X2A25.WT
+    ecb_labels: ["€STR(%)"]
+    note: 확인 완료(2026-08-26) — 예금금리와의 괴리가 유로존 단기자금 스트레스 신호
+  - name: 유로존 장기국채금리 (독일·이탈리아·프랑스)
+    tier: 1
+    method: api
+    source: ecb
+    ecb_key:
+      - IRS/M.DE.L.L40.CI.0000.EUR.N.Z
+      - IRS/M.IT.L.L40.CI.0000.EUR.N.Z
+      - IRS/M.FR.L.L40.CI.0000.EUR.N.Z
+    ecb_labels: ["독일 10Y(%)", "이탈리아 10Y(%)", "프랑스 10Y(%)"]
+    note: 확인 완료(2026-08-26) — ECB 수렴기준 장기금리(월평균). 일별은 아래 수익률곡선 항목으로
+  - name: 유로존 국채 수익률곡선 10Y (AAA·전체, 일별)
+    tier: 1
+    method: api
+    source: ecb
+    ecb_key:
+      - YC/B.U2.EUR.4F.G_N_A.SV_C_YM.SR_10Y
+      - YC/B.U2.EUR.4F.G_N_C.SV_C_YM.SR_10Y
+    ecb_labels: ["AAA 10Y(%)", "전체등급 10Y(%)"]
+    note: 확인 완료(2026-08-26, 일별) — 국가별 일별 금리는 무료 API에 없다(Eurostat irt_lt_mcby_d 404,
+      ECB IRS는 월평균). AAA 대 전체등급 격차가 같은 내용을 일별로 준다
+  - name: 유로존 파편화 스프레드 (전체−AAA, 일별)
+    tier: 1
+    method: derived
+    formula: ECB YC 전체등급 10Y − AAA 10Y (위 항목에서 이미 수집)
+    note: 이탈리아-독일 스프레드의 일별 대용. 확대는 "이탈리아 약세"가 아니라 유로존 재정·국가신용
+      파편화 위험 신호로 읽는다. 월간 IRS는 국가 귀속 확인용, 트리거 판정은 이쪽
+  - name: 이탈리아-독일 스프레드 (유로존 파편화, 월간)
+    tier: 2
+    method: derived
+    formula: 이탈리아 10Y − 독일 10Y (위 ECB IRS에서 이미 수집)
+    note: 국가별 귀속 확인용. 급확대 시 ECB→유럽은행→유럽채권→EUR→유럽주식 경로로 전이 점검
+  - name: BOJ 정책금리 (무담보콜 익일물)
+    tier: 2
+    method: api
+    source: boj_api
+    db: FM01
+    codes: ["STRDCLUCON"]
+    labels: ["무담보콜 익일물 평균(%)"]
+    freq: D
+    points: 6
+    note: '확인 완료(2026-08-26) — **BOJ 공식 API로 교체**. BOJ가 2026-02-18 시계열통계 검색사이트에 API를 열었다(JSON, 키 불필요). 종전 `boj_policy_rate` 스크레이프는 **기준대출금리(Basic Loan Rate) 프록시**였는데, 이제 **실제 조작목표인 무담보콜 익일물 실적치**를 일별로 받는다. 실측 2026-08-24 **0.977%**. ⚠ 유도목표가 아니라 시장 실적치라 목표 수준 부근에서 매일 미세하게 움직인다 — **정책 변경 판정은 반드시 금융정책결정회합 성명으로** 하고, 이 계열은 "실제로 그 수준에서 돌고 있는가"의 확인용으로 쓴다'
+  - name: 영국 단기금리 SONIA (BOE 정책금리 프록시)
+    tier: 2
+    method: api
+    source: fred
+    series_id: IUDSOIA   # 확인 완료(2026-07-18, 일별 현행) — BOE 정책금리 시리즈는 FRED에서 중단되어 SONIA로 대체
+  - name: PBOC LPR (1Y·5Y)
+    tier: 2
+    method: api
+    source: pboc_lpr
+    note: 확인 완료(2026-07-19) — chinamoney(전국은행간자금센터) 공식 JSON, 1Y·5Y 월간. OECD MEI엔 중국 정책금리 없어 수동이던 항목 자동화
+  - name: 주요 신흥국 인하 사이클
+    tier: 2
+    method: news
+    news_queries: ["emerging market central bank rate cut cycle"]
+    note: 자동 헤드라인(2026-07-20, Google News) — BIS SDMX API 전 경로 406/404로 구조화 자동화 불가 확정. 브라질 Selic은 BCB API로 별도 자동화됨(아래 항목)
+  # ── 주요국 물가 (미검증 — OECD MEI 계열, FRED 미러) ──
+  - name: 유로존 HICP
+    vault_node: CPI (소비자물가지수)
+    tier: 1
+    method: api
+    source: eurostat
+    dataset: ei_cphi_m
+    filters: {unit: RT12, indic: TOTAL, geo: EA21}
+    label: 유로존 HICP YoY(%)
+    note: 확인 완료(2026-08-26, 최신 2026-07 3.0%) — FRED CP0000EZ19M086NEST(EZ19)에서 교체.
+      2026년 HICP 개편으로 Eurostat prc_hicp_manr·ECB ICP 계열이 둘 다 2025-12에서 멈췄다.
+      살아 있는 경로는 ei_cphi_m뿐
+  - name: 유로존 근원 HICP (에너지·식품 제외)
+    vault_node: CPI (소비자물가지수)
+    tier: 1
+    method: api
+    source: eurostat
+    dataset: ei_cphi_m
+    filters: {unit: RT12, indic: CP-HI00XEF, geo: EA21}
+    label: 유로존 근원 HICP YoY(%)
+    note: 확인 완료(2026-08-26, 2.5%) — ECB 반응함수의 실제 기준. 헤드라인이 에너지로 흔들릴 때 판정선
+  - name: 독일 HICP
+    tier: 2
+    method: api
+    source: eurostat
+    dataset: ei_cphi_m
+    filters: {unit: RT12, indic: TOTAL, geo: DE}
+    label: 독일 HICP YoY(%)
+    note: 확인 완료(2026-08-26, 2.8%) — 유로존 평균과의 괴리가 ECB 정책의 국가별 부담 차이를 드러낸다
+  - name: 유로존 PPI
+    tier: 2
+    method: api
+    source: eurostat
+    dataset: sts_inpp_m
+    filters: {indic_bt: PRC_PRR, nace_r2: B-E36, s_adj: NSA, unit: PCH_SM, geo: EA21}
+    label: 유로존 PPI YoY(%)
+    note: 확인 완료(2026-08-26, +4.3%) — 인플레 동학은 CPI보다 PPI가 앞선다는 검증 논문 계열의 유럽판 입력
+  - name: 일본 CPI (코어·코어코어, 월간)
+    vault_node: CPI (소비자물가지수)
+    tier: 1
+    method: api
+    source: dbnomics
+    yoy: true
+    db_series: ["STATJP/CPIm/733", "STATJP/CPIm/740", "STATJP/CPIm/001"]
+    db_labels: ["코어(신선식품 제외)", "코어코어(신선식품·에너지 제외)", "종합"]
+    note: '확인 완료(2026-08-26) — **World Bank 연간(1년에 1점) → 총무성 통계국 월간으로 교체**. DBnomics가 미러하는 STATJP 계열이라 키가 필요 없다. 실측 2026-07 코어 **+1.79%** · 코어코어 **+1.90%**. ⚠ **원본이 지수 레벨이라 전년비는 이쪽에서 계산한 값**이다 — 총무성 공표 전년비와 반올림에서 0.1%p 갈릴 수 있으니 인용 전 원문 대조. ⚠ BOJ가 보는 건 코어(신선식품 제외)지만, 2022~23 수입물가 충격의 잔향을 걷어내려면 **코어코어를 함께** 봐야 한다 — 두 계열의 격차가 판정 재료다. ⚠ e-Stat 직접 연결은 appId 발급 후 전환 예정(DBnomics는 갱신이 며칠 늦을 수 있다)'
+  - name: 일본 PPI·수출입물가 (전년비)
+    tier: 2
+    method: api
+    source: boj_api
+    db: PR01
+    codes: ["PRCG20_2200000000%", "PRCG20_2600000000%", "PRCG20_2400000000%"]
+    labels: ["국내기업물가 PPI", "수입물가(엔베이스)", "수출물가(엔베이스)"]
+    freq: M
+    points: 6
+    note: '2026-08-26 신설 — BOJ 공식 API(PR01), 공표 전년비 원본. 실측 2026-07 PPI **+7.2%** · 수입물가 엔베이스 **+29.1%**. 환율 전가분을 보려면 **바로 아래 계약통화베이스 지표와 격차로** 읽는다. ⚠ 계열 코드에 `%`가 들어간다(공표 전년비 원본) — URL 인코딩 필수, fetcher가 처리한다. 근거 렌즈 = 한국 인플레이션 동학은 CPI가 아니라 PPI로 봐야 정합적이다 · BOJ WP 23-E-13(PS-NKPC, 투입가격 전가는 불완전할 뿐 사라지지 않는다)'
+  - name: 일본 수출입물가 계약통화베이스 (전년비)
+    tier: 2
+    method: api
+    source: boj_api
+    db: PR01
+    codes: ["PRCG20_2500000000", "PRCG20_2300000000"]
+    labels: ["수입물가(계약통화베이스)", "수출물가(계약통화베이스)"]
+    freq: M
+    points: 6
+    yoy: true
+    note: '2026-08-26 신설 — **위 엔베이스 지표와 짝으로만 의미가 있다**: 엔베이스 − 계약통화베이스 = **환율 전가분**이라, "일본 수입물가가 오른다"가 국제 원자재 때문인지 엔 약세 때문인지 갈린다. ⚠ **BOJ는 계약통화베이스 전년비를 공표하지 않는다**(레벨 계열만 존재) — 여기 값은 레벨에서 계산한 것이다. 처음 4개 코드를 한 지표에 묶었다가 존재하지 않는 `..2500000000%` 때문에 400을 받았고, 그래서 지표를 둘로 갈랐다'
+  - name: 일본 서비스물가 SPPI (전년비)
+    tier: 2
+    method: api
+    source: boj_api
+    db: PR02
+    codes: ["PRCS20_5200000000%"]
+    labels: ["기업향 서비스가격 SPPI"]
+    freq: M
+    points: 6
+    note: '2026-08-26 신설 — BOJ 공식 API(PR02, 기업향서비스가격지수). **재화 물가(PPI)가 꺾여도 서비스 물가가 안 꺾이면 그게 임금발 인플레**다. 일본에서 2% 정착 여부를 가르는 계열이라 PPI와 짝으로 본다. 실측 2026-07 **+3.6%**'
+  - name: 일본 기업 물가전망 (단칸, 1·3·5년 후)
+    tier: 1
+    method: api
+    source: boj_api
+    db: CO
+    codes: ["TK99F0000204HCQ01000", "TK99F0000205HCQ01000", "TK99F0000206HCQ01000"]
+    labels: ["1년 후(%)", "3년 후(%)", "5년 후(%)"]
+    freq: Q
+    points: 5
+    note: '2026-08-26 신설 — 단칸 「기업의 물가 전망」 대기업 전산업 평균(2014Q1~). **기대인플레이션을 가계 설문이 아니라 가격을 매기는 주체에게 물은 값**이라 앵커링 판정에 직접 쓴다. 실측 2026Q2 1년 후 **2.3%**. ⚠ 분기 계열이라 반응이 느리다 — 주간 트리거로 쓰지 말고 **레짐 배경 조건**으로 쓴다. ⚠ 대조 렌즈: 한국 기대인플레이션은 후향적이고 금리 인상으로 낮아지지 않았다 — 일본은 후향성이 더 강한 표본이라 "전망이 올라간다 = 앵커가 풀린다"로 바로 읽지 말 것'
+  - name: 영국 CPI
+    tier: 2
+    method: api
+    source: dbnomics
+    db_series: OECD/DSD_PRICES@DF_PRICES_ALL/GBR.M.N.CPI.PA._T.N.GY
+    db_labels: ["영국 CPI YoY(%)"]
+    max_age_days: 150   # OECD 물가 데이터셋은 3~4개월 지연이 정상 — 기본 임계로는 상시 오탐
+    note: 확인 완료(2026-08-26, 최신 2026-04 3.0%) — FRED GBRCPIALLMINMEI는 OECD MEI 폐지로
+      2025-03에서 정지(1년 5개월). OECD 신규 물가 데이터셋(DSD_PRICES) 원천으로 교체.
+      이미 전년비(%) 형태라 지수 변환이 필요 없다
+  - name: 중국 CPI
+    vault_node: CPI (소비자물가지수)
+    tier: 2
+    method: api
+    source: dbnomics
+    db_series: OECD/DSD_PRICES@DF_PRICES_ALL/CHN.M.N.CPI.PA._T.N.GY
+    db_labels: ["중국 CPI YoY(%)"]
+    max_age_days: 150   # 같은 OECD 데이터셋 — 지연이 구조적이다
+    note: 확인 완료(2026-08-26, 최신 2026-05 1.2%) — 3단계로 옮겨왔다.
+      FRED CHNCPIALLMINMEI(2025-04 정지) → NBS 미러(2026-02, 6개월 지연) → OECD DSD_PRICES(2026-05).
+      NBS 미러는 CPI뿐 아니라 PMI(2026-02)·소매판매(2025-12)·산업생산(2025-12)까지 계열 전반이
+      무너져 있어 쓰지 않는다. NBS 공식 API는 WAF 403으로 우회 불가.
+      ⚠ 이 계열은 전년비(%) 직접 제공 — 이전 NBS 계열처럼 100을 빼면 안 된다.
+      ⚠ 여전히 3개월 지연이므로 속보 판단용이 아니다. 중국 당월 신호는 관세청(GACC) 무역통계와
+      한국 대중 수출로 볼 것
+  - name: 중국 PPI (전체·생산자재·소비재)
+    tier: 1
+    method: api
+    source: dbnomics
+    db_series: ["NBS/M_A010801/A01080101", "NBS/M_A010802/A01080201", "NBS/M_A010803/A01080301"]
+    db_labels: ["PPI 전체", "생산자재(生産資料)", "소비재(生活資料)"]
+    note: '2026-08-26 신설 — **볼트 규칙 「중국의 디플레 수출은 소비재 PPI로 판정한다」를 자동화한 자리.** 전체 PPI만 보면 원자재 가격 변동에 끌려다녀 수출 디플레 압력이 가려진다. 실측 2026-02 전체 **99.1** · 생산자재 **99.3** · 소비재 **98.4**(전년동월=100 → 각각 −0.9% / −0.7% / −1.6%). **소비재가 가장 깊게 마이너스** = 대외로 나가는 가격 압력이 아직 살아 있다. ⚠ 지수라 100을 빼야 전년비(%)다. ⚠ 41개월 연속 하락은 2026-03에 종료됐다 — "몇 개월째 하락" 표현을 쓰기 전에 최신 부호를 확인할 것. ⚠⚠ **NBS 미러는 2026-08-26 기준 2026-02까지다(약 6개월 지연).** NBS 공식 API(data.stats.gov.cn)는 WAF 403으로 막혀 우회 경로가 없다. **속보 판단에 쓰지 말고 구조·추세 확인용으로만** 쓸 것 — 중국에서 당월에 가까운 자동 계열은 관세청(GACC) 무역통계뿐이다.'
+  # ── 신흥국 핵심국 CPI·정책금리 (미검증. 러시아·중동·중앙아시아·남미·아프리카) ──
+  - name: 브라질 CPI (연간)
+    tier: 2
+    method: api
+    source: worldbank
+    country_iso3: BRA
+    indicator_code: FP.CPI.TOTL.ZG
+    note: FRED(OECD MEI)는 2025-04에서 갱신 중단 — World Bank 연간으로 전환
+  - name: 브라질 Selic 정책금리
+    tier: 2
+    method: api
+    source: bcb
+    sgs: 432
+    note: 확인 완료(2026-07-18) — BCB SGS 432(Selic 목표금리), 일별
+  - name: 멕시코 CPI (연간)
+    tier: 2
+    method: api
+    source: worldbank
+    country_iso3: MEX
+    indicator_code: FP.CPI.TOTL.ZG
+    note: FRED(OECD MEI)는 2024-07에서 갱신 중단 — World Bank 연간으로 전환
+  - name: 멕시코 Banxico 정책금리
+    tier: 2
+    method: api
+    source: fred
+    series_id: IRSTCI01MXM156N   # 확인 완료(2026-07-18, 최신 2026-06)
+  - name: 남아공 CPI (연간)
+    tier: 2
+    method: api
+    source: worldbank
+    country_iso3: ZAF
+    indicator_code: FP.CPI.TOTL.ZG
+    note: FRED(OECD MEI) 갱신 중단 — World Bank 연간으로 전환
+  - name: 남아공 SARB 정책금리
+    tier: 2
+    method: news
+    news_queries: ["South Africa SARB repo rate decision"]
+    note: 자동 헤드라인(2026-07-20, Google News) — FRED(OECD MEI) 2023-12 갱신 중단. resbank.co.za는 봇차단(TSPD 챌린지) 확인(2026-07-20)으로 직접 스크레이프 불가, 헤드라인으로 대체
+  - name: 러시아 CPI (연간)
+    tier: 2
+    method: api
+    source: worldbank
+    country_iso3: RUS
+    indicator_code: FP.CPI.TOTL.ZG
+    note: FRED는 2022-03에서 중단(제재) — World Bank 연간으로 전환
+  - name: 러시아 중앙은행 기준금리
+    tier: 2
+    method: api
+    source: cbr
+    note: 확인 완료(2026-07-19, 14.25%) — CBR DailyInfo SOAP(KeyRate) 자동. 제재로 FRED/OECD 단종된 항목 대체. 큰 이벤트 시 cbr.ru 교차 확인
+  # World Bank CPI(연간, 확인 완료) — 정책금리는 World Bank도 못 줌(연간 실질금리뿐) → 계속 수동
+  - name: 사우디아라비아 CPI (연간)
+    tier: 2
+    method: api
+    source: worldbank
+    country_iso3: SAU
+    indicator_code: FP.CPI.TOTL.ZG
+    note: 확인 완료 — World Bank, 연간
+  - name: UAE CPI (연간)
+    tier: 2
+    method: api
+    source: worldbank
+    country_iso3: ARE
+    indicator_code: FP.CPI.TOTL.ZG
+    note: 확인 완료 — World Bank, 연간
+  - name: 사우디·UAE 정책금리
+    tier: 2
+    method: news
+    news_queries: ["Saudi SAMA OR UAE central bank interest rate"]
+    note: 자동 헤드라인(2026-07-20, Google News) — 자국통화 달러 페그제라 정책금리가 사실상 Fed 추종. World Bank에도 정책금리 없어 헤드라인으로 대체
+  - name: 튀르키예 CPI (연간)
+    tier: 1
+    method: api
+    source: worldbank
+    country_iso3: TUR
+    indicator_code: FP.CPI.TOTL.ZG
+    note: 확인 완료 — World Bank, 연간. 고인플레 핵심국이라 tier1이나, 연간 데이터라 주간 변동 추적엔 한계 — 월간 수치는 TCMB 직접 참조 권장
+  - name: 튀르키예 정책금리
+    tier: 1
+    method: news
+    news_queries: ["Turkey TCMB policy rate decision", "튀르키예 기준금리"]
+    note: >-
+      자동 헤드라인(2026-07-20, 네이버+Google News) — TCMB 공식 EVDS API는 무료지만 별도 키 발급·회원가입 필요(evds2.tcmb.gov.tr).
+      키 없이는 헤드라인이 최선. 변동성 크므로 매주 원문 대조 확인 권장. (필요 시 EVDS_API_KEY 발급받아 알려주면 API 연동으로 업그레이드 가능)
+  - name: 카자흐스탄 CPI (연간)
+    tier: 2
+    method: api
+    source: worldbank
+    country_iso3: KAZ
+    indicator_code: FP.CPI.TOTL.ZG
+    note: 확인 완료 — World Bank, 연간
+  - name: 카자흐스탄 정책금리
+    tier: 2
+    method: news
+    news_queries: ["Kazakhstan National Bank base rate decision"]
+    note: 자동 헤드라인(2026-07-20, Google News) — World Bank엔 정책금리 없어 헤드라인으로 대체. nationalbank.kz 직접 스크레이프는 미검증
+  - name: 나이지리아 CPI (연간)
+    tier: 2
+    method: api
+    source: worldbank
+    country_iso3: NGA
+    indicator_code: FP.CPI.TOTL.ZG
+    note: 확인 완료 — World Bank, 연간. 고인플레 상시 확인 필요
+  - name: 나이지리아 정책금리
+    tier: 2
+    method: news
+    news_queries: ["Nigeria CBN MPC interest rate decision"]
+    note: 자동 헤드라인(2026-07-20, Google News) — World Bank엔 정책금리 없어 헤드라인으로 대체. CBN 직접 스크레이프는 미검증
+  - name: 한국은행 기준금리
+    tier: 1
+    method: api
+    source: ecos
+    stat_code: 722Y001
+    item_code: "0101000"   # 확인 완료
+  - name: ECOS 100대 통계지표 — 시장금리
+    vault_node: 기준금리
+    tier: 1
+    method: api
+    source: ecos_keystat
+    class_filter: 시장금리
+    note: '한국은행이 직접 선정한 101개 대표지표 중 시장금리 분류. 개별 stat_code 없이 한 번의 호출로 받는다(2026-08-05 추가)'
+  - name: ECOS 100대 통계지표 — 물가
+    vault_node: CPI (소비자물가지수)
+    tier: 1
+    method: api
+    source: ecos_keystat
+    class_filter: ['소비자/생산자 물가', '수출입 물가']
+    note: 'ECOS 100대 지표 중 물가 분류'
+  - name: ECOS 100대 통계지표 — 실물·고용
+    tier: 2
+    method: api
+    source: ecos_keystat
+    class_filter: ['성장률', '생산', '소비', '투자', '고용', '경기순환지표']
+    note: 'ECOS 100대 지표 중 실물경기 분류'
+  - name: ECOS 100대 통계지표 — 대외
+    tier: 2
+    method: api
+    source: ecos_keystat
+    class_filter: ['환율', '국제수지', '통관수출입', '대외채권/채무']
+    note: 'ECOS 100대 지표 중 대외거래 분류'
+  - name: ECOS 100대 통계지표 — 통화·금융
+    tier: 2
+    method: api
+    source: ecos_keystat
+    class_filter: ['통화량', '예금/대출금', '여수신금리', '주식', '채권']
+    note: 'ECOS 100대 지표 중 통화·금융 분류'
+  - name: ECOS 100대 통계지표 — 부동산·심리·가계
+    tier: 2
+    method: api
+    source: ecos_keystat
+    class_filter: ['부동산 가격', '심리지표', '가계']
+    note: 'ECOS 100대 지표 중 부동산·심리 분류. [[주택가격]]·[[CSI (소비자심리지수)]] 노트의 한국 계열 출처'
+  - name: 금통위 의사록 스탠스
+    vault_node: 통화정책
+    tier: 1
+    method: news
+    news_queries: ["한국은행 금통위 의사록", "Bank of Korea monetary policy board minutes"]
+    note: 자동 헤드라인(2026-07-20, 네이버+Google News) — 스탠스(매파/비둘기파) 해석은 사람 몫, 헤드라인만 자동 수집
+  - name: 국고채 3Y / 10Y
+    vault_node: 장단기 금리차
+    tier: 1
+    method: api
+    source: ecos
+    stat_code: 817Y002
+    item_code: ["010200000", "010210000"]   # 확인 완료
+  - name: 국고채 커브 2·3·5·10·20·30Y (토스증권, 장중)
+    vault_node: 장단기 금리차
+    tier: 1
+    method: api
+    source: tossinvest
+    mode: bonds
+    history: [KR_BOND_3Y, KR_BOND_10Y]
+    points: 5
+    note: '2026-08-19 신설. **1차 점검에서 "토스에 국채는 없다"고 적었던 것을 정정한다** — 심볼 이름(KTB·GOVT3Y)을 잘못 짚었을 뿐, `KR_BOND_{2Y,3Y,5Y,10Y,20Y,30Y}` 6개 만기가 실재한다. 왜 필요한가 — 바로 위 ECOS 817Y002는 **하루 늦다.** 8/27 금통위처럼 날짜가 박힌 판정에서 그 하루가 곧 오판이다. 이건 장중 값이고 **커브 전 구간(2~30Y)을 한 번에** 준다. ⚠ **볼트의 커브 규칙(P3)은 국고3Y − CD91인데 토스는 CD91을 주지 않는다.** 즉 이 지표는 3Y 다리만 앞당기는 **부분 교차검증**이지 P3 판정 입력의 대체가 아니다 — CD91은 계속 ECOS에서 온다. **ECOS와 실측 대조(2026-08-11~18, 5영업일)**: 3Y·10Y 모두 차이 **0.0~0.8bp**로 사실상 같은 값이다(중앙값 +0.1bp). 즉 장중 값을 전일 확정치처럼 써도 수준 오차는 무시할 만하다. ⚠ 그래도 **공식 인용·장기 시계열은 ECOS 기준**을 쓴다 — 토스는 이력이 2020년까지뿐이고 민평 기준·시각이 다르다. 어긋나는 날이 나오면 어느 쪽이 맞다고 단정하지 말고 둘 다 기록할 것. ⚠ 현재가 응답의 timestamp가 국채에서는 null이라 **기준일이 "-"로 남는다**(일봉 종가 쪽은 날짜가 있다)'
+  - name: CD 91일 · 통안증권 1년
+    vault_node: 장단기 금리차
+    tier: 1
+    method: api
+    source: ecos
+    stat_code: 817Y002
+    item_code: ["010502000", "010400001"]   # 확인 완료(2026-08-18) — CD(91일)·통안증권(1년)
+    note: 볼트 「금통위 판정 절차」 5단계(시장 반영도는 만기 짧은 계열로만)와 「한국 커브 → 금통위 방향 판정」(국고3Y − CD91)이 요구하는 계열인데 수집기에 없어 수동으로 쓰고 있었다. 817Y002는 일별 전용 — 월 시계열은 721Y001(5020000·2010000·6010100)
+  - name: 한국 CPI
+    tier: 1
+    method: api
+    source: ecos
+    stat_code: 901Y009
+    item_code: "0"   # 확인 완료
+  - name: 한미 금리차
+    vault_node: 기준금리
+    tier: 1
+    method: derived
+    formula: DFEDTARU − 한국은행 기준금리
+  - name: 한미 시장금리차 (국고10Y − 미국채10Y)
+    vault_node: 원·달러 환율
+    tier: 1
+    method: derived
+    formula: ECOS 국고채(10년) − FRED DGS10 (둘 다 이미 수집 중)
+    note: 정책금리차와 달리 시장이 실제 반영한 금리차 — 외국인 채권자금 유출입 압력의 동인
+  # ── 에너지 (인플레 경로 교차검증) ──
+  - name: 유가 WTI
+    tier: 1
+    method: api
+    source: fred
+    series_id: DCOILWTICO
+  - name: 유가 Brent
+    tier: 2
+    method: api
+    source: fred
+    series_id: DCOILBRENTEU
+  - name: 천연가스 (Henry Hub)
+    tier: 2
+    method: api
+    source: fred
+    series_id: DHHNGSP
+
+# ═════════════════════ team_3 : 유동성·신용·심리 (Liquidity·Credit·Sentiment) ═════════════════════
+team_3:
+  - name: 미국 M2
+    tier: 1
+    method: api
+    source: fred
+    series_id: M2SL
+  - name: 한국 M2
+    tier: 2
+    method: api
+    source: ecos
+    stat_code: 161Y006
+    item_code: "BBHA00"   # 확인 완료
+  # ── 주요국 M2 (미검증 — OECD MEI 광의통화 계열, FRED 미러) ──
+  - name: 유로존 M3
+    tier: 2
+    method: api
+    source: dbnomics
+    db_series: ECB/BSI/M.U2.Y.V.M30.X.I.U2.2300.Z01.A
+    db_labels: ["유로존 M3 YoY(%)"]
+    note: 확인 완료(2026-07-18) — DBnomics·ECB BSI, 연간증가율(%)
+  - name: 유로존 기업대출 증가율
+    tier: 1
+    method: api
+    source: ecb
+    ecb_key: BSI/M.U2.Y.U.A20.A.I.U2.2240.Z01.A
+    ecb_labels: ["유로존 기업(NFC) 대출 YoY(%)"]
+    note: 확인 완료(2026-08-26, +4.1%) — M3가 통화량이면 이쪽은 신용경로. 괴리가 은행 대출태도를 드러낸다
+  - name: 유로시스템 총자산 (ECB 대차대조표)
+    tier: 2
+    method: api
+    source: ecb
+    ecb_key: ILM/W.U2.C.T000000.Z5.Z01
+    ecb_labels: ["유로시스템 총자산(€mn)"]
+    note: 확인 완료(2026-08-26, 주간) — Fed 대차대조표(WALCL)의 유로존 대응 항목
+  - name: 일본 M2·M3 (전년비)
+    tier: 2
+    method: api
+    source: boj_api
+    db: MD02
+    codes: ["MAM1NAM2M2MO", "MAM1NAM3M3MO"]
+    labels: ["일본 M2", "일본 M3"]
+    freq: M
+    points: 6
+    yoy: true
+    note: '확인 완료(2026-08-26) — **HTML 스크레이프 → BOJ 공식 API로 교체**(페이지 구조가 바뀌면 죽던 자리). 실측 2026-07 M2 **+2.16%** · M3 **+1.37%**. ⚠ **BOJ가 마네스톡 전년비 계열을 공표하지 않아 레벨에서 계산한 값**이다 — 공표치와 반올림 차이가 날 수 있다'
+  - name: 일본 마네터리베이스 (전년비)
+    tier: 2
+    method: api
+    source: boj_api
+    db: MD01
+    codes: ["MABS1AN11@"]
+    labels: ["마네터리베이스"]
+    freq: M
+    points: 6
+    note: '2026-08-26 신설 — BOJ 공식 API(MD01), 공표 전년비 원본. 실측 2026-07 **−13.8%**. **마네스톡(+2%대)과 부호가 반대**라는 점이 이 계열의 쓸모다: 본원통화는 QT로 줄어드는데 광의통화는 늘고 있다 = 축소가 아직 신용 창출을 끊지 못했다. 둘을 따로 보면 정반대 결론이 나온다'
+  - name: BOJ 대차대조표 (총자산·보유국채·당좌예금)
+    tier: 2
+    method: api
+    source: boj_api
+    db: BS01
+    codes: ["MABJMTA", "MABJMA5B", "MABJML11"]
+    labels: ["총자산(조엔)", "보유 국채(조엔)", "당좌예금(조엔)"]
+    freq: M
+    points: 6
+    scale: 0.0001
+    note: '2026-08-26 신설 — BOJ 공식 API(BS01, 원단위 억엔 → 조엔 환산). 실측 2026-07 총자산 **644.3조엔** · 보유국채 **519.4조엔** · 당좌예금 **438.0조엔**. 미국 순유동성(WALCL−RRP−TGA)의 일본판 재료 — JGB 커브와 함께 보면 **BOJ가 실제로 뺀 양**을 잰다. ⚠ 월말 잔액이라 오퍼레이션 타이밍에 흔들린다'
+  - name: 일본 은행 대출 증감률
+    tier: 2
+    method: api
+    source: boj_api
+    db: MD13
+    codes: ["FAAPOBAL1@"]
+    labels: ["대출·할인어음(주요·지방은행) 증감률(%)"]
+    freq: M
+    points: 6
+    note: '2026-08-26 신설 — BOJ 공식 API(MD13), 공표 증감률 원본. 실측 2026-07 **+5.9%**. 신용의 **가격**(스프레드)이 아니라 **양**을 보는 자리라 BIS credit-to-GDP gap과 같은 축이다. ⚠ 특수요인 조정 전 계열이다(조정 계열 FAAPOBAL4는 공표가 한 달 늦다)'
+  - name: 영국 M4
+    tier: 2
+    method: news
+    news_queries: ["UK M4 money supply Bank of England"]
+    note: 자동 헤드라인(2026-07-20, Google News) — BOE IADB CSV 엔드포인트 봇차단(2026-07-18 확인), DBnomics BOE에도 M4 없음. M4는 뉴스 커버리지가 적어 실패 시 원문 직접 확인 필요
+  - name: 중국 M2
+    tier: 2
+    method: api
+    source: dbnomics
+    db_series: ["NBS/M_A0D01/A0D0102", "NBS/M_A0D01/A0D0104"]
+    db_labels: ["중국 M2 YoY(%)", "중국 M1 YoY(%)"]
+    note: '확인 완료(2026-07-18) · **2026-08-26 M1 추가**. **M1과 M2를 같이 봐야 한다**: M2−M1 격차가 벌어지면 돈이 예금에 묶여 실물로 안 도는 것(중국식 유동성 함정 신호)이고, M1이 M2를 따라 붙으면 기업 거래성 자금이 살아나는 것이다. 실측 2026-02 M2 **+9.0%** · M1 **+5.9%** → 격차 3.1%p. 3팀 중국 신용임펄스와 함께 해석. ⚠⚠ **NBS 미러는 2026-08-26 기준 2026-02까지다(약 6개월 지연).** NBS 공식 API(data.stats.gov.cn)는 WAF 403으로 막혀 우회 경로가 없다. **속보 판단에 쓰지 말고 구조·추세 확인용으로만** 쓸 것 — 중국에서 당월에 가까운 자동 계열은 관세청(GACC) 무역통계뿐이다.'
+  - name: 영국 파운드/달러
+    tier: 2
+    method: api
+    source: fred
+    series_id: DEXUSUK   # 미검증. 아래 글로벌 M2 합산 계산에 사용
+  - name: 미국 M2 증가율 (YoY)
+    tier: 2
+    method: api
+    source: fred
+    series_id: M2SL
+    units: pc1
+    note: 글로벌 M2 대시보드 구성요소 — FRED units=pc1(전년동기비 %)
+  - name: 글로벌 M2 증가율 대시보드 (미·유로존·일·중 YoY%)
+    tier: 2
+    method: derived
+    formula: 각국 M2/M3 전년비 증가율 취합 — 레벨 USD 합산은 단위·환율 리스크로 하지 않음(환각 차단 원칙). 영국 M4는 소스 부재로 제외
+      "M2SL + EUR×DEXUSEU + JPY÷DEXJPUS + CNY÷DEXCHUS + GBP×DEXUSUK"로
+      구현할 것. 그 전까지는 각국 M2를 팀이 개별로 보고 사람이 판단.
+  - name: Fed 대차대조표 총자산
+    vault_node: 글로벌 유동성
+    tier: 1
+    method: api
+    source: fred
+    series_id: WALCL
+  - name: RRP 잔고
+    vault_node: 글로벌 유동성
+    tier: 2
+    method: api
+    source: fred
+    series_id: RRPONTSYD
+  - name: TGA 잔고 (주간, FRED)
+    vault_node: 글로벌 유동성
+    tier: 2
+    method: api
+    source: fred
+    series_id: WTREGEN
+  - name: 은행 지준
+    tier: 2
+    method: api
+    source: fred
+    series_id: WRESBAL
+    vault_node: 글로벌 유동성
+  - name: 연준 레포 (SRF 사용량, 준비금 희소화 수량 신호)
+    tier: 1
+    method: api
+    source: fred
+    series_id: RPONTSYD
+    vault_node: 글로벌 유동성
+    note: 'RRPONTSYD(역레포)의 반대편 — 연준이 시장에 유동성을 공급하는 쪽. 일별 $bn, 2026-08-15 신설. T14(SOFR−IORB)가 가격이라면 이쪽이 수량이다. 준비금이 충분하면 0 근처에 머물고, 희소해지면 상시레포(SRF)로 자금을 빌리기 시작한다. 근거 제텔 = 준비금이 희소해지면 대출오퍼레이션이 정책금리 통제의 주력이 된다 · 정책금리 통제력은 지준 수급 구조에 조건부다. ⚠ 분기말·월말 스파이크는 정상 — 지속성을 본다'
+  - name: 재할인창구 1차신용 (연준 대출)
+    tier: 2
+    method: api
+    source: fred
+    series_id: WLCFLPCL
+    vault_node: 글로벌 유동성
+    note: 'H.4.1 주간 $mn. 2026-08-15 신설. 근거 제텔 = 재할인창구 사용량 급증은 더 이상 은행 위기 신호가 아니다 — 낙인효과가 줄어 이제는 위기 신호가 아니라 준비금 희소화 신호로 읽는다. ⚠ FRED DISCBORR은 2020-08에 갱신이 끊긴 사문화 계열이므로 쓰지 말 것(2026-08-15 확인)'
+  - name: 1차 딜러 국채 레포 (중개기관 수량 신호)
+    tier: 1
+    method: api
+    source: nyfed_pd
+    keyid: ["PDSORA-UTSETTOT", "PDSIRRA-UTSETTOT"]
+    labels:
+      PDSORA-UTSETTOT: 딜러 레포 = 자금조달 잔액 ($bn, 국채 ex-TIPS)
+      PDSIRRA-UTSETTOT: 딜러 역레포 = 자금공여 잔액 ($bn, 국채 ex-TIPS)
+    vault_node: 글로벌 유동성
+    note: 'NY Fed 1차 딜러 통계. 2026-08-15 신설. **수량 지표** — EBP·HY OAS·SOFR−IORB가 전부 가격이라 중개기관 대차대조표의 팽창·수축을 못 본다. Adrian & Shin(2010): 딜러 레포 변화가 VIX 혁신을 예측한다 → 가격 지표보다 이를 수 있다. 근거 제텔 = 금융가속기는 차입자 쪽과 대출자 쪽 두 개다(RegimeView 8차 개정의 숙제). ⚠ 주간 + 공표 약 2주 시차 → 일별 트리거 불가. ⚠ 총잔액이지 레버리지가 아니다 — 자기자본 대비가 아니라 수준·변화를 본다'
+  - name: 연준 SOMA 국채 만기분포 (WAM)
+    tier: 2
+    method: api
+    source: nyfed_soma
+    vault_node: 글로벌 유동성
+    note: 'NY Fed SOMA CUSIP 단위 보유내역을 잔존만기로 버킷팅. 2026-08-15 신설. 시장이 소화할 듀레이션 = (재무부 발행 구성) − (연준 보유 구성)이며 RegimeView 8차 개정이 연준 쪽을 비워뒀다. 근거 = QE 효과는 사는 동안이 아니라 들고 있는 동안 지속된다 — 스톡이 플로우를 압도한다(D''Amico & King 2013, 효과는 10~15년 구간 최대). ⚠ parValue는 **액면**이다 — 시가도 수정듀레이션도 아니다. WAM은 쿠폰·볼록성을 반영하지 않는 단순 가중평균 잔존만기다. ⚠ TIPS·FRN이 섞여 있고 인플레보상은 빠진다'
+  - name: 연준 보유 국채 구성 (Bills vs Notes·Bonds)
+    tier: 2
+    method: api
+    source: fred
+    series_id: ['WSHOBL', 'WSHONBNL', 'WSHONBIIL']
+    vault_node: 글로벌 유동성
+    note: '주간 $mn. 2026-08-15 신설. RegimeView 8차 개정이 남긴 숙제 — 시장이 소화할 듀레이션 = (재무부 발행 구성) − (연준 보유 구성). ⚠ 이것은 만기별 분포가 아니라 상품별 구성이다(Bills=단기, Notes·Bonds=중장기 대용). 정확한 만기 버킷은 NY Fed SOMA API가 필요하며 아직 미편입. 근거 = QE 효과는 사는 동안이 아니라 들고 있는 동안 지속된다 — 스톡이 플로우를 압도한다'
+  - name: 순유동성 (Fed B/S − RRP − TGA)
+    tier: 1
+    method: derived
+    formula: WALCL − RRPONTSYD − TGA
+  - name: SOFR
+    vault_node: 글로벌 유동성
+    tier: 2
+    method: api
+    source: fred
+    series_id: SOFR
+  - name: IORB (SOFR-IORB 스프레드 파생)
+    tier: 2
+    method: api
+    source: fred
+    series_id: IORB
+    note: 레포 스트레스 = SOFR−IORB 스프레드. 파생 슬롯은 아래 별도 항목
+  - name: SOFR−IORB 스프레드 (레포 스트레스 판정)
+    vault_node: 글로벌 유동성
+    tier: 1
+    method: derived
+    formula: SOFR − IORB (둘 다 이미 수집 중)
+    note: 'T14 트리거 계열. 발동 = 0 이상 5영업일 연속, 경보 = 5일 이동평균 −0.01 이상. 2026-08-12 현재 −0.03. ⚠ 월말·분기말 ±2영업일과 FOMC 당일은 판정에서 제외 — 기술적 스파이크가 정상이고, 부호가 아니라 지속성을 본다. 2026-08-15 tier 2→1 승격: RRP 완충 소진(0.45bn)·지준 7월 고점 대비 −198.7B로 준비금 희소화 국면 진입. 근거 제텔 = 정책금리 통제력은 지준 수급 구조에 조건부다 · 준비금이 희소해지면 대출오퍼레이션이 정책금리 통제의 주력이 된다. 종전에는 derived.py extra_derived()에 하드코딩돼 있어 tier 조정이 불가능했다(CLAUDE.md 5조)'
+  - name: 연방기금시장 거래량 (EFFR·OBFR)
+    vault_node: 글로벌 유동성
+    tier: 2
+    method: api
+    source: fred
+    series_id: [EFFRVOL, OBFRVOL, EFFR]
+    note: '2026-08-18 신설(제텔 큐 D-7). 근거 제텔 = IOER이 연방기금시장의 참가자 구조를 뒤집었다 — FHLB가 공급의 78%. 큐가 요구한 **참가자 구성은 공개 시계열이 없다**(FR 2420 개별보고는 비공개) → 수량 계열로 대체. ⚠ **거래량은 스트레스 신호가 아니다** — 2019-09 레포 발작 때 거래량은 66$bn(현재 113$bn보다 훨씬 작음)이었고 신호는 EFFR−IORB **+7bp** 쪽에 있었다. 수준 상관도 레짐마다 뒤집힌다(지준과의 상관 전 표본 +0.33 vs 2021~ −0.63). 판정은 아래 스프레드로 한다'
+  - name: EFFR−IORB 스프레드 (무담보 시장 압력)
+    vault_node: 글로벌 유동성
+    tier: 2
+    method: derived
+    formula: EFFR − IORB (둘 다 이미 수집 중)
+    note: 'T14(SOFR−IORB)의 무담보 짝. 2026-08-18 신설. 임계 후보 **≥ +3bp** — 2019-06~10 준비금 희소화 국면의 실측치(+3 ~ +7bp)에서 잡았다. 2026-07 현재 **−2bp**(2016~ 백분위 75%)로 아직 멀다. ⚠ EFFR 계열은 월평균 반올림이 1bp 단위라 일별 미세변화를 못 본다'
+  - name: 일본 국채 (JGB 2Y·10Y·30Y)
+    vault_node: 장단기 금리차
+    tier: 1
+    method: api
+    source: mof_jgb
+    maturities: ["2Y", "10Y", "30Y"]
+    note: '2026-08-18 신설 — 볼트에 **일본 국채 슬롯이 0개**였다. 일본 재무성 공개 CSV(당월분, 1Y~40Y). 엔·BOJ 정책을 읽을 때 "시장이 이미 반영했는가"를 재는 계열. 실측 2026-08-17 기준 10Y 2.919 · 30Y 4.05'
+  - name: 미 국채 입찰 결과 (10Y·30Y 낙찰금리·응찰배수)
+    vault_node: 재정정책
+    tier: 1
+    method: api
+    source: treasury_auctions
+    terms: ["10-year", "30-year"]
+    note: '2026-08-18 신설 — TreasuryDirect 공개 API(키 불필요). **장기물 수요의 직접 관측치**. 시황이 흔히 쓰는 "30년 입찰금리가 몇 년 만에 최고" 류 주장을 검증하는 계열. 실측 2026-08-13 30년 낙찰 5.216% · 응찰배수 2.39. ⚠ Bill은 할인율 필드라 성격이 다르다'
+  - name: 장중 지수 스냅샷 (코스피·코스닥·S&P500)
+    tier: 2
+    method: scrape
+    source: yahoo_intraday
+    symbol: ['^KS11', '^KQ11', '^GSPC']
+    note: '2026-08-18 신설 — 볼트가 **일별 종가 배치뿐**이라 장중 상태를 못 봤다. ⚠ **실행 시점 스냅샷이며 소급 수집 불가** — daily 배치와 같은 성격이다. 장 마감 후 실행하면 종가와 같아진다'
+  - name: HY 스프레드 (OAS)
+    tier: 1
+    method: api
+    source: fred
+    series_id: BAMLH0A0HYM2
+    note: 'ICE BofA 라이선스로 FRED API는 약 3년 롤링만 제공(2023-08~). 장기 백테스트는 BAA10Y 사용'
+  - name: IG 스프레드 (OAS)
+    tier: 2
+    method: api
+    source: fred
+    series_id: BAMLC0A0CM
+    note: 'ICE BofA 라이선스로 FRED API는 약 3년 롤링만 제공(2023-08~)'
+  - name: 신용스프레드 장기 대용 (Moody's Baa−10Y)
+    tier: 2
+    method: api
+    source: fred
+    series_id: ['BAA10Y', 'AAA10Y']
+    note: '1986년~ 일별. ICE OAS가 3년치뿐이라 장기 회귀·백테스트는 이 계열로. ⚠ Gilchrist-Zakrajšek(2012) 표2: 12개월 시계에서 Baa−Aaa는 비유의(고용 t=1.15, 산업생산 t=0.05)이고 부호마저 반전된다. 1년 시계 판정에 쓰지 말 것 — EBP를 볼 것. 2026-08-12 tier 1→2 강등'
+  - name: 초과채권프리미엄 EBP (GZ 스프레드 분해)
+    vault_node: 신용스프레드
+    tier: 1
+    method: api
+    source: spreadsheet
+    dataset: ebp
+    column: ebp
+    note: 'Gilchrist-Zakrajšek(2012) 초과채권프리미엄. 연준 월간 갱신, 1973-01~. 신용스프레드에서 Merton distance-to-default로 설명되는 기대부도 성분을 뺀 잔차 = 금융중개기관의 실효 위험부담능력. 실물경제 예측력의 대부분이 이 잔차에 있다(12개월 시계 고용 t=14.5, 실업률 t=91.6). EBP +100bp → 향후 4분기 실질GDP −1.5%p 이상. 레짐 트리거 T5′ 임계 = 평균+1σ ≈ +0.60 (전표본 평균 0.065 · 표준편차 0.531). ⚠ GZ는 전부 표본 내 적합도이며 원논문 표본이 2010-09에 끝난다'
+  - name: BIS credit-to-GDP gap (총신용·비은행 포함)
+    tier: 1
+    method: api
+    source: bis_credit_gap
+    countries: [US, KR, CN, JP]
+    dtype: C
+    points: 4
+    vault_node: 신용사이클
+    note: '신용의 **양** 축. 기존 EBP·HY OAS·신용스프레드는 전부 신용의 **가격**이고 "지금 실물이 꺾이나"(3~12개월)만 답한다. Jordà-Schularick-Taylor(2013): 확장기 신용집약도가 높을수록 그 뒤 침체가 깊고 회복이 느리다 — 침체 깊이는 확장기에 이미 상당 부분 결정된다. 이 지표가 그 **심각도** 축을 채운다. RegimeView 6차 개정이 "볼트에 지표 없음"으로 남긴 구멍. ⚠ 분기 데이터이고 BIS 갱신이 2~3분기 지연 — 주간 트리거 불가. 단측 HP필터(λ=400,000) 기반이라 표본 끝단이 불안정하다(BIS 자신이 경고). 추세는 통계적 산물이지 균형 수준이 아니므로 "gap<0이니 안전"으로 읽지 말 것. 총신용 기준이라 은행 신용만 보는 지표와 섞지 말 것 — IMF WP/25/96은 긴축 시 신용이 비은행으로 +4.6% 이동한다고 보인다. 2025-Q4 기준 US −11.5 · KR −8.0 · CN −7.7 · JP +6.8'
+  - name: 연구기관 발간 피드 (승격 큐)
+    tier: 2
+    method: scrape
+    source: research_feed
+    feeds: [bis_speeches, nber_new, fed_press, liberty_street, csis]
+    points: 5
+    vault_node: Library MOC
+    note: "2026-08-19 신설. 볼트가 승격하는 1차 문헌은 대부분 나온 뒤에 발견된다 — 발간 시점에 잡기 위한 큐. 전수 점검 결과 **BIS 총재연설·NBER 신규WP·연준 보도자료·NY Fed Liberty Street는 RSS로, CSIS는 HTML 스크랩으로** 된다(CSIS는 rss.xml 최신 항목이 2016-03이라 죽었다). PIIE·IMF·Brookings는 404/403. ⚠ **제목·날짜만 온다. 본문은 별도 판독** — 읽지 않은 문서를 승격하지 않는다는 규약은 그대로다. ⚠ **피드는 큐일 뿐 판정 근거가 아니다.** ⚠ HTML 스크랩은 사이트 개편에 깨진다"
+  - name: 연구기관 피드 — 한국·반도체·관세 필터
+    tier: 1
+    method: scrape
+    source: research_feed
+    feeds: [bis_speeches, nber_new, fed_press, liberty_street, csis, geopolitics]
+    keywords: [korea, semiconductor, tariff, chip, memory, export control]
+    points: 5
+    vault_node: 지정학적 리스크
+    note: "같은 소스에 제목 키워드 필터를 건 것. 2026-08-19 첫 실행에서 바로 잡힌 것 — CSIS **한국 군사훈련·김정은·이란 긴급 에피소드**(Real Vision 2026-08-17이 지목한 그 사건) · Liberty Street **More Tariff Pass-Through Is in the Pipeline**(관세 전가가 아직 남았다는 반대 증거) · **Who Is Paying for the 2025 U.S. Tariffs?**. 키워드가 좁으면 BIS 연설·연준 보도자료는 대개 걸리지 않는다(정상)"
+  - name: 레포 거래액 (DVP·삼자간·GCF)
+    tier: 1
+    method: api
+    source: ofr_stfm
+    mnemonics: ["REPO-DVP_TV_TOT-P", "REPO-TRI_TV_TOT-P", "REPO-GCF_TV_TOT-P"]
+    scale: 1000000000
+    points: 1
+    vault_node: 비은행 레버리지 (NBFI)
+    note: 'OFR 단기자금시장 모니터, 일별. BIS AER 2023 Box D는 국채가 레포를 통해 **준화폐**가 된다고 했고(핵심 안전국채 헤어컷 0~2%), CFTC MRAC(2024)는 베이시스 거래의 세 다리 중 하나가 **레포 조달**이라고 했다. 그 시장 크기를 재는 자리(2026-08-19 신설). ⚠ **거래액이지 잔액이 아니다** — 회전율이 섞인다. ⚠ 세 시장은 참가자·담보 관행이 달라 **단순 합산 금지**. ⚠ **헤어컷 계열은 OFR 공개 API에 없다**(2026-08-19 전수 확인) — 담보 헤어컷은 여전히 관측 공백. 2026-08-17 실측: DVP $2,891bn · 삼자간 $2,382bn · GCF $247bn'
+  - name: 레포 평균금리 (DVP·삼자간)
+    tier: 2
+    method: api
+    source: ofr_stfm
+    mnemonics: ["REPO-DVP_AR_TOT-P", "REPO-TRI_AR_TOT-P"]
+    scale: 1
+    unit: '%'
+    points: 1
+    vault_node: 글로벌 유동성
+    note: '거래액과 함께 봐야 **수요가 는 것인지 가격이 오른 것인지** 갈린다. SOFR−IORB·EFFR−IORB 짝과 같은 층위. 2026-08-17 실측 둘 다 3.700%'
+  - name: 일본 국제수지 (경상·무역·서비스, 계절조정)
+    tier: 2
+    method: api
+    source: boj_api
+    db: BP01
+    codes: ["BPBP6JYACBX12", "BPBP6JYATBX12", "BPBP6JYASNX12"]
+    labels: ["경상수지(조엔, 계절조정)", "무역수지(조엔, 계절조정)", "서비스수지(조엔, 계절조정)"]
+    freq: M
+    points: 6
+    scale: 0.0001
+    note: '2026-08-26 신설 — BOJ 공식 API(BP01, 억엔 → 조엔). **계절조정 계열을 쓴다**: 원계열은 진폭이 커서 2026-06 경상수지가 원계열 **−0.09조엔** / 계절조정 **+1.40조엔**으로 부호까지 갈렸다(실측). 엔의 구조적 수급을 읽는 자리 — 경상흑자가 유지되는데 엔이 약하면 원인은 **경상이 아니라 자본유출**이고, 그 확인은 바로 아래 대외증권투자 계열이 한다'
+  - name: 일본 실효환율 (명목·실질)
+    tier: 2
+    method: api
+    source: boj_api
+    db: FM09
+    codes: ["FX180110001", "FX180110002"]
+    labels: ["명목실효환율(2020=100)", "실질실효환율(2020=100)"]
+    freq: M
+    points: 6
+    note: '2026-08-26 신설 — BOJ 공식 API(FM09). **달러/엔 한 쌍으로는 엔 약세의 크기를 못 잰다** — 달러가 강한 것인지 엔이 약한 것인지 갈리지 않기 때문이다. 실측 2026-07 명목 **67.6** · 실질 **65.0**(2020=100). 실질이 명목보다 낮다 = 물가차를 반영하면 구매력 약세가 더 크다. ⚠ 월차라 리스크오프 판정(T-트리거)에는 DEXJPUS 일별을 쓰고, 이 계열은 **수준 판단**에만 쓴다'
+  - name: 일본 대외증권투자 (거주자 순취득, 주간)
+    tier: 1
+    method: api
+    source: mof_portfolio
+    fields: [out_ltdebt, out_equity, out_total]
+    points: 2
+    vault_node: 일본 국채 (JGB)
+    note: 'MOF 주간(지정보고기관 기준), 단위 조엔. 볼트 [[일본 국채 (JGB)]] 노드가 관측 공백으로 적었던 자리(2026-08-19 신설). BIS AER 2025 Ch.II: 일본 투자자는 **FX 스왑으로 헤지해 해외채권을 사고, 목적지 통화 단기금리가 오르거나 커브가 평탄해지면 그 수요가 준다.** 이 계열이 그 수요를 주간으로 본다. ⚠ 지정보고기관 기준이라 전체 흐름이 아니다. ⚠ 순액이라 총액 변화(그로스)를 못 본다. 2026-08-02~08 실측: 중장기채 **+1.63조엔** · 주식 +0.96 · 합계 **+1.81조엔** (직전주 +0.63)'
+  - name: 일본 대내증권투자 (비거주자 순취득, 주간)
+    tier: 2
+    method: api
+    source: mof_portfolio
+    fields: [in_ltdebt, in_total]
+    points: 2
+    vault_node: 일본 국채 (JGB)
+    note: '같은 파일의 반대편. 대외와 함께 봐야 **일본이 자본을 내보내는가 받아들이는가**가 갈린다. 2026-08-02~08: 중장기채 −0.06조엔 · 합계 **−0.21조엔**'
+  - name: 한국 증권투자 (거주자 자산 / 비거주자 부채, 월)
+    tier: 1
+    method: api
+    source: ecos
+    stat_code: 301Y013
+    item_code: [BOPF21000000, BOPF22000000]
+    vault_node: 원·달러 환율
+    note: 'ECOS 국제수지 월별. **거주자 흐름을 못 본다**는 볼트의 관측 공백을 메운다(2026-08-19 신설). OECD WP 2021/05(De Crescenzio & Lepers)는 극단 자본흐름을 **비거주자(surge/stop)와 거주자(flight/retrenchment) 넷으로** 나누는데, 볼트는 지금까지 외국인 순매수(비거주자)만 봤다. **위기 국면에 거주자가 해외자산을 회수(retrenchment)하면 유출이 상쇄될 수 있는데 그걸 못 봤다.** ⚠ 월별이라 급변 국면에 늦다(같은 논문의 문제의식 그대로). ⚠ BOP 부호 규약: 자산 +는 거주자의 대외투자 증가, 부채 −는 비거주자의 국내증권 순매도. 2026-06 실측: 자산 +3,557 · **부채 −26,324**(백만달러) — 비거주자 순매도가 2개월 연속'
+  - name: BDC·사모신용 대리지표 (BIZD vs HYG)
+    tier: 1
+    method: scrape
+    source: yahoo_finance
+    symbol: [BIZD, HYG]
+    vault_node: 비은행 레버리지 (NBFI)
+    note: '사모신용에 직접 계열이 없어 **상장 BDC ETF(BIZD)를 하이일드(HYG) 대비**로 읽는 대리지표(2026-08-19 신설). 연준 FSR 2026-05가 **일부 BDC의 환매 제한 발동**을 기록했다. **읽는 법: BIZD−HYG 상대수익이 마이너스로 벌어지면 사모신용 쪽 스트레스.** 2026-08-18 실측 — 1년 **−15.7%p**(BIZD −16.9% vs HYG −1.2%)로 크게 벌어졌다가 **최근 3개월 +5.6%p·1개월 +5.4%p로 되돌리는 중**. ⚠ 상장 BDC는 사모신용 전체의 일부이고 **주식처럼 거래돼 시장 심리가 섞인다** — NAV 대비 할인율을 못 본다. 방향 신호로만 쓸 것'
+  - name: 국채선물 레버리지펀드 숏 비중 (베이시스 트레이드 흔적)
+    tier: 1
+    method: api
+    source: cftc_tff
+    contracts: ["UST 2Y NOTE", "UST 5Y NOTE", "UST 10Y NOTE", "UST BOND"]
+    mode: pct_short
+    points: 1
+    vault_node: 비은행 레버리지 (NBFI)
+    note: 'CFTC TFF 주간. 볼트가 2026-08-18에 비은행 레버리지 축을 만들며 관측 공백으로 적었던 자리(2026-08-19 신설). **왜 대리지표인가**: CFTC MRAC(2024)에 따르면 현·선물 베이시스 거래는 일반적으로 인도 가능 현물을 사고 선물을 판다 — 거래가 커지면 레버리지 펀드 국채선물 숏이 커진다. ⚠ **순숏 ≠ 베이시스 거래 규모**(방향성 베팅·헤지도 같은 칸). "베이시스 거래가 얼마다"가 아니라 **"레버리지 펀드 숏 비중이 얼마다"** 라고 쓸 것. ⚠ 화요일 기준 금요일 공표로 3일 지연. ⚠ 계약 수 기준이라 만기 간 합산 금지. 2026-08-11 실측: **10Y 45.9% = 2009년 이후 95 백분위**(최근5년 83%)인데 2Y 45.2%(5년 36%)·5Y 39.7%(34%)·BOND 27.5%(37%)는 평범 → **10년물에 집중**돼 있다'
+  - name: 국채선물 레버리지펀드 순포지션 (계약 수)
+    tier: 2
+    method: api
+    source: cftc_tff
+    contracts: ["UST 2Y NOTE", "UST 5Y NOTE", "UST 10Y NOTE", "UST BOND", "ULTRA UST BOND"]
+    mode: net
+    points: 1
+    vault_node: 비은행 레버리지 (NBFI)
+    note: '같은 소스의 수준값(롱−숏, 음수가 순숏). 비중과 함께 봐야 **미결제약정 자체가 늘어난 것인지 포지션이 기울어진 것인지** 갈린다. 2026-08-11: 10Y −2,163,714 · 5Y −2,147,744 · 2Y −1,359,521 · BOND −364,824 · ULTRA BOND −853,397 계약'
+  - name: BIS 부채상환비율 DSR — 장기평균 이탈 (민간 전체)
+    tier: 1
+    method: api
+    source: bis_dsr
+    countries: [KR, US, JP, GB, CA, AU]
+    sector: P
+    mode: deviation
+    vault_node: 신용사이클
+    note: 'BIS AER 2018 Ch.I Graph I.9가 쓴 지표. **"금리가 오르면 부담이 는다"로 끝내지 않고 DSR이 자국 장기평균에서 몇 %p 벗어났는가로 묻기 위해** 붙였다(2026-08-19 신설). BIS 원분석의 시나리오는 "신용/소득 고정 + 단기금리가 1.5년에 걸쳐 150bp 상승 후 유지"였고, 그때 위기 후 부채가 많이 늘어난 소규모 개방 선진국에서 DSR이 장기평균 위로 크게 올라가 소비·투자를 눌렀다. ⚠ 분기 데이터이고 BIS 갱신이 지연된다 — 주간 트리거 불가. ⚠ 이탈은 1999-Q1 이후 자국 평균 기준이라 **국가 간 수준 비교가 아니라 자기 역사 대비**로만 읽을 것. 2025-Q4 실측: KR +1.2%p(수준 19.6%) · US −1.5%p(14.1%) · JP +0.2%p(15.5%) — **한국만 평균 위**'
+  - name: BIS 부채상환비율 DSR — 가계 (수준)
+    tier: 2
+    method: api
+    source: bis_dsr
+    countries: [KR, US, JP]
+    sector: H
+    mode: level
+    vault_node: 주택가격
+    note: '가계 DSR 수준. GFSR 2023-10이 "변동금리 주택담보 비중이 큰 나라에서 실질 주택가격이 더 빠르게 하락한다"고 했는데, 한국은 변동금리 비중이 높은 편이라 **전달이 빠른 쪽**으로 분류된다. 그 전달의 크기를 재는 자리. 2025-Q4: KR 11.2% · US 8.0% · JP 7.5% — 한국이 셋 중 가장 높다. ⚠ 분기·지연'
+  - name: 투입재 가격 — 질소비료 PPI
+    tier: 1
+    method: api
+    source: fred
+    series_id: PCU325311325311
+    vault_node: PPI (생산자물가지수)
+    note: 'BIS AER 2026 Ch.I이 호르무즈 충격 뒤 **비료 +50%·플라스틱 +30%**를 투입재 압력으로 지목했는데 볼트에 계열이 없어 붙였다(2026-08-19 신설). 파이프라인 상류 압력을 직접 보는 자리 — BOJ WP 23-E-13(PS-NKPC)에 따르면 이 압력은 **동시점 전가가 불완전할 뿐 사라지지 않고 나중에 온다**. 동시에 그 계수는 작다(κ_rp 0.022 전방주시 / 0.007 하이브리드) → **"무시할 수 없되 작다"를 한 문장으로 함께 쓸 것**. 2026-07 실측 YoY **+45.3%**, 6개월 연율 **+58.0%**'
+  - name: 투입재 가격 — 플라스틱 수지 PPI
+    tier: 1
+    method: api
+    source: fred
+    series_id: PCU325211325211
+    vault_node: PPI (생산자물가지수)
+    note: '같은 목적의 짝 계열(플라스틱 재료·수지 제조). 2026-07 실측 YoY **+9.9%**인데 **6개월 연율 +30.6%** — **YoY보다 최근 모멘텀이 훨씬 강하다.** 투입재는 YoY만 보면 가속을 놓친다: 두 값을 함께 적을 것'
+  - name: 투입재 가격 — 화학·화학제품 PPI (상위 범주)
+    tier: 2
+    method: api
+    source: fred
+    series_id: WPU0652
+    vault_node: PPI (생산자물가지수)
+    note: '비료·플라스틱을 포함하는 상위 범주. 개별 품목의 특이 변동인지 광범위한 압력인지 가르는 데 쓴다. 2026-07 YoY +26.2%, 6개월 연율 +47.2% — **상위 범주도 같이 오르므로 특이 변동이 아니다**'
+  - name: GZ 신용스프레드 (원지수)
+    tier: 2
+    method: api
+    source: spreadsheet
+    dataset: ebp
+    column: gz_spread
+    note: '같은 CSV의 원지수. 개별 회사채 5,982종 평균이라 Baa−Aaa(표준편차 50bp)보다 변동이 크다(약 100bp). EBP와 함께 봐야 기대부도 성분과 위험가격 성분이 갈린다'
+  - name: EBP 기반 침체확률 (est_prob)
+    tier: 2
+    method: api
+    source: spreadsheet
+    dataset: ebp
+    column: est_prob
+    note: '같은 CSV의 연준 추정 침체확률. 1팀 Chauvet-Piger(RECPROUSM156N)와 교차검증용 — 산출 방식이 달라 서로 독립적인 신호다'
+  - name: 은행 대출태도 (SLOOS)
+    vault_node: 신용사이클
+    tier: 2
+    method: api
+    source: fred
+    series_id: DRTSCILM
+    note: 분기
+  - name: 사모크레딧·CRE 리스크 헤드라인
+    tier: 2
+    method: news
+    news_queries: ["private credit OR CRE commercial real estate stress"]
+    note: 자동 헤드라인(2026-07-20, Google News) — news.py team_3 쿼리와 동일
+  - name: 시카고연준 금융조건지수 NFCI
+    vault_node: 신용사이클
+    tier: 1
+    method: api
+    source: fred
+    series_id: NFCI   # 미검증 — 주간, 105개 지표 종합. 양수=평균보다 긴축적, 음수=완화적
+    note: 유동성 팀의 종합 판정 지표 — "금융조건이 지금 긴축적인가"를 한 숫자로
+  - name: 은행 예금·대출 (H.8)
+    tier: 2
+    method: api
+    source: fred
+    series_id: [DPSACBW027SBOG, TOTLL]   # 미검증 — 상업은행 예금·총대출(주간)
+    note: 은행 시스템 스트레스 감시 (2023 SVB식 예금이탈 조기 포착)
+  - name: VIX
+    tier: 2
+    method: api
+    source: fred
+    series_id: VIXCLS
+  - name: 코스피·코스닥 지수
+    tier: 1
+    method: scrape
+    source: yahoo_finance
+    symbol: ['^KS11', '^KQ11']
+    note: '지수 자체. 기존에는 외국인 수급만 수집했다(2026-08-05 추가). 이벤트 반응 분석의 종속변수'
+  - name: 미국 경제정책 불확실성 EPU (일별)
+    tier: 1
+    method: api
+    source: fred
+    series_id: USEPUINDXD
+    note: 'Baker et al.(2016). 1985~ 일별. 이은희(2026)에서 환율 공통요인과 상관 0.20'
+  - name: 미국 통화정책 불확실성 EPU (범주별)
+    tier: 2
+    method: api
+    source: fred
+    series_id: EPUMONETARY
+    note: '이은희(2026)에서 환율 공통요인과 상관 0.44로 범주 중 최대 — VIX(0.33)보다 강하다'
+  - name: 주식시장 관련 경제불확실성 (EMU)
+    tier: 2
+    method: api
+    source: fred
+    series_id: WLEMUINDXD
+    note: '1985~ 일별. VIX가 담지 못하는 정책발 불확실성 교차검증용'
+  - name: 한국 경제정책 불확실성 EPU (월간)
+    tier: 2
+    method: api
+    source: spreadsheet
+    dataset: epu_korea
+    max_age_days: 99999
+    note: ⛔ 원천 종료(2026-08-26 원본 확인) — policyuncertainty.com의 Korea 파일이 374행,
+      마지막 관측 1/2021에서 끝난다. fetcher·URL 문제가 아니라 지수 제작자가 갱신을 멈춘 것이라
+      복구 경로가 없다. 값은 2021-01까지의 역사 계열로만 유효하다.
+      대체 판정선 — 미국 EPU(일별, 정상 수집 중) + GPR 지정학위험 + 4팀 뉴스 피드.
+      max_age_days는 STALE 상시 경보를 끄기 위한 것이지 지표가 살아있다는 뜻이 아니다.
+      이은희(2026)에서 환율 공통요인과 상관 0.25(통화정책 0.39·외환정책 0.35)
+  - name: VIX3M (3개월 변동성)
+    tier: 2
+    method: scrape
+    source: yahoo_finance
+    symbol: "^VIX3M"
+    note: 확인 완료(2026-07-18) — 아래 텀스트럭처 계산용
+  - name: VIX 텀스트럭처 (VIX3M/VIX)
+    tier: 2
+    method: derived
+    formula: ^VIX3M ÷ VIXCLS (둘 다 수집 중)
+    note: 1 미만(백워데이션) = 단기 공포가 장기보다 큰 패닉 신호 — 리스크 레짐 전환 감지
+  - name: 위험충격 종류 분류 (VIX·실질금리·엔 3축)
+    tier: 1
+    method: derived
+    formula: VIXCLS·DFII10·DEXJPUS 5영업일 변화로 국면 라벨링 (셋 다 이미 수집 중)
+    vault_node: VIX
+    note: '2026-08-15 신설. **판정 규칙이지 예측 지표가 아니다.** 제텔 소환 인덱스 §1 — "VIX로 위험을 단일 대리하지 말 것, 충격 종류를 먼저 분류할 것"을 자동화했다. 임계는 2006~2026 전 표본 5,108일 5영업일 변화의 **p90**(VIX +3.5pt · 실질금리 +13bp)에서 뽑았다. 채점 결과(같은 표본): 리스크오프 436일 → 엔 절상 70%·원 절하 73% / 미 금리 주도 463일 → 엔 절상 19%뿐(둘 다 절하) / **평시 4,135일 → 47%·46% = 정보 없음**. 근거 제텔 = 엔의 안전통화 기능은 리스크오프에서만 켜진다 · 한국은 이중타격, 일본은 자연헤지 · 채점 결과 — 엔 절상·원 절하 비대칭은 12년 뒤에도 유효하나 3분의 1로 약해졌다. ⚠ 라벨이 "평시"면 환율 움직임을 매크로 충격으로 설명하지 말 것 — 국내 수급 요인을 먼저 본다. ⚠ DEXJPUS는 VIX보다 공표가 며칠 늦어 기준일이 어긋날 수 있다(각 관측일을 함께 출력한다)'
+  - name: MOVE (채권 변동성)
+    tier: 2
+    method: scrape
+    source: yahoo_finance
+    symbol: "^MOVE"
+    note: 팀원 v1 검증
+  - name: SKEW
+    tier: 2
+    method: scrape
+    source: yahoo_finance
+    symbol: "^SKEW"
+  - name: Put/Call 비율
+    tier: 2
+    method: scrape
+    source: cboe
+    note: 확인 완료(2026-07-18) — cboe.com 일일 통계 페이지 파싱(전체/지수/개별주). CDN API는 403이나 페이지는 열림
+  - name: CNN Fear & Greed (주식)
+    tier: 2
+    method: scrape
+    source: cnn
+    note: Referer 필수. 팀원 v1 검증
+  - name: CFTC 선물 포지셔닝
+    tier: 2
+    method: api
+    source: cftc_socrata
+    note: COT Legacy/TFF
+  - name: ICI 펀드+ETF 순유입 (주간)
+    tier: 2
+    method: scrape
+    source: ici
+    note: 확인 완료(2026-07-19) — ici.org/combined_flows_data_{연도}.xls 레거시 xls 직배포, xlrd로 파싱. 선택 의존성(xlrd) 미설치 시 fail
+  - name: AAII 서베이 (Bull/Bear)
+    tier: 2
+    method: news
+    news_queries: ["AAII investor sentiment survey bull bear"]
+    note: 자동 헤드라인(2026-07-20, Google News) — aaii.com 403(봇 차단) 확인(2026-07-18), 헤드라인으로 대체. 펀드플로우는 위 ICI 항목으로 자동화 완료. 매주 목요일 발표 — 정밀 수치는 원문 대조
+  - name: 크립토 주요 코인 시세 (시총 상위 10)
+    tier: 1
+    method: api
+    source: coingecko
+    endpoint: /coins/markets?vs_currency=usd&order=market_cap_desc&per_page=16&page=1
+    note: 상위 10 동적 수집, 스테이블 제외
+  - name: 크립토 전체 시총·BTC 도미넌스·거래량
+    vault_node: 글로벌 유동성
+    tier: 1
+    method: api
+    source: coingecko
+    endpoint: /global
+    note: 2026-08-18 거래량·회전율 추가(제텔 큐 D-5). 크립토는 위험선호가 아니라 **유동성 민감도** 지표다 — 주간 BTC 수익률의 ΔNFCI 계수 −85.7(t −4.38). 단 "자본유출 대리지표"라는 용도는 표본 밖에서 재현 실패(USD/CNY → 거래량 F=1.09)
+  - name: 크립토 Fear & Greed
+    tier: 2
+    method: api
+    source: alternative_me
+    endpoint: https://api.alternative.me/fng/
+  - name: 온체인 지표 (MVRV 등)
+    tier: 2
+    method: api
+    source: coinmetrics
+    endpoint: https://community-api.coinmetrics.io/v4/timeseries/asset-metrics
+  - name: 반감기 사이클 (다음 반감기까지 블록 수)
+    tier: 2
+    method: derived
+    source: mempool_space
+    endpoint: https://mempool.space/api/blocks/tip/height
+    formula: 다음 반감기 블록(210000의 배수) − 현재 블록 높이
+  - name: 크립토 규제 이벤트
+    tier: 2
+    method: news
+    news_queries: ["crypto bitcoin ETF OR stablecoin regulation"]
+    note: 자동 헤드라인(2026-07-20, Google News) — news.py team_3 쿼리와 동일
+  - name: BTC 현물 ETF 순유입
+    tier: 2
+    method: scrape
+    source: farside
+    asset: btc
+    note: farside.co.uk/btc Total 열($mn). 팀원 v1 검증
+  - name: ETH 현물 ETF 순유입
+    tier: 2
+    method: scrape
+    source: farside
+    asset: eth
+    note: >-
+      2026-08-21 신설. BTC만 받고 ETH는 안 받던 비대칭을 메웠다 —
+      2026-08-20 시황에서 "ETH 현물 ETF 순유입 미수집"으로 기록된 결측이다.
+      ⚠ 표의 **마지막 열이 Total**이라는 가정에 기댄다. 운용사가 추가·제거되면 열이 바뀌므로
+      값이 갑자기 튀면 이 가정을 먼저 의심한다.
+      ⚠ BTC와 ETH의 순유입을 **합쳐 "크립토 ETF 유입"으로 쓰지 말 것** —
+      두 자산의 투자자 구성과 도입 시기가 다르다.
+  - name: 스테이블코인 시총
+    tier: 2
+    method: api
+    source: defillama
+    endpoint: /stablecoins?includePrices=false
+  - name: 펀딩레이트·미결제약정
+    tier: 2
+    method: api
+    source: binance
+    endpoint: /premiumIndex (fapi), /openInterest
+  - name: 김치프리미엄
+    tier: 2
+    method: derived
+    formula: (업비트 KRW-BTC ÷ 바이낸스 BTCUSDT × USDKRW) − 1
+  - name: 중국 신용 임펄스 (TSF·M1M2·위안대출)
+    tier: 1
+    method: api
+    source: pboc
+    months: 4
+    note: '**2026-08-26 뉴스 헤드라인 → 실계열로 교체.** 2026-07-19에 "자동화 불가"로 확정했던 항목인데, **색인 페이지를 잘못 본 판정이었다** — `.../116219/116319/`(통계데이터)는 JS 렌더라 링크가 안 잡히지만 `.../116219/116225/`(데이터해석)는 서버 렌더라 월보 링크가 그대로 있다. 실측 2026-07 **TSF 존량 463.27조위안(+7.4%)** · TSF 연초누계 증량 **22.25조위안**(전년 동기 대비 −1.74조) · M2 **+7.7%** · M1 **+4.0%** · 실체경제 위안화대출 **+5.2%** · **정부채권 잔액 +14.1%**. **읽는 법: 중국 신용 증가는 지금 재정(정부채권 +14.1%)이 끌고 민간 대출(+5.2%)은 처져 있다** — TSF 총계만 보면 이 구성이 안 보인다. M1(+4.0%)이 M2(+7.7%)에 한참 못 미치는 것도 같은 이야기(돈이 예금에 묶여 거래로 안 돈다). ⚠ 3·6·9·12월분은 제목이 「一季度」·「上半年」·「三季度」·연간으로 바뀐다 — fetcher가 기간을 환산한다. ⚠ 표가 아니라 **산문에서 숫자를 뽑는다**. PBoC가 문구를 바꾸면 조용히 실패하니, 값이 안 나오면 원문 문구부터 확인할 것. ⚠ NBS 미러의 중국 M2(2026-02, +9.0%)와 **기준월도 값도 다르다** — 인용할 때 어느 쪽인지 밝힐 것. 이쪽이 원출처이고 최신이다'
+  - name: DXY (광의 달러지수 대용)
+    tier: 1
+    method: api
+    source: fred
+    series_id: DTWEXBGS
+  - name: 엔/달러
+    tier: 2
+    method: api
+    source: fred
+    series_id: DEXJPUS
+  - name: 엔캐리 잔고·청산 리스크
+    tier: 2
+    method: derived
+    formula: CFTC 엔 비상업 순포지션(자동 수집) 프록시 — 음수 클수록 캐리 확대, 급격한 양전환=청산 신호
+  - name: 유로/달러
+    tier: 2
+    method: api
+    source: fred
+    series_id: DEXUSEU
+  - name: 위안/달러
+    tier: 2
+    method: api
+    source: fred
+    series_id: DEXCHUS
+  # ── 신흥국 핵심국 환율 (미검증이나 GDP·M2보다 신뢰도 높음 — FRED가 EM 환율은 비교적 잘 갖춤) ──
+  - name: 브라질 헤알/달러
+    vault_node: DXY (달러지수)
+    tier: 1
+    method: api
+    source: fred
+    series_id: DEXBZUS   # 미검증
+    note: 남미 리스크선호의 대표 프록시
+  - name: 멕시코 페소/달러
+    tier: 2
+    method: api
+    source: fred
+    series_id: DEXMXUS   # 미검증
+  - name: 남아공 랜드/달러
+    tier: 2
+    method: api
+    source: fred
+    series_id: DEXSFUS   # 미검증
+  - name: 러시아 루블/달러
+    tier: 2
+    method: scrape
+    source: yahoo_finance
+    symbol: "USDRUB=X"
+    note: 확인 완료(2026-07-18) — 야후 역외 호가. CBR 공식환율과의 괴리 자체가 시그널이므로 큰 이벤트 시 cbr.ru 교차 확인
+  - name: 튀르키예 리라/달러
+    vault_node: DXY (달러지수)
+    tier: 1
+    method: scrape
+    source: yahoo_finance
+    symbol: "USDTRY=X"
+    note: 확인 완료(2026-07-18) — 야후 호가. 고변동성 핵심 지표, tier1(매주 확인). 급변 시 TCMB 교차 확인
+  - name: 카자흐스탄 텡게/달러
+    tier: 2
+    method: scrape
+    source: yahoo_finance
+    symbol: "USDKZT=X"
+    note: 확인 완료(2026-07-18) — 야후 호가. 중앙아시아 리스크선호 프록시
+  - name: 사우디 리얄·UAE 디르함/달러
+    tier: 2
+    method: scrape
+    source: yahoo_finance
+    symbol: ["USDSAR=X", "USDAED=X"]
+    note: 확인 완료(2026-07-18) — 소수 4자리로 표시(페그 3.7500/3.6725 이탈 여부 모니터링이 목적, 모니터링 자체가 시그널)
+  - name: 원/달러
+    tier: 1
+    method: api
+    source: fred
+    series_id: DEXKOUS
+    note: ECOS 731Y001 교차검증 가능
+  - name: 주식 대차잔고 (공매도 압력 대리)
+    vault_node: KOSPI
+    tier: 1
+    method: api
+    source: lendborr
+    note: '금융위 주식대차정보. 대차잔고=빌려간 뒤 미상환 잔량 → 공매도 포지션 대용. 단 차익거래·헤지도 섞이므로 수준보다 변화를 볼 것. 업종별은 python -m databook lending'
+  - name: 업종별 등락 (상하위 3개)
+    vault_node: KOSPI
+    tier: 1
+    method: scrape
+    source: naver_sector
+    note: '79개 업종. "외국인 비중 높은 업종이 지수를 주도"라는 통념을 검증하려면 업종 데이터가 필요하다(2026-08-05 추가). 전체 표는 python -m databook sectors'
+  - name: 외국인 수급 (KOSPI, 일별 순매수)
+    tier: 1
+    method: scrape
+    source: naver_investor
+    note: 네이버 투자자별 매매동향(원천 KRX). 팀원 v1 검증. 단위 억원
+  - name: 코스피·코스닥 투자자별 순매수 (토스증권 공식 API)
+    vault_node: KOSPI
+    tier: 1
+    method: api
+    source: tossinvest
+    mode: index_flow
+    symbols: [KOSPI, KOSDAQ]
+    points: 5
+    note: '2026-08-19 신설. 바로 위 naver_investor(스크랩)와 **같은 원천(KRX)을 공식 REST로** 받는다 — 스크랩이 깨져도 이쪽이 산다. 스크랩에 없던 것이 둘: **코스닥도 같이** 오고, **기관이 연기금·금융투자·투신·보험으로 쪼개진다.** 기관 순매도를 "기관이 팔았다"로 뭉뚱그리면 안 되는 이유가 여기 있다 — 연기금(정책적 매수)과 금융투자(선물 헤지 반대매매)는 방향이 반대인 날이 많다. 단위 억원. ⚠ **당일 값은 장중 갱신치**다(updatedAt 확인). ⚠ 네이버와 값이 어긋나면 어느 쪽이 맞는지 단정하지 말고 **둘 다 기록**할 것 — 집계 시점 차이일 수 있다'
+  - name: 반도체 2종목 수급 5종 (공매도·신용·대차·프로그램·외국인 지분율)
+    vault_node: KOSPI
+    tier: 1
+    method: api
+    source: tossinvest
+    mode: stock_flow
+    stocks: ["005930", "000660"]
+    kinds: [short, credit, lending, program, investor]
+    points: 5
+    note: '2026-08-19 신설. **볼트에 아예 없던 계열**이다. 지수 수급만 보면 "외국인이 팔았다"까지가 끝인데, 여기선 그 매도가 **어떤 종류인지** 갈린다 — 공매도 비중(방향성 베팅) · 대차잔고(공매도 실탄) · 신용융자 잔고(개인 레버리지) · 프로그램 **차익/비차익 분리**(차익=선물 베이시스, 비차익=바스켓 방향성) · **외국인 지분율**(플로우가 아니라 잔량). 삼성전자·SK하이닉스는 코스피 시총의 큰 몫이라 지수 수급의 대부분을 이 둘이 설명한다. ⚠ **대차잔고는 공매도가 아니다** — 차익거래·헤지도 섞인다. 수준이 아니라 변화를 볼 것(기존 lendborr 지표와 같은 주의). ⚠ 공매도·대차·신용은 **T+1 이상 지연**이라 당일 레코드가 비는 날이 있다'
+  - name: 수출·배터리 대표주 수급 (현대차·LG에너지솔루션)
+    vault_node: KOSPI
+    tier: 2
+    method: api
+    source: tossinvest
+    mode: stock_flow
+    stocks: ["005380", "373220"]
+    kinds: [short, lending, investor]
+    points: 3
+    note: '2026-08-19 신설. 반도체 2종목만 보면 **코스피=반도체**라는 착시가 생긴다. 관세·환율 충격은 자동차(005380)에, 중국 배터리 경쟁은 LG엔솔(373220)에 먼저 나타난다 — **같은 외국인 매도라도 종목별로 이유가 다르다**는 걸 확인하는 대조군이다. ⚠ 대조군이지 대표성이 있는 표본이 아니다. 2종목으로 업종을 말하지 말 것 — 업종 단위는 naver_sector(79개 업종)를 쓴다'
+  - name: 코스피·코스닥 지수 (토스증권 공식 API)
+    vault_node: KOSPI
+    tier: 2
+    method: api
+    source: tossinvest
+    mode: index
+    symbols: [KOSPI, KOSDAQ]
+    points: 5
+    note: '2026-08-19 신설. 위의 yahoo_finance(^KS11/^KQ11) **스크랩과 교차검증**하는 공식 API 경로다. 고가·저가를 같이 주므로 **장중 변동폭**을 볼 수 있다 — 종가만으로는 2026-08-19처럼 장중 −7%에서 되돌린 날을 구분하지 못한다. ⚠ 지수 심볼은 **KOSPI·KOSDAQ 둘뿐**(KOSPI200·국채 심볼은 unsupported-symbol, 2026-08-19 실호출 확인). 캔들 interval은 1m·1d만'
+  - name: 원/달러 (토스증권, 장중)
+    tier: 2
+    method: api
+    source: tossinvest
+    mode: misc
+    what: [fx]
+    fx_pairs: ["USD/KRW"]
+    note: '2026-08-19 신설. 기존 원/달러는 FRED DEXKOUS인데 **하루 이상 늦다.** 환율이 판정 트리거로 걸린 국면(예: 1,430 돌파 여부)에서는 그 지연이 곧 오판이다. 이건 장중 값이라 그 공백을 메운다. ⚠ **교차검증용이지 시계열 대체가 아니다** — 스냅샷이라 과거 이력이 없다. 장기 계열은 계속 FRED·ECOS를 쓴다. ⚠ 토스증권 환율은 **KRW·USD 한 쌍뿐**(엔·유로는 400, 2026-08-19 실호출 확인)'
+  - name: 시장 쏠림 — 거래대금 상위·급등·급락
+    vault_node: KOSPI
+    tier: 2
+    method: api
+    source: tossinvest
+    mode: ranking
+    ranking_types: [MARKET_TRADING_AMOUNT, TOP_GAINERS, TOP_LOSERS, TOSS_SECURITIES_TRADING_AMOUNT]
+    market_country: KR
+    duration: 1d
+    points: 5
+    note: '2026-08-19 신설. 지수 등락률은 시장의 **평균**만 말한다. 이건 **분산과 쏠림**을 본다 — 거래대금 상위가 몇 종목에 집중돼 있는지, 상하한가 근처(±30%) 종목이 몇인지. ⚠ `TOSS_SECURITIES_*`는 시장 전체가 아니라 **토스증권 체결 기준**이다. 시장 기준과 나란히 놓으면 **개인 리테일 쏠림의 대리**로 읽을 수 있지만, 그 자체를 시장 수치로 쓰면 틀린다. ⚠ TOP_GAINERS/LOSERS는 duration=realtime 미지원(400)'
+  - name: 대표주 시가총액·상장주식수 (토스증권)
+    tier: 2
+    method: api
+    source: tossinvest
+    mode: stock_info
+    stocks: ["005930", "000660", "373220", "005380"]
+    note: '2026-08-19 신설. 상장주식수 × 현재가 = 시가총액(조원). **유상증자·자사주 소각으로 주식수가 바뀌면** 주가만 보던 계열에 조용한 왜곡이 생기는데, 그걸 잡는 대조 계열이다. 거래정지·정리매매 플래그도 0/1로 같이 남긴다 — 사건은 시계열에 눈에 띄어야 한다. ⚠ 시총은 **보통주 상장주식수 기준**이라 우선주·자사주 처리에서 KRX 공식 시총과 어긋날 수 있다. 절대수준 비교보다 **변화**를 볼 것'
+  - name: 장 운영 캘린더 (KR·US)
+    tier: 2
+    method: api
+    source: tossinvest
+    mode: calendar
+    markets: [KR, US]
+    note: '2026-08-19 신설. **수집 실패와 휴장을 구분하기 위한 지표다.** 지금까지 한국 수급이 빈 날이면 스크랩이 깨진 건지 장이 안 연 건지 사후에 알 수 없었다 — 이게 있으면 그 판단이 자동이다. 직전 영업일도 같이 받아 "어제"의 기준일을 확정한다. ⚠ 값 1/0은 **정규장 개장 여부**다. 개장했어도 조기 폐장(수능일 등)일 수 있으니 라벨의 시각을 함께 볼 것'
+  - name: 장중 유동성 스냅샷 (호가 스프레드·밴드 위치)
+    vault_node: KOSPI
+    tier: 2
+    method: api
+    source: tossinvest
+    mode: micro
+    stocks: ["005930", "000660"]
+    note: '2026-08-19 신설. 스트레스 국면에서 **가격보다 먼저 벌어지는 것이 호가 스프레드**다. 최우선호가 스프레드(bp)·매수호가 잔량비중(%)·상하한 밴드 내 위치(%)를 남긴다. ⚠ **일간 시계열이 아니라 스냅샷이다.** 수집 시각에 종속되므로 서로 다른 날의 값을 시계열처럼 이어 붙이지 말 것 — 같은 시각대끼리만 비교한다. ⚠ 장 마감 후에 돌리면 종가 무렵의 굳은 값이 온다'
+  - name: 신용융자 잔고·고객예탁금
+    tier: 2
+    method: scrape
+    source: kofia
+    note: freesis.kofia.or.kr (별도 키)
+  - name: 금 (실질금리·안전선호 교차검증)
+    vault_node: 금 가격
+    tier: 1
+    method: scrape
+    source: yahoo_finance
+    symbol: "GC=F"
+    note: 중앙은행 매수·실질금리 역상관
+  - name: 은
+    vault_node: 금 가격
+    tier: 2
+    method: scrape
+    source: yahoo_finance
+    symbol: "SI=F"
+  - name: 네이버 검색관심도 (리테일 심리 프록시)
+    tier: 2
+    method: api
+    source: naver_datalab
+    time_unit: week
+    keyword_groups:
+      - {name: "환율", keywords: ["환율", "원달러", "달러환율"]}
+      - {name: "금리", keywords: ["금리", "기준금리", "금리인상"]}
+      - {name: "경기침체", keywords: ["경기침체", "불황", "경기침체 신호"]}
+      - {name: "실업", keywords: ["실업", "해고", "감원"]}
+      - {name: "부동산", keywords: ["부동산", "집값", "아파트값"]}
+    note: >-
+      네이버 데이터랩 검색어트렌드 — 대중의 매크로 키워드 검색 관심도(주간, 상대비율 최대=100).
+      리테일 투자자·가계 심리의 고빈도 프록시. 개발자센터 검색앱에 데이터랩 API 추가 필요(NAVER_CLIENT_ID/SECRET). 키 없으면 안내 표시.
+  - name: BIS 실질실효환율 REER (원화·달러)
+    tier: 2
+    method: api
+    source: fred
+    series_id: [RBKRBIS, RBUSBIS]
+    note: 확인 완료(2026-07-19, 최신 2026-05) — BIS SDMX 직접 경로는 406/404이나 FRED가 BIS REER를 미러(RBKRBIS 한국·RBUSBIS 미국, 월간). 광의 REER 지수(2020=100)
+
+# ═════════════════════ team_4 : 글로벌·지정학·무역 (Global·Geopolitics·Trade) ═════════════════════
+# 4팀은 "레짐"이 아니라 외부 오버레이 + 무효화 트리거 전담. 정성 비중 높음(manual 다수).
+team_4:
+  - name: 무효화 트리거 관리 (4팀 전담)
+    vault_node: "-"
+    tier: 1
+    method: manual
+    note: 1~3팀 레짐을 깰 외부 조건을 트리거로 정식화, 매주 발동 여부 보고
+  - name: 지정학 — 중동 (이스라엘·이란·호르무즈·홍해·OPEC+)
+    tier: 1
+    method: news
+    news_queries: ["Israel Iran OR Hormuz OR Red Sea OR OPEC+", "중동 이스라엘 이란 호르무즈 OPEC"]
+    note: 자동 헤드라인(2026-07-20, 네이버+Google News) — 전이채널 유가·운임·정유마진 해석은 사람 몫
+  - name: 지정학 — 러시아·우크라이나 (전황·제재)
+    tier: 1
+    method: news
+    news_queries: ["Russia Ukraine war OR sanctions", "러시아 우크라이나 전쟁 제재"]
+    note: 자동 헤드라인(2026-07-20, 네이버+Google News) — 에너지·곡물·비료 해석은 사람 몫
+  - name: 지정학 — 중앙아시아·코카서스 (카자흐 원유·우라늄, 중간회랑)
+    tier: 2
+    method: news
+    news_queries: ["Kazakhstan OR Central Asia OR Caucasus oil uranium", "카자흐스탄 중앙아시아 코카서스 원유 우라늄"]
+    note: 자동 헤드라인(2026-07-20, 네이버+Google News)
+  - name: 지정학 — 동아시아 (대만해협·남중국해·북한)
+    tier: 1
+    method: news
+    news_queries: ["Taiwan strait OR South China Sea OR North Korea", "대만해협 남중국해 북한"]
+    note: 자동 헤드라인(2026-07-20, 네이버+Google News) — 반도체 공급망·코리아 디스카운트 해석은 사람 몫
+  - name: 중국 무역 총액 (해관총서 속보)
+    tier: 2
+    method: api
+    source: gacc
+    report: totals
+    currency: USD
+    months: 3
+    note: '2026-08-26 신설 — 중국 해관총서(GACC) 영문 속보. **중국 파트에서 유일하게 당월에 가까운 자동 계열**이다(NBS 미러는 6개월 지연, NBS 공식 API는 WAF 403). 실측 2026-07 수출 **3,978.5억달러(+23.9%)** · 수입 **2,853.5억달러(+27.5%)** · 무역흑자 **1,125.0억달러**. ⚠ 속보라 이후 개정된다. ⚠ 위안화 표시(CNY)와 달러 표시(USD)의 증가율이 환율 때문에 갈린다 — 여기서는 USD 기준이다'
+  - name: 중국 원자재 수입 (원유·철광석·구리·석탄·가스 — 물량과 금액)
+    tier: 1
+    method: api
+    source: gacc
+    report: imports
+    currency: USD
+    items: ["Crude petroleum oils", "Iron ores and concentrates", "Copper ores and concentrates", "Coal and lignite", "Natural gases"]
+    quantity: true
+    months: 3
+    note: '2026-08-26 신설 — **중국 파트에서 가장 중요한 자리.** 중국이 글로벌 원자재 수요의 본체라, 여기서 물량과 금액을 갈라 보면 원자재 가격이 수요 때문인지 공급·가격 때문인지 판정된다. 실측 2026-07 누계 **원유 물량 −13.2% / 금액 +0.9%** — 가격이 물량 감소를 정확히 상쇄했다(= 중국 실물 원유 수요는 줄고 있다). 구리광 **물량 −1.8% / 금액 +35.5%**(순수 가격), 철광석 **물량 +5.9% / 금액 +11.6%**. ⚠ 물량 단위가 품목마다 다르다(万톤·톤·万CBM) — 라벨에 표기된다. ⚠ 전년비는 **연초누계 기준**이라 당월 모멘텀이 아니다. ⚠ 품목명은 GACC 표기와 정확일치로 고른다'
+  - name: 중국 국가별 무역 (미국·EU·ASEAN)
+    tier: 2
+    method: api
+    source: gacc
+    report: country
+    currency: USD
+    items: ["United States (US)", "European Union", "ASEAN"]
+    months: 3
+    note: '2026-08-26 신설 — 같은 GACC 속보의 국가별 절. **관세의 실물 효과가 여기서 갈린다**: 실측 2026-07 누계 대미 수출 **+2.6%** vs 전체 수출 **+18.5%**, 그런데 대ASEAN 수출은 **+25.1%**(대베트남 +27.5%). 대미가 눌린 만큼 ASEAN이 튀는 구조라 **우회수출(transshipment) 가설을 점검할 재료**가 된다 — 다만 이 데이터만으로 우회를 단정할 수는 없다(ASEAN 자체 수요와 구분되지 않는다). ⚠ 국가명은 GACC 표기와 정확일치 — "United States (US)"처럼 괄호까지 맞춰야 한다'
+  - name: 중국 외환보유액 (금 제외)
+    tier: 2
+    method: api
+    source: fred
+    series_id: TRESEGCNM052N
+    note: '2026-08-26 신설 — IMF IFS 경유(FRED). 최신 2026-06, 갱신 2026-07-27로 **중국 대외 계열 중 가장 최신**이다. ⚠ SAFE 직접 경로는 막혔다: DBnomics의 SAFE 미러는 **2020-12에서 멈췄고**(실측), SAFE 사이트는 xls 수동 배포다. 국제수지(BOP)·대외채무는 현재 자동 경로 없음 — 필요하면 SAFE 분기 보도자료를 사람이 본다'
+  - name: 일본 무역수지 (관세청 속보)
+    tier: 2
+    method: api
+    source: japan_customs
+    section: total
+    months: 3
+    note: '2026-08-26 신설 — 일본 관세청 월보 XML(키 불필요, 매월 중순 전월분 속보). BOJ 국제수지(BP01)보다 **한 달 빠르고**, 아래 국가별·품목별 계열과 같은 발표에서 나온다. 실측 2026-07 수출 **11.51조엔(+23.2%)** · 수입 **12.15조엔(+27.8%)** · 수지 **−0.63조엔**. ⚠ 금액 단위가 XML에 안 적혀 있어(百万円) BOJ 재화수출과 대조해 확인했다 — 2026-06 관세청 10.93조엔 / BOP 10.48조엔(BOP의 FOB·소유권 조정분). ⚠ **속보라 이후 개정된다**'
+  - name: 일본 국가별 무역 (중국·미국·EU·아시아)
+    tier: 2
+    method: api
+    source: japan_customs
+    section: country
+    items: ["CHINA", "U.S.A.", "EU", "ASIA"]
+    months: 3
+    note: '2026-08-26 신설 — 같은 관세청 월보의 국가별 절. **대중 수지와 대미 수지를 갈라 보는 게 요점**이다: 실측 2026-07 대중 **−0.78조엔** / 대미 **+0.28조엔** — 관세 이슈는 대미 흑자에, 중국 디플레 수출은 대중 적자에 각각 나타난다. ⚠ 항목명은 XML 표기와 **정확일치**로 고른다(부분일치로 두면 EU가 WESTERN EUROPE까지 끌어온다)'
+  - name: 일본 원자재 수입 (원유·LNG·석탄 — 금액과 물량)
+    tier: 2
+    method: api
+    source: japan_customs
+    section: import_commodity
+    items: ["PETROLEUM", "LNG", "COAL"]
+    quantity: true
+    months: 3
+    note: '2026-08-26 신설 — **이 지표의 존재 이유는 금액과 물량을 나란히 두는 것**이다. 실측 2026-07 원유 금액 **+87.8%** / 물량 **+5.5%**, LNG 금액 **+22.5%** / 물량 **−4.8%** — 수입액 급등이 **가격(유가×엔약세) 때문이지 수요 때문이 아니다**를 한 화면에서 확정한다. 물량은 일본의 실제 에너지 수요라 아시아 LNG·석탄 수급의 선행 재료로도 쓴다. 단위: TKL(천 킬로리터, 원유) · TMT(천 톤, LNG·석탄)'
+  - name: 일본 주력 수출품 (반도체·자동차)
+    tier: 2
+    method: api
+    source: japan_customs
+    section: export_commodity
+    items: ["SEMICONDUCTORS ETC", "MOTOR VEHICLES"]
+    months: 3
+    note: '2026-08-26 신설 — 관세청 월보 품목별 수출. 실측 2026-07 반도체 등 **+49.1%** · 자동차 **+19.5%**. 반도체 사이클의 **한국 수출(관세청 1·10·20일 속보)과 대조군**이다 — 같은 사이클을 두 나라 통관 데이터로 교차 확인하면 단일국 특수요인(관세 선행수요 등)을 걸러낼 수 있다'
+  - name: 글로벌 공급망압력지수 GSCPI
+    tier: 1
+    method: api
+    source: spreadsheet
+    dataset: gscpi
+    note: 'NY연은. 1997~ 월간. 공급망 압력의 표준 지표인데 FRED에는 없다(2026-08-05 추가). 파일 확장자는 xlsx이나 실제는 구형 xls'
+  - name: 무역분쟁·관세 (미·중 관세율·수출통제·공급망 재편)
+    tier: 1
+    method: news
+    news_queries: ["US China tariff OR export controls OR trade war", "미중 관세 무역분쟁 수출통제"]
+    note: 자동 헤드라인(2026-07-20, 네이버+Google News) — 수혜국 멕시코·베트남·인도 해석은 사람 몫
+  - name: 미국 정치·정책 (선거·산업정책·셧다운·부채한도)
+    tier: 2
+    method: news
+    news_queries: ["US politics OR shutdown OR debt ceiling OR election", "미국 정치 셧다운 부채한도 대선"]
+    note: 자동 헤드라인(2026-07-20, 네이버+Google News)
+  - name: 주요국 매크로 (중국 부동산·부양책 / 일본 / 유럽 / 인도)
+    tier: 2
+    method: news
+    news_queries: ["China property stimulus OR Japan economy OR Europe economy OR India economy", "중국 부동산 부양책 일본 유럽 인도 경제"]
+    note: 자동 헤드라인(2026-07-20, 네이버+Google News)
+  - name: 신흥국 리스크 (국가부채·디폴트·통화위기, CDS)
+    tier: 2
+    method: news
+    news_queries: ["emerging market default OR currency crisis OR sovereign debt CDS", "신흥국 디폴트 통화위기 국가부채"]
+    note: 자동 헤드라인(2026-07-20, 네이버+Google News)
+  - name: 남캅카스·중간회랑 논평 (GEOpolitics, 조지아)
+    vault_node: 지정학적 리스크
+    tier: 2
+    method: scrape
+    source: research_feed
+    feeds: [politicsgeo]
+    points: 8
+    note: '2026-08-19 신설. politicsgeo.com — 조지아 발간 지정학 계간지. **왜 이 매체인가**: 볼트에 `지정학 — 중앙아시아·코카서스(카자흐 원유·우라늄, 중간회랑)` 축이 이미 있는데 계열이 **구글 뉴스 헤드라인뿐**이었다. 중간회랑(Middle Corridor)·남오세티야·아르메니아-아제르바이잔은 **현지 매체가 먼저 쓰고 서방 매체가 늦게 받는다** — 그 시차를 메운다. 첫 실행에서 남오세티야 병합 위험, 트빌리시-예레반 축 이동, 러시아 하이브리드전이 들어왔다. ⚠ **RSS는 죽어 있다** — `/feed/`가 200을 주지만 item이 0건이다(기사가 커스텀 포스트 타입이라 기본 피드에 안 실린다). 그래서 **`post-sitemap.xml`을 목록으로 쓴다**(2026-08-19 실측 기사 221건·이슈 32호). 사이트맵은 `<loc>`과 `<lastmod>`만 주므로 **제목은 URL 슬러그에서 복원**한 것이다 — 원제와 대소문자·구두점이 다르다. ⚠ **당사국 매체다.** 조지아 국내 정치(조지아드림 정부 비판)가 논조에 섞인다 — 러시아·EU 관련 서술은 **반대 증거를 같이 찾는다**(등급은 출처가 아니라 근거로). ⚠ 갱신은 월 단위다. 급변 감지는 뉴스 피드·GPR이 맡는다'
+  - name: 지정학 논평 피드 (The Geopolitics)
+    vault_node: 지정학적 리스크
+    tier: 2
+    method: scrape
+    source: research_feed
+    feeds: [geopolitics]
+    points: 6
+    note: '2026-08-19 신설. thegeopolitics.com RSS(10건 보관). 기존 지정학 계열은 **뉴스 헤드라인(구글/네이버)과 GPR 지수**뿐이라 "무슨 일이 났나"는 알아도 **"어떻게 읽히고 있나"는 못 봤다.** 이 피드가 그 공백을 메운다 — 인도·중국, QUAD, 캐나다 잠수함 결정과 한국 방산수출처럼 **볼트의 지정학 노출 계열과 직접 겹치는 주제**가 들어온다. ⚠ **기관 리서치가 아니라 기고 논평 매체다.** 저자가 매번 다르고 동료심사가 없다 — 등급은 `commentary`로 받고 **판정 근거로 승격하지 않는다**(등급은 출처가 아니라 근거로). ⚠ **갱신이 느리다** — 점검 시점(2026-08-19) 최신 항목이 2026-07-27로 약 3주 전이다. 이걸 실시간 지정학 감시로 쓰면 안 된다. 급변 감지는 계속 뉴스 피드·GPR이 맡는다. ⚠ 제목·날짜·링크만 온다. 본문 판독 없이 인용하지 않는다'
+  - name: 미 관세 수입 (재무부 MTS, 월별)
+    vault_node: 무역분쟁·관세
+    tier: 1
+    method: api
+    source: fiscaldata
+    endpoint: /v1/accounting/mts/mts_table_9
+    items: [Customs Duties]
+    since: "2024-10-01"
+    points: 18
+    note: >-
+      2026-08-21 신설. **[[무역분쟁·관세]] 노드가 "볼트에 계열이 없다 → 수집기 후보"라고 적어둔 바로 그 계열이다.**
+      관세는 그동안 계열이 아니라 뉴스 사건으로만 처리돼 왔는데, 재무부 MTS 표9가 **실제 징수액**을 월별로 준다(키 불필요·무료).
+      ⚠ **부호 규약이 함정이다.** 필드가 rcpt_outly(수입/지출 겸용)라 **환급이 크면 당월이 음수**가 된다 —
+      실측(2026-08-21)에서 2026-06 **−256억달러** · 2026-07 **−85억달러**였고,
+      **회계연도 누계도 1,886억 → 1,545억으로 감소**했다. 즉 **대규모 환급이 진행 중**이라는 신호다.
+      **당월값만 보고 "관세가 줄었다"고 쓰지 말 것** — 누계·전년 동기와 함께 읽는다.
+      ⚠ 이 계열은 **징수액이지 관세율이 아니다.** 수입물량이 줄어도 같이 준다 — 관세율 변화는 뉴스 계열과 대조해야 한다.
+  - name: 지정학위험지수 GPR — 글로벌 헤드라인 (월간)
+    tier: 1
+    method: scrape
+    source: gpr
+    gpr_series: GPR
+    gpr_points: 6
+    note: 확인 완료(2026-07-22) — Caldara & Iacoviello GPR, matteoiacoviello.com 월간 .xls 직배포(xlrd 파싱). 위 지정학 헤드라인(뉴스)에 대한 정량 수치. 값↑=지정학 리스크↑
+  - name: 지정학위험지수 GPRC — 산유국·핵심국 (월간)
+    tier: 2
+    method: scrape
+    source: gpr
+    gpr_series: [GPRC_RUS, GPRC_SAU, GPRC_VEN, GPRC_UKR, GPRC_ISR, GPRC_CHN, GPRC_KOR]
+    gpr_points: 1
+    note: 확인 완료(2026-07-22) — GPR 국가별 분해(러/사우디/베네수엘라/우크라/이스라엘/중국/한국). 원유공급·전이채널 해석은 사람 몫. GeoSwap 지정학 데이터의 라이브 원본
+  - name: 러시아 화석연료 수출수입 (CREA, 월간)
+    tier: 1
+    method: api
+    source: crea
+    crea_series: [CREA_RU_FOSSIL_EUR, CREA_RU_OIL_EUR, CREA_RU_GAS_EUR]
+    crea_points: 6
+    note: '2026-08-26 신설. CREA Russia Fossil Tracker API(api.russiafossiltracker.com/v0/counter, 2022-02-24~). **왜 필요한가**: 지정학 축의 계열이 지금까지 전부 원인(GPR·뉴스)이나 중간변수(유가)였고 **결과 — 크렘린이 실제로 얼마를 벌었나 — 를 재는 계열이 없었다.** 제재·유가 예측을 채점하려면 이 종속변수가 있어야 한다. 값↑ = 제재에도 수입 증가. ⚠ **당월은 미완성이라 자동 제외한다**(안 그러면 끝이 항상 급감으로 보인다). ⚠ CREA는 선박 추적 기반 추정치이지 러시아 공식 통계가 아니다 — 수준보다 방향·변화율로 읽는다'
+  - name: 유럽 TTF 천연가스 선물 (일별)
+    tier: 1
+    method: scrape
+    source: yahoo_finance
+    symbol: "TTF=F"
+    note: '2026-08-26 신설. 유럽 가스 벤치마크(EUR/MWh). **왜 필요한가**: 기존 가스 계열이 미 헨리허브(DHHNGSP)뿐이라 국제 가스가를 판단할 수 없었다 — 실제로 2026년 이란 국면에서 헨리허브는 내리고 유럽·아시아는 다르게 움직였다. 러시아 파이프라인 축소·LNG 재편의 가격 반영을 여기서 본다'
+  - name: EU 천연가스 가격 (IMF, 월간)
+    tier: 2
+    method: api
+    source: fred
+    series_id: [PNGASEUUSDM, PNGASJPUSDM]
+    note: '2026-08-26 신설. PNGASEUUSDM=EU 가스, PNGASJPUSDM=아시아 LNG(둘 다 IMF 원자재가격, USD/MMBtu, 1992~). TTF 일별의 장기 백테스트용 짝. 아시아 LNG는 한국 수입가와 직결된다'
+  - name: 미 원유재고 (주간)
+    tier: 2
+    method: api
+    source: eia
+    eia_route: petroleum/stoc/wstk
+    eia_series: WCESTUS1
+    note: 확인 완료(2026-07-18) — EIA v2 API, 상업 원유재고(SPR 제외). EIA_API_KEY 권장(미설정 시 DEMO_KEY)
+  - name: 미 원유생산 (주간)
+    tier: 2
+    method: api
+    source: eia
+    eia_route: petroleum/sum/sndw
+    eia_series: WCRFPUS2
+    note: EIA v2 API, 주간 원유 생산량. EIA_API_KEY 권장(미설정 시 DEMO_KEY)
+  - name: 농산물 (밀·옥수수·대두)
+    tier: 2
+    method: api
+    source: fred
+    series_id: [PWHEAMTUSDM, PMAIZMTUSDM, PSOYBUSDM]   # 확인 — 글로벌 가격(월)
+  - name: 니치 원자재 ETF 프록시 (우라늄·희토류·리튬)
+    tier: 2
+    method: scrape
+    source: yahoo_finance
+    symbol: [URA, SRUUF, REMX, LIT]
+    note: 확인 완료(2026-07-18) — ETF 프록시 자동(우라늄 URA·스프랏현물 SRUUF / 희토류 REMX / 리튬 LIT). 니켈은 무료 프록시 부재 — 현물가 필요 시 LME 수동
+  - name: 해운 운임 (BDI 프록시·SCFI)
+    tier: 2
+    method: scrape
+    source: yahoo_finance
+    symbol: BDRY
+    note: BDI 추종 ETF(BDRY) 프록시 자동(확인 2026-07-18). SCFI는 상하이해운거래소 페이지가 JS 렌더링이라 수동 — 매주 금요일 발표치 직접 확인
+  - name: 국내 유가 (오피넷)
+    tier: 2
+    method: api
+    source: opinet
+    note: 확인 완료(2026-07-20) — 오피넷 전국 평균(휘발유·경유). 파라미터명 code→certkey 오류 수정 후 정상 동작
+  - name: 이벤트 캘린더 (선거·OPEC+·중앙은행 일정)
+    tier: 2
+    method: manual
+    note: 매주 학회 공용 공유
+  - name: 한국 지정학 노출 (방산수출·조선수주·에너지 수입의존)
+    tier: 2
+    method: news
+    news_queries: ["Korea defense export OR shipbuilding order", "방산수출 조선수주 에너지수입"]
+    note: 자동 헤드라인(2026-07-20, 네이버+Google News)
