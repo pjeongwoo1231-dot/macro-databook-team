@@ -86,6 +86,10 @@ def _team_note(team_key: str, team_rows: list[dict[str, Any]], run_ts: str, date
     for r in sorted(team_rows, key=lambda x: (x["tier"], x["status"] != "ok")):
         if r["status"] == "ok":
             latest, trend = _obs_cell(r)
+            # 단위를 값 옆에 붙인다. 침체확률 0.6을 60%로 읽는 사고가 여기서 막힌다.
+            meta_bits = [b for b in (r.get("unit"), r.get("seasonal_adjustment")) if b]
+            if meta_bits:
+                latest += f"<br><sub>{_esc(' · '.join(meta_bits))}</sub>"
             src = f"[출처]({r['source_url'].split()[0]})" if r["source_url"].startswith("http") else _esc(r["source_url"]) or "—"
             status = src + (f" ⚠ {_esc(r['error'])}" if r.get("error") else "")
             if r.get("stale"):

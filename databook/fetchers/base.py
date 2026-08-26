@@ -93,7 +93,10 @@ def result(
         "source": ind.get("source", ""),
         "status": status,
         "observations": observations or [],  # [{"date": "YYYY-MM-DD", "value": float|str, "label": str?}]
-        "unit": unit,
+        # yaml에 사람이 적은 unit을 fetcher가 전달하지 않아도 실리게 한다.
+        # 이게 없어서 indicators.yaml의 unit이 스냅샷에 전혀 반영되지 않고 있었다(2026-08-26).
+        "unit": unit or ind.get("unit", ""),
+        "unit_check": ind.get("unit_check", ""),
         "max_age_days": ind.get("max_age_days"),
         "source_url": source_url,
         "error": error,

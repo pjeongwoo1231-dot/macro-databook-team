@@ -57,4 +57,25 @@ def fetch(ind: dict[str, Any], env: dict[str, str]) -> dict[str, Any]:
     res = result(ind, "ok", observations=all_obs, source_url=" ".join(urls))
     if errors:
         res["error"] = "; ".join(errors)  # 부분 실패 병기
+
+    # 단위·주기·계절조정을 메타 캐시에서 붙인다. yaml의 unit이 있으면 그쪽이 우선 —
+    # 사람이 명시한 것을 자동 취득분이 덮어쓰면 안 된다.
+    # units=pc1 같은 변환을 걸면 FRED 원단위가 더 이상 맞지 않으므로 그때는 변환 단위를 쓴다.
+    try:
+        from ..seriesmeta import for_series
+        metas = [for_series(sid) for sid in ids]
+        metas = [m for m in metas if m]
+        if metas and not ind.get("unit"):
+            if units == "pc1":
+                res["unit"] = "% YoY"
+            elif units:
+                res["unit"] = f"FRED units={units}"
+            else:
+                uniq = {m.get("unit", "") for m in metas if m.get("unit")}
+                res["unit"] = uniq.pop() if len(uniq) == 1 else " / ".join(sorted(uniq))
+        if metas:
+            res["frequency"] = "/".join(sorted({m.get("frequency", "") for m in metas if m.get("frequency")}))
+            res["seasonal_adjustment"] = "/".join(sorted({m.get("seasonal_adjustment", "") for m in metas if m.get("seasonal_adjustment")}))
+    except Exception:
+        pass  # 메타는 부가정보다 — 없다고 수집을 실패시키지 않는다
     return res

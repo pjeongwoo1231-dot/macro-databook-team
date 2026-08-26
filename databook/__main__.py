@@ -89,6 +89,9 @@ def main() -> int:
     vt.add_argument("--top", type=int, default=20, help="개정 리포트에 출력할 건수")
     vt.add_argument("--like", help="지표명 부분일치 필터 (예: --like GDPNow)")
     sub.add_parser("consensus", help="컨센서스 서프라이즈 — FairEconomy 캘린더 적립 + actual 대조")
+    sm2 = sub.add_parser("seriesmeta", help="시리즈 메타(단위·주기·계절조정) 캐시 갱신 + 커버리지 리포트")
+    sm2.add_argument("--report", action="store_true", help="갱신 없이 커버리지만 출력")
+    sub.add_parser("unitcheck", help="단위 정합성 검사 — 최신 스냅샷에서 단위/값 모순 탐지")
     args = ap.parse_args()
 
     if args.cmd == "setup":
@@ -118,6 +121,14 @@ def main() -> int:
     if args.cmd == "consensus":
         from .consensus import run as run_consensus
         return run_consensus()
+
+    if args.cmd == "seriesmeta":
+        from .seriesmeta import run as run_meta
+        return run_meta(report=args.report)
+
+    if args.cmd == "unitcheck":
+        from .unitcheck import run as run_uc
+        return run_uc()
 
     if args.cmd == "dyntopics":
         from .dyntopics import run as run_dyn
