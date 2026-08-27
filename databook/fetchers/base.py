@@ -75,6 +75,31 @@ def get_bytes(url: str, headers: dict[str, str] | None = None, retries: int = 1)
 BROWSER_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36"
 
 
+_UNIT_PAT = None
+
+
+def unit_from_labels(observations: list[dict[str, Any]]) -> str:
+    """라벨 끝의 괄호에서 단위를 뽑는다 — "유로존 HICP YoY(%)" -> "%".
+
+    eurostat·ecb·dbnomics 지표는 db_labels/label에 이미 단위를 적어두는 관례라
+    사람이 yaml에 unit을 또 쓰는 대신 여기서 재사용한다. 못 뽑으면 빈 문자열이고,
+    그건 "미확보"로 남아 unitcheck가 보고한다 — 추측해서 채우지 않는다.
+    """
+    global _UNIT_PAT
+    if _UNIT_PAT is None:
+        import re
+        _UNIT_PAT = re.compile(r"[（(]([^()（）]{1,24})[)）]\s*$")
+    found = set()
+    for o in observations:
+        lab = str(o.get("label") or "").strip()
+        m = _UNIT_PAT.search(lab)
+        if m:
+            found.add(m.group(1).strip())
+    if len(found) == 1:
+        return found.pop()
+    return ""
+
+
 def result(
     ind: dict[str, Any],
     status: str,
@@ -95,7 +120,7 @@ def result(
         "observations": observations or [],  # [{"date": "YYYY-MM-DD", "value": float|str, "label": str?}]
         # yaml에 사람이 적은 unit을 fetcher가 전달하지 않아도 실리게 한다.
         # 이게 없어서 indicators.yaml의 unit이 스냅샷에 전혀 반영되지 않고 있었다(2026-08-26).
-        "unit": unit or ind.get("unit", ""),
+        "unit": unit or ind.get("unit", "") or unit_from_labels(observations or []),
         "unit_check": ind.get("unit_check", ""),
         "max_age_days": ind.get("max_age_days"),
         "source_url": source_url,

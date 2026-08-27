@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from . import bis, bls, boj_api, cftc, china, crea, crypto, e_stat, europe, fred, frbsf, intl, japan, korea, nyfed, ofr, research, scrape, spreadsheet, tossinvest, us_gov, worldbank
+from . import bis, bls, boj_api, cftc, china, crea, crypto, deribit, e_stat, europe, fred, frbsf, intl, japan, korea, nyfed, ofr, research, scrape, sec_xbrl, spreadsheet, tossinvest, us_gov, worldbank
 from .base import result
 from .news import fetch_news_indicator
 
@@ -53,6 +53,7 @@ DISPATCH = {
     "worldbank": worldbank.fetch,
     "naver_datalab": korea.fetch_naver_datalab,
     "dbnomics": intl.fetch_dbnomics,
+    "deribit": deribit.fetch,
     "eurostat": europe.fetch_eurostat,
     "ecb": europe.fetch_ecb,
     "bcb": intl.fetch_bcb,
@@ -74,6 +75,7 @@ DISPATCH = {
     "e_stat": e_stat.fetch,
     "gacc": china.fetch_gacc,
     "pboc": china.fetch_pboc,
+    "sec_xbrl": sec_xbrl.fetch,
     "boj_api": boj_api.fetch,
     "tossinvest": tossinvest.fetch,
     "frbsf_tfp": frbsf.fetch,

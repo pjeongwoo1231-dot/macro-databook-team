@@ -26,12 +26,17 @@ from .core import OUTPUT_DIR
 LOG = OUTPUT_DIR / "daily.log"
 
 STEPS: list[tuple[str, str, list[str]]] = [
+    # consensus는 run보다 먼저 — FairEconomy는 롤링 1주만 제공하므로 forecast는 발표 전에
+    # 적립해둬야 한다. 이번 주 값을 놓치면 그 주 서프라이즈는 영영 계산할 수 없다.
+    ("consensus", "컨센서스 캘린더 적립 (발표 전 forecast 확보)", []),
     ("run", "Data Book 전체 수집", []),
     ("sectors", "업종 등락·외국인 지분율", []),
     ("lending", "대차잔고", ["--days", "5"]),
     ("history", "FRED·Yahoo 증분 + GPR 전이력", []),
     ("tossback", "토스 시장계열 증분(1분봉 포함)", ["--what", "market"]),
     ("intel", "정보 수집 (API·RSS, 검색엔진 미사용)", []),
+    ("vintage", "빈티지 인덱스 재구성 (개정 이력)", []),
+    ("unitcheck", "단위 정합성 검사", []),
     ("site", "시황 사이트 재생성", []),   # 항상 마지막 — 위 단계 결과를 굳힌다
 ]
 
@@ -94,6 +99,18 @@ def _dispatch(cmd: str, extra: list[str]) -> int:
         ok = sum(1 for r in results if r["status"] == "ok")
         _log(f"       수집 성공 {ok}/{len(results)}")
         return 0
+    if cmd == "consensus":
+        from .consensus import run as f
+        return f()
+
+    if cmd == "vintage":
+        from .vintage import run as f
+        return f(top=8)
+
+    if cmd == "unitcheck":
+        from .unitcheck import run as f
+        return f()
+
     if cmd == "sectors":
         from .sectors import collect
         return collect()

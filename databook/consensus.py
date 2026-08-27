@@ -131,9 +131,10 @@ def archive_calendar() -> tuple[int, int]:
     return added, updated
 
 
-def _level_history(label: str) -> list[tuple[str, float]]:
-    """label의 (관측월, 최초발표값) 목록을 관측월 오름차순으로. 최초발표값 = 그 obs_date가
-    vintage.csv에 처음 등장한 스냅샷의 값 — 나중 개정치가 아니라 시장이 봤던 원래 발표치."""
+def _level_history(label: str) -> list[tuple[str, float, str]]:
+    """label의 (관측일, 최초발표값, 최초등장 스냅샷일) 목록을 관측일 오름차순으로.
+    최초발표값 = 그 obs_date가 vintage.csv에 처음 등장한 스냅샷의 값 — 나중 개정치가 아니라
+    시장이 그때 봤던 원래 발표치. 세 번째 원소(first_seen)가 look-ahead 차단에 쓰인다."""
     by_obs: dict[str, list[tuple[str, float]]] = {}
     for r in _load_vintage():
         if r["label"] != label:
@@ -142,20 +143,28 @@ def _level_history(label: str) -> list[tuple[str, float]]:
     out = []
     for od, seen in by_obs.items():
         seen.sort(key=lambda x: x[0])
-        out.append((od, seen[0][1]))
+        out.append((od, seen[0][1], seen[0][0]))
     out.sort(key=lambda x: x[0])
     return out
 
 
-def _actual_for(label: str, transform: str, event_month: str) -> float | None:
-    """event_month(YYYY-MM 또는 YYYY-MM-DD 접두)에 해당하는 관측치로 actual을 계산.
-    mom_pct/yoy_pct/qoq_saar_pct는 레벨 시계열에서 직접 재계산한다 — FRED에 %계열을
-    별도로 추가 수집하지 않고, 이미 갖고 있는 레벨로 동일한 정의를 재현한다."""
+def _actual_for(label: str, transform: str, event_date: str) -> float | None:
+    """event_date(YYYY-MM-DD)에 발표된 값으로 actual을 계산.
+
+    ⚠ 이 함수의 첫 구현은 event_date의 앞 7자(YYYY-MM)로 관측을 찾았다. 그래서
+    2026-08-27에 발표될 실업수당청구에 이미 수집된 8월 초 주간 관측이 붙어
+    "발표 전에 서프라이즈가 계산되는" look-ahead가 났다. 주간 계열에서 특히 위험하다.
+
+    지금은 vintage의 first_seen(그 관측이 처음 등장한 스냅샷일)을 써서
+    **발표일 당일 또는 그 이후에 처음 나타난 관측**만 actual로 인정한다.
+    아직 안 나온 발표는 None을 돌려주고, 그 이벤트는 서프라이즈 계산에서 빠진다.
+    """
     hist = _level_history(label)
-    idx = next((i for i, (od, _) in enumerate(hist) if od.startswith(event_month[:7])), None)
+    # 발표일 이후 처음 등장한 관측 중 가장 이른 것 = 그 발표가 내놓은 값
+    idx = next((i for i, (_, _, first_seen) in enumerate(hist) if first_seen >= event_date), None)
     if idx is None:
         return None
-    _, v_t = hist[idx]
+    _, v_t, _ = hist[idx]
     if transform == "level":
         return v_t
     if transform == "mom_pct":
@@ -186,6 +195,9 @@ def surprises() -> list[dict[str, Any]]:
     for r in _read_archive():
         if not r.get("forecast_value"):
             continue
+        today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        if r["event_date"] > today:
+            continue  # 아직 발표 전 — actual이 존재할 수 없다
         actual = _actual_for(r["label"], r["transform"], r["event_date"])
         if actual is None:
             continue
