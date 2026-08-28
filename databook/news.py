@@ -47,16 +47,22 @@ NAVER_DISPLAY = 100      # 네이버 뉴스검색 API 공식 상한(display 파�
 TEAM_QUERIES: dict[str, list[tuple[str, str]]] = {
     "team_1": [("US jobs report OR GDP OR ISM PMI OR recession", "en"),
                ("한국 수출 OR 고용 OR 경기", "ko"),
-               ("China economy growth", "en")],
+               ("China economy growth", "en"),
+               ("中国 经济 增长 OR 制造业 PMI", "zh"),
+               ("日本 景気 OR GDP OR 鉱工業生産", "ja")],
     "team_2": [("Fed FOMC OR rate cut OR CPI inflation", "en"),
                ("한국은행 기준금리 OR 물가", "ko"),
-               ("ECB OR BOJ policy rate", "en")],
+               ("ECB OR BOJ policy rate", "en"),
+               ("日銀 金融政策 OR 物価 OR 賃上げ", "ja"),
+               ("中国 央行 OR LPR OR 物价", "zh")],
     "team_3": [("credit spreads OR liquidity OR dollar DXY", "en"),
                ("crypto bitcoin ETF OR stablecoin regulation", "en"),
                ("private credit OR CRE commercial real estate stress", "en"),
                ("외국인 수급 OR 원달러 환율", "ko")],
     "team_4": [("Middle East oil OR OPEC OR Russia Ukraine sanctions", "en"),
                ("US China tariff OR export controls OR trade war", "en"),
+               ("中国 出口 OR 关税 OR 稀土", "zh"),
+               ("日本 貿易統計 OR 輸出", "ja"),
                ("Taiwan strait OR North Korea", "en"),
                ("중동 유가 OR 지정학 OR 관세", "ko")],
 }
@@ -223,7 +229,15 @@ def _fetch_feed(url: str, default_source: str = "") -> list[dict[str, str]]:
 
 
 def _google_news(query: str, lang: str) -> list[dict[str, str]]:
-    hl, gl, ceid = ("ko", "KR", "KR:ko") if lang == "ko" else ("en-US", "US", "US:en")
+    # 원어 우선 규칙(AGENTS.md) — 그 나라 기사는 그 나라 언어로 검색해야 잡힌다.
+    # 영어 쿼리만 쓰면 현지 매체가 통째로 빠진다(중국 재경·일경 등).
+    _LOC = {
+        "ko": ("ko", "KR", "KR:ko"),
+        "ja": ("ja", "JP", "JP:ja"),
+        "zh": ("zh-CN", "CN", "CN:zh-Hans"),
+        "en": ("en-US", "US", "US:en"),
+    }
+    hl, gl, ceid = _LOC.get(lang, _LOC["en"])
     q = urllib.parse.quote(query)
     url = f"https://news.google.com/rss/search?q={q}&hl={hl}&gl={gl}&ceid={ceid}"
     return _fetch_feed(url)
