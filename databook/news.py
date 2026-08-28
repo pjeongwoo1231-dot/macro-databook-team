@@ -31,7 +31,8 @@ except ImportError:  # 단독 실행/테스트 폴백
 
     def load_env() -> dict[str, str]:
         import os
-        return {"OBSIDIAN_VAULT_PATH": os.environ.get("OBSIDIAN_VAULT_PATH", "")}
+        return {"OBSIDIAN_VAULT_PATH": os.environ.get("OBSIDIAN_VAULT_PATH", ""),
+                "TEAM_VAULT_PATH": os.environ.get("TEAM_VAULT_PATH", "")}
 
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
 TIMEOUT = 20
@@ -342,6 +343,10 @@ def write_digest(content: str, run_ts: str, env: dict[str, str]) -> list[Path]:
     # 로컬 output/은 "Macro/"(이 프로젝트 자체 관례), 실제 Obsidian vault는 "04_DataBook/"(vault 관례).
     targets: list[tuple[Path, str]] = [(OUTPUT_DIR, "Macro")]
     vault = (env or {}).get("OBSIDIAN_VAULT_PATH", "").strip().strip('"')
+    # 팀 볼트에도 같이 쓴다 — render.py와 동일 규칙
+    team = (env or {}).get("TEAM_VAULT_PATH", "").strip().strip('"')
+    if team and team != vault:
+        targets.append((Path(team), "04_DataBook"))
     if vault:
         targets.append((Path(vault), "04_DataBook"))
     written = []

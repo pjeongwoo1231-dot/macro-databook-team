@@ -221,6 +221,50 @@ def _hub_note(results: list[dict[str, Any]], run_ts: str, date_str: str,
     return "\n".join(lines)
 
 
+# 날짜별 산출물은 하루 5개씩 쌓인다 — 1년이면 1,800개가 한 폴더에 들어간다.
+# 최근 N회분만 제자리에 두고 나머지는 _archive/YYYY-MM/ 으로 **옮긴다**(지우지 않는다).
+# Obsidian 위키링크는 경로가 아니라 파일명으로 해석되므로 옮겨도 링크는 살아 있다.
+KEEP_RUNS_DEFAULT = 5
+_DATED = re.compile(r"^DataBook.*_(\d{4}-\d{2}-\d{2})\.md$")
+
+
+def archive_old_runs(root: Path, prefix: str, keep: int = KEEP_RUNS_DEFAULT) -> int:
+    """`<root>/<prefix>` 아래 날짜별 파일을 최근 `keep`개 실행일만 남기고 아카이브한다.
+
+    건드리지 않는 것: 허브(`HUB_NAME`)·`snapshots/`·`_News/`·이미 `_archive/` 안에 있는 것.
+    반환값은 옮긴 파일 수.
+    """
+    base = root / prefix
+    if not base.is_dir() or keep < 1:
+        return 0
+    targets: list[tuple[Path, str]] = []
+    for path in base.rglob("*.md"):
+        if "_archive" in path.parts or path.stem == HUB_NAME:
+            continue
+        if path.parent.name in ("snapshots", "_News"):
+            continue
+        m = _DATED.match(path.name)
+        if m:
+            targets.append((path, m.group(1)))
+    dates = sorted({d for _, d in targets})
+    if len(dates) <= keep:
+        return 0
+    stale = set(dates[:-keep])
+    moved = 0
+    for path, d in targets:
+        if d not in stale:
+            continue
+        sub = path.parent.name if path.parent != base else ""
+        dest_dir = base / "_archive" / d[:7] / sub if sub else base / "_archive" / d[:7]
+        dest_dir.mkdir(parents=True, exist_ok=True)
+        dest = dest_dir / path.name
+        if dest.exists():          # 같은 이름이 이미 있으면 덮어쓰지 않는다
+            continue
+        shutil.move(str(path), str(dest))
+        moved += 1
+    return moved
+
+
 def render_markdown(results: list[dict[str, Any]], run_ts: str, env: dict[str, str] | None = None) -> list[Path]:
     date_str = run_ts[:10]
     written: list[Path] = []
@@ -234,6 +278,11 @@ def render_markdown(results: list[dict[str, Any]], run_ts: str, env: dict[str, s
 
     targets: list[tuple[Path, str]] = [(OUTPUT_DIR, "Macro")]
     vault = (env or {}).get("OBSIDIAN_VAULT_PATH", "").strip().strip('"')
+    # 팀 공유용 볼트 — 개인 볼트의 논문·제텔·데일리노트를 함께 내보내지 않으려고 분리한다.
+    # Data Book만 들어가므로 그대로 옵시디언 공유·GitHub 어느 쪽에 올려도 안전하다.
+    team = (env or {}).get("TEAM_VAULT_PATH", "").strip().strip('"')
+    if team and team != vault:
+        targets.append((Path(team), "04_DataBook"))
     if vault:
         targets.append((Path(vault), "04_DataBook"))
         # 허브는 볼트의 노드 이름에 의존하므로 볼트가 있을 때만 만든다.
@@ -249,6 +298,11 @@ def render_markdown(results: list[dict[str, Any]], run_ts: str, env: dict[str, s
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(content, encoding="utf-8")
             written.append(path)
+    keep = int((env or {}).get("DATABOOK_KEEP_RUNS") or KEEP_RUNS_DEFAULT)
+    for root, prefix in targets:
+        n = archive_old_runs(root, prefix, keep)
+        if n:
+            print(f"  아카이브: {root / prefix / '_archive'} 로 {n}개 이동 (최근 {keep}회분 유지)")
     return written
 
 
@@ -257,9 +311,11 @@ def render_snapshot(results: list[dict[str, Any]], run_ts: str, env: dict[str, s
     path = OUTPUT_DIR / f"snapshot_{run_ts[:10]}.json"
     payload = {"generated_at_utc": run_ts, "indicator_count": len(results), "indicators": results}
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=1), encoding="utf-8")
-    vault = (env or {}).get("OBSIDIAN_VAULT_PATH", "").strip().strip('"')
-    if vault:
-        dest = Path(vault) / "04_DataBook" / "snapshots" / path.name
+    for key in ("OBSIDIAN_VAULT_PATH", "TEAM_VAULT_PATH"):
+        v = (env or {}).get(key, "").strip().strip('"')
+        if not v:
+            continue
+        dest = Path(v) / "04_DataBook" / "snapshots" / path.name
         dest.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(path, dest)
     return path

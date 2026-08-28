@@ -58,7 +58,7 @@ def load_env() -> dict[str, str]:
     for k in ("FRED_API_KEY", "ECOS_API_KEY", "KOSIS_API_KEY", "DATA_GO_KR_KEY",
               "EIA_API_KEY", "OPINET_API_KEY", "E_STAT_APP_ID", "DATA_GO_KR_LENDBORR_KEY", "NAVER_CLIENT_ID", "NAVER_CLIENT_SECRET",
               "TOSSINVEST_CLIENT_ID", "TOSSINVEST_CLIENT_SECRET",
-              "OBSIDIAN_VAULT_PATH"):
+              "OBSIDIAN_VAULT_PATH", "TEAM_VAULT_PATH", "DATABOOK_KEEP_RUNS"):
         env.setdefault(k, os.environ.get(k, ""))
     return env
 
