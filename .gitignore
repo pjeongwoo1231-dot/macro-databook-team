@@ -11,3 +11,8 @@ output/
 *.bak.*
 # 볼트로 복사되는 산출물 — 원본은 DATABOOK_OUTPUT_DIR(macro-data/output)에 있다
 Macro/
+
+# 임시 디버그 스크립트·미리보기 (공유본에서 제외)
+_f2.py
+_fredq.py
+_hub_preview.md

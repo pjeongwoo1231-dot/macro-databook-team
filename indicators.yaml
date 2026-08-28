@@ -1666,6 +1666,52 @@ team_3:
     item_code: [BOPF21000000, BOPF22000000]
     vault_node: 원·달러 환율
     note: 'ECOS 국제수지 월별. **거주자 흐름을 못 본다**는 볼트의 관측 공백을 메운다(2026-08-19 신설). OECD WP 2021/05(De Crescenzio & Lepers)는 극단 자본흐름을 **비거주자(surge/stop)와 거주자(flight/retrenchment) 넷으로** 나누는데, 볼트는 지금까지 외국인 순매수(비거주자)만 봤다. **위기 국면에 거주자가 해외자산을 회수(retrenchment)하면 유출이 상쇄될 수 있는데 그걸 못 봤다.** ⚠ 월별이라 급변 국면에 늦다(같은 논문의 문제의식 그대로). ⚠ BOP 부호 규약: 자산 +는 거주자의 대외투자 증가, 부채 −는 비거주자의 국내증권 순매도. 2026-06 실측: 자산 +3,557 · **부채 −26,324**(백만달러) — 비거주자 순매도가 2개월 연속'
+  - name: AI 캐펙스 — 자본지출과 자체조달 여력 (SEC XBRL)
+    vault_node: "-"
+    tier: 1
+    method: api
+    source: sec_xbrl
+    companies:
+      - {ticker: MSFT,  cik: 789019}
+      - {ticker: AMZN,  cik: 1018724}
+      - {ticker: GOOGL, cik: 1652044}
+      - {ticker: META,  cik: 1326801}
+      - {ticker: ORCL,  cik: 1341439}
+      - {ticker: CRWV,  cik: 1769628}
+    metrics: [capex, fcf]
+    points: 3
+    note: '2026-08-27 신설. **볼트 신용 블록은 전부 시장이 매긴 가격(HY/IG OAS·EBP·GZ)인데, 지금 미국 신용사이클의 중심인 AI 자본지출은 가격이 아니라 재무제표에 있다.** 스프레드가 벌어지기 전에 대차대조표가 먼저 움직인다. **판정 규칙: 「영업현금흐름 − 자본지출」의 부호와 추세.** 벌어서 짓는가, 빌려서 짓는가를 가른다. 실측(최근 회계연도, 전년 대비): capex는 전부 1년 만에 거의 2배 — MSFT 64.6→**115.9B** · AMZN 83.0→**131.8B** · GOOGL 52.5→**91.4B** · META 37.3→**69.7B** · ORCL 21.2→**55.7B** · CRWV 8.7→**10.3B**. 그런데 자체조달 여력은 갈린다: MSFT +67.0 · GOOGL +73.3 · META +46.1로 여유가 있고, **AMZN은 32.9→+7.7로 급감**, **ORCL −0.4→−23.7**, **CRWV −6.0→−7.3**으로 마이너스다. 즉 AI 캐펙스의 신용 리스크는 하이퍼스케일러 전체가 아니라 **오라클·코어위브에 집중**돼 있다. **3개년으로 보면 더 분명하다 — ORCL 자본지출 6.9 → 21.2 → 55.7B(2년 8배), 자체조달 여력 +11.8 → −0.4 → −23.7B로 부호가 뒤집혔다.** 같은 기간 MSFT는 44.5 → 64.6 → 115.9B로 늘렸는데 여력은 74.1 → 71.6 → 67.0으로 완만히 줄었을 뿐이다. ⚠ **연간(10-K) 값만 쓴다** — 10-Q 현금흐름표는 연초누계라 분기값을 그냥 쓰면 최대 3배 부풀려진다. ⚠ 회계연도 종료월이 다르다(MSFT 6월·ORCL 5월·나머지 12월) — 같은 줄에 있어도 기준일이 다르니 기준일을 함께 읽을 것. ⚠ NVDA는 뺐다: 자본지출 6.0B로 **파는 쪽**이라 이 판정의 대상이 아니다'
+  - name: AI 캐펙스 — 분기 모멘텀 (SEC XBRL)
+    vault_node: "-"
+    tier: 1
+    method: api
+    source: sec_xbrl
+    companies:
+      - {ticker: MSFT,  cik: 789019}
+      - {ticker: AMZN,  cik: 1018724}
+      - {ticker: GOOGL, cik: 1652044}
+      - {ticker: META,  cik: 1326801}
+      - {ticker: ORCL,  cik: 1341439}
+      - {ticker: CRWV,  cik: 1769628}
+    metrics: [capex, fcf]
+    freq: quarterly
+    points: 4
+    note: '2026-08-28 신설 — 위 연간 지표의 **속보판**. 10-K만 쓰면 갱신이 연 1회라 대부분의 기간에 낡은 값을 본다. 분기값은 **약 6개월 최신**이다(연간은 GOOGL·META·CRWV가 2025-12까지인데 분기는 2026-06까지). 실측 2026-06분기 자본지출: AMZN **54.2B** · GOOGL **44.9B** · MSFT **35.8B** · META **30.1B** · ORCL 16.5B(2026-05) · CRWV 6.4B. 분기 자체조달 여력은 MSFT +19.6 · **ORCL −1.9**(직전 분기 −11.5) · **CRWV −5.7**(직전 −4.7)로 악화 중. ⚠⚠ **분기값은 원자료가 아니라 복원한 값이다.** SEC의 10-Q 현금흐름표는 연초누계라, 같은 회계연도 시작일을 공유하는 사실들을 end 순으로 연속 차분해 만든다. **fetcher가 「분기합 = 연간」을 자동 검사해** 2% 넘게 어긋나면 오류란에 경고를 띄운다 — 그 경고가 뜨면 수치를 인용하지 말 것. 현재 6개사 전부 오차 0.0%. ⚠ 회계연도 종료월이 달라 ORCL은 2·5·8·11월 마감이다 — 같은 줄이어도 분기 경계가 다르다. ⚠ 분기는 계절성이 있다(4분기 집중) — 전분기 대비보다 **전년동분기 대비**로 읽을 것'
+  - name: AI 캐펙스 — 부채·이자·채권발행 (SEC XBRL)
+    vault_node: "-"
+    tier: 2
+    method: api
+    source: sec_xbrl
+    companies:
+      - {ticker: MSFT,  cik: 789019}
+      - {ticker: AMZN,  cik: 1018724}
+      - {ticker: GOOGL, cik: 1652044}
+      - {ticker: META,  cik: 1326801}
+      - {ticker: ORCL,  cik: 1341439}
+      - {ticker: CRWV,  cik: 1769628}
+    metrics: [debt, interest, issuance]
+    points: 3
+    note: '2026-08-27 신설 — 위 지표의 짝. 자체조달이 안 되면 그 자리를 **부채가 메운다**. 실측(전년 대비): **GOOGL 10.9→46.5B(4배)** · **META 28.8→58.7B(2배)** · ORCL 92.6→**129.5B** · AMZN 52.6→65.6B · **CRWV 5.5→14.7B**. 반대로 **MSFT만 40.2→31.1B로 줄였다** — 캐펙스 1위인데 부채는 감축 중이라, 캐펙스 규모와 신용 리스크가 같은 말이 아님을 보여준다. 채권 발행액은 ORCL **46.1B** · GOOGL 64.6B · META 29.9B · CRWV 11.8B. 이자비용은 ORCL **4.6B**, CRWV 0.3→**1.1B(3.7배)**. ⚠⚠ **부채 태그가 회사마다 다르다** — ORCL은 `DebtLongtermAndShorttermCombinedAmount`(유동분 포함), 나머지는 `LongTermDebtNoncurrent`(유동분 제외)다. 라벨 대괄호에 실제 태그를 찍어 두었으니 **기업 간 절대 수준 비교는 태그를 확인한 뒤** 할 것. 증감 추세는 태그가 일관되므로 비교해도 된다. ⚠ MSFT의 발행액이 0인 것은 태그 누락이 아니라 **실제로 발행하지 않는다**는 뜻이다'
   - name: BDC·사모신용 대리지표 (BIZD vs HYG)
     tier: 1
     method: scrape
