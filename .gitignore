@@ -16,3 +16,9 @@ Macro/
 _f2.py
 _fredq.py
 _hub_preview.md
+
+# 저장소 폴더를 Obsidian으로 열면 생기는 것들 — 볼트가 아니다
+.obsidian/
+*.base
+*.canvas
+무제*
