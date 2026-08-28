@@ -32,6 +32,10 @@ def main() -> int:
     q2 = sub.add_parser("diff", help="이전 스냅샷 대비 값이 바뀐 지표만")
     q2.add_argument("terms", nargs="*")
     q2.add_argument("--back", type=int, default=1)
+    q0 = sub.add_parser("todo", help="에이전트가 처리할 자리 (manual 슬롯·STALE 계열)")
+    q0.add_argument("--kind", choices=["all","manual","stale"], default="all")
+    q0.add_argument("--json", action="store_true", dest="as_json")
+    q0.add_argument("--limit", type=int, default=15)
     q3 = sub.add_parser("news", help="뉴스 다이제스트 검색 (요약·선별 아님)")
     q3.add_argument("--q", nargs="*", default=[])
     q3.add_argument("--new", action="store_true")
@@ -109,6 +113,9 @@ def main() -> int:
     sub.add_parser("unitcheck", help="단위 정합성 검사 — 최신 스냅샷에서 단위/값 모순 탐지")
     args = ap.parse_args()
 
+    if args.cmd == "todo":
+        from .todo import cmd_todo
+        return cmd_todo(args.kind, args.as_json, args.limit)
     if args.cmd in ("show", "diff", "news"):
         from .query import cmd_diff, cmd_news, cmd_show
         if args.cmd == "show":

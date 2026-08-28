@@ -92,6 +92,17 @@ python -m databook news --q 중국 --new    # 어제 없던 새 기사   668,037
 python -m databook news --team 4팀 --limit 50
 ```
 
+```bash
+python -m databook todo                 # 에이전트가 채울 자리 (약 1,400 토큰)
+python -m databook todo --json          # 파싱하기 좋게
+```
+
+`todo`는 **AI에게 넘길 작업 목록**입니다. 자동 경로가 없는 `manual` 슬롯과,
+원본이 갱신을 멈춘 `STALE` 계열을 **출처 URL과 함께** 뽑아줍니다.
+에이전트에게 그대로 주면 원문을 열어 값을 채웁니다.
+
+> 트리거 판정은 여기 없습니다 — `derived.py`가 이미 코드로 합니다(17종, 임계값 포함, 토큰 0).
+
 ⚠ `news`는 **검색이지 요약이 아닙니다.** 무엇을 볼지는 사람이 정합니다 —
 AI가 골라주면 그 자체가 편향이라, 수집 단계부터 취사선택을 금지하고 있습니다.
 ```
