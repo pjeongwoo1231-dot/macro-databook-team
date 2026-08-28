@@ -21,6 +21,8 @@ def main() -> int:
                      help="--only 실행에서도 산출물을 덮어쓴다 (그날 노트가 그 소스만 남는다)")
     run.add_argument("--dry-run", action="store_true", help="네트워크 호출 없이 yaml 파싱·렌더 경로만 검증")
     run.add_argument("--no-setup", action="store_true", help="필수 키가 없어도 설정 마법사를 띄우지 않음")
+    run.add_argument("--no-news", action="store_true",
+                     help="뉴스 다이제스트를 건너뛴다 (기본은 수집 끝에 자동 생성)")
     sub.add_parser("setup", help="대화형 키 설정 마법사 (.env 생성/갱신)")
     hist = sub.add_parser("history", help="장기 시계열(FRED) CSV 수집 — 백테스트·회귀용")
     hist.add_argument("--since", default="2000-01-01", help="시작일 YYYY-MM-DD (기본 2000-01-01)")
@@ -249,6 +251,17 @@ def main() -> int:
     for p in md_paths:
         print(f"  → {p}")
     print(f"  → {snap}")
+
+    # 뉴스는 원래 `python -m databook.news` 별도 명령이었는데, run만 돌리는 습관 탓에
+    # **2026-07-20 이후 5주간 갱신이 멈춰 있었다**(경로 문제가 아니라 실행을 안 한 것).
+    # 그래서 run 끝에 붙인다. 실패해도 Data Book은 이미 기록됐으므로 exit code를 바꾸지 않는다.
+    if not args.no_news:
+        try:
+            from .news import run_news
+            for p in run_news(env):
+                print(f"  → {p}")
+        except Exception as e:
+            print(f"  ⚠ 뉴스 생성 실패({type(e).__name__}: {e}) — Data Book은 정상 기록됨")
     return 0
 
 

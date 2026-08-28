@@ -16,7 +16,7 @@
 python -m databook run            # 전체 수집 → output/에 팀별 md 4개 + 인덱스 + json
 python -m databook run --dry-run  # 네트워크 없이 yaml·렌더 검증
 python -m databook run --only fred  # 특정 소스만
-python -m databook.news           # 뉴스 다이제스트 (RSS·GDELT, 키 불필요)
+python -m databook.news           # 뉴스만 따로 (run에 이미 포함 — 재생성할 때만)
 
 # 장기 시계열 (백테스트·회귀용) — FRED 계열 전체 히스토리를 CSV로 축적
 python -m databook history                      # 전체, 2000-01-01~, 증분

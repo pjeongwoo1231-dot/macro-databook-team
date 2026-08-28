@@ -76,7 +76,8 @@ python -m databook setup
 ```bash
 python -m databook run          # 전체 수집
 python -m databook run --dry-run    # 네트워크 없이 설정만 검증
-python -m databook.news         # 뉴스 다이제스트 (키 불필요)
+python -m databook run --no-news    # 뉴스 빼고 수집
+python -m databook.news         # 뉴스만 따로 (run에 이미 포함)
 ```
 
 끝나면 이렇게 나옵니다:

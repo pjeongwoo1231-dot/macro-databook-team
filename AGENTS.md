@@ -15,7 +15,8 @@
    - 키를 받으면 대화형 마법사 `python -m databook setup` 을 사용하거나, 값을 받아 `.env`(형식은 `.env.example`)에 직접 기록한다.
    - **키는 절대 로그·출력·커밋에 남기지 않는다.** `.env` 는 이미 `.gitignore` 대상.
    - Obsidian에 바로 넣으려면 `OBSIDIAN_VAULT_PATH` 에 사용자 vault 경로를 받는다(선택).
-4. **실행**: `python -m databook run` (자동 수집) → 이어서 `python -m databook.news` (뉴스, 키 불필요).
+4. **실행**: `python -m databook run` — 수집 끝에 뉴스 다이제스트까지 자동 생성한다(`--no-news`로 끔).
+   ※ 예전엔 뉴스가 별도 명령이라 **2026-07-20 이후 5주간 갱신이 멈춰 있었다.** 그래서 run에 붙였다.
 5. **결과 보고**: "성공 N / 실패 M / 수동 K / 전체" 요약과 산출물 경로(`output/` 또는 vault의 `Macro/`)를 알려준다.
    실패한 지표는 대부분 키 미설정 또는 무료 API 부재이니, 어떤 키를 넣으면 몇 개가 살아나는지만 짚어준다.
 
