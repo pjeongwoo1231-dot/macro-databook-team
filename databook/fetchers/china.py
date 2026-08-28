@@ -33,7 +33,7 @@ import html
 import re
 from typing import Any
 
-from .base import get_text, result
+from .base import get_text, result, clean_html as _clean, norm_key as _norm
 
 INDEX = "http://english.customs.gov.cn/statics/report/preliminary.html"
 _MONTHS = {"jan": 1, "feb": 2, "mar": 3, "apr": 4, "may": 5, "jun": 6,
@@ -48,16 +48,6 @@ _REPORTS = {
 }
 _index_cache: str | None = None
 _page_cache: dict[str, str] = {}
-
-
-def _clean(s: str) -> str:
-    return re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", "", s))).strip()
-
-
-def _norm(s: str) -> str:
-    """항목 매칭은 **정확일치**로 한다 — 부분일치면 'Copper ores'가
-    'Unwrought copper'까지 끌어오거나 그 반대가 된다."""
-    return re.sub(r"[^A-Z0-9]", "", html.unescape(str(s)).upper())
 
 
 def _num(s: str) -> float | None:

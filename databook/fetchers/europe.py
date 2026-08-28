@@ -12,9 +12,8 @@ from __future__ import annotations
 import urllib.parse
 from typing import Any
 
-from .base import get_json, result
+from .base import N_OBS, get_json, result
 
-N_OBS = 6
 ES_BASE = "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data"
 ECB_BASE = "https://data-api.ecb.europa.eu/service/data"
 

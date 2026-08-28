@@ -26,10 +26,9 @@ from __future__ import annotations
 from datetime import date
 from typing import Any
 
-from .base import get_json, result
+from .base import N_OBS, get_json, result
 
 BASE = "https://markets.newyorkfed.org/api"
-N_OBS = 6
 LANDING_PD = "https://www.newyorkfed.org/markets/counterparties/primary-dealers-statistics"
 LANDING_SOMA = "https://www.newyorkfed.org/markets/soma-holdings"
 

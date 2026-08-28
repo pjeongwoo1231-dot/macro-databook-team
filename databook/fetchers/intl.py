@@ -7,29 +7,8 @@ import re
 import urllib.request
 from typing import Any
 
-from .base import BROWSER_UA, get_json, get_text, result
+from .base import N_OBS, BROWSER_UA, get_json, get_text, result, yoy as _yoy
 
-N_OBS = 6
-
-
-def _dbn_yoy(pairs: list[tuple[str, float]]) -> list[tuple[str, float]]:
-    """레벨 → 전년비(%). 기간키를 직접 대조한다 — 결측이 섞여도 어긋나지 않게.
-    DBnomics 기간 표기는 월차 'YYYY-MM' · 분기 'YYYY-Qn' · 연차 'YYYY'."""
-    by = {str(p): v for p, v in pairs}
-    out: list[tuple[str, float]] = []
-    for p, v in pairs:
-        s = str(p)
-        if len(s) >= 7 and s[4] == "-":          # YYYY-MM · YYYY-Qn
-            prev = f"{int(s[:4]) - 1:04d}{s[4:]}"
-        elif len(s) == 4 and s.isdigit():        # YYYY
-            prev = f"{int(s) - 1:04d}"
-        else:
-            continue
-        base = by.get(prev)
-        if base in (None, 0):
-            continue
-        out.append((p, round((v / base - 1) * 100, 2)))
-    return out
 
 
 def fetch_dbnomics(ind: dict[str, Any], env: dict[str, str]) -> dict[str, Any]:
@@ -57,7 +36,7 @@ def fetch_dbnomics(ind: dict[str, Any], env: dict[str, str]) -> dict[str, Any]:
             pairs = [(p, v) for p, v in zip(doc.get("period", []), doc.get("value", []))
                      if isinstance(v, (int, float))]
             if yoy:
-                pairs = _dbn_yoy(pairs)
+                pairs = _yoy(pairs)
                 label = f"{label} 전년비(%) — 계산"
                 if not pairs:
                     errors.append(f"{sid}: 전년비 계산 불가(1년 전 관측 부족)")
@@ -194,65 +173,6 @@ def fetch_fed_rss(ind: dict[str, Any], env: dict[str, str]) -> dict[str, Any]:
         return result(ind, "fail", error="RSS 항목 없음")
     return result(ind, "ok", observations=obs, source_url=url,
                   note=(ind.get("note", "") + " — 링크는 각 항목 label 참조").strip(" —"))
-
-def fetch_mof_jgb(ind: dict, env: dict) -> dict:
-    """일본 재무성 공개 CSV — JGB 만기별 유통수익률(일별, 1Y~40Y).
-
-    왜 필요한가: 볼트에 **일본 국채 슬롯이 0개**였다(2026-08-18 실측).
-    엔·BOJ 정책을 읽을 때 10Y·30Y가 없으면 "시장이 이미 반영했는지"를 못 잰다.
-    CSV는 당월분만 담기므로 최근 6영업일만 취한다.
-    """
-    from .base import result, get_text
-    url = "https://www.mof.go.jp/english/policy/jgbs/reference/interest_rate/jgbcme.csv"
-    want = [str(x) for x in (ind.get("maturities") or ["2Y", "10Y", "30Y"])]
-    try:
-        text = get_text(url)
-    except Exception as e:
-        return result(ind, "fail", error=f"MOF CSV 수집 실패: {e}", source_url=url)
-    rows = [r.split(",") for r in text.splitlines() if r.strip()]
-    hdr = None
-    for r in rows:
-        if r and r[0].strip().lower() == "date":
-            hdr = [c.strip() for c in r]
-            break
-    if not hdr:
-        return result(ind, "fail", error="헤더(Date 행) 미발견 — CSV 구조 변경", source_url=url)
-    idx = {m: hdr.index(m) for m in want if m in hdr}
-    if not idx:
-        return result(ind, "fail", error=f"만기 열 미발견: {want} / 가용 {hdr[1:6]}...", source_url=url)
-    data = [r for r in rows if r and re.match(r"\d{4}/\d{1,2}/\d{1,2}", r[0].strip())]
-    obs = []
-    for r in data[-6:][::-1]:
-        d = r[0].strip().replace("/", "-")
-        for m, i in idx.items():
-            try:
-                obs.append({"date": d, "value": float(r[i]), "label": f"JGB {m}"})
-            except (ValueError, IndexError):
-                continue
-    if not obs:
-        return result(ind, "fail", error="값 파싱 실패", source_url=url)
-    return result(ind, "ok", observations=obs, source_url=url)
-
-
-# ── 일본 대외·대내 증권투자 (MOF 주간) ──────────────────────────────
-# 왜 필요한가 — 볼트 [[일본 국채 (JGB)]] 노드가 "일본 대외증권투자"를 관측 공백으로 적었다.
-# BIS AER 2025 Ch.II는 일본 투자자가 FX 스왑으로 헤지해 해외채권을 사고,
-# **목적지 통화 단기금리가 오르거나 커브가 평탄해지면 그 수요가 줄어든다**고 했다.
-# 이 계열이 그 수요를 주간으로 관측한다. 단위는 억엔(100 million yen).
-MOF_WEEK = ("https://www.mof.go.jp/policy/international_policy/reference/"
-            "itn_transactions_in_securities/week.csv")
-MOF_LANDING = ("https://www.mof.go.jp/english/policy/international_policy/reference/"
-               "itn_transactions_in_securities/index.htm")
-
-# 열 인덱스 (2026-08-19 실측): 0=기간
-#  대외(거주자 취득): 1~3 주식 취·처·순 · 4~6 중장기채 · 7 소계순 · 8~10 단기채 · 11 합계순
-#  대내(비거주자):   12~14 주식 · 15~17 중장기채 · 18 소계순 · 19~21 단기채 · 22 합계순
-_MOF_COL = {
-    "out_equity": 3, "out_ltdebt": 6, "out_sub": 7, "out_stdebt": 10, "out_total": 11,
-    "in_equity": 14, "in_ltdebt": 17, "in_sub": 18, "in_stdebt": 21, "in_total": 22,
-}
-_MOF_CACHE: dict[str, Any] = {}
-
 
 def fetch_mof_portfolio(ind: dict[str, Any], env: dict[str, str]) -> dict[str, Any]:
     """yaml 예시:

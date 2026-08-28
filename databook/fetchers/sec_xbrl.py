@@ -81,6 +81,24 @@ def _facts(cik: int) -> dict[str, Any]:
     return _facts_cache[cik]
 
 
+def _pick_tag(gaap: dict[str, Any], tags: list[str]) -> str:
+    """후보 태그 중 **가장 최신 관측을 가진 것**을 고른다.
+
+    ⚠ "첫 번째로 값이 있는 태그"를 쓰면 폐기된 태그의 옛 값이 최신값으로 실린다
+    (아마존 capex 2016년 6.7B · 엔비디아 2012년 0.1B를 실제로 겪었다)."""
+    best: tuple[str, str] | None = None
+    for t in tags:
+        u = ((gaap.get(t) or {}).get("units") or {}).get("USD")
+        if not u:
+            continue
+        ends = [x["end"] for x in u if x.get("form") in ("10-Q", "10-K")]
+        if ends:
+            cand = (max(ends), t)
+            if best is None or cand > best:
+                best = cand
+    return best[1] if best else ""
+
+
 def _fy_rows(cik: int, tag: str, instant: bool) -> list[dict[str, Any]]:
     """10-K의 FY 사실만. flow는 기간이 1년(350~380일)인 것만 — 누계 오염을 막는다."""
     try:
@@ -159,20 +177,9 @@ def _quarters(cik: int, tags: list[str]) -> tuple[str, dict[str, float], dict[st
         gaap = (_facts(cik).get("facts") or {}).get("us-gaap") or {}
     except Exception:
         return "", {}, {}
-    tag = ""
-    best: tuple[str, str] | None = None
-    for t in tags:
-        u = ((gaap.get(t) or {}).get("units") or {}).get("USD")
-        if not u:
-            continue
-        ends = [x["end"] for x in u if x.get("form") in ("10-Q", "10-K")]
-        if ends:
-            cand = (max(ends), t)
-            if best is None or cand > best:
-                best = cand
-    if best is None:
+    tag = _pick_tag(gaap, tags)
+    if not tag:
         return "", {}, {}
-    tag = best[1]
 
     latest: dict[tuple[str, str], dict[str, Any]] = {}
     for x in gaap[tag]["units"]["USD"]:

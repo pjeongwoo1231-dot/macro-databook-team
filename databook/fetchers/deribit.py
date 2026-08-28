@@ -12,10 +12,9 @@ from __future__ import annotations
 import time
 from typing import Any
 
-from .base import get_json, result
+from .base import N_OBS, get_json, result
 
 BASE = "https://www.deribit.com/api/v2/public/get_volatility_index_data"
-N_OBS = 6
 
 
 def fetch(ind: dict[str, Any], env: dict[str, str]) -> dict[str, Any]:

@@ -32,13 +32,12 @@ import json
 from typing import Any
 from urllib.error import HTTPError
 
-from .base import get_json, result
+from .base import N_OBS, get_json, result, yoy as _yoy_calc
 
 BASE = "https://www.stat-search.boj.or.jp/api/v1/getDataCode"
-DEFAULT_POINTS = 6
 
-# 期種별 전년동기 오프셋(관측 몇 개 전이 1년 전인가). 일차·주차는 계산 대상이 아니다.
-_YOY_LAG = {"M": 12, "Q": 4, "CY": 1, "FY": 1}
+# 전년비를 만들 수 있는 期種. 일차·주차는 1년 전 관측이 정의되지 않아 제외한다.
+_YOY_OK = {"M", "Q", "CY", "FY"}
 
 
 def _months_ago(n: int) -> datetime.date:
@@ -79,30 +78,6 @@ def _fmt_date(raw: str, freq: str) -> str:
     return s
 
 
-def _to_yoy(pairs: list[tuple[str, float]], freq: str) -> list[tuple[str, float]]:
-    """레벨 → 전년비(%). 기간키를 직접 대조한다 — 결측이 섞여도 어긋나지 않게."""
-    lag = _YOY_LAG.get(freq)
-    if not lag:
-        return []
-    by_period = dict(pairs)
-    out: list[tuple[str, float]] = []
-    for period, val in pairs:
-        s = str(period)
-        if freq == "M" and len(s) == 6:
-            prev = f"{int(s[:4]) - 1:04d}{s[4:]}"
-        elif freq == "Q" and len(s) == 6:
-            prev = f"{int(s[:4]) - 1:04d}{s[4:]}"
-        elif freq in ("CY", "FY") and len(s) == 4:
-            prev = f"{int(s) - 1:04d}"
-        else:
-            continue
-        base = by_period.get(prev)
-        if base in (None, 0):
-            continue
-        out.append((period, round((val / base - 1) * 100, 2)))
-    return out
-
-
 def fetch(ind: dict[str, Any], env: dict[str, str]) -> dict[str, Any]:
     """yaml 예시:
         method: api
@@ -124,7 +99,7 @@ def fetch(ind: dict[str, Any], env: dict[str, str]) -> dict[str, Any]:
     codes = [str(c).strip() for c in codes if str(c).strip()]
     labels = ind.get("labels") or []
     freq = str(ind.get("freq") or "M").upper()
-    points = int(ind.get("points") or DEFAULT_POINTS)
+    points = int(ind.get("points") or N_OBS)
     yoy = bool(ind.get("yoy"))
     scale = float(ind.get("scale") or 1)
 
@@ -169,7 +144,8 @@ def fetch(ind: dict[str, Any], env: dict[str, str]) -> dict[str, Any]:
             continue
         label = str(labels[i]) if i < len(labels) else str(row.get("NAME_OF_TIME_SERIES") or "")[:60]
         if yoy:
-            pairs = _to_yoy(pairs, freq)
+            # 期種가 일차·주차면 전년비를 만들지 않는다(1년 전 관측이 정의되지 않음)
+            pairs = _yoy_calc(pairs) if freq in _YOY_OK else []
             if not pairs:
                 errors.append(f"{row.get('SERIES_CODE')}: 전년비 계산 불가(1년 전 관측 부족)")
                 continue

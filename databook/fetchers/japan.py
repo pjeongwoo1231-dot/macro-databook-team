@@ -21,7 +21,7 @@ import io
 import re
 from typing import Any
 
-from .base import get_bytes, get_text, result
+from .base import get_bytes, get_text, result, norm_key as _norm
 
 BASE = "https://www.mof.go.jp/jgbs/reference/interest_rate"
 CUR = f"{BASE}/jgbcm.csv"
@@ -144,12 +144,6 @@ def _cnum(s: str | None) -> float | None:
         return float(t)
     except ValueError:
         return None
-
-
-def _norm(s: str) -> str:
-    """'(EU)' → 'EU' · 'C&amp;E EURO' → 'CEEURO'. 항목 매칭은 **정확일치**로 한다 —
-    부분일치로 두면 items에 'EU'를 넣었을 때 'WESTERN EUROPE'까지 딸려온다(실제로 겪었다)."""
-    return re.sub(r"[^A-Z0-9]", "", html.unescape(str(s)).upper())
 
 
 def _tag(src: str, name: str) -> str:

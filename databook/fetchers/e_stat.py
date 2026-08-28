@@ -35,10 +35,9 @@ from __future__ import annotations
 import re
 from typing import Any
 
-from .base import get_json, result
+from .base import N_OBS, get_json, result, yoy as _yoy
 
 BASE = "https://api.e-stat.go.jp/rest/3.0/app/json/getStatsData"
-DEFAULT_POINTS = 6
 _MISSING = {"-", "***", "X", "x", "…", "", "-  "}
 
 
@@ -78,24 +77,6 @@ def _class_names(stat: dict[str, Any]) -> dict[str, dict[str, str]]:
         items = cls.get("CLASS")
         items = items if isinstance(items, list) else [items]
         out[str(cls.get("@id"))] = {str(o.get("@code")): str(o.get("@name")) for o in items if o}
-    return out
-
-
-def _yoy(rows: list[tuple[str, float]]) -> list[tuple[str, float]]:
-    """레벨 → 전년비(%). 정규화한 기간키('2026-06'·'2026-Q2'·'2026')로 1년 전을 직접 찾는다."""
-    by = dict(rows)
-    out: list[tuple[str, float]] = []
-    for p_, v in rows:
-        if len(p_) >= 7 and p_[4] == "-":          # YYYY-MM · YYYY-Qn
-            prev = f"{int(p_[:4]) - 1:04d}{p_[4:]}"
-        elif len(p_) == 4 and p_.isdigit():        # YYYY
-            prev = f"{int(p_) - 1:04d}"
-        else:
-            continue
-        base = by.get(prev)
-        if base in (None, 0):
-            continue
-        out.append((p_, round((v / base - 1) * 100, 2)))
     return out
 
 
@@ -178,7 +159,7 @@ def fetch(ind: dict[str, Any], env: dict[str, str]) -> dict[str, Any]:
     series = ind.get("series")
     if not series:
         series = [{"label": ind.get("label") or ind["name"], "filters": ind.get("filters") or {}}]
-    points = int(ind.get("points") or DEFAULT_POINTS)
+    points = int(ind.get("points") or N_OBS)
     scale = float(ind.get("scale") or 1)
     yoy = bool(ind.get("yoy"))       # 레벨만 있는 표(家計調査 금액 등)를 전년비로 환산
 

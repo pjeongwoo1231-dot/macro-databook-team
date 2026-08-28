@@ -4,10 +4,9 @@ from __future__ import annotations
 
 from typing import Any
 
-from .base import get_json, result
+from .base import N_OBS, get_json, result
 
 BASE = "https://api.bls.gov/publicAPI/v2/timeseries/data/"
-N_OBS = 6
 
 
 def fetch(ind: dict[str, Any], env: dict[str, str]) -> dict[str, Any]:

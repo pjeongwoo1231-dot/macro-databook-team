@@ -1,7 +1,10 @@
 """공통 HTTP 헬퍼 + 결과 규격."""
 from __future__ import annotations
 
+import html
+import html
 import json
+import re
 import time
 import urllib.parse
 import urllib.request
@@ -129,3 +132,46 @@ def result(
         # Obsidian 지표 노드 수동 지정(선택). 빈 값이면 이름으로 자동 매칭, "-"면 매칭 안 함.
         "vault_node": ind.get("vault_node", ""),
     }
+
+# ─────────────────── 공통 헬퍼 (2026-08-28 통합) ───────────────────
+# fetcher를 하나씩 붙이면서 같은 코드를 매번 새로 썼다. ponytail-audit에서
+# 전년비 3벌·_norm 2벌·N_OBS 8벌이 잡혀 여기로 모았다.
+
+N_OBS = 6                       # 기본 표시 관측 수. 지표별로 points/n_obs로 덮어쓴다
+
+
+def prev_year_key(period: str) -> str | None:
+    """기간키의 **앞 4자리 연도만 1 줄인다.** 포맷을 안 가리는 게 요점이다:
+    '202607'→'202507' · '2026-06'→'2025-06' · '2026-Q2'→'2025-Q2' · '2026'→'2025'.
+    분기·월·연차가 섞여 들어와도 같은 규칙으로 처리된다."""
+    s = str(period)
+    if len(s) < 4 or not s[:4].isdigit():
+        return None
+    return f"{int(s[:4]) - 1:04d}{s[4:]}"
+
+
+def yoy(pairs: list[tuple[str, float]]) -> list[tuple[str, float]]:
+    """레벨 → 전년비(%). **기간키로 1년 전을 직접 찾는다** — 인덱스로 세면
+    결측이 섞였을 때 어긋난다. 1년 전 값이 없거나 0이면 그 기간은 버린다."""
+    by = {str(p): v for p, v in pairs}
+    out: list[tuple[str, float]] = []
+    for p, v in pairs:
+        prev = prev_year_key(p)
+        base_v = by.get(prev) if prev else None
+        if base_v in (None, 0):
+            continue
+        out.append((p, round((v / base_v - 1) * 100, 2)))
+    return out
+
+
+def norm_key(s: str) -> str:
+    """항목 매칭용 정규화. 매칭은 **정확일치**로 한다 — 부분일치로 두면
+    'EU'가 'WESTERN EUROPE'을, 'Copper ores'가 'Unwrought copper'를 끌어온다."""
+    return re.sub(r"[^A-Z0-9]", "", html.unescape(str(s)).upper())
+
+
+def clean_html(s: str) -> str:
+    """태그·CDATA·엔티티를 걷어내고 공백을 하나로."""
+    s = re.sub(r"<!\[CDATA\[|\]\]>", "", str(s))
+    s = re.sub(r"<[^>]+>", "", s)
+    return re.sub(r"\s+", " ", html.unescape(s)).strip()

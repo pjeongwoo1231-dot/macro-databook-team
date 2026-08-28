@@ -3,12 +3,11 @@ from __future__ import annotations
 
 from typing import Any
 
-from .base import get_json, result
+from .base import N_OBS, get_json, result
 
 import datetime as _dt
 
 BASE = "https://api.stlouisfed.org/fred/series/observations"
-N_OBS = 6
 
 
 def fetch_series(series_id: str, api_key: str, units: str = "") -> tuple[list[dict[str, Any]], str]:
