@@ -1,6 +1,15 @@
-# 배치 위치: .github/workflows/databook.yml
-# 매주 자동으로 Data Book + 뉴스 다이제스트를 생성해 저장소(=옵시디언 vault)에 커밋한다.
-# 팀원은 Obsidian Git으로 pull만 하면 최신 데이터가 들어온다. 아무도 수동 실행 안 해도 됨.
+# 매주 Data Book + 뉴스 다이제스트를 생성해 저장소에 커밋한다.
+# 팀원은 이 저장소를 Obsidian 볼트로 열거나 Obsidian Git으로 pull하면 최신 데이터가 들어온다.
+#
+# ⚠ 2026-08-28 수정 — 이 워크플로는 그 전까지 **조용히 아무것도 안 하고 있었다.**
+#   (1) 커밋 대상을 `Macro/`로 잡았는데, 볼트 출력 경로는 `04_DataBook/`이다.
+#       `Macro/`는 로컬 output 디렉터리 안에서 쓰는 이름이라 저장소 루트엔 생기지 않는다.
+#       (databook/render.py — 로컬 output은 "Macro", 볼트는 "04_DataBook")
+#   (2) 게다가 `Macro/`는 .gitignore 대상이라, 설령 생겼어도 `git add`가 무시했다.
+#   결과: 매주 돌면서 "변경 없음 — 커밋 skip"만 찍었다. 실패가 아니라 **성공으로 보였다**는 게 문제다.
+#
+# 키는 저장소 Settings > Secrets and variables > Actions 에 등록한다.
+# 하나도 등록 안 해도 동작한다 — 키 없는 소스(관세청·BOJ·PBoC·SEC·DBnomics)만 수집된다.
 
 name: Weekly Data Book
 
@@ -8,7 +17,7 @@ on:
   schedule:
     # 매주 월요일 08:00 KST (= 일요일 23:00 UTC). cron은 UTC 기준.
     - cron: "0 23 * * 0"
-  workflow_dispatch: {}   # 저장소 Actions 탭에서 수동 실행도 가능
+  workflow_dispatch: {}   # Actions 탭에서 수동 실행
 
 permissions:
   contents: write   # 생성물 커밋용
@@ -26,28 +35,49 @@ jobs:
           python-version: "3.11"
 
       - name: 의존성 설치
-        run: pip install pyyaml requests feedparser
+        run: pip install -r requirements.txt
 
       - name: Data Book + 뉴스 생성
         env:
+          # 없는 키는 빈 값으로 들어가고 해당 지표만 "수집 실패"로 표시된다
           FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
           ECOS_API_KEY: ${{ secrets.ECOS_API_KEY }}
           KOSIS_API_KEY: ${{ secrets.KOSIS_API_KEY }}
           DATA_GO_KR_KEY: ${{ secrets.DATA_GO_KR_KEY }}
-          # 저장소 루트를 vault로 삼는다 → Macro/ 가 저장소 루트에 생성됨
+          DATA_GO_KR_LENDBORR_KEY: ${{ secrets.DATA_GO_KR_LENDBORR_KEY }}
+          E_STAT_APP_ID: ${{ secrets.E_STAT_APP_ID }}
+          EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
+          BLS_API_KEY: ${{ secrets.BLS_API_KEY }}
+          OPINET_API_KEY: ${{ secrets.OPINET_API_KEY }}
+          NAVER_CLIENT_ID: ${{ secrets.NAVER_CLIENT_ID }}
+          NAVER_CLIENT_SECRET: ${{ secrets.NAVER_CLIENT_SECRET }}
+          # ⚠ 토스는 등록하지 않는다 — 개인 계좌 자격증명이고, 토큰이 동시 1개만 유효해
+          #    로컬 실행과 부딪히면 서로 401이 된다.
+          # 저장소 루트를 볼트로 삼는다 → 04_DataBook/ 이 저장소 루트에 생성된다
           OBSIDIAN_VAULT_PATH: ${{ github.workspace }}
         run: |
-          python -m databook run
+          python -m databook run --no-setup
           python -m databook.news || echo "news 실패 — Data Book은 유지"
 
       - name: 결과 커밋
         run: |
           git config user.name "databook-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add Macro/   # output/은 .gitignore 대상 — vault(Macro/)만 커밋
+          # ★ 볼트 출력 경로는 04_DataBook/ 이다 (Macro/ 아님).
+          #   output/ 은 .gitignore 대상이라 커밋하지 않는다 — 볼트 사본만 올린다.
+          git add 04_DataBook/
           if git diff --cached --quiet; then
-            echo "변경 없음 — 커밋 skip"
+            echo "::warning::커밋할 변경이 없다. 04_DataBook/ 이 생성됐는지 확인할 것"
           else
             git commit -m "Data Book $(date -u +%Y-%m-%d)"
             git push
           fi
+
+      - name: 생성 결과 확인
+        # 조용한 실패를 막는다 — 파일이 안 생겼으면 워크플로를 실패시킨다
+        run: |
+          if [ ! -d 04_DataBook ]; then
+            echo "::error::04_DataBook/ 이 생성되지 않았다. OBSIDIAN_VAULT_PATH 설정을 확인할 것"
+            exit 1
+          fi
+          echo "생성된 파일 수: $(find 04_DataBook -name '*.md' | wc -l)"
