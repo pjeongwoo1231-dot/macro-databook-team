@@ -24,6 +24,19 @@ def main() -> int:
     run.add_argument("--no-news", action="store_true",
                      help="뉴스 다이제스트를 건너뛴다 (기본은 수집 끝에 자동 생성)")
     sub.add_parser("setup", help="대화형 키 설정 마법사 (.env 생성/갱신)")
+
+    # 조회 3종 — 큰 산출물을 통째로 읽지 않기 위한 것. databook/query.py 참조
+    q1 = sub.add_parser("show", help="이름으로 지표를 찾아 값만 출력")
+    q1.add_argument("terms", nargs="+")
+    q1.add_argument("--points", type=int, default=4)
+    q2 = sub.add_parser("diff", help="이전 스냅샷 대비 값이 바뀐 지표만")
+    q2.add_argument("terms", nargs="*")
+    q2.add_argument("--back", type=int, default=1)
+    q3 = sub.add_parser("news", help="뉴스 다이제스트 검색 (요약·선별 아님)")
+    q3.add_argument("--q", nargs="*", default=[])
+    q3.add_argument("--new", action="store_true")
+    q3.add_argument("--team")
+    q3.add_argument("--limit", type=int, default=30)
     hist = sub.add_parser("history", help="장기 시계열(FRED) CSV 수집 — 백테스트·회귀용")
     hist.add_argument("--since", default="2000-01-01", help="시작일 YYYY-MM-DD (기본 2000-01-01)")
     hist.add_argument("--tier", type=int, help="해당 티어 지표의 계열만 수집")
@@ -96,6 +109,13 @@ def main() -> int:
     sub.add_parser("unitcheck", help="단위 정합성 검사 — 최신 스냅샷에서 단위/값 모순 탐지")
     args = ap.parse_args()
 
+    if args.cmd in ("show", "diff", "news"):
+        from .query import cmd_diff, cmd_news, cmd_show
+        if args.cmd == "show":
+            return cmd_show(args.terms, args.points)
+        if args.cmd == "diff":
+            return cmd_diff(args.back, args.terms)
+        return cmd_news(args.q, args.new, args.limit, args.team)
     if args.cmd == "setup":
         from .setup import run_wizard
         return run_wizard()

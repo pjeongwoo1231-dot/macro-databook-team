@@ -80,6 +80,22 @@ python -m databook run --no-news    # 뉴스 빼고 수집
 python -m databook.news         # 뉴스만 따로 (run에 이미 포함)
 ```
 
+## 3-1. 조회 — 통째로 읽지 마세요
+
+산출물이 큽니다. 뉴스 다이제스트는 **약 668,000토큰**이라 AI 컨텍스트에 아예 안 들어갑니다.
+필요한 것만 뽑는 명령이 있습니다.
+
+```bash
+python -m databook show 중국 PPI          # 지표 하나만        20,837 → 225 토큰
+python -m databook diff                   # 어제 대비 변경분만 255,687 → 6,880
+python -m databook news --q 중국 --new    # 어제 없던 새 기사   668,037 → 1,059
+python -m databook news --team 4팀 --limit 50
+```
+
+⚠ `news`는 **검색이지 요약이 아닙니다.** 무엇을 볼지는 사람이 정합니다 —
+AI가 골라주면 그 자체가 편향이라, 수집 단계부터 취사선택을 금지하고 있습니다.
+```
+
 끝나면 이렇게 나옵니다:
 
 ```

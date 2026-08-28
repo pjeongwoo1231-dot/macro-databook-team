@@ -18,6 +18,11 @@ python -m databook run --dry-run  # 네트워크 없이 yaml·렌더 검증
 python -m databook run --only fred  # 특정 소스만
 python -m databook.news           # 뉴스만 따로 (run에 이미 포함 — 재생성할 때만)
 
+# 조회 — 큰 산출물을 통째로 읽지 않기 위한 것 (실측 944,561 → 8,164 토큰)
+python -m databook show 중국 PPI            # 지표 하나만 (20,837 → 225)
+python -m databook diff                     # 어제 대비 값이 바뀐 지표만 (255,687 → 6,880)
+python -m databook news --q 중국 --new      # 어제 없던 새 기사만 (668,037 → 1,059)
+
 # 장기 시계열 (백테스트·회귀용) — FRED 계열 전체 히스토리를 CSV로 축적
 python -m databook history                      # 전체, 2000-01-01~, 증분
 python -m databook history --tier 1             # 1티어 지표의 계열만
