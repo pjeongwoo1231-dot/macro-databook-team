@@ -103,6 +103,7 @@ team_1:
     source: fred
     series_id: GDPNOW
   - name: OECD 경기선행지수 CLI (미국)
+    max_age_days: 120   # OECD CLI는 참조월 +2~3개월 공표
     unit: "지수(100=추세)"
     tier: 2
     method: api
@@ -112,6 +113,7 @@ team_1:
     note: 확인 완료(2026-08-26, 최신 2026-05) — FRED USALOLITONOSTSAM은 OECD MEI 폐지로 2024-01에서 정지.
       OECD 신규 데이터셋(DSD_STES) 원천으로 교체. 2년 7개월치 공백이 이걸로 메워진다
   - name: OECD 경기선행지수 CLI (한국·중국)
+    max_age_days: 120   # 위와 같음
     unit: "지수(100=추세)"
     tier: 2
     method: api
@@ -199,6 +201,7 @@ team_1:
     note: 확인 완료(2026-08-26, 2026-07 34.3시간) — 기업은 해고보다 시간을 먼저 줄인다.
       임시직(TEMPHELPS)과 함께 고용 둔화의 선행 신호로 본다
   - name: JOLTS 구인건수
+    max_age_days: 120   # BLS JOLTS는 참조월 +2개월 발표. 원본 정상(갱신 2026-08-04)
     vault_node: 실업률
     tier: 1
     method: api
@@ -251,6 +254,7 @@ team_1:
     note: 확인 완료(2026-08-26, 2026-07 229,439) — 명목 RSAFS를 대체하는 게 아니라 병치한다.
       "명목은 늘었는데 실질은 줄었다"가 보여야 소비 판단이 인플레에 오염되지 않는다
   - name: 미시간 소비자심리
+    max_age_days: 120   # 월중 예비치·확정치 2단계라 확정 반영이 늦다. 원본 정상
     tier: 2
     method: api
     source: fred
@@ -281,6 +285,7 @@ team_1:
     vault_node: 총요소생산성 (TFP)
     note: 'DataBook에 **생산성 지표가 없던 공백**을 메운다. RegimeView 2기둥("생산성이 모순을 해소한다", 확신도 상)이 생산성 위에 서 있는데 근거 데이터가 수집되지 않고 있었다. **핵심은 dLP와 dtfp_util을 갈라 보는 것** — 노동생산성(dLP)은 자본심화(dk)만으로도 오른다. 기술 개선 여부는 TFP(dtfp), 경기적 가동률을 걷어낸 것은 가동률조정 TFP(dtfp_util)로 본다. Fernald(2014, FRBSF WP 2012-19)가 Basu-Fernald-Kimball(2006) 방법으로 구현한 표준 계열. ⚠ 분기 데이터이고 BEA 개정에 따라 **과거치가 소급 수정**된다 — 주간 트리거 불가. 가동률 조정은 모형 기반 추정이라 BFK 가정에 의존. 미국 business sector 기준이라 **BLS 비농업 노동생산성과 정의가 다르다**(섞지 말 것). 2026:Q2 기준 dLP +1.20 · dtfp −0.34 · **dtfp_util −2.19** · dk +3.19 — 노동생산성은 오르는데 기술은 안 좋아지고 있다'
   - name: 재고 사이클 (재고/판매 비율)
+    max_age_days: 120   # Census 재고는 참조월 +2개월. 원본 정상
     tier: 2
     method: api
     source: fred
@@ -368,6 +373,7 @@ team_1:
       미국 필립스 곡선 논의에서만 쓴다.
       ⚠ GDPPOT와 같이 **미래 구간 전망치가 포함**된다.
   - name: 침체확률 모델 (Chauvet-Piger)
+    max_age_days: 120   # 모형 추정치라 확정에 시차. 원본 정상
     tier: 2
     method: api
     source: fred
@@ -748,6 +754,7 @@ team_2:
     source: fred
     series_id: IR
   - name: 기대인플레 서베이 (미시간 1Y)
+    max_age_days: 120   # 위와 같은 계열. 원본 정상
     tier: 2
     method: api
     source: fred
@@ -1115,6 +1122,7 @@ team_2:
     indicator_code: FP.CPI.TOTL.ZG
     note: FRED(OECD MEI)는 2024-07에서 갱신 중단 — World Bank 연간으로 전환
   - name: 멕시코 Banxico 정책금리
+    max_age_days: 120   # OECD 경유 계열. 원본 정상
     tier: 2
     method: api
     source: fred
@@ -1834,6 +1842,7 @@ team_3:
     series_id: USEPUINDXD
     note: 'Baker et al.(2016). 1985~ 일별. 이은희(2026)에서 환율 공통요인과 상관 0.20'
   - name: 미국 통화정책 불확실성 EPU (범주별)
+    max_age_days: 120   # EPU 범주별은 월말 일괄 갱신
     tier: 2
     method: api
     source: fred
@@ -2277,6 +2286,7 @@ team_4:
     months: 3
     note: '2026-08-26 신설 — 같은 GACC 속보의 국가별 절. **관세의 실물 효과가 여기서 갈린다**: 실측 2026-07 누계 대미 수출 **+2.6%** vs 전체 수출 **+18.5%**, 그런데 대ASEAN 수출은 **+25.1%**(대베트남 +27.5%). 대미가 눌린 만큼 ASEAN이 튀는 구조라 **우회수출(transshipment) 가설을 점검할 재료**가 된다 — 다만 이 데이터만으로 우회를 단정할 수는 없다(ASEAN 자체 수요와 구분되지 않는다). ⚠ 국가명은 GACC 표기와 정확일치 — "United States (US)"처럼 괄호까지 맞춰야 한다'
   - name: 중국 외환보유액 (금 제외)
+    max_age_days: 120   # IMF IFS 경유라 +2개월. 원본 정상(갱신 2026-07-27)
     tier: 2
     method: api
     source: fred
