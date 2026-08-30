@@ -18,6 +18,9 @@ python -m databook run --dry-run  # 네트워크 없이 yaml·렌더 검증
 python -m databook run --only fred  # 특정 소스만
 python -m databook.news           # 뉴스만 따로 (run에 이미 포함 — 재생성할 때만)
 
+python -m databook report --asof 2026-09-01   # ★ 발표자료 스캐폴드 (표·차트·문헌 자동)
+python -m databook audit  <파일>              # ★ 게이트 19종. 미달이면 exit 1
+python -m databook analog --asof 2026-09-01  # 과거 유사 국면 — 그때 무슨 일이 있었나
 python -m databook weekly    # ★ 세션 준비 한 방 — 아래 5개를 한 덩어리로
                             #   ① 수집 상태 ② 기준 시점(as-of) 전체 상태
                             #   ③ 지난 한 주 변경분 ④ 장기 시계열 위치

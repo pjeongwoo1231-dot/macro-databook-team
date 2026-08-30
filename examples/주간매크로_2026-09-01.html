@@ -1,0 +1,758 @@
+<title>위험은 싸지는데 정책만 조인다</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=IBM+Plex+Sans+KR:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{--paper:#FBFCFC;--raise:#F2F5F5;--ink:#101C24;--muted:#566672;
+ --rule:#DCE3E5;--hair:#EBEFF0;--accent:#0F6B6B;--warn:#9A4A2C;--bg:#FBFCFC}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+ --paper:#0E1417;--raise:#161F24;--ink:#E4ECEE;--muted:#8FA0A8;
+ --rule:#223038;--hair:#1A252B;--accent:#4FC3B8;--warn:#E08A63;--bg:#0E1417}}
+:root[data-theme="dark"]{--paper:#0E1417;--raise:#161F24;--ink:#E4ECEE;--muted:#8FA0A8;
+ --rule:#223038;--hair:#1A252B;--accent:#4FC3B8;--warn:#E08A63;--bg:#0E1417}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);margin:0;word-break:keep-all;
+ font:400 16px/1.75 "IBM Plex Sans KR",-apple-system,"Segoe UI","Malgun Gothic",sans-serif;
+ -webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:clamp(2rem,5vw,4.5rem) clamp(1.1rem,4vw,2.5rem) 5rem}
+.col{max-width:64ch}
+h1,h2,h3{font-family:"Noto Serif KR",Georgia,serif;text-wrap:balance;margin:0}
+h1{font-weight:700;font-size:clamp(1.9rem,4.4vw,3rem);line-height:1.24;letter-spacing:-.015em}
+h2{font-weight:700;font-size:clamp(1.2rem,2.4vw,1.5rem);line-height:1.35;margin:0 0 .5rem}
+h3{font-weight:500;font-size:1.02rem;margin:2rem 0 .4rem}
+p{margin:0 0 1.05rem}
+.eyebrow{font:500 .72rem/1.5 "IBM Plex Mono",monospace;letter-spacing:.14em;
+ text-transform:uppercase;color:var(--muted)}
+.lede{font-size:1.12rem;color:var(--muted);margin:1.1rem 0 0}
+header{border-bottom:2px solid var(--ink);padding-bottom:2rem;margin-bottom:2.6rem}
+.meta{display:flex;flex-wrap:wrap;gap:.4rem 1.6rem;margin-top:1.6rem;
+ font:400 .82rem/1.6 "IBM Plex Mono",monospace;color:var(--muted)}
+.meta b{color:var(--ink);font-weight:500}
+section{margin:3.4rem 0 0}
+section>.num{font:500 .72rem/1 "IBM Plex Mono",monospace;color:var(--accent);
+ letter-spacing:.1em;display:block;margin-bottom:.55rem}
+.verdict{display:grid;gap:1px;background:var(--rule);border:1px solid var(--rule);
+ grid-template-columns:repeat(auto-fit,minmax(210px,1fr));margin:2.2rem 0}
+.verdict>div{background:var(--paper);padding:1.1rem 1.15rem 1.25rem}
+.verdict .ax{font:500 .74rem/1.4 "IBM Plex Mono",monospace;letter-spacing:.08em;
+ color:var(--muted);text-transform:uppercase}
+.verdict .rd{font-family:"Noto Serif KR",serif;font-weight:500;font-size:1.06rem;
+ margin:.45rem 0 .3rem;line-height:1.4}
+.verdict .fig{font:500 1.4rem/1 "IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;
+ color:var(--accent);margin:.15rem 0 .35rem}
+.verdict .sub{font-size:.83rem;color:var(--muted);line-height:1.55}
+.verdict .clash{color:var(--warn)}
+figure.chart{margin:1.8rem 0}
+.wide{margin-left:calc(-1*clamp(0px,3vw,90px));margin-right:calc(-1*clamp(0px,3vw,90px))}
+table{border-collapse:collapse;width:100%;font-size:.88rem;
+ font-variant-numeric:tabular-nums;margin:1.4rem 0}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+th,td{padding:.5rem .7rem;border-bottom:1px solid var(--hair);text-align:left;vertical-align:top}
+thead th{border-bottom:1.5px solid var(--rule);font-weight:500;font-size:.78rem;
+ letter-spacing:.05em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+td.n,th.n{text-align:right;font-family:"IBM Plex Mono",monospace;white-space:nowrap}
+tbody tr:last-child td{border-bottom:none}
+.paper{border-left:2px solid var(--accent);padding:.15rem 0 .15rem 1.05rem;margin:1.5rem 0;
+ font-size:.92rem;color:var(--muted)}
+.paper b{color:var(--ink);font-weight:500}
+.paper cite{display:block;font-style:normal;font-size:.78rem;margin-top:.4rem;
+ font-family:"IBM Plex Mono",monospace}
+.flag{border:1px solid var(--warn);border-left-width:3px;padding:.9rem 1.1rem;margin:1.5rem 0;
+ font-size:.9rem}
+.flag b{color:var(--warn)}
+.kv{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;font-weight:500}
+.up{color:var(--accent)}.dn{color:var(--warn)}
+ul{padding-left:1.1rem;margin:0 0 1.1rem}li{margin:.3rem 0}
+details{border-top:1px solid var(--rule);margin-top:3.5rem;padding-top:1.2rem}
+summary{cursor:pointer;font:500 .84rem/1.5 "IBM Plex Mono",monospace;
+ letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+details[open] summary{margin-bottom:1.2rem}
+footer{margin-top:3rem;padding-top:1.4rem;border-top:1px solid var(--hair);
+ font-size:.8rem;color:var(--muted)}
+@media print{body{background:#fff}.wide{margin:0}table,figure{break-inside:avoid}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+.chart{margin:1.4rem 0;overflow-x:auto}
+.chart svg{width:100%;height:auto;display:block}
+.chart figcaption{font-size:.82rem;color:var(--muted,#667);margin-top:.35rem}
+.chart-missing{font-size:.85rem;color:var(--muted,#667);font-style:italic}
+.chart-line{fill:none;stroke:var(--ink,#123);stroke-width:1.8}
+.chart-grid{stroke:var(--rule,#d8dde3);stroke-width:1;stroke-dasharray:2 3}
+.chart-zero{stroke:var(--ink,#123);stroke-width:1.2}
+.chart-med{stroke:var(--ink,#123);stroke-width:1.4;stroke-dasharray:4 3}
+.chart-mark{stroke:var(--accent,#a33);stroke-width:1.6}
+.chart-tick,.chart-note{font-size:11px;fill:var(--muted,#667)}
+.chart-val,.chart-last{font-size:12px;fill:var(--ink,#123);font-variant-numeric:tabular-nums}
+.chart-band{fill:var(--rule,#d8dde3);opacity:.35}
+.chart-band-lab{font-size:10px;fill:var(--muted,#667)}
+.chart-track{fill:var(--rule,#d8dde3);opacity:.5}
+.chart-qtick{stroke:var(--bg,#fff);stroke-width:1}
+.chart-dot{fill:var(--ink,#123)}
+.chart-bar-pos{fill:var(--ink,#123);opacity:.85}
+.chart-bar-neg{fill:var(--ink,#123);opacity:.4}
+.chart-pt-pos{fill:var(--ink,#123);opacity:.7}
+.chart-pt-neg{fill:var(--ink,#123);opacity:.7;stroke:var(--accent,#a33);stroke-width:1.4}
+</style>
+<div class="wrap">
+<header>
+<span class="eyebrow">매크로 주간 · 2026년 9월 1일 세션</span>
+<h1>위험은 싸지는데 정책만 조인다</h1>
+<p class="lede">지정학 가격 3종(유가·금·VIX)이 동시에 내렸고, 신용은 부도 위험이
+정당화하는 것보다 <b>싸게</b> 팔리고 있다 — 1973년 이후 하위 16% 수준이다.
+그 사이 한국은행은 2개월 연속 올려 3.00%를 세웠다.
+가격과 정책이 서로 다른 시계를 보고 있다.</p>
+<div class="meta">
+ <span><b>기준</b> 2026-08-28</span>
+ <span><b>지표</b> 331개 중 325개 수집</span>
+ <span><b>기저율</b> 2003–2026 · 57개 구간</span>
+ <span><b>문헌</b> 9편</span>
+</div></header>
+<div class="verdict">
+<div><div class="ax">지정학 · 무역</div><div class="rd">가격이 먼저 진정됐다</div>
+<div class="fig">−2.8%</div>
+<div class="sub">WTI·금·VIX가 동시에 하락.<br>단 산유국 GPRC와 농산물은 반대로 올랐다.</div></div>
+<div><div class="ax">유동성 · 신용</div><div class="rd clash">위험이 싸다</div>
+<div class="fig">16%ile</div>
+<div class="sub">초과채권프리미엄 -0.32%p.<br>1973년 이후 하위 16% — 레짐과 충돌.</div></div>
+<div><div class="ax">물가 · 정책</div><div class="rd">한국은 조인다</div>
+<div class="fig">3.00%</div>
+<div class="sub">한은 2연속 +25bp, 6대1.<br>반도체 수출 호조가 근거로 성립한다.</div></div>
+<div><div class="ax">성장 · 수급</div><div class="rd">미국은 개선, 주택만 급감</div>
+<div class="fig">4.61</div>
+<div class="sub">GDPNow 1.54 → 4.61.<br>외국인은 코스피에서 8.2만 순매도.</div></div>
+</div>
+<p class="col"><b>네 축이 어긋난다.</b> 지정학 가격은 진정을 반영하고 신용은 위험을 싸게 파는데,
+정책은 반대로 조인다. 이 어긋남을 하나로 봉합하지 않는다 —
+어느 축이 먼저 꺾이는지를 숫자로 걸어둔다.</p>
+<section><span class="num">01</span>
+<h2>미국 성장은 개선됐다 — 주택만 빼고</h2>
+<div class="wide"><figure class="chart"><svg viewBox="0 0 720 294" role="img" aria-label="성장 지표 — 직전 관측 대비 변화" preserveAspectRatio="xMidYMid meet"><line x1="398.0" y1="16" x2="398.0" y2="286" class="chart-zero"/><text x="122" y="39.0" class="chart-tick" text-anchor="end">애틀랜타 GDPNow</text><rect x="398.0" y="28.0" width="258.0" height="14" class="chart-bar-pos"/><text x="662.0" y="39.0" class="chart-val" text-anchor="start">+199.3%</text><text x="122" y="65.0" class="chart-tick" text-anchor="end">지역 연준 제조업</text><rect x="398.0" y="54.0" width="18.8" height="14" class="chart-bar-pos"/><text x="422.8" y="65.0" class="chart-val" text-anchor="start">+14.5%</text><text x="122" y="91.0" class="chart-tick" text-anchor="end">미시간 소비자심리</text><rect x="398.0" y="80.0" width="14.9" height="14" class="chart-bar-pos"/><text x="418.9" y="91.0" class="chart-val" text-anchor="start">+11.5%</text><text x="122" y="117.0" class="chart-tick" text-anchor="end">설비투자 수주</text><rect x="398.0" y="106.0" width="0.3" height="14" class="chart-bar-pos"/><text x="404.3" y="117.0" class="chart-val" text-anchor="start">+0.2%</text><text x="122" y="143.0" class="chart-tick" text-anchor="end">산업생산</text><rect x="398.0" y="132.0" width="0.3" height="14" class="chart-bar-pos"/><text x="404.3" y="143.0" class="chart-val" text-anchor="start">+0.2%</text><text x="122" y="169.0" class="chart-tick" text-anchor="end">소매판매</text><rect x="397.2" y="158.0" width="0.8" height="14" class="chart-bar-neg"/><text x="391.2" y="169.0" class="chart-val" text-anchor="end">-0.6%</text><text x="122" y="195.0" class="chart-tick" text-anchor="end">주택 착공·허가</text><rect x="381.9" y="184.0" width="16.1" height="14" class="chart-bar-neg"/><text x="375.9" y="195.0" class="chart-val" text-anchor="end">-12.4%</text><text x="122" y="221.0" class="chart-tick" text-anchor="end">신규·기존주택 판매</text><rect x="384.4" y="210.0" width="13.6" height="14" class="chart-bar-neg"/><text x="378.4" y="221.0" class="chart-val" text-anchor="end">-10.5%</text><text x="122" y="247.0" class="chart-tick" text-anchor="end">JOLTS 구인</text><rect x="394.9" y="236.0" width="3.1" height="14" class="chart-bar-neg"/><text x="388.9" y="247.0" class="chart-val" text-anchor="end">-2.4%</text><text x="122" y="273.0" class="chart-tick" text-anchor="end">실업자 수</text><rect x="394.8" y="262.0" width="3.2" height="14" class="chart-bar-neg"/><text x="388.8" y="273.0" class="chart-val" text-anchor="end">-2.5%</text></svg><figcaption>성장 지표 — 직전 관측 대비 변화</figcaption></figure></div>
+<div class="scroll"><table>
+<thead><tr><th>지표</th><th class="n">직전</th><th class="n">현재</th><th class="n">기준일</th></tr></thead><tbody>
+<tr><td>애틀랜타 GDPNow</td><td class="n">1.54</td><td class="n">4.61</td><td class="n">2026-07-01</td></tr>
+<tr><td>지역 연준 제조업지수</td><td class="n">41.4</td><td class="n">47.4</td><td class="n">2026-08-01</td></tr>
+<tr><td>미시간 소비자심리</td><td class="n">49.5</td><td class="n">55.2</td><td class="n">2026-07-01</td></tr>
+<tr><td>산업생산</td><td class="n">102.8</td><td class="n">103.0</td><td class="n">2026-07-01</td></tr>
+<tr><td>설비투자 (코어 자본재 수주)</td><td class="n">85,771</td><td class="n">85,946</td><td class="n">2026-07-01</td></tr>
+<tr><td>기업이익</td><td class="n">3,951</td><td class="n">4,302</td><td class="n">2026-04-01</td></tr>
+<tr><td>미국 TFP (Fernald)</td><td class="n">-0.34</td><td class="n">1.20</td><td class="n">2026:Q2</td></tr>
+<tr><td>소매판매</td><td class="n">768,072</td><td class="n">763,602</td><td class="n">2026-07-01</td></tr>
+<tr><td><b>주택 착공 / 허가</b></td><td class="n">1,415</td><td class="n dn">1,239</td><td class="n">2026-07-01</td></tr>
+<tr><td><b>신규 / 기존주택 판매</b></td><td class="n">678</td><td class="n dn">607</td><td class="n">2026-07-01</td></tr>
+<tr><td>케이스-실러 주택가격</td><td class="n">335.4</td><td class="n">336.7</td><td class="n">2026-06-01</td></tr>
+<tr><td>모기지 30Y 금리</td><td class="n">6.65</td><td class="n">6.66</td><td class="n">2026-08-27</td></tr>
+</tbody></table></div>
+<div class="col">
+<p><b>거래는 줄었는데 가격은 올랐다.</b> 착공·판매가 함께 빠지는 동안 케이스-실러는
+335.4 → 336.7으로 올랐다. 모기지 금리가
+6.66%에 머무는 한 <b>공급이 잠기는 쪽</b>으로 작동한다.</p>
+
+<h3>노동시장은 식되 무너지지 않았다</h3>
+</div>
+<div class="scroll"><table>
+<thead><tr><th>지표</th><th class="n">직전</th><th class="n">현재</th><th>읽는 법</th></tr></thead><tbody>
+<tr><td>실업률</td><td class="n">4.2</td><td class="n">4.1%</td><td>낮아졌다</td></tr>
+<tr><td><b>v/u 비율</b></td><td class="n">—</td><td class="n">1.064</td><td><b>과열은 이미 없다</b></td></tr>
+<tr><td>JOLTS 구인건수</td><td class="n">7,537</td><td class="n dn">7,359</td><td>구인이 줄었다</td></tr>
+<tr><td>실업자 수</td><td class="n">7,094</td><td class="n">6,916</td><td>분모도 줄었다</td></tr>
+<tr><td>경제활동참가율</td><td class="n">61.5</td><td class="n dn">61.4%</td><td>이탈이 실업률을 낮췄다</td></tr>
+<tr><td>신규 실업수당 청구</td><td class="n">207,000</td><td class="n">203,000</td><td>낮다</td></tr>
+<tr><td>Sahm Rule</td><td class="n">0.07</td><td class="n">-0.03</td><td>침체 신호 없음</td></tr>
+<tr><td>임시직 고용</td><td class="n">2,501.6</td><td class="n">2,505.0</td><td>선행 부문 안정</td></tr>
+<tr><td>고용비용지수 ECI</td><td class="n">175.6</td><td class="n">177.2</td><td>임금 비용 상승 지속</td></tr>
+</tbody></table></div>
+<div class="col">
+<div class="paper">노동시장 과열은 <b>실업률로는 보이지 않는다.</b> 봐야 하는 것은
+<b>v/u(구인/실업자)</b>다. 지금 1.064로, 과열 구간을 이미 벗어났다.
+실업률이 4.1%로 낮아진 것도 참가율이
+61.5%→61.4%로 빠진 결과가 섞여 있다.
+<cite>Bernanke &amp; Blanchard(2023), NBER WP 31417</cite></div>
+
+<div class="flag"><b>단위 주의</b> — 침체확률(Chauvet-Piger)은
+0.32에서 0.60로 <b>3배</b> 올랐지만
+이 계열의 단위는 퍼센트다. 0.60은 60%가 아니라 <b>0.6%</b>다.
+절대수준과 상대변화 중 어느 쪽을 말하는지 밝히지 않으면 오독한다.</div>
+</div></section>
+<section><span class="num">02</span>
+<h2>인상의 근거는 성립한다 — 수출은 늘고 있다</h2>
+<div class="col">
+<p>8월 27일 금통위가 기준금리를 <span class="kv">2.75%</span>에서
+<span class="kv">3.00%</span>로 올렸다. 2개월 연속, 7명 중 6명 찬성.
+언론이 전한 인상 사유는 <b>반도체 수출 호조와 물가 선제 대응</b>이었다.
+수출 계열이 그 근거를 뒷받침한다.</p>
+</div>
+<div class="wide"><figure class="chart"><svg viewBox="0 0 720 220" role="img" aria-label="한국 반도체(HS8542) 수출 — 월별 합계(억 달러)" preserveAspectRatio="xMidYMid meet"><line x1="52" y1="194.0" x2="662" y2="194.0" class="chart-grid"/><text x="46" y="198.0" class="chart-tick" text-anchor="end">177.56</text><line x1="52" y1="110.0" x2="662" y2="110.0" class="chart-grid"/><text x="46" y="114.0" class="chart-tick" text-anchor="end">265.07</text><line x1="52" y1="26.0" x2="662" y2="26.0" class="chart-grid"/><text x="46" y="30.0" class="chart-tick" text-anchor="end">352.58</text><polyline points="52.0,177.7 165.9,125.4 291.9,122.2 413.9,81.9 540.0,42.3 662.0,50.3" class="chart-line"/><text x="52" y="212" class="chart-tick">2026-02-01</text><text x="662" y="212" class="chart-tick" text-anchor="end">2026-07-01</text><circle cx="662.0" cy="50.3" r="3.5" class="chart-dot"/><text x="668.0" y="43.3" class="chart-last">327.23억$</text></svg><figcaption>한국 반도체(HS8542) 수출 — 월별 합계(억 달러)</figcaption></figure></div>
+<div class="scroll"><table>
+<thead><tr><th>월</th><th class="n">반도체 수출</th><th class="n">전월비</th><th class="n">2월 대비</th></tr></thead><tbody>
+<tr><td>2026-02</td><td class="n">194.5억$</td><td class="n">—</td><td class="n">기준</td></tr>
+<tr><td>2026-04</td><td class="n">252.4억$</td><td class="n">+2.7%</td><td class="n up">+29.8%</td></tr>
+<tr><td>2026-06</td><td class="n">335.6억$</td><td class="n up">+14.0%</td><td class="n up">+72.6%</td></tr>
+<tr><td><b>2026-07</b></td><td class="n"><b>327.2억$</b></td><td class="n dn">−2.5%</td><td class="n up"><b>+68.2%</b></td></tr>
+</tbody></table></div>
+<div class="col">
+<p>7월에 전월비 −2.5%로 한 번 쉬었지만 <b>2월 대비 +68%</b>다.
+“수출이 꺾였다”고 읽을 근거가 없다.</p>
+
+<div class="flag"><b>이 표는 정정된 것이다.</b> 직전 판에서 이 계열을 <b>−26% 급감</b>으로 적었는데
+사실이 아니었다. 관세청 API는 <b>(월 × HS 세부품목)</b> 행을 주는데 수집기가 모든 행에 같은
+라벨을 붙여, 같은 달의 <b>수출 24.2억과 수입 32.8억</b>이 시계열처럼 나란히 섰다.
+지표에 「집계기준 확인 필요」 경고가 붙어 있었는데 무시하고 인용했다.
+수집기를 고쳐 품목 합산 월별 총계를 쓰도록 했다.</div>
+
+<div class="paper">한국의 인상은 경기 대응이 아니라 <b>환율 제약에 대한 뒤늦은 반응</b>이고,
+그 시점은 하필 제조업이 바닥을 통과하는 때다. 그래서 인상은 경기 악화 신호가 아니라
+<b>바닥 통과 신호</b>에 가깝다. 원/달러가 1,393.35→1,385.01으로
+내린 것과 수출이 늘고 있는 것이 이 해석과 어긋나지 않는다.
+<cite>표상원(2016), 미국 기준금리 인상이 국내경제에 미치는 영향 — FAVAR</cite></div>
+
+<div class="paper">한은 반응함수는 <b>좌우가 대칭이 아니다.</b> 물가가 목표를 웃돌 때는 물가만 보고,
+밑돌 때는 성장을 본다. 기대인플레가 2.7%로 목표 2%를 웃도는
+지금은 <b>물가를 보는 국면</b>이다. 반응함수가 대칭이라고 가정하면 이 결정이 설명되지 않는다.
+<cite>주현도(2024), 부문별 인플레이션을 이용한 테일러 준칙 추정, 경제학연구 72(4)</cite></div>
+
+<h3>그런데 채권은 움직이지 않았다</h3>
+</div>
+<div class="scroll"><table>
+<thead><tr><th>계열</th><th class="n">8/26 결정 전</th><th class="n">8/28 결정 후</th><th class="n">변화</th><th>무엇을 뜻하나</th></tr></thead><tbody>
+<tr><td>CD 91일</td><td class="n">2.97</td><td class="n">3.13</td><td class="n up">+16bp</td><td>정책이 단기 자금시장으로 전달됐다</td></tr>
+<tr><td>국고채 3Y</td><td class="n">3.816</td><td class="n">3.788</td><td class="n dn">−2.8bp</td><td>커브는 반응하지 않았다</td></tr>
+<tr><td>국고채 10Y</td><td class="n">4.288</td><td class="n">4.284</td><td class="n dn">−0.4bp</td><td>같음</td></tr>
+<tr><td>한미 시장금리차</td><td class="n">—</td><td class="n">-0.386</td><td class="n">—</td><td>국고 10Y가 미 국채보다 낮다</td></tr>
+</tbody></table></div>
+<div class="col">
+<p><b>전달과 반응은 다른 사건이다.</b> CD가 16bp 오른 것은 정책이 작동했다는 뜻이고,
+국고채가 안 움직인 것은 시장이 이 인상을 <b>이미 값에 넣어두었다</b>는 뜻이다.
+커브를 더 밀려면 인상 자체가 아니라 <b>추가 인상 기대</b>가 얹혀야 한다.</p>
+<div class="flag"><b>재지 못한 것</b> — 결정 직전 커브가 몇 bp의 인상을 내포했는지는
+계산하지 않았다. “이미 반영”과 “그냥 안 움직임”을 이 자료로는 가르지 못한다.</div>
+</div></section>
+<section><span class="num">03</span>
+<h2>미 채권 — 물가 이야기는 앞이 아니라 뒤에 있다</h2>
+<div class="col">
+<p>미 10년 금리는 <b>실질금리</b>와 <b>기대인플레(BEI)</b>의 합이다.
+BEI는 명목금리에서 물가연동채 금리를 뺀 값으로, 시장이 매긴 기대인플레이션이다.
+5y5y는 지금부터 5년 뒤에 시작하는 5년치 기대 — <b>원거리 기대</b>다.</p>
+</div>
+<div class="wide"><figure class="chart"><svg viewBox="0 0 720 346" role="img" aria-label="미 10년 금리의 분해 — 창별 변화" preserveAspectRatio="xMidYMid meet"><line x1="398.0" y1="16" x2="398.0" y2="338" class="chart-zero"/><text x="122" y="39.0" class="chart-tick" text-anchor="end">1주 · 명목 10Y</text><rect x="331.1" y="28.0" width="66.9" height="14" class="chart-bar-neg"/><text x="325.1" y="39.0" class="chart-val" text-anchor="end">-7.0bp</text><text x="122" y="65.0" class="chart-tick" text-anchor="end">1주 · 실질 10Y</text><rect x="340.7" y="54.0" width="57.3" height="14" class="chart-bar-neg"/><text x="334.7" y="65.0" class="chart-val" text-anchor="end">-6.0bp</text><text x="122" y="91.0" class="chart-tick" text-anchor="end">1주 · BEI 10Y</text><rect x="369.3" y="80.0" width="28.7" height="14" class="chart-bar-neg"/><text x="363.3" y="91.0" class="chart-val" text-anchor="end">-3.0bp</text><text x="122" y="117.0" class="chart-tick" text-anchor="end">1주 · 5y5y</text><rect x="378.9" y="106.0" width="19.1" height="14" class="chart-bar-neg"/><text x="372.9" y="117.0" class="chart-val" text-anchor="end">-2.0bp</text><text x="122" y="143.0" class="chart-tick" text-anchor="end">1개월 · 명목 10Y</text><rect x="398.0" y="132.0" width="0.0" height="14" class="chart-bar-pos"/><text x="404.0" y="143.0" class="chart-val" text-anchor="start">+0.0bp</text><text x="122" y="169.0" class="chart-tick" text-anchor="end">1개월 · 실질 10Y</text><rect x="331.1" y="158.0" width="66.9" height="14" class="chart-bar-neg"/><text x="325.1" y="169.0" class="chart-val" text-anchor="end">-7.0bp</text><text x="122" y="195.0" class="chart-tick" text-anchor="end">1개월 · BEI 10Y</text><rect x="398.0" y="184.0" width="47.8" height="14" class="chart-bar-pos"/><text x="451.8" y="195.0" class="chart-val" text-anchor="start">+5.0bp</text><text x="122" y="221.0" class="chart-tick" text-anchor="end">1개월 · 5y5y</text><rect x="398.0" y="210.0" width="38.2" height="14" class="chart-bar-pos"/><text x="442.2" y="221.0" class="chart-val" text-anchor="start">+4.0bp</text><text x="122" y="247.0" class="chart-tick" text-anchor="end">3개월 · 명목 10Y</text><rect x="398.0" y="236.0" width="210.2" height="14" class="chart-bar-pos"/><text x="614.2" y="247.0" class="chart-val" text-anchor="start">+22.0bp</text><text x="122" y="273.0" class="chart-tick" text-anchor="end">3개월 · 실질 10Y</text><rect x="398.0" y="262.0" width="258.0" height="14" class="chart-bar-pos"/><text x="662.0" y="273.0" class="chart-val" text-anchor="start">+27.0bp</text><text x="122" y="299.0" class="chart-tick" text-anchor="end">3개월 · BEI 10Y</text><rect x="331.1" y="288.0" width="66.9" height="14" class="chart-bar-neg"/><text x="325.1" y="299.0" class="chart-val" text-anchor="end">-7.0bp</text><text x="122" y="325.0" class="chart-tick" text-anchor="end">3개월 · 5y5y</text><rect x="398.0" y="314.0" width="76.4" height="14" class="chart-bar-pos"/><text x="480.4" y="325.0" class="chart-val" text-anchor="start">+8.0bp</text></svg><figcaption>미 10년 금리의 분해 — 창별 변화</figcaption></figure></div>
+<div class="col">
+<p>3개월로 보면 명목 <span class="kv">+22.0bp</span>는
+실질 <span class="kv">+27.0bp</span>가 밀어올린 것이고
+BEI는 오히려 <span class="kv">-7.0bp</span>다.
+<b>그런데 5y5y는 3개월 +8.0bp, 1개월 +4.0bp로 오른다.</b>
+근거리 기대는 눌려 있고 원거리 기대만 오른다.</p>
+
+<div class="paper">수익률곡선은 통째로 오르내리지 않는다. <b>물가 요인은 10년물에,
+실물 요인은 1~5년물에</b> 각각 선행성을 보였다. 짧은 쪽이 먼저 올랐으면 경기,
+긴 쪽이 먼저면 물가다. 지금은 <b>긴 쪽의 기대만</b> 오르고 있다.
+<cite>김석진(2024), 거시경제 요인과 Dynamic Nelson-Siegel 모형을 고려한 미 국채 기간구조 분석</cite></div>
+
+<div class="paper">기대인플레가 물가로 이어지는 고리는 <b>나라마다 다르다.</b>
+기대 → CPI 인과검정에서 <b>미국은 F=10.80(1% 유의), 한국은 F=0.58로 기각</b>된다.
+5y5y의 움직임은 미국 물가 경로에는 정보지만 같은 논리를 한국 기대인플레
+2.7%에 옮겨 적으면 안 된다.
+<cite>이명수(2023), 인플레이션 기대와 주택가격 간의 관계 — 한국과 미국</cite></div>
+</div>
+<div class="wide"><figure class="chart"><svg viewBox="0 0 720 310" role="img" aria-label="수준이 아니라 위치 — 자기 역사 안에서 어디인가" preserveAspectRatio="xMidYMid meet"><text x="138" y="45.0" class="chart-tick" text-anchor="end">실질 10Y</text><rect x="148" y="35.0" width="454" height="12" rx="6" class="chart-track"/><line x1="261.5" y1="35.0" x2="261.5" y2="47.0" class="chart-qtick"/><line x1="375.0" y1="35.0" x2="375.0" y2="47.0" class="chart-qtick"/><line x1="488.5" y1="35.0" x2="488.5" y2="47.0" class="chart-qtick"/><circle cx="574.6" cy="41.0" r="6" class="chart-dot"/><text x="610" y="45.0" class="chart-val">2.34 · 94%ile</text><text x="610" y="56.0" class="chart-note">2003~ n=5,918</text><text x="138" y="79.0" class="chart-tick" text-anchor="end">BEI 10Y</text><rect x="148" y="69.0" width="454" height="12" rx="6" class="chart-track"/><line x1="261.5" y1="69.0" x2="261.5" y2="81.0" class="chart-qtick"/><line x1="375.0" y1="69.0" x2="375.0" y2="81.0" class="chart-qtick"/><line x1="488.5" y1="69.0" x2="488.5" y2="81.0" class="chart-qtick"/><circle cx="432.7" cy="75.0" r="6" class="chart-dot"/><text x="610" y="79.0" class="chart-val">2.31 · 63%ile</text><text x="610" y="90.0" class="chart-note">2003~ n=5,919</text><text x="138" y="113.0" class="chart-tick" text-anchor="end">5y5y 기대</text><rect x="148" y="103.0" width="454" height="12" rx="6" class="chart-track"/><line x1="261.5" y1="103.0" x2="261.5" y2="115.0" class="chart-qtick"/><line x1="375.0" y1="103.0" x2="375.0" y2="115.0" class="chart-qtick"/><line x1="488.5" y1="103.0" x2="488.5" y2="115.0" class="chart-qtick"/><circle cx="394.1" cy="109.0" r="6" class="chart-dot"/><text x="610" y="113.0" class="chart-val">2.32 · 54%ile</text><text x="610" y="124.0" class="chart-note">2003~ n=5,919</text><text x="138" y="147.0" class="chart-tick" text-anchor="end">미 10Y</text><rect x="148" y="137.0" width="454" height="12" rx="6" class="chart-track"/><line x1="261.5" y1="137.0" x2="261.5" y2="149.0" class="chart-qtick"/><line x1="375.0" y1="137.0" x2="375.0" y2="149.0" class="chart-qtick"/><line x1="488.5" y1="137.0" x2="488.5" y2="149.0" class="chart-qtick"/><circle cx="536.8" cy="143.0" r="6" class="chart-dot"/><text x="610" y="147.0" class="chart-val">4.67 · 86%ile</text><text x="610" y="158.0" class="chart-note">2000~ n=6,667</text><text x="138" y="181.0" class="chart-tick" text-anchor="end">HY OAS</text><rect x="148" y="171.0" width="454" height="12" rx="6" class="chart-track"/><line x1="261.5" y1="171.0" x2="261.5" y2="183.0" class="chart-qtick"/><line x1="375.0" y1="171.0" x2="375.0" y2="183.0" class="chart-qtick"/><line x1="488.5" y1="171.0" x2="488.5" y2="183.0" class="chart-qtick"/><circle cx="154.2" cy="177.0" r="6" class="chart-dot"/><text x="610" y="181.0" class="chart-val">2.63 · 1%ile</text><text x="610" y="192.0" class="chart-note">2023~ n=803</text><text x="138" y="215.0" class="chart-tick" text-anchor="end">EBP</text><rect x="148" y="205.0" width="454" height="12" rx="6" class="chart-track"/><line x1="261.5" y1="205.0" x2="261.5" y2="217.0" class="chart-qtick"/><line x1="375.0" y1="205.0" x2="375.0" y2="217.0" class="chart-qtick"/><line x1="488.5" y1="205.0" x2="488.5" y2="217.0" class="chart-qtick"/><circle cx="222.8" cy="211.0" r="6" class="chart-dot"/><text x="610" y="215.0" class="chart-val">-0.32 · 16%ile</text><text x="610" y="226.0" class="chart-note">1973~ n=643</text><text x="138" y="249.0" class="chart-tick" text-anchor="end">VIX</text><rect x="148" y="239.0" width="454" height="12" rx="6" class="chart-track"/><line x1="261.5" y1="239.0" x2="261.5" y2="251.0" class="chart-qtick"/><line x1="375.0" y1="239.0" x2="375.0" y2="251.0" class="chart-qtick"/><line x1="488.5" y1="239.0" x2="488.5" y2="251.0" class="chart-qtick"/><circle cx="274.3" cy="245.0" r="6" class="chart-dot"/><text x="610" y="249.0" class="chart-val">14.51 · 28%ile</text><text x="610" y="260.0" class="chart-note">2000~ n=6,736</text><text x="138" y="283.0" class="chart-tick" text-anchor="end">NFCI</text><rect x="148" y="273.0" width="454" height="12" rx="6" class="chart-track"/><line x1="261.5" y1="273.0" x2="261.5" y2="285.0" class="chart-qtick"/><line x1="375.0" y1="273.0" x2="375.0" y2="285.0" class="chart-qtick"/><line x1="488.5" y1="273.0" x2="488.5" y2="285.0" class="chart-qtick"/><circle cx="297.9" cy="279.0" r="6" class="chart-dot"/><text x="610" y="283.0" class="chart-val">-0.57 · 33%ile</text><text x="610" y="294.0" class="chart-note">2000~ n=1,390</text><text x="148" y="306" class="chart-tick">0</text><text x="602" y="306" class="chart-tick" text-anchor="end">100</text></svg><figcaption>수준이 아니라 위치 — 자기 역사 안에서 어디인가</figcaption></figure></div>
+<div class="col"><p><b>실질 10Y 2.34% = 94%ile.</b>
+2003년 이후 상위 6% 구간이다. 긴축의 성격은 바뀌지 않았고,
+바뀐 것은 그 옆에서 <b>기대가 따라 오르기 시작했다</b>는 점이다
+(5y5y 2.32% = 54%ile).</p></div>
+</section>
+<section><span class="num">04</span>
+<h2>신용은 왜 이렇게 싼가 — 두 가지로 재봤다</h2>
+<div class="col">
+<p>“스프레드가 좁으니 취약하다”는 말은 그대로 두면 반증할 수 없다.
+좁으면 취약, 벌어지면 긴축 확인 — 어느 쪽이든 맞는 말이 된다.
+그래서 <b>두 방법으로 숫자를 붙였다.</b></p>
+<h3>① 변동성으로 설명되고 남은 부분</h3>
+</div>
+<div class="wide"><figure class="chart"><svg viewBox="0 0 720 220" role="img" aria-label="Baa−10Y 잔차 — VIX로 설명되고 남은 부분" preserveAspectRatio="xMidYMid meet"><rect x="52" y="70.3" width="610" height="47.6" class="chart-band"/><text x="666" y="97.1" class="chart-band-lab">VIX보다 좁다</text><line x1="52" y1="194.0" x2="662" y2="194.0" class="chart-grid"/><text x="46" y="198.0" class="chart-tick" text-anchor="end">-3.12</text><line x1="52" y1="110.0" x2="662" y2="110.0" class="chart-grid"/><text x="46" y="114.0" class="chart-tick" text-anchor="end">-1</text><line x1="52" y1="26.0" x2="662" y2="26.0" class="chart-grid"/><text x="46" y="30.0" class="chart-tick" text-anchor="end">1.12</text><polyline points="52.0,86.0 52.4,93.1 52.6,96.9 52.7,90.6 52.9,81.8 53.0,83.5 53.4,90.8 53.6,94.0 53.7,95.7 53.9,95.7 54.0,92.4 54.6,89.4 54.7,86.6 54.9,77.4 55.0,78.0 55.4,74.1 55.6,80.6 55.7,92.0 55.9,86.7 56.0,92.9 56.4,87.8 56.6,80.3 56.7,84.4 56.9,78.8 57.0,82.5 57.4,87.9 57.6,83.1 57.7,82.0 57.9,75.0 58.0,71.7 58.6,77.3 58.7,75.8 58.9,75.1 59.0,71.9 59.5,73.9 59.6,69.4 59.7,70.1 59.9,72.4 60.0,68.9 60.5,66.6 60.6,71.4 60.7,73.1 60.9,71.9 61.0,77.9 61.5,76.9 61.6,84.1 61.7,84.8 61.9,78.5 62.0,80.5 62.5,78.5 62.6,78.3 62.8,68.4 62.9,70.8 63.0,65.3 63.5,66.0 63.6,67.5 63.8,75.8 63.9,76.5 64.0,74.2 64.5,70.9 64.6,74.3 64.8,73.6 64.9,71.6 65.5,70.7 65.6,71.7 65.8,70.0 65.9,64.8 66.0,62.2 66.5,68.6 66.6,67.3 66.8,63.2 66.9,61.5 67.1,68.8 67.5,65.1 67.6,65.2 67.8,62.9 67.9,61.3 68.1,59.5 68.5,64.6 68.6,60.5 68.8,64.3 68.9,69.1 69.1,59.7 69.5,60.4 69.6,67.2 69.8,70.2 69.9,70.1 70.1,58.9 70.5,63.4 70.6,63.9 70.8,61.0 70.9,54.7 71.1,53.6 71.5,55.0 71.6,56.5 71.8,55.8 71.9,50.9 72.1,51.4 72.6,61.6 72.8,58.6 72.9,57.2 73.1,61.0 73.5,60.4 73.6,61.7 73.8,60.1 73.9,65.0 74.1,63.9 74.5,68.4 74.7,63.5 74.8,58.7 74.9,56.5 75.1,61.5 75.5,67.6 75.7,64.7 75.8,62.5 75.9,53.8 76.1,57.6 76.5,51.9 76.7,48.2 76.8,54.6 76.9,58.6 77.1,58.3 77.5,76.7 77.7,74.9 77.8,66.6 77.9,68.2 78.5,69.9 78.7,66.2 78.8,78.3 79.0,78.9 79.1,66.8 79.5,54.9 79.7,51.2 79.8,50.5 80.0,45.8 80.1,45.3 80.5,47.3 80.7,46.8 80.8,47.0 81.0,49.8 81.1,54.5 81.5,61.8 81.7,51.5 81.8,47.1 82.0,45.9 82.1,43.5 82.5,46.6 82.7,50.5 82.8,47.1 83.0,52.7 83.1,51.3 83.5,44.4 83.7,51.6 83.8,49.9 84.0,49.0 84.1,46.0 84.5,47.0 84.7,49.2 84.8,53.9 85.0,69.8 85.1,92.7 85.5,115.9 85.7,106.5 85.8,93.9 86.0,86.0 86.1,86.6 86.5,91.6 86.7,97.0 86.8,85.2 87.0,83.9 87.1,90.2 87.7,82.5 87.8,88.3 88.0,82.6 88.1,79.8 88.6,81.9 88.7,75.9 88.8,72.7 89.0,70.8 89.1,75.5 89.6,67.2 89.7,76.0 89.8,75.0 90.0,78.5 90.1,77.8 90.6,87.4 90.7,83.4 90.9,76.2 91.0,69.9 91.1,63.8 91.6,59.6 91.7,59.6 91.9,58.0 92.0,54.0 92.1,53.5 92.7,55.0 92.9,55.1 93.0,48.2 93.1,44.3 93.6,43.2 93.7,46.9 93.9,51.2 94.0,42.4 94.1,43.6 94.6,47.7 94.7,47.2 94.9,44.2 95.0,45.1 95.2,48.0 95.6,44.2 95.7,45.6 95.9,51.1 96.0,48.3 96.2,45.4 96.6,55.7 96.7,49.3 97.0,61.1 97.2,66.6 97.6,58.4 97.7,61.2 97.9,54.6 98.0,55.5 98.2,49.3 98.6,50.4 98.7,51.3 98.9,47.7 99.2,47.0 99.6,52.1 99.7,45.4 99.9,52.4 100.0,60.6 100.2,48.4 100.6,52.9 100.7,58.3 100.9,65.8 101.0,64.5 101.2,77.9 101.6,73.6 101.7,69.0 101.9,58.4 102.0,62.3 102.2,66.6 102.6,59.1 102.7,51.6 102.9,47.4 103.0,49.7 103.6,54.8 103.8,51.1 103.9,55.5 104.0,58.9 104.6,67.0 104.8,62.1 104.9,65.9 105.0,77.9 105.2,81.9 105.6,75.3 105.8,70.5 105.9,78.5 106.0,71.9 106.2,79.1 106.8,77.9 106.9,79.7 107.1,75.6 107.2,64.9 107.6,69.3 107.8,63.8 107.9,65.6 108.1,62.8 108.2,55.9 108.6,54.8 108.8,61.1 108.9,58.9 109.1,59.1 109.2,64.0 109.6,70.6 109.8,71.6 109.9,70.2 110.1,71.9 110.2,66.3 110.8,63.3 110.9,56.9 111.1,54.9 111.2,53.8 111.6,49.6 111.8,54.4 111.9,54.4 112.1,49.0 112.2,51.4 112.6,54.2 112.8,44.7 112.9,44.0 113.1,43.7 113.2,45.9 113.6,49.4 113.8,54.6 113.9,54.2 114.1,55.6 114.2,51.2 114.6,54.5 114.8,55.3 114.9,46.4 115.1,44.7 115.2,44.0 115.7,43.7 115.8,47.5 115.9,52.2 116.1,51.7 116.7,54.3 116.8,46.2 116.9,44.1 117.1,45.6 117.2,42.3 117.7,47.2 117.8,53.9 117.9,47.9 118.1,57.8 118.2,54.0 118.7,58.6 118.8,53.3 118.9,49.5 119.1,49.7 119.2,49.2 119.7,47.9 119.8,48.5 120.0,49.9 120.1,54.0 120.2,51.2 120.7,55.8 120.8,56.4 121.0,55.1 121.1,60.5 121.2,63.8 121.7,59.3 121.8,63.8 122.0,65.6 122.1,64.7 122.2,59.1 122.7,57.6 122.8,53.2 123.0,57.8 123.1,56.1 123.3,59.4 123.7,57.7 123.8,62.0 124.0,64.4 124.1,66.8 124.3,61.6 124.7,64.3 124.8,58.5 125.0,55.3 125.1,53.4 125.3,52.3 125.8,57.9 126.0,58.7 126.1,55.6 126.3,53.6 126.7,54.5 126.8,56.4 127.0,57.0 127.1,59.5 127.3,69.2 127.7,83.0 127.8,80.7 128.0,78.7 128.1,76.1 128.3,76.7 128.7,73.8 128.8,74.6 129.0,83.6 129.1,70.0 129.3,91.9 129.7,87.5 129.8,72.0 130.0,66.1 130.1,61.1 130.3,59.7 130.8,64.5 131.0,61.8 131.1,62.5 131.3,55.5 131.7,58.3 131.9,60.4 132.0,58.2 132.1,56.7 132.3,57.5 132.7,55.9 132.9,53.3 133.0,52.6 133.1,57.1 133.3,54.0 133.7,58.9 133.9,59.9 134.0,57.9 134.1,57.0 134.3,51.2 134.7,53.5 134.9,57.5 135.0,54.5 135.1,52.2 135.3,47.7 135.7,49.1 135.9,50.4 136.0,52.2 136.2,50.5 136.3,49.4 136.7,51.3 136.9,55.8 137.0,53.8 137.2,49.1 137.3,49.8 137.7,55.8 137.9,56.8 138.0,62.3 138.2,63.5 138.3,63.6 138.7,61.7 138.9,61.4 139.0,63.3 139.2,63.2 139.3,55.0 139.9,54.8 140.0,54.0 140.2,56.3 140.3,78.5 140.7,68.6 140.9,78.6 141.0,79.7 141.2,71.8 141.3,68.3 141.7,69.4 141.9,71.1 142.0,59.1 142.2,52.8 142.3,54.7 142.7,64.9 142.9,58.5 143.0,54.8 143.2,63.8 143.3,59.5 143.8,62.1 143.9,62.4 144.0,60.0 144.2,60.4 144.3,62.8 144.9,72.7 145.0,75.0 145.2,78.6 145.3,74.7 145.8,75.4 145.9,71.5 146.0,67.6 146.2,65.7 146.3,63.3 146.8,62.1 146.9,64.7 147.0,67.6 147.2,73.1 147.3,76.1 147.8,79.2 147.9,84.8 148.1,86.7 148.2,93.9 148.3,95.2 148.8,83.4 148.9,85.0 149.1,65.9 149.2,69.9 149.8,68.7 149.9,63.9 150.1,67.2 150.2,65.7 150.3,64.0 150.8,61.7 150.9,61.3 151.1,63.0 151.3,62.9 151.8,67.5 151.9,66.6 152.1,69.2 152.2,74.0 152.4,74.2 152.8,64.2 152.9,61.5 153.1,63.8 153.2,66.5 153.4,61.6 153.8,67.3 153.9,68.5 154.1,73.7 154.2,74.8 154.4,70.1 154.8,67.4 154.9,65.9 155.1,65.6 155.2,66.2 155.4,67.0 155.9,70.1 156.1,74.8 156.2,76.6 156.4,79.4 156.9,73.9 157.1,69.3 157.2,68.3 157.4,66.7 157.8,68.1 157.9,67.7 158.1,67.1 158.2,67.6 158.4,66.6 158.9,69.1 159.1,74.0 159.2,75.9 159.4,69.2 159.8,70.5 160.0,66.0 160.1,64.8 160.2,64.1 160.4,64.2 160.8,71.1 161.0,70.9 161.1,69.9 161.2,70.6 161.4,64.6 161.8,66.6 162.0,66.5 162.1,67.1 162.2,64.1 162.4,64.3 162.8,65.6 163.0,64.4 163.1,72.4 163.2,70.8 163.4,68.9 164.0,69.7 164.1,70.3 164.3,69.4 164.4,68.0 164.8,72.3 165.0,77.5 165.1,75.9 165.3,72.7 165.4,67.7 165.8,69.0 166.0,71.0 166.1,73.4 166.3,75.0 166.4,71.1 166.8,69.7 167.0,74.6 167.1,70.1 167.3,67.3 167.4,67.3 167.8,67.2 168.0,73.5 168.1,75.3 168.3,76.5 168.4,76.5 168.8,73.7 169.0,68.7 169.1,67.7 169.3,68.4 169.4,72.6 169.8,71.8 170.0,68.6 170.1,73.3 170.3,71.5 170.4,75.2 170.8,81.0 171.0,85.7 171.1,87.1 171.3,87.9 171.8,81.9 172.0,80.8 172.1,83.1 172.3,79.9 172.4,81.7 172.9,62.2 173.0,62.6 173.1,62.7 173.3,59.2 173.4,62.1 173.9,57.2 174.0,59.9 174.1,63.2 174.3,61.1 174.4,62.2 174.9,57.3 175.0,59.0 175.1,60.7 175.3,62.4 175.4,60.7 175.9,60.8 176.0,62.7 176.2,87.1 176.3,83.1 176.4,70.0 176.9,64.4 177.0,63.9 177.2,58.2 177.3,58.4 177.4,57.2 178.0,60.6 178.2,61.5 178.3,57.8 178.4,56.8 178.9,59.0 179.0,61.0 179.2,61.4 179.3,59.9 179.4,64.2 179.9,68.3 180.0,62.4 180.2,64.6 180.3,66.6 180.5,62.9 180.9,63.7 181.0,67.1 181.2,66.9 181.3,64.8 181.5,62.2 181.9,61.4 182.0,69.9 182.2,62.7 182.3,72.6 182.5,71.8 182.9,72.9 183.2,71.6 183.3,80.2 183.5,72.3 183.9,71.8 184.0,70.5 184.2,66.4 184.3,63.8 184.5,61.1 184.9,63.2 185.0,64.1 185.2,63.8 185.3,63.2 185.5,61.6 185.9,61.7 186.0,62.1 186.2,62.5 186.3,66.0 186.5,67.9 186.9,67.3 187.0,66.2 187.2,67.9 187.3,68.9 187.5,66.2 187.9,65.2 188.0,71.3 188.2,71.4 188.3,95.0 188.5,92.4 188.9,77.5 189.1,76.8 189.2,75.1 189.3,92.9 189.5,86.8 189.9,81.6 190.1,72.4 190.2,76.7 190.3,76.6 190.5,71.2 190.9,71.1 191.1,72.5 191.2,70.1 191.3,66.3 191.5,62.9 192.1,75.0 192.2,71.3 192.4,70.8 192.5,74.0 192.9,66.7 193.1,65.4 193.2,66.1 193.4,66.5 193.5,65.2 193.9,65.0 194.1,65.6 194.2,64.2 194.4,63.8 194.5,63.3 194.9,67.0 195.1,67.5 195.2,64.8 195.4,63.0 195.5,64.7 195.9,64.7 196.1,64.7 196.2,65.1 196.4,62.4 196.5,66.4 197.1,69.7 197.2,68.2 197.4,68.6 197.5,66.6 197.9,68.6 198.1,72.0 198.2,70.5 198.4,70.7 198.5,70.2 198.9,77.1 199.1,78.5 199.2,78.5 199.4,79.7 199.5,69.5 199.9,74.4 200.1,72.8 200.2,72.5 200.4,71.1 200.5,65.6 201.0,67.1 201.1,71.2 201.2,69.7 201.4,74.0 202.0,80.1 202.1,80.6 202.2,88.1 202.4,81.9 202.5,79.7 203.0,75.8 203.1,71.0 203.2,70.8 203.5,69.8 204.0,69.9 204.1,71.8 204.2,75.7 204.4,80.8 204.5,82.0 205.0,83.5 205.1,82.6 205.3,80.0 205.4,73.8 205.5,70.3 206.0,69.4 206.1,73.8 206.3,75.9 206.4,78.3 206.5,72.0 207.0,72.4 207.1,75.8 207.3,73.3 207.4,73.8 207.5,75.7 208.1,78.4 208.3,80.6 208.4,78.7 208.5,83.7 209.1,75.2 209.3,71.3 209.4,72.6 209.6,72.2 210.0,75.1 210.1,78.9 210.3,77.5 210.4,79.5 210.6,81.8 211.1,91.7 211.3,93.1 211.4,95.6 211.6,90.2 212.0,88.8 212.1,89.2 212.3,91.0 212.4,93.2 212.6,90.7 213.0,105.8 213.1,110.2 213.3,105.6 213.4,105.2 213.6,121.1 214.0,170.0 214.1,156.3 214.3,150.7 214.4,162.8 214.6,151.8 215.0,144.7 215.1,141.0 215.3,125.0 215.4,125.7 215.6,125.7 216.1,129.0 216.3,127.1 216.4,122.3 216.6,113.9 217.0,110.2 217.2,121.4 217.3,126.2 217.4,132.8 217.6,123.7 218.0,120.7 218.2,118.2 218.3,115.2 218.4,110.1 218.6,102.4 219.0,106.6 219.2,108.5 219.3,112.0 219.4,109.1 219.6,106.7 220.0,118.6 220.2,116.1 220.3,113.6 220.4,130.6 220.6,133.6 221.0,123.7 221.2,127.3 221.3,128.4 221.5,119.8 222.0,130.6 222.2,123.9 222.3,120.1 222.5,116.7 222.6,125.1 223.0,126.3 223.2,123.4 223.3,122.7 223.5,117.1 223.6,113.1 224.0,110.6 224.2,105.5 224.3,107.0 224.5,108.1 224.6,111.5 225.0,110.1 225.2,116.2 225.3,114.3 225.5,108.1 225.6,104.6 226.0,107.2 226.2,104.2 226.3,105.8 226.5,104.3 226.6,99.4 227.0,98.9 227.2,98.8 227.3,93.1 227.5,92.9 227.6,90.7 228.0,92.6 228.2,100.8 228.3,95.5 228.5,94.7 228.6,94.3 229.1,92.6 229.2,93.3 229.3,89.6 229.5,89.3 229.6,92.5 230.2,104.9 230.3,98.2 230.5,101.1 230.6,91.7 231.1,88.8 231.2,86.2 231.3,81.7 231.5,85.2 231.6,85.1 232.1,86.4 232.2,86.7 232.3,90.3 232.5,85.5 232.6,85.2 233.1,85.8 233.2,90.7 233.4,87.5 233.5,95.3 233.6,90.4 234.1,104.9 234.2,99.2 234.4,107.4 234.5,102.6 234.6,99.9 235.1,98.7 235.2,100.2 235.5,96.7 235.6,88.9 236.1,86.6 236.2,87.1 236.4,92.1 236.5,87.2 236.6,85.1 237.1,88.1 237.2,84.4 237.4,85.0 237.5,88.7 237.7,88.3 238.1,87.0 238.2,87.1 238.4,86.8 238.5,86.8 238.7,91.9 239.1,97.9 239.2,91.3 239.4,92.9 239.5,87.5 239.7,84.4 240.1,83.1 240.2,81.1 240.4,79.8 240.5,81.9 240.7,91.4 241.1,97.5 241.2,90.9 241.4,97.3 241.5,92.0 241.7,87.9 242.1,87.1 242.2,89.5 242.4,85.0 242.5,86.3 242.7,84.0 243.1,85.3 243.2,86.8 243.4,86.2 243.5,92.0 243.7,87.9 244.2,88.6 244.4,91.9 244.5,96.1 244.7,97.1 245.1,94.3 245.3,90.5 245.4,90.5 245.5,87.3 245.7,85.3 246.1,93.6 246.3,89.1 246.4,83.5 246.5,84.9 246.7,85.1 247.1,87.5 247.3,89.1 247.4,91.2 247.5,89.1 247.7,87.1 248.1,86.8 248.3,86.7 248.4,84.7 248.5,97.7 248.7,100.0 249.3,105.3 249.4,128.7 249.6,133.5 249.7,122.9 250.1,122.5 250.3,110.3 250.4,109.5 250.6,117.3 250.7,116.8 251.1,115.9 251.3,117.9 251.4,129.8 251.6,127.5 251.7,125.7 252.1,127.2 252.3,123.0 252.4,116.7 252.6,110.2 252.7,111.5 253.1,113.0 253.3,114.5 253.4,102.2 253.6,103.7 253.7,105.4 254.3,112.4 254.4,114.4 254.6,108.7 254.7,102.3 255.1,108.0 255.3,115.0 255.4,109.8 255.7,111.7 256.1,103.9 256.3,102.7 256.4,100.0 256.6,99.5 256.7,96.5 257.1,90.7 257.3,106.5 257.6,106.3 257.7,111.6 258.2,109.9 258.3,109.2 258.4,109.1 258.6,106.2 258.7,109.2 259.2,117.6 259.3,120.0 259.4,119.6 259.6,126.1 259.7,128.8 260.2,139.2 260.4,128.7 260.6,126.5 260.7,119.6 261.2,112.0 261.5,106.0 261.6,110.9 261.7,100.5 262.2,101.8 262.3,100.0 262.5,98.4 262.6,95.6 262.7,91.0 263.2,92.6 263.3,90.9 263.5,92.8 263.6,90.1 263.7,91.2 264.3,101.5 264.5,97.7 264.6,95.5 264.7,91.3 265.2,95.8 265.3,96.7 265.5,91.0 265.6,86.4 265.8,87.4 266.2,86.1 266.3,86.7 266.5,85.4 266.6,88.4 266.8,86.1 267.2,87.1 267.3,84.9 267.5,87.0 267.6,88.2 267.8,83.4 268.3,83.3 268.5,81.3 268.6,83.3 268.8,78.0 269.2,85.1 269.3,86.1 269.5,83.6 269.6,85.2 269.8,79.5 270.2,84.5 270.3,85.0 270.5,88.2 270.6,91.7 270.8,88.7 271.2,81.2 271.3,79.3 271.5,77.1 271.6,77.2 271.8,73.7 272.2,75.2 272.3,77.5 272.5,78.4 272.6,77.4 272.8,89.2 273.2,89.4 273.3,81.6 273.5,84.4 273.6,81.6 273.8,78.6 274.2,77.9 274.4,77.7 274.5,80.0 274.6,79.6 274.8,75.8 275.2,78.0 275.4,84.1 275.5,78.6 275.6,77.6 275.8,74.2 276.2,75.9 276.4,76.3 276.5,78.2 276.6,75.8 277.2,76.8 277.4,76.1 277.5,80.6 277.6,81.1 277.8,78.9 278.2,80.8 278.4,80.5 278.5,89.6 278.7,87.5 278.8,80.4 279.2,91.3 279.4,104.9 279.5,105.2 279.7,102.6 279.8,91.4 280.2,105.8 280.4,97.7 280.5,90.7 280.7,86.6 280.8,89.5 281.2,90.9 281.4,85.5 281.5,83.5 281.7,91.8 281.8,86.2 282.4,92.4 282.5,93.5 282.7,91.3 282.8,94.9 283.2,93.4 283.4,86.4 283.5,81.7 283.7,81.4 283.8,83.7 284.2,83.4 284.4,84.1 284.5,82.5 284.7,81.8 284.8,79.5 285.2,80.2 285.4,79.7 285.5,75.6 285.7,78.7 285.8,82.8 286.3,82.9 286.4,86.8 286.5,87.3 286.7,86.1 286.8,82.9 287.3,79.1 287.4,73.5 287.5,72.9 287.8,76.5 288.3,81.0 288.4,82.0 288.5,75.6 288.7,75.1 288.8,72.3 289.3,73.8 289.4,75.6 289.5,80.7 289.7,77.3 289.8,82.1 290.3,78.5 290.4,74.3 290.6,74.5 290.7,78.5 290.8,75.8 291.3,79.4 291.4,84.5 291.6,94.5 291.7,99.8 291.8,98.4 292.3,118.1 292.4,104.6 292.6,103.1 292.7,92.9 292.8,97.7 293.3,108.4 293.4,96.5 293.6,111.5 293.7,107.1 293.8,98.4 294.3,91.2 294.4,93.2 294.6,88.4 294.7,92.0 294.9,102.8 295.3,101.0 295.4,104.7 295.6,101.5 295.7,95.8 295.9,100.2 296.4,101.7 296.6,93.0 296.7,89.2 296.9,84.6 297.3,87.0 297.4,87.0 297.6,84.4 297.7,82.6 297.9,80.7 298.3,85.5 298.4,84.0 298.6,82.9 298.7,83.8 298.9,88.8 299.3,87.8 299.4,95.5 299.6,91.1 299.7,92.3 299.9,96.5 300.3,92.2 300.4,100.3 300.6,105.5 300.7,99.5 300.9,91.8 301.3,95.4 301.4,103.0 301.6,97.8 301.7,94.7 301.9,88.7 302.5,79.8 302.6,80.1 302.7,81.0 302.9,83.2 303.3,82.8 303.5,85.7 303.6,83.2 303.7,82.2 303.9,77.2 304.3,79.6 304.5,80.5 304.6,75.2 304.7,79.4 304.9,75.4 305.3,78.2 305.5,80.0 305.6,77.9 305.7,78.9 305.9,76.1 306.5,79.8 306.6,81.0 306.8,80.5 306.9,75.2 307.3,77.0 307.5,79.5 307.6,77.9 307.8,80.1 307.9,76.4 308.3,74.2 308.5,73.1 308.6,75.1 308.9,80.3 309.3,90.1 309.5,94.6 309.6,89.6 309.8,89.2 309.9,85.7 310.3,96.6 310.5,97.4 310.6,93.3 310.8,89.2 310.9,82.7 311.3,80.9 311.5,82.1 311.6,84.0 311.8,84.4 311.9,84.4 312.3,85.0 312.5,84.9 312.8,84.8 312.9,89.2 313.3,95.3 313.5,90.1 313.8,83.4 313.9,90.8 314.4,88.8 314.5,88.1 314.6,85.7 314.8,81.8 314.9,83.5 315.4,82.2 315.5,82.6 315.6,82.0 315.8,81.8 315.9,81.4 316.5,85.8 316.6,86.1 316.8,86.1 316.9,93.7 317.4,106.2 317.5,98.7 317.6,98.8 317.8,93.9 317.9,104.8 318.4,102.9 318.5,95.8 318.7,92.8 318.8,92.7 318.9,95.0 319.4,92.7 319.5,93.7 319.7,86.7 319.8,89.0 319.9,87.2 320.5,92.2 320.7,90.1 320.8,95.3 320.9,99.9 321.4,123.7 321.5,128.4 321.7,127.3 321.8,147.8 321.9,145.0 322.4,130.5 322.5,135.4 322.7,126.5 322.8,138.7 323.0,141.2 323.4,143.5 323.5,134.1 323.7,140.4 323.8,154.4 324.0,132.8 324.4,153.3 324.5,143.3 324.7,131.0 324.8,119.1 325.0,104.7 325.4,96.9 325.5,101.7 325.7,106.5 325.8,106.9 326.0,114.1 326.4,108.5 326.5,102.7 326.7,105.3 326.8,99.7 327.0,94.1 327.4,92.3 327.5,99.2 327.7,95.8 327.8,98.7 328.4,105.9 328.5,102.1 328.7,108.5 328.8,109.3 329.0,106.4 329.4,115.2 329.5,117.1 329.7,111.5 329.8,112.2 330.0,103.2 330.4,98.5 330.5,98.7 330.7,94.3 330.8,100.6 331.0,105.5 331.4,102.1 331.6,97.6 331.7,97.4 331.8,90.8 332.0,81.9 332.4,79.3 332.6,91.7 332.7,94.8 332.8,90.4 333.0,88.9 333.4,84.5 333.6,90.4 333.7,87.0 333.8,93.0 334.0,89.8 334.6,91.1 334.7,91.3 334.9,94.0 335.0,92.2 335.4,93.2 335.6,90.6 335.7,90.0 335.9,91.6 336.0,93.3 336.4,98.7 336.6,103.5 336.7,101.1 336.9,125.1 337.0,117.0 337.4,113.0 337.6,113.2 337.7,113.6 337.9,112.9 338.0,116.8 338.4,110.5 338.6,109.3 338.7,113.5 338.9,109.1 339.0,114.0 339.4,107.4 339.6,104.9 339.7,102.4 339.9,101.0 340.4,103.2 340.6,107.4 340.7,105.9 340.9,110.2 341.0,105.2 341.4,116.2 341.6,111.6 341.7,107.5 341.9,108.9 342.0,103.6 342.4,101.1 342.6,103.3 342.7,102.7 342.9,108.5 343.0,107.9 343.5,105.8 343.6,107.3 343.7,102.1 343.9,104.3 344.0,103.5 344.5,101.8 344.6,100.8 344.7,99.8 344.9,99.6 345.0,98.3 345.5,98.5 345.6,102.7 345.7,99.3 345.9,97.3 346.0,96.2 346.5,92.9 346.6,93.4 346.7,96.1 346.9,96.6 347.0,96.5 347.5,96.4 347.6,95.4 347.8,97.8 347.9,99.2 348.0,94.9 348.5,105.8 348.6,105.1 348.8,107.4 348.9,123.0 349.0,115.5 349.6,117.4 349.8,110.8 349.9,112.8 350.0,106.2 350.5,104.8 350.6,103.3 350.8,104.9 350.9,106.7 351.1,104.7 351.5,109.6 351.6,107.3 351.8,110.6 351.9,109.7 352.1,103.0 352.5,101.7 352.6,102.7 352.8,102.5 352.9,103.4 353.1,105.2 353.5,106.8 353.6,111.9 353.8,109.0 353.9,105.3 354.1,102.2 354.6,105.7 354.8,107.0 354.9,108.0 355.1,109.5 355.5,114.8 355.6,114.0 355.8,112.8 355.9,112.3 356.1,111.4 356.5,122.3 356.6,124.1 356.8,135.8 356.9,131.6 357.1,132.4 357.5,131.2 357.6,129.1 357.8,116.9 357.9,114.6 358.1,108.2 358.5,112.1 358.6,110.8 358.9,111.8 359.1,106.1 359.5,105.0 359.7,105.7 359.8,110.1 359.9,109.7 360.1,111.3 360.5,109.2 360.7,106.9 360.8,105.3 361.1,104.0 361.5,104.3 361.7,105.4 361.8,108.2 361.9,109.0 362.1,107.4 362.5,109.4 362.7,107.5 362.8,111.6 362.9,113.1 363.1,115.0 363.5,118.5 363.7,112.6 363.8,111.9 364.0,110.9 364.1,109.5 364.5,120.1 364.7,118.0 364.8,114.6 365.0,109.7 365.5,110.6 365.7,114.7 365.8,114.6 366.0,115.4 366.5,126.3 366.7,120.5 366.8,118.2 367.0,112.3 367.1,111.4 367.5,120.3 367.7,117.8 367.8,115.8 368.0,119.2 368.1,121.8 368.7,119.6 368.8,114.6 369.0,113.4 369.1,114.5 369.5,117.8 369.7,116.9 369.8,148.8 370.0,134.6 370.1,140.6 370.5,133.8 370.7,123.1 370.8,116.2 371.0,112.1 371.1,109.6 371.6,112.4 371.7,113.2 371.8,113.9 372.0,110.8 372.1,106.3 372.7,112.7 372.8,113.6 373.0,116.6 373.1,114.9 373.6,118.2 373.7,115.6 373.8,109.5 374.0,133.6 374.1,131.4 374.6,119.1 374.7,120.4 374.8,127.5 375.0,132.5 375.1,122.7 375.6,124.4 375.7,119.8 375.9,115.2 376.0,112.9 376.1,108.7 376.6,106.9 376.7,105.7 376.9,102.2 377.0,112.3 377.1,113.1 377.6,107.0 377.7,110.6 377.9,113.9 378.0,109.0 378.1,106.5 378.6,113.2 378.7,111.1 378.9,110.8 379.0,105.3 379.6,109.4 379.7,109.4 379.9,105.4 380.0,103.8 380.2,103.6 380.6,104.8 380.7,103.0 380.9,103.9 381.0,103.5 381.2,101.4 381.6,104.7 381.7,109.4 381.9,104.7 382.0,109.9 382.2,104.9 382.6,106.4 382.7,106.5 382.9,105.1 383.0,106.7 383.2,110.8 383.6,109.7 383.7,113.4 383.9,111.9 384.0,110.0 384.2,103.2 384.6,113.6 384.7,119.4 384.9,134.5 385.0,122.0 385.2,108.7 385.6,112.2 385.7,117.1 385.9,120.0 386.0,115.4 386.2,114.1 386.6,108.4 386.7,109.6 386.9,105.4 387.0,103.0 387.2,102.6 387.8,107.8 387.9,105.8 388.0,108.7 388.2,101.7 388.6,101.7 388.8,104.3 388.9,108.2 389.0,99.6 389.2,98.9 389.6,102.4 389.8,104.9 389.9,111.1 390.0,112.4 390.2,122.2 390.6,111.3 390.8,105.8 390.9,104.9 391.0,103.8 391.2,101.6 391.6,102.9 391.8,104.4 391.9,103.6 392.1,102.5 392.2,100.4 392.8,104.9 392.9,104.4 393.1,114.1 393.2,103.5 393.6,103.4 393.8,107.2 393.9,104.1 394.1,106.4 394.2,111.4 394.6,123.0 394.8,113.9 394.9,108.2 395.1,107.8 395.2,106.7 395.6,107.8 395.8,113.8 395.9,109.7 396.1,108.3 396.2,109.8 396.6,114.1 396.8,108.3 396.9,108.5 397.1,106.3 397.2,102.2 397.6,104.1 397.8,104.4 397.9,99.8 398.1,97.9 398.2,97.7 398.6,100.9 398.8,107.4 398.9,120.2 399.1,120.1 399.2,110.6 399.6,105.0 399.8,106.0 399.9,105.1 400.1,113.2 400.2,103.9 400.7,103.1 400.8,103.5 400.9,102.8 401.1,104.0 401.2,104.4 401.8,111.1 401.9,110.4 402.1,113.8 402.2,121.8 402.7,117.0 402.8,117.3 402.9,113.6 403.1,115.8 403.2,123.3 403.7,137.0 403.8,133.8 404.0,123.5 404.1,116.8 404.2,114.0 404.7,118.5 404.8,131.9 405.0,129.5 405.1,129.6 405.2,123.6 405.7,129.1 405.8,124.5 406.0,123.6 406.1,118.4 406.2,116.1 406.8,120.6 407.0,117.6 407.1,110.2 407.2,109.9 407.7,111.6 407.8,109.0 408.0,107.0 408.1,105.3 408.3,107.9 408.7,106.7 408.8,110.6 409.0,115.4 409.1,113.6 409.3,112.5 409.7,113.2 409.8,110.8 410.0,107.2 410.1,107.5 410.3,111.9 410.7,117.1 410.8,119.3 411.0,123.1 411.3,112.7 411.7,113.1 411.8,111.8 412.0,113.9 412.1,116.2 412.3,117.4 412.7,122.7 412.8,122.6 413.0,120.2 413.3,144.9 413.7,130.7 413.8,141.9 414.0,150.8 414.1,144.1 414.3,149.9 414.7,142.6 414.8,129.9 415.0,122.0 415.1,126.6 415.3,116.2 415.7,122.1 415.8,127.1 416.0,118.3 416.1,121.0 416.3,124.1 416.7,127.2 416.9,122.0 417.0,114.8 417.1,112.4 417.7,111.4 417.9,110.8 418.0,109.0 418.1,110.4 418.7,108.8 418.9,109.2 419.0,121.0 419.1,121.4 419.3,118.5 419.7,121.5 419.9,118.0 420.0,114.7 420.2,122.9 420.3,119.6 420.9,131.4 421.0,134.8 421.2,138.6 421.3,144.6 421.7,145.0 421.9,146.9 422.0,151.4 422.2,147.5 422.3,139.0 422.7,131.1 422.9,123.3 423.0,124.1 423.2,130.2 423.3,127.0 423.7,125.6 423.9,122.2 424.0,117.0 424.2,129.4 424.3,134.7 424.7,137.1 424.9,131.0 425.0,124.9 425.2,131.8 425.3,130.5 425.9,133.0 426.0,139.1 426.2,132.0 426.3,127.4 426.7,127.7 426.9,137.9 427.0,132.9 427.2,132.4 427.3,132.8 427.7,141.1 427.9,137.4 428.0,133.4 428.2,126.3 428.3,128.6 428.8,131.6 428.9,126.2 429.0,123.9 429.2,123.8 429.3,120.1 429.8,122.0 429.9,121.1 430.0,123.7 430.2,118.9 430.3,118.2 430.8,115.1 430.9,113.8 431.0,114.5 431.2,118.6 431.3,120.3 431.8,116.6 431.9,126.4 432.0,129.7 432.2,127.7 432.3,126.4 432.8,134.2 432.9,129.9 433.1,122.1 433.2,125.1 433.8,123.2 433.9,121.9 434.1,118.6 434.2,125.1 434.3,138.4 434.8,132.7 434.9,145.8 435.1,142.3 435.2,138.4 435.3,146.0 435.8,142.7 435.9,137.2 436.1,126.7 436.2,139.5 436.4,137.7 436.8,143.9 436.9,140.8 437.1,139.5 437.2,136.7 437.4,128.8 437.8,123.5 437.9,120.9 438.1,130.6 438.2,124.7 438.4,125.3 438.8,124.3 438.9,126.1 439.1,125.6 439.2,125.2 439.4,120.3 439.9,124.7 440.1,127.4 440.2,124.0 440.4,124.6 440.8,125.8 440.9,123.3 441.1,123.2 441.2,128.8 441.4,134.1 441.8,150.0 441.9,146.9 442.1,136.0 442.2,141.9 442.4,138.1 442.9,136.1 443.1,131.7 443.2,130.8 443.4,125.7 443.8,126.2 443.9,128.4 444.1,127.1 444.2,125.6 444.4,116.5 445.0,118.9 445.1,117.7 445.2,118.5 445.4,115.5 445.8,119.1 446.0,122.3 446.1,120.7 446.2,120.1 446.4,114.8 446.8,118.4 447.0,117.1 447.1,117.8 447.2,114.4 447.4,112.2 447.8,112.0 448.0,116.4 448.1,112.0 448.2,104.6 448.4,104.0 448.8,107.7 449.0,114.4 449.1,108.6 449.3,105.9 449.4,106.2 449.8,107.8 450.0,109.3 450.1,101.6 450.3,103.1 450.4,101.7 450.8,103.1 451.0,102.2 451.1,104.1 451.3,103.0 451.4,106.0 451.8,116.0 452.0,116.8 452.1,113.6 452.3,111.3 452.4,122.7 452.8,124.4 453.0,125.2 453.1,123.9 453.3,121.5 453.4,120.5 454.0,122.9 454.1,118.3 454.3,115.0 454.4,114.7 454.8,117.8 455.0,127.4 455.1,125.8 455.3,127.3 455.4,125.0 455.8,124.8 456.0,129.1 456.1,131.5 456.3,131.5 456.4,137.1 456.9,145.3 457.0,143.2 457.1,131.3 457.3,134.1 457.4,134.8 457.9,129.6 458.0,128.0 458.1,128.8 458.3,135.6 458.4,137.0 459.0,139.3 459.1,137.6 459.3,133.9 459.4,134.1 459.9,132.7 460.0,130.8 460.1,132.6 460.3,131.3 460.4,125.9 460.9,127.0 461.0,122.7 461.2,121.5 461.3,121.3 461.4,118.8 461.9,119.9 462.0,122.1 462.2,123.9 462.3,122.0 462.4,118.8 462.9,118.3 463.0,121.1 463.2,118.5 463.3,110.5 463.9,114.6 464.0,118.4 464.2,116.8 464.3,118.7 464.4,118.4 464.9,118.2 465.0,115.3 465.2,114.3 465.5,113.2 465.9,118.9 466.0,117.6 466.2,109.9 466.3,109.9 466.5,109.6 466.9,116.8 467.0,122.0 467.2,124.3 467.3,124.7 467.5,126.7 467.9,133.5 468.0,125.5 468.2,119.6 468.3,123.9 468.5,122.9 468.9,122.3 469.0,119.1 469.2,113.8 469.3,120.6 469.5,116.8 470.0,118.4 470.2,120.3 470.3,118.2 470.5,119.7 471.0,121.8 471.2,117.5 471.3,120.5 471.5,114.8 471.9,119.4 472.0,115.1 472.2,117.9 472.3,111.2 472.5,110.2 473.1,115.4 473.2,116.7 473.3,116.1 473.5,114.3 473.9,114.9 474.1,113.6 474.2,112.4 474.3,113.2 474.5,113.6 474.9,118.9 475.1,115.9 475.2,110.1 475.3,114.4 475.5,114.9 475.9,121.2 476.1,118.1 476.2,119.5 476.3,122.6 476.5,121.7 476.9,121.4 477.1,117.8 477.2,115.0 477.4,120.9 477.5,118.4 478.1,128.0 478.2,127.1 478.4,123.2 478.5,124.8 478.9,122.2 479.1,120.2 479.2,122.2 479.4,119.7 479.5,117.1 479.9,117.5 480.1,120.9 480.2,119.3 480.4,128.1 480.5,129.8 480.9,127.1 481.1,120.9 481.2,123.0 481.4,116.9 481.5,121.8 481.9,118.9 482.1,114.0 482.2,114.7 482.4,111.8 482.5,110.0 482.9,108.4 483.1,106.3 483.2,105.0 483.4,106.3 483.5,105.1 483.9,104.6 484.1,106.6 484.2,105.3 484.4,104.1 484.9,106.9 485.1,108.9 485.2,107.7 485.4,103.5 485.5,101.5 486.0,102.2 486.1,102.1 486.2,100.7 486.4,101.9 486.5,100.7 487.0,101.2 487.1,106.2 487.2,105.6 487.4,100.5 487.5,95.1 488.0,97.1 488.1,99.8 488.2,100.3 488.4,104.7 488.5,96.0 489.0,95.2 489.1,97.6 489.3,92.6 489.4,93.0 489.5,95.0 490.0,92.9 490.1,95.8 490.3,92.4 490.4,91.4 490.5,95.3 491.0,96.5 491.1,101.4 491.3,106.9 491.4,107.1 491.5,102.8 492.1,99.4 492.3,100.4 492.4,91.8 492.5,88.7 493.0,89.7 493.1,87.0 493.3,87.7 493.4,85.9 493.6,87.5 494.0,91.0 494.1,93.1 494.3,92.1 494.4,91.9 494.6,89.7 495.1,91.7 495.3,88.0 495.4,87.3 495.6,89.2 496.0,92.3 496.1,91.5 496.3,89.2 496.4,91.3 496.6,93.1 497.0,94.2 497.3,97.9 497.4,104.8 497.6,101.7 498.0,100.8 498.1,100.5 498.3,92.9 498.4,92.0 498.6,92.3 499.0,91.8 499.1,91.3 499.3,94.3 499.4,96.2 499.6,94.4 500.0,96.2 500.1,97.2 500.3,93.1 500.4,101.0 500.6,95.0 501.0,97.7 501.1,99.1 501.3,106.7 501.4,105.2 501.6,107.6 502.0,102.2 502.2,101.9 502.3,102.2 502.4,102.9 502.6,99.3 503.0,100.4 503.2,106.6 503.3,108.7 503.4,111.7 503.6,108.7 504.0,108.5 504.2,110.2 504.3,105.8 504.4,111.9 504.6,107.4 505.0,102.4 505.2,98.8 505.3,96.9 505.5,95.0 505.6,93.0 506.2,96.7 506.3,100.8 506.5,99.7 506.6,97.9 507.0,97.3 507.2,99.7 507.3,95.4 507.5,92.4 507.6,98.1 508.0,99.5 508.2,100.8 508.3,106.2 508.5,118.8 508.6,114.7 509.0,112.7 509.2,119.5 509.3,116.9 509.5,112.4 509.6,113.9 510.0,114.3 510.2,120.4 510.3,115.8 510.5,114.7 510.6,111.3 511.2,110.1 511.3,106.7 511.5,108.7 511.6,118.8 512.0,110.8 512.2,114.5 512.3,120.1 512.5,125.6 512.6,124.2 513.0,121.1 513.2,116.8 513.3,121.3 513.5,123.3 513.6,122.8 514.1,118.7 514.2,113.5 514.3,106.3 514.5,104.1 514.6,100.1 515.1,100.8 515.2,100.8 515.3,98.8 515.5,102.9 515.6,99.1 516.1,102.2 516.2,97.8 516.3,99.1 516.5,99.4 516.6,98.1 517.1,97.0 517.2,96.3 517.3,96.1 517.6,93.7 518.1,95.3 518.2,93.7 518.4,96.4 518.5,98.1 518.6,95.0 519.1,98.9 519.2,98.5 519.4,99.9 519.5,100.4 519.6,97.5 520.1,99.0 520.2,96.4 520.4,96.6 520.5,99.8 520.6,98.7 521.1,99.8 521.2,100.0 521.4,103.4 521.5,102.9 521.6,99.5 522.2,99.6 522.4,96.7 522.5,97.7 522.7,98.0 523.2,101.5 523.4,104.0 523.5,104.8 523.7,101.1 524.1,99.7 524.2,98.9 524.4,100.1 524.5,97.2 524.7,98.1 525.2,103.5 525.4,108.6 525.5,106.0 525.7,103.2 526.1,102.6 526.2,98.2 526.4,101.6 526.5,103.5 526.7,103.4 527.1,104.3 527.2,103.6 527.4,107.4 527.5,104.4 527.7,105.9 528.1,106.2 528.2,102.4 528.4,100.4 528.5,100.2 528.7,101.3 529.1,106.7 529.2,116.8 529.4,109.6 529.5,107.4 529.7,110.1 530.3,114.2 530.4,114.6 530.5,113.1 530.7,109.4 531.1,107.7 531.3,106.2 531.4,107.4 531.5,105.3 531.7,103.0 532.1,104.9 532.3,108.7 532.4,109.7 532.5,108.6 532.7,110.0 533.1,112.1 533.3,107.4 533.4,107.0 533.5,110.8 533.7,112.5 534.1,112.1 534.3,109.3 534.4,103.1 534.6,103.7 534.7,104.4 535.1,105.0 535.3,105.3 535.4,102.5 535.6,105.3 536.1,108.9 536.3,112.6 536.4,112.1 536.6,120.1 536.7,119.5 537.1,117.2 537.3,117.0 537.4,122.2 537.6,117.9 537.7,126.2 538.1,132.8 538.3,129.9 538.4,128.4 538.6,128.0 538.7,131.0 539.1,124.4 539.3,119.3 539.4,119.7 539.6,117.5 539.7,116.9 540.1,115.3 540.3,119.9 540.4,119.2 540.6,114.5 540.7,108.1 541.1,108.9 541.3,108.4 541.4,106.4 541.6,104.4 541.7,103.7 542.2,109.0 542.3,108.2 542.4,102.8 542.6,103.4 542.7,100.7 543.2,102.0 543.3,100.0 543.4,103.1 543.6,106.1 543.7,101.1 544.3,106.8 544.4,112.7 544.6,113.9 544.7,106.4 545.2,107.0 545.3,106.5 545.4,102.1 545.6,103.1 545.7,102.7 546.2,105.5 546.3,105.3 546.5,101.0 546.6,99.2 546.7,102.3 547.2,103.2 547.3,100.8 547.6,105.1 547.7,104.3 548.2,105.7 548.3,102.4 548.5,100.9 548.6,99.3 548.7,100.3 549.2,99.2 549.3,97.7 549.5,99.3 549.7,100.2 550.2,100.4 550.3,100.3 550.5,102.1 550.6,101.7 550.8,99.3 551.2,102.7 551.3,103.8 551.5,110.0 551.6,116.0 551.8,118.4 552.2,111.2 552.3,109.9 552.5,121.0 552.6,123.7 552.8,114.7 553.2,115.1 553.3,119.7 553.5,113.4 553.6,120.6 553.8,132.3 554.2,163.5 554.3,144.3 554.5,143.9 554.6,134.2 554.8,124.3 555.2,125.0 555.3,115.4 555.5,110.3 555.6,108.6 555.8,106.3 556.2,106.0 556.3,111.0 556.5,112.6 556.6,117.2 556.8,110.5 557.2,111.7 557.3,108.3 557.5,115.1 557.6,110.0 557.8,107.2 558.4,127.0 558.5,128.9 558.6,124.4 558.8,132.1 559.2,122.8 559.4,121.2 559.5,115.8 559.6,113.8 559.8,112.6 560.2,115.6 560.4,118.2 560.5,120.9 560.6,113.6 560.8,112.9 561.2,112.6 561.4,110.1 561.5,110.6 561.6,110.4 561.8,116.5 562.2,116.8 562.4,125.4 562.5,124.5 562.7,130.7 562.8,128.4 563.2,140.4 563.4,136.4 563.5,135.0 563.7,135.2 563.8,133.7 564.4,134.7 564.5,132.0 564.7,129.6 564.8,125.7 565.2,126.6 565.4,125.6 565.5,129.7 565.7,129.9 565.8,134.5 566.2,132.8 566.4,132.0 566.5,137.3 566.7,145.1 566.8,141.4 567.2,141.7 567.4,137.4 567.5,124.1 567.7,118.0 567.8,119.2 568.4,119.0 568.5,113.8 568.7,116.0 568.8,123.2 569.2,120.4 569.4,123.6 569.5,126.4 569.7,125.3 569.8,118.6 570.2,116.1 570.4,113.4 570.5,113.4 570.8,110.2 571.3,110.5 571.4,110.7 571.5,111.9 571.7,111.9 571.8,107.2 572.3,114.2 572.4,114.6 572.5,111.3 572.7,112.2 572.8,112.4 573.3,116.5 573.4,122.8 573.5,160.4 573.7,150.1 573.8,130.9 574.3,125.4 574.4,115.8 574.7,117.5 574.8,122.8 575.3,127.4 575.4,127.6 575.7,128.6 575.8,121.9 576.3,121.6 576.4,127.4 576.6,126.5 576.7,128.7 576.8,135.4 577.3,133.5 577.4,131.8 577.6,121.9 577.7,123.0 577.8,120.5 578.4,116.6 578.6,118.0 578.7,117.6 578.9,116.9 579.3,128.4 579.4,122.7 579.6,123.3 579.7,120.3 579.9,122.8 580.3,130.7 580.4,125.4 580.6,120.0 580.7,119.3 580.9,123.2 581.3,120.2 581.4,120.7 581.6,120.5 581.7,117.6 581.9,115.3 582.4,118.7 582.6,117.5 582.7,118.8 582.9,128.0 583.3,131.1 583.4,131.9 583.6,130.4 583.7,136.7 583.9,129.8 584.3,138.1 584.4,140.2 584.6,137.1 584.7,144.7 584.9,139.8 585.3,150.2 585.4,146.4 585.6,140.6 585.7,139.8 585.9,133.5 586.3,130.3 586.4,134.1 586.6,127.9 586.7,127.6 586.9,124.2 587.3,119.3 587.5,117.3 587.6,121.7 587.7,122.2 587.9,129.9 588.3,130.7 588.5,130.3 588.6,129.5 588.7,145.3 588.9,170.6 589.3,169.8 589.5,177.7 589.6,147.6 589.7,162.3 589.9,159.7 590.3,146.8 590.5,145.1 590.6,149.6 590.7,143.3 591.3,150.4 591.5,144.9 591.6,142.9 591.8,138.1 591.9,134.7 592.3,134.3 592.5,131.3 592.6,129.6 592.8,129.7 592.9,126.3 593.3,128.6 593.5,130.1 593.6,126.8 593.8,126.1 593.9,124.4 594.3,115.6 594.5,114.9 594.6,117.2 594.8,113.1 594.9,111.3 595.3,113.8 595.5,114.5 595.6,122.7 595.8,120.1 595.9,125.9 596.5,116.8 596.6,118.4 596.8,118.7 596.9,115.4 597.3,114.6 597.5,113.4 597.6,113.5 597.8,117.9 597.9,113.0 598.3,114.9 598.5,114.5 598.6,114.5 598.8,117.8 598.9,126.6 599.4,121.3 599.5,129.4 599.6,123.6 599.9,125.5 600.4,122.5 600.5,113.8 600.6,110.6 600.8,109.5 600.9,108.8 601.4,112.1 601.5,113.6 601.6,113.7 601.8,113.8 602.4,117.7 602.5,114.0 602.6,109.6 602.8,110.2 602.9,111.9 603.4,114.7 603.5,116.6 603.7,114.5 603.8,112.8 603.9,111.6 604.4,112.5 604.5,111.9 604.7,108.0 604.8,109.3 604.9,106.9 605.4,107.3 605.5,111.0 605.7,109.3 605.8,115.2 605.9,125.1 606.4,115.5 606.5,117.5 606.7,112.2 606.8,111.8 606.9,105.9 607.4,111.3 607.5,104.4 607.7,104.1 607.8,105.7 608.0,107.6 608.4,106.8 608.5,108.9 608.7,108.6 608.8,112.7 609.0,102.1 609.4,105.9 609.5,103.1 609.7,103.4 609.8,102.3 610.0,104.4 610.5,111.4 610.7,109.3 610.8,104.1 611.0,104.4 611.4,104.9 611.5,105.0 611.7,106.3 611.8,103.9 612.0,105.7 612.4,110.6 612.5,113.0 612.7,109.9 612.8,110.6 613.0,109.6 613.4,112.7 613.5,114.1 613.7,112.6 613.8,115.3 614.0,110.1 614.4,114.0 614.5,113.4 614.7,112.7 614.8,114.4 615.0,115.3 615.4,114.6 615.6,117.2 615.7,113.1 615.8,113.2 616.0,130.4 616.6,128.1 616.7,128.8 616.8,141.1 617.0,128.4 617.4,120.5 617.6,119.6 617.7,121.5 617.8,117.8 618.0,114.6 618.4,113.0 618.6,114.8 618.7,118.4 618.8,117.1 619.0,117.2 619.4,115.4 619.6,121.7 619.7,118.9 619.9,123.4 620.0,120.8 620.4,116.2 620.7,115.1 620.9,123.1 621.0,122.5 621.4,130.6 621.6,136.3 621.7,133.4 621.9,140.4 622.0,131.6 622.4,123.6 622.6,117.4 622.7,112.7 623.0,109.3 623.4,112.9 623.6,111.1 623.7,108.6 623.9,107.8 624.0,107.0 624.4,112.6 624.6,113.6 624.7,107.7 624.9,104.9 625.0,107.6 625.4,110.3 625.6,109.9 625.7,114.3 625.9,111.4 626.0,104.0 626.4,100.2 626.6,100.6 626.7,98.5 627.0,98.3 627.5,100.8 627.6,101.8 627.7,105.8 628.0,103.0 628.5,104.4 628.6,104.1 628.7,107.3 628.9,107.6 629.0,104.5 629.5,107.3 629.6,111.4 629.7,114.9 629.9,112.4 630.0,113.3 630.6,128.2 630.7,117.9 630.9,113.9 631.0,115.0 631.5,115.3 631.6,116.1 631.8,115.7 631.9,117.4 632.0,120.0 632.5,116.0 632.6,121.7 632.8,123.6 632.9,132.7 633.0,120.0 633.5,118.9 633.6,119.7 633.8,118.8 633.9,129.3 634.0,127.0 634.6,126.8 634.8,125.8 634.9,127.4 635.0,123.2 635.5,128.0 635.6,123.2 635.8,117.4 635.9,119.2 636.1,121.4 636.5,127.3 636.6,133.6 636.8,128.0 636.9,134.9 637.1,149.6 637.5,138.8 637.6,137.7 637.8,133.0 637.9,140.9 638.1,141.1 638.5,130.6 638.6,127.3 638.8,136.5 638.9,133.8 639.1,141.7 639.5,140.1 639.6,143.7 639.8,139.2 639.9,145.7 640.1,151.9 640.5,150.5 640.6,137.8 640.8,137.5 640.9,136.0 641.5,138.4 641.6,140.7 641.8,128.0 641.9,123.0 642.1,122.5 642.5,122.1 642.6,120.2 642.8,119.9 642.9,118.3 643.1,116.2 643.5,121.2 643.6,124.2 643.8,122.6 643.9,124.3 644.1,121.5 644.5,119.0 644.7,118.3 644.8,122.2 644.9,114.7 645.1,115.5 645.5,120.3 645.7,118.6 645.8,118.2 645.9,117.4 646.1,117.8 646.5,122.3 646.7,120.4 646.8,120.0 646.9,119.3 647.1,123.6 647.5,122.6 647.7,124.3 647.8,121.2 648.0,118.5 648.1,119.1 648.7,120.7 648.8,117.4 649.0,115.2 649.1,113.4 649.5,117.6 649.7,116.5 649.8,117.7 650.0,114.9 650.1,138.2 650.5,129.3 650.7,132.2 650.8,139.6 651.0,129.9 651.1,124.4 651.5,118.7 651.7,118.7 651.8,128.4 652.0,120.3 652.5,123.7 652.7,131.7 652.8,128.3 653.0,128.4 653.1,125.9 653.5,123.5 653.7,119.7 653.8,119.8 654.0,118.1 654.5,114.8 654.7,117.6 654.8,120.3 655.0,116.0 655.1,111.7 655.5,121.3 655.7,117.1 655.8,113.7 656.0,118.4 656.1,126.0 656.6,124.8 656.7,119.3 656.8,118.4 657.0,126.2 657.1,125.4 657.6,124.9 657.7,122.8 657.8,132.0 658.0,117.8 658.1,113.8 658.6,114.1 658.7,115.5 658.8,113.5 659.0,111.0 659.1,108.7 659.6,112.0 659.7,110.4 659.8,106.4 660.0,106.3 660.1,103.8 660.6,108.0 660.7,111.2 660.9,108.7 661.0,113.5 661.1,110.2 661.6,113.2 661.7,111.9 661.9,111.3 662.0,108.6" class="chart-line"/><text x="52" y="212" class="chart-tick">2015-01-02</text><text x="662" y="212" class="chart-tick" text-anchor="end">2026-08-27</text><circle cx="662.0" cy="108.6" r="3.5" class="chart-dot"/><text x="668.0" y="101.6" class="chart-last">-0.96%p</text></svg><figcaption>Baa−10Y 잔차 — VIX로 설명되고 남은 부분</figcaption></figure></div>
+<div class="scroll"><table>
+<thead><tr><th>항목</th><th class="n">값</th><th>메모</th></tr></thead><tbody>
+<tr><td>VIX</td><td class="n">14.51</td><td>2026-08-27</td></tr>
+<tr><td>계수가 예측하는 Baa−10Y</td><td class="n">2.56%p</td>
+ <td>절편은 2008–2017 표본(n=2,498)에서 재추정</td></tr>
+<tr><td>실제 Baa−10Y</td><td class="n">1.60%p</td><td>—</td></tr>
+<tr><td><b>잔차</b></td><td class="n dn"><b>-0.96%p</b></td>
+ <td>VIX가 설명하는 것보다 <b>96bp 좁다</b></td></tr>
+<tr><td>잔차의 백분위</td><td class="n">23%ile</td><td>2000–2026, n=6,653</td></tr>
+</tbody></table></div>
+<div class="col">
+<p><b>압축은 실재하지만 극단은 아니다.</b> 96bp 좁은 것은 사실이고,
+그 정도는 26년 중 하위 23% 구간이다 — 드물지만 전례가 없지는 않다.</p>
+<div class="paper">VIX와 Baa 스프레드 회귀에서 <b>α₁ = 1.6705</b>(SE 0.1025, R² = 0.693,
+2008.01–2017.12 월별). VIX가 1% 오르면 스프레드는 약 <b>1.7bp</b> 벌어진다.
+<cite>자체 재현(2026-07) — FRED 원자료, vix_default_premium_replication.py.
+원 논문 서술(2.3802%p)이 아니라 재계산값</cite></div>
+<h3>② 기대부도로 설명되지 않는 잔차 — 초과채권프리미엄</h3>
+<p>신용스프레드에서 부도 위험으로 설명되는 부분을 빼면 잔차가 남는다.
+이 잔차가 <b>금융중개기관이 위험을 얼마나 싸게 떠안는가</b>를 재고,
+실물 예측력의 대부분이 여기 있다.</p>
+</div>
+<div class="wide"><figure class="chart"><svg viewBox="0 0 720 220" role="img" aria-label="초과채권프리미엄 EBP — 0 아래는 위험을 싸게 판다는 뜻" preserveAspectRatio="xMidYMid meet"><rect x="52" y="148.2" width="610" height="18.7" class="chart-band"/><text x="666" y="160.6" class="chart-band-lab">0 이하</text><line x1="52" y1="194.0" x2="662" y2="194.0" class="chart-grid"/><text x="46" y="198.0" class="chart-tick" text-anchor="end">-1.47</text><line x1="52" y1="110.0" x2="662" y2="110.0" class="chart-grid"/><text x="46" y="114.0" class="chart-tick" text-anchor="end">1.23</text><line x1="52" y1="26.0" x2="662" y2="26.0" class="chart-grid"/><text x="46" y="30.0" class="chart-tick" text-anchor="end">3.92</text><polyline points="52.0,169.8 54.4,177.0 56.6,168.1 59.0,160.1 61.3,157.6 63.7,162.1 66.1,165.3 68.5,165.3 70.9,162.4 73.2,158.7 75.6,157.8 78.0,156.9 80.4,159.0 82.8,157.6 84.9,160.3 87.4,161.5 89.7,158.4 92.1,158.7 94.4,155.6 96.8,156.4 99.2,158.3 101.6,159.2 104.0,158.2 106.3,162.5 108.7,164.3 111.1,164.2 113.3,158.3 115.7,158.4 118.0,165.6 120.5,159.1 122.8,146.3 125.2,143.0 127.6,145.1 129.9,147.7 132.3,136.8 134.7,131.9 137.1,125.1 139.5,118.5 141.7,111.6 144.1,126.9 146.5,126.5 148.9,122.2 151.2,114.2 153.6,109.6 156.0,92.6 158.4,42.3 160.8,51.2 163.1,44.8 165.5,60.7 167.9,48.5 170.1,62.0 172.5,77.5 174.8,105.4 177.2,119.0 179.6,137.8 182.0,146.1 184.4,146.0 186.7,152.3 189.1,148.0 191.5,163.1 193.9,153.9 196.3,147.7 198.5,152.6 200.9,156.3 203.2,151.9 205.6,146.2 207.9,141.9 210.3,156.6 212.8,147.4 215.1,147.3 217.5,151.5 219.8,160.4 222.2,147.8 224.6,155.8 226.8,157.1 229.2,155.5 231.6,151.4 234.0,147.8 236.3,149.2 238.7,150.6 241.1,133.7 243.4,150.4 245.9,131.5 248.2,138.4 250.6,141.3 253.0,145.2 255.3,158.0 257.7,152.2 260.0,149.7 262.4,141.8 264.7,147.1 267.1,153.5 269.6,151.9 271.9,152.9 274.3,148.8 276.6,152.5 279.0,150.2 281.4,148.2 283.6,150.3 286.0,151.1 288.4,163.1 290.8,159.0 293.1,148.0 295.5,151.6 297.9,151.9 300.2,148.8 302.7,147.5 305.0,152.4 307.4,157.3 309.8,154.1 312.0,156.3 314.4,158.9 316.7,159.4 319.1,157.4 321.5,157.9 323.9,157.7 326.3,154.7 328.6,154.7 331.0,146.1 333.3,145.5 335.7,149.5 338.2,157.4 340.3,152.3 342.7,147.9 345.1,146.4 347.5,143.4 349.8,141.5 352.2,135.6 354.6,131.2 357.0,134.8 359.4,132.0 361.7,126.8 364.1,119.4 366.5,118.4 368.8,129.8 371.2,140.6 373.5,140.1 375.9,146.2 378.3,147.7 380.7,148.5 383.1,150.3 385.4,150.2 387.8,171.7 390.1,155.6 392.5,154.1 395.0,153.6 397.1,153.3 399.5,151.6 401.9,153.1 404.3,151.8 406.6,152.5 409.0,150.4 411.4,156.0 413.8,154.6 416.2,152.0 418.5,154.1 420.9,160.5 423.3,155.6 425.5,151.2 427.9,156.9 430.2,154.1 432.6,147.1 435.0,151.9 437.4,151.0 439.8,153.5 442.1,147.9 444.5,143.4 446.9,137.1 449.3,142.1 451.7,145.5 453.8,151.5 456.3,147.7 458.6,148.2 461.0,147.3 463.3,149.0 465.7,152.7 468.1,155.2 470.5,155.0 472.9,153.2 475.2,156.7 477.6,155.6 480.0,152.9 482.3,111.1 484.7,127.8 487.0,135.3 489.4,146.4 491.8,153.1 494.2,157.0 496.6,148.0 498.9,154.5 501.3,162.5 503.7,163.5 506.1,168.3 508.5,177.7 510.6,171.2 513.1,163.1 515.4,161.1 517.8,166.3 520.1,165.4 522.5,163.0 524.9,168.3 527.3,164.5 529.7,162.2 532.0,162.0 534.4,159.1 536.8,154.9 539.0,175.3 541.4,158.3 543.7,152.0 546.2,146.0 548.5,147.8 550.9,149.2 553.3,147.5 555.6,144.9 558.0,155.2 560.4,148.2 562.8,148.5 565.2,152.6 567.4,153.7 569.8,141.5 572.1,143.1 574.5,141.8 576.8,146.9 579.3,145.1 581.7,147.8 584.0,140.4 586.4,150.0 588.7,154.6 591.1,149.5 593.5,151.6 595.8,150.2 598.2,153.8 600.5,151.5 603.0,148.2 605.3,150.1 607.7,148.5 610.1,150.3 612.4,158.8 614.8,154.4 617.2,161.9 619.6,156.7 622.0,155.3 624.2,148.4 626.6,150.1 628.9,153.6 631.3,154.1 633.6,154.7 636.0,153.1 638.5,157.3 640.8,156.2 643.2,154.5 645.5,154.8 647.9,156.4 650.3,156.3 652.5,156.6 654.9,154.6 657.3,160.0 659.7,157.2 662.0,158.2" class="chart-line"/><text x="52" y="212" class="chart-tick">2005-01-01</text><text x="662" y="212" class="chart-tick" text-anchor="end">2026-07-01</text><circle cx="662.0" cy="158.2" r="3.5" class="chart-dot"/><text x="668.0" y="151.2" class="chart-last">-0.32%p</text></svg><figcaption>초과채권프리미엄 EBP — 0 아래는 위험을 싸게 판다는 뜻</figcaption></figure></div>
+<div class="scroll"><table>
+<thead><tr><th>계열</th><th class="n">직전</th><th class="n">현재</th><th class="n">기준일</th><th class="n">위치</th></tr></thead><tbody>
+<tr><td><b>초과채권프리미엄 EBP</b></td><td class="n">−0.29</td><td class="n">-0.319%p</td>
+ <td class="n">2026-07</td><td class="n">16.5%ile</td></tr>
+<tr><td>GZ 신용스프레드 (원지수)</td><td class="n">0.861</td>
+ <td class="n">0.842</td><td class="n">2026-07-01</td><td class="n">—</td></tr>
+<tr><td>HY 스프레드 (OAS)</td><td class="n">2.67</td><td class="n">2.63</td>
+ <td class="n">2026-08-27</td><td class="n">1%ile</td></tr>
+<tr><td>IG 스프레드 (OAS)</td><td class="n">0.80</td><td class="n">0.79</td>
+ <td class="n">2026-08-27</td><td class="n">—</td></tr>
+<tr><td>NFCI 금융조건지수</td><td class="n">-0.561</td><td class="n">-0.566</td>
+ <td class="n">2026-08-21</td><td class="n">33%ile</td></tr>
+<tr><td>은행 대출태도 SLOOS</td><td class="n">8.1</td><td class="n">0.0</td>
+ <td class="n">2026-07-01</td><td class="n">긴축 종료</td></tr>
+<tr><td>BIS 부채상환비율 DSR (가계)</td><td class="n">-1.5</td>
+ <td class="n">1.1</td><td class="n">2025-Q4</td><td class="n">—</td></tr>
+<tr><td>카드 연체율</td><td class="n">2.91</td><td class="n">2.85</td>
+ <td class="n">2026-04-01</td><td class="n">개선</td></tr>
+</tbody></table></div>
+<div class="col">
+<p>EBP <b>-0.319%p, 16.5%ile</b>(1973-01~, n=643).
+0 아래라는 것은 시장이 부도 위험이 정당화하는 것보다 <b>위험을 싸게 팔고 있다</b>는 뜻이다.
+같은 수준 이하였던 달은 643개월 중 107개월(17%)이고,
+최근 밀집 구간은 <b>2021년 12개월, 2007년 6개월</b>이다.</p>
+
+<div class="paper">신용스프레드의 실물 예측력은 기대부도 성분이 아니라 <b>EBP</b>에 있다.
+EBP <b>+100bp</b>는 4분기 뒤 실질GDP를 <b>−1.5%p 이상</b> 낮추는 반면
+기대부도 성분은 −0.5%p에 그친다 — <b>3배 차이</b>다. 그대로 뒤집으면 지금의
+-0.319%p는 <b>약 +0.48%p의 순풍</b>이다. 01의 GDPNow 개선과 방향이 같다.
+<cite>Gilchrist &amp; Zakrajšek(2012), NBER WP 17021 / AER 102(4), 표2</cite></div>
+
+<div class="flag"><b>이 계수를 쓸 때의 한계</b> — 표본은 1973–2010이고,
+부호를 뒤집어 순풍으로 읽는 것은 원 논문이 검증한 방향이 아니다.
+크기를 인용하지 말고 <b>방향과 자릿수</b>로만 쓴다.</div>
+</div></section>
+<section><span class="num">05</span>
+<h2>물가는 아직 안 내려온다</h2>
+<div class="col"><p>지정학 가격이 진정되는 동안에도(→ 06) 물가는 따라 내려오지 않았다.
+특히 <b>서비스</b>가 그렇다 — 공급충격이 지나가도 기대가 남으면 물가는 뒤늦게 온다.</p></div>
+<div class="wide"><figure class="chart"><svg viewBox="0 0 720 190" role="img" aria-label="물가 — 직전 관측 대비 변화" preserveAspectRatio="xMidYMid meet"><line x1="398.0" y1="16" x2="398.0" y2="182" class="chart-zero"/><text x="122" y="39.0" class="chart-tick" text-anchor="end">미 근원 PCE</text><rect x="398.0" y="28.0" width="0.0" height="14" class="chart-bar-pos"/><text x="404.0" y="39.0" class="chart-val" text-anchor="start">+0.0%p</text><text x="122" y="65.0" class="chart-tick" text-anchor="end">유로존 근원 HICP</text><rect x="398.0" y="54.0" width="86.0" height="14" class="chart-bar-pos"/><text x="490.0" y="65.0" class="chart-val" text-anchor="start">+0.1%p</text><text x="122" y="91.0" class="chart-tick" text-anchor="end">일본 CPI 코어</text><rect x="398.0" y="80.0" width="223.6" height="14" class="chart-bar-pos"/><text x="627.6" y="91.0" class="chart-val" text-anchor="start">+0.3%p</text><text x="122" y="117.0" class="chart-tick" text-anchor="end">일본 SPPI</text><rect x="398.0" y="106.0" width="172.0" height="14" class="chart-bar-pos"/><text x="576.0" y="117.0" class="chart-val" text-anchor="start">+0.2%p</text><text x="122" y="143.0" class="chart-tick" text-anchor="end">중국 CPI</text><rect x="398.0" y="132.0" width="258.0" height="14" class="chart-bar-pos"/><text x="662.0" y="143.0" class="chart-val" text-anchor="start">+0.3%p</text><text x="122" y="169.0" class="chart-tick" text-anchor="end">한국 기대인플레</text><rect x="398.0" y="158.0" width="0.0" height="14" class="chart-bar-pos"/><text x="404.0" y="169.0" class="chart-val" text-anchor="start">+0.0%p</text></svg><figcaption>물가 — 직전 관측 대비 변화</figcaption></figure></div>
+<div class="scroll"><table>
+<thead><tr><th>계열</th><th class="n">직전</th><th class="n">현재</th><th class="n">기준일</th></tr></thead><tbody>
+<tr><td>미 근원 PCE (YoY)</td><td class="n">3.34</td><td class="n">3.34%</td><td class="n">2026-07</td></tr>
+<tr><td>절사평균 PCE (Dallas)</td><td class="n">2.26</td><td class="n">2.28%</td>
+ <td class="n">2026-07-01</td></tr>
+<tr><td>유로존 HICP (YoY)</td><td class="n">2.8</td><td class="n">2.93%</td><td class="n">2026-07</td></tr>
+<tr><td>유로존 근원 HICP</td><td class="n">2.4</td><td class="n">2.5%</td>
+ <td class="n">2026-07</td></tr>
+<tr><td>일본 CPI 코어</td><td class="n">1.53</td><td class="n">1.79%</td>
+ <td class="n">2026-07</td></tr>
+<tr><td>일본 서비스물가 SPPI</td><td class="n">3.4</td><td class="n">3.6%</td>
+ <td class="n">2026-07</td></tr>
+<tr><td>중국 CPI</td><td class="n">0.2</td><td class="n">0.5%</td>
+ <td class="n">2026-07</td></tr>
+<tr><td>미 5y5y 원거리 기대</td><td class="n">2.24</td><td class="n">2.32%</td><td class="n">2026-08-27</td></tr>
+</tbody></table></div>
+<div class="col">
+<p><b>충격은 물러나는데 물가는 아직 안 내려온다.</b> 특히 <b>서비스</b>가 그렇다 —
+일본 SPPI 3.6%가 대표적이다. 공급충격이 지나가도
+기대가 남으면 물가는 뒤늦게 따라온다.</p>
+<div class="paper">중앙은행이 반응하는 것은 품목의 가중치가 아니라 <b>지속성</b>이다.
+헤드라인이 에너지로 흔들릴 때는 통과시키고 <b>서비스</b>를 본다.
+<cite>제텔 소환 인덱스 §1 — 정책 반응을 끌어내는 것은 지속성이다</cite></div>
+<div class="paper">코어물가는 공급충격을 걸러내는 <b>열등한 방법</b>이다. 품목을 이름으로 지목하는 대신
+<b>분포의 꼬리를 잘라야</b> 한다 — 그래서 절사평균 PCE 2.28%를 함께 본다.
+단 중위·절사평균 <b>CPI</b>는 월간 변화율의 연율이라 YoY와 같은 표에 놓지 않았다.
+<cite>Ball &amp; Mankiw(1995/NBER WP 4168), QJE 110(1)</cite></div>
+</div></section>
+<section><span class="num">06</span>
+<h2>지정학 — 지수가 아니라 가격으로 읽는다</h2>
+<div class="col">
+<p>지정학위험지수(GPR)는 <b>월간</b>이라 사건에 늦다. 볼트 규칙은
+<b>“GPR로 당장의 국면을 판단하지 않는다”</b>이고, 대신 <b>유가·금·VIX 세 가격의 동시 변동</b>을
+먼저 본다. 이번 주는 셋이 <b>같은 방향</b>으로 움직였다.</p>
+</div>
+<div class="scroll"><table>
+<thead><tr><th>가격 3종</th><th class="n">직전</th><th class="n">현재</th><th class="n">기준일</th><th>읽는 법</th></tr></thead><tbody>
+<tr><td>유가 WTI</td><td class="n">86.34</td><td class="n dn">83.90</td>
+ <td class="n">2026-08-25</td><td>공급 프리미엄 이탈</td></tr>
+<tr><td>유가 Brent</td><td class="n">92.71</td><td class="n dn">88.24</td>
+ <td class="n">2026-08-25</td><td>같음</td></tr>
+<tr><td>금</td><td class="n">4,609.7</td><td class="n dn">4,529.9</td>
+ <td class="n">2026-08-28</td><td>안전선호 후퇴</td></tr>
+<tr><td>VIX</td><td class="n">15.21</td><td class="n dn">14.51</td>
+ <td class="n">2026-08-27</td><td>위험회피 후퇴</td></tr>
+</tbody></table></div>
+<div class="wide"><figure class="chart"><svg viewBox="0 0 720 320" role="img" aria-label="지정학 — 지수가 아니라 가격으로 본다 (직전 대비)" preserveAspectRatio="xMidYMid meet"><line x1="398.0" y1="16" x2="398.0" y2="312" class="chart-zero"/><text x="122" y="39.0" class="chart-tick" text-anchor="end">유가 WTI</text><rect x="347.9" y="28.0" width="50.1" height="14" class="chart-bar-neg"/><text x="341.9" y="39.0" class="chart-val" text-anchor="end">-2.8%</text><text x="122" y="65.0" class="chart-tick" text-anchor="end">유가 Brent</text><rect x="312.6" y="54.0" width="85.4" height="14" class="chart-bar-neg"/><text x="306.6" y="65.0" class="chart-val" text-anchor="end">-4.8%</text><text x="122" y="91.0" class="chart-tick" text-anchor="end">금</text><rect x="367.4" y="80.0" width="30.6" height="14" class="chart-bar-neg"/><text x="361.4" y="91.0" class="chart-val" text-anchor="end">-1.7%</text><text x="122" y="117.0" class="chart-tick" text-anchor="end">VIX</text><rect x="316.5" y="106.0" width="81.5" height="14" class="chart-bar-neg"/><text x="310.5" y="117.0" class="chart-val" text-anchor="end">-4.6%</text><text x="122" y="143.0" class="chart-tick" text-anchor="end">유럽 TTF 가스</text><rect x="369.0" y="132.0" width="29.0" height="14" class="chart-bar-neg"/><text x="363.0" y="143.0" class="chart-val" text-anchor="end">-1.6%</text><text x="122" y="169.0" class="chart-tick" text-anchor="end">해운 운임</text><rect x="369.8" y="158.0" width="28.2" height="14" class="chart-bar-neg"/><text x="363.8" y="169.0" class="chart-val" text-anchor="end">-1.6%</text><text x="122" y="195.0" class="chart-tick" text-anchor="end">원/달러</text><rect x="387.4" y="184.0" width="10.6" height="14" class="chart-bar-neg"/><text x="381.4" y="195.0" class="chart-val" text-anchor="end">-0.6%</text><text x="122" y="221.0" class="chart-tick" text-anchor="end">DXY</text><rect x="395.2" y="210.0" width="2.8" height="14" class="chart-bar-neg"/><text x="389.2" y="221.0" class="chart-val" text-anchor="end">-0.2%</text><text x="122" y="247.0" class="chart-tick" text-anchor="end">농산물</text><rect x="398.0" y="236.0" width="258.0" height="14" class="chart-bar-pos"/><text x="662.0" y="247.0" class="chart-val" text-anchor="start">+14.6%</text><text x="122" y="273.0" class="chart-tick" text-anchor="end">국내 유가</text><rect x="398.0" y="262.0" width="15.4" height="14" class="chart-bar-pos"/><text x="419.4" y="273.0" class="chart-val" text-anchor="start">+0.9%</text><text x="122" y="299.0" class="chart-tick" text-anchor="end">니치 원자재 ETF</text><rect x="398.0" y="288.0" width="11.9" height="14" class="chart-bar-pos"/><text x="415.9" y="299.0" class="chart-val" text-anchor="start">+0.7%</text></svg><figcaption>지정학 — 지수가 아니라 가격으로 본다 (직전 대비)</figcaption></figure></div>
+<div class="col">
+<p><b>셋이 함께 내렸다는 것이 신호다.</b> 하나만 내리면 그 자산의 사정일 수 있지만
+유가·금·VIX가 동시에 빠지면 <b>지정학 프리미엄이 가격에서 빠지고 있다</b>고 읽는다.</p>
+<div class="paper">GPR은 월간이라 사건 대응에 느리다. 층위를 나눠 본다 —
+<b>GPR(월간) → 뉴스(일간) → 가격 반응(실시간)</b>. 실무적으로는
+<b>가격 3종의 동시 급변이 GPR 수준보다 빠른 신호</b>다.
+<cite>[[지정학적 리스크]] 노드 판정 규칙 · 제텔 소환 인덱스 §1</cite></div>
+<h3>그런데 세 곳이 반대로 간다</h3>
+</div>
+<div class="scroll"><table>
+<thead><tr><th>반대 신호</th><th class="n">직전</th><th class="n">현재</th><th class="n">기준일</th><th>무엇을 뜻하나</th></tr></thead><tbody>
+<tr><td><b>GPRC (산유국·핵심국)</b></td><td class="n">1.1</td>
+ <td class="n up">1.3</td><td class="n">2026-07-01</td>
+ <td>글로벌 GPR은 내리는데 <b>산유국만 오른다</b></td></tr>
+<tr><td><b>농산물 (밀·옥수수·대두)</b></td><td class="n">199.6</td>
+ <td class="n up">228.7</td><td class="n">2026-07-01</td>
+ <td><b>+14.6%</b> — 에너지와 반대로 간다</td></tr>
+<tr><td>EU 천연가스 (IMF 월간)</td><td class="n">15.09</td>
+ <td class="n up">17.93</td><td class="n">2026-07-01</td>
+ <td>일별 TTF(67.0)는 내리는데 월간은 오른다</td></tr>
+<tr><td>국내 유가 (오피넷)</td><td class="n">1,844.6</td>
+ <td class="n up">1,860.7</td><td class="n">2026-08-30</td>
+ <td>국제유가 하락에도 국내는 상승 — 환율·유통 시차</td></tr>
+</tbody></table></div>
+<div class="scroll"><table>
+<thead><tr><th>배경 (월간 지수·물량)</th><th class="n">직전</th><th class="n">현재</th><th class="n">기준일</th></tr></thead><tbody>
+<tr><td>지정학위험지수 GPR (글로벌)</td><td class="n">179.7</td>
+ <td class="n">152.7</td><td class="n">2026-07-01</td></tr>
+<tr><td>글로벌 공급망압력 GSCPI</td><td class="n">1.19</td><td class="n">0.80</td>
+ <td class="n">2026-07-31</td></tr>
+<tr><td>해운 운임 (SCFI 프록시)</td><td class="n">15.06</td><td class="n">14.82</td>
+ <td class="n">2026-08-27</td></tr>
+<tr><td>러시아 화석연료 수출수입</td><td class="n">21.77</td>
+ <td class="n">18.61</td><td class="n">2026-07-01</td></tr>
+<tr><td>미 원유재고 / 생산 (주간)</td><td class="n">428,815</td>
+ <td class="n">428,910</td><td class="n">2026-08-21</td></tr>
+<tr><td>니치 원자재 ETF (우라늄·희토류·리튬)</td><td class="n">48.05</td>
+ <td class="n">48.37</td><td class="n">2026-08-27</td></tr>
+<tr><td>미 관세 수입 (당월)</td><td class="n">1,544.7</td>
+ <td class="n">-85.5</td><td class="n">2026-07-31</td></tr>
+<tr><td>중국 국가별 무역 (EU 수출)</td><td class="n">242.1</td>
+ <td class="n">579.8</td><td class="n">2026-07</td></tr>
+</tbody></table></div>
+<div class="col">
+<p><b>재고와 생산이 함께 늘었다</b>(428,815→428,910,
+생산 13,830→13,843). 가격 하락이 수요 붕괴가 아니라
+<b>공급 쪽</b>에서 왔다는 뜻이다.</p>
+<div class="paper">가격이 움직였을 때 <b>재고가 늘었는지 줄었는지를 먼저 본다.</b>
+가격 하락 + 재고 증가는 공급 요인, 가격 하락 + 재고 감소는 수요 요인이다.
+<cite>[[원자재 재고]] 판정 규칙 · 제텔 소환 인덱스 §1</cite></div>
+
+<h3>한국이 지정학에 노출되는 자리 — 원화는 안전통화가 아니다</h3>
+</div>
+<div class="scroll"><table>
+<thead><tr><th>계열</th><th class="n">직전</th><th class="n">현재</th><th class="n">기준일</th></tr></thead><tbody>
+<tr><td>원/달러</td><td class="n">1,393.35</td><td class="n up">1,385.01</td>
+ <td class="n">2026-08-21</td></tr>
+<tr><td>엔/달러</td><td class="n">158.85</td><td class="n">158.91</td>
+ <td class="n">2026-08-21</td></tr>
+<tr><td>DXY (광의 달러지수)</td><td class="n">118.25</td><td class="n">118.06</td>
+ <td class="n">2026-08-21</td></tr>
+<tr><td>BIS 실질실효환율 REER (원화)</td><td class="n">83.05</td>
+ <td class="n">85.50</td><td class="n">2026-07-01</td></tr>
+</tbody></table></div>
+<div class="col">
+<div class="paper">VIX가 오를 때 <b>원화는 절하되고 엔화는 절상</b>된다 — 방향이 반대이고
+<b>원화 민감도가 엔화의 3.5배</b>다. 즉 위험 이벤트에서 원화는 안전통화가 아니라
+<b>위험통화</b>로 취급된다. 이번 주는 VIX가 15.21→14.51로 내렸고
+원/달러도 1,393.35→1,385.01로 내렸다(원화 강세) — 규칙과 방향이 맞는다.
+<cite>이상원(2010) 국제투자심리지표간의 연관성 · Kang·Choi·Yoon(2014) The Impact of Global Volatility on Asian Financial Markets</cite></div>
+
+<h3>볼트가 등록해둔 가설 — HBM</h3>
+<p>볼트는 2026-08-19에 가설 하나를 <b>확정이 아닌 후보로</b> 기록해두었다:
+트럼프의 한미 연합훈련 참여 제한과 <b>9월 24일 미-한 회담</b>의 배경에
+<b>한국 HBM의 대중 재라우팅</b>이 있을 수 있다는 것이다.
+그리고 그 가설을 검증할 <b>관측 지표로 「한국 반도체 수출 통계」</b>를 지정했다.</p>
+<p><b>이번 주 그 지표는 꺾이지 않았다</b> — 7월 32,723,176,487달러,
+2월 대비 +68%다. 전월비 −2.5%는 이 가설을 지지할 만한 크기가 아니다.
+→ <b>가설은 아직 미확인이다.</b> 확정하지도 기각하지도 않는다.</p>
+<div class="flag"><b>볼트가 “못 본다”고 적어둔 것</b> — ① 9/24 회담 결과
+② 삼성·SK하이닉스 중국 팹의 미국 라이선스 갱신 여부. <b>둘 다 계열이 없다.</b>
+관측 가능한 것은 반도체 수출 통계 하나뿐이다.</div>
+</div></section>
+<section><span class="num">07</span>
+<h2>유동성은 마르고 있다 — 아직 가격에 안 나올 뿐</h2>
+<div class="scroll"><table>
+<thead><tr><th>계열</th><th class="n">직전</th><th class="n">현재</th><th class="n">기준일</th><th>읽는 법</th></tr></thead><tbody>
+<tr><td>RRP 잔고 (십억달러)</td><td class="n">0.456</td><td class="n dn">0.175</td>
+ <td class="n">2026-08-28</td><td>완충이 사실상 소진</td></tr>
+<tr><td>은행 지준 (백만달러)</td><td class="n">2,935,287</td><td class="n dn">2,924,936</td>
+ <td class="n">2026-08-26</td><td>감소</td></tr>
+<tr><td>순유동성 (B/S−RRP−TGA)</td><td class="n">—</td><td class="n">5,780.0</td>
+ <td class="n">2026-08-26</td><td>—</td></tr>
+<tr><td>TGA 잔고</td><td class="n">953,612</td><td class="n">950,736</td>
+ <td class="n">2026-08-26</td><td>—</td></tr>
+<tr><td><b>EFFR − IORB</b></td><td class="n">−2.0</td><td class="n">−2.0bp</td><td class="n">2026-08-27</td>
+ <td>정상 범위 (임계 +3bp까지 5bp)</td></tr>
+<tr><td>SOFR − IORB</td><td class="n">—</td><td class="n">0.01</td>
+ <td class="n">2026-08-27</td><td>레포 스트레스 없음</td></tr>
+<tr><td>연준 상설레포 SRF 사용</td><td class="n">0.001</td><td class="n">0.001</td>
+ <td class="n">2026-08-28</td><td>수량 신호 없음</td></tr>
+<tr><td>미국 M2 증가율</td><td class="n">5.34</td><td class="n">5.41%</td>
+ <td class="n">2026-07-01</td><td>—</td></tr>
+<tr><td>글로벌 M2 증가율</td><td class="n">3.38</td><td class="n">5.41%</td>
+ <td class="n">2026-07-01</td><td>—</td></tr>
+<tr><td>국채선물 레버리지펀드 숏 비중</td><td class="n">37.4</td>
+ <td class="n up">39.8%</td><td class="n">2026-08-25</td>
+ <td>베이시스 트레이드 확대</td></tr>
+</tbody></table></div>
+<div class="col">
+<p><b>수량은 줄어드는데 가격은 조용하다.</b> RRP가 비고 지준이 줄어드는데도
+EFFR−IORB는 −2bp에 머문다. 완충이 사라진 뒤에야 가격이 움직인다.
+그동안 <b>레버리지펀드의 국채선물 숏은 39.8%로 늘었다</b> —
+증폭 장치가 커지는 중이다.</p>
+
+<div class="paper">중앙은행이 금리를 정한다는 말은 정확하지 않다. <b>은행들이 서로 빌려야만</b>
+개입할 시장이 있다. 위기 대응으로 지준을 쏟아부은 결과
+<b>2010년 3분기에 공급이 수요를 넘어섰고 전통적 공개시장운영은 그때 멈췄다.</b>
+지금은 그 반대로 되돌아가는 중이고, 되돌아간 뒤에야 EFFR−IORB가 신호가 된다.
+<cite>송종운(2019), 연준의 공개시장운영 여건의 변화와 다중 기준금리체계, 마르크스주의 연구 16(3)</cite></div>
+
+<div class="flag"><b>이번 주에 고친 것</b> — 레짐 뷰 트리거 ⑥은
+“EFFR−IORB가 <b>마이너스 지속</b>이면 재검토”로 적혀 있었다. 계열을 받아보니
+<b>667영업일 연속 마이너스</b>였다. EFFR이 IORB를 밑도는 것은 현 제도의 정상 상태이므로
+그 조문대로면 2.6년 내내 발동 상태이고 정보량이 0이다.
+임계를 <b>+3bp 이상 상승</b>으로 정정했다.</div>
+</div></section>
+<section><span class="num">08</span>
+<h2>외국인이 판 자리를 개인이 받았다</h2>
+<div class="wide"><figure class="chart"><svg viewBox="0 0 720 210" role="img" aria-label="코스피 수급 — 외국인(위) vs 개인(아래)" preserveAspectRatio="xMidYMid meet"><line x1="40" y1="98.0" x2="700" y2="98.0" class="chart-zero"/><rect x="62.0" y="98.0" width="66.0" height="9.2" class="chart-bar-pos"/><rect x="62.0" y="98.0" width="66.0" height="14.3" class="chart-bar-neg"/><text x="95.0" y="196" class="chart-tick" text-anchor="middle">08/21</text><rect x="172.0" y="98.0" width="66.0" height="63.7" class="chart-bar-pos"/><rect x="172.0" y="33.8" width="66.0" height="64.2" class="chart-bar-neg"/><text x="205.0" y="196" class="chart-tick" text-anchor="middle">08/24</text><rect x="282.0" y="98.0" width="66.0" height="66.0" class="chart-bar-pos"/><rect x="282.0" y="78.9" width="66.0" height="19.1" class="chart-bar-neg"/><text x="315.0" y="196" class="chart-tick" text-anchor="middle">08/25</text><rect x="392.0" y="96.2" width="66.0" height="1.8" class="chart-bar-pos"/><rect x="392.0" y="98.0" width="66.0" height="43.1" class="chart-bar-neg"/><text x="425.0" y="196" class="chart-tick" text-anchor="middle">08/26</text><rect x="502.0" y="86.8" width="66.0" height="11.2" class="chart-bar-pos"/><rect x="502.0" y="98.0" width="66.0" height="46.7" class="chart-bar-neg"/><text x="535.0" y="196" class="chart-tick" text-anchor="middle">08/27</text><rect x="612.0" y="98.0" width="66.0" height="19.1" class="chart-bar-pos"/><rect x="612.0" y="83.6" width="66.0" height="14.4" class="chart-bar-neg"/><text x="645.0" y="196" class="chart-tick" text-anchor="middle">08/28</text><text x="40" y="18" class="chart-note">외국인 순매수</text><text x="40" y="184" class="chart-note">개인 순매수</text></svg><figcaption>코스피 수급 — 외국인(위) vs 개인(아래)</figcaption></figure></div>
+<div class="scroll"><table>
+<thead><tr><th>일자</th><th class="n">코스피</th><th class="n">외국인</th><th class="n">개인</th><th class="n">기관</th></tr></thead><tbody>
+<tr><td>08/21</td><td class="n">6,912.9</td><td class="n">-5,580</td><td class="n">-8,631</td><td class="n">+3,667</td></tr>
+<tr><td>08/24</td><td class="n">6,697.0</td><td class="n">-38,545</td><td class="n">+38,850</td><td class="n">-17,220</td></tr>
+<tr><td>08/25</td><td class="n">6,742.7</td><td class="n">-39,931</td><td class="n">+11,585</td><td class="n">+12,521</td></tr>
+<tr><td>08/26</td><td class="n">6,808.2</td><td class="n">+1,085</td><td class="n">-26,049</td><td class="n">+9,267</td></tr>
+<tr><td>08/27 <b>(금통위)</b></td><td class="n">6,912.4</td><td class="n">+6,753</td><td class="n">-28,230</td><td class="n">+5,413</td></tr>
+<tr><td>08/28</td><td class="n">6,788.9</td><td class="n">-11,546</td><td class="n">+8,694</td><td class="n">-13,429</td></tr>
+<tr><td><b>누계</b></td><td class="n"><b>−1.79%</b></td>
+<td class="n"><b>-82,184</b></td><td class="n"><b>+4,850</b></td><td class="n"><b>-3,448</b></td></tr>
+</tbody></table></div>
+<div class="scroll"><table>
+<thead><tr><th>보조 계열</th><th class="n">직전</th><th class="n">현재</th><th class="n">기준일</th></tr></thead><tbody>
+<tr><td>주식 대차잔고 (공매도 압력 대리)</td><td class="n">148.20</td>
+ <td class="n">148.14</td><td class="n">2026-08-27</td></tr>
+<tr><td>원/달러</td><td class="n">1,393.35</td><td class="n">1,385.01</td>
+ <td class="n">2026-08-21</td></tr>
+<tr><td>DXY (광의 달러지수)</td><td class="n">118.25</td><td class="n">118.06</td>
+ <td class="n">2026-08-21</td></tr>
+<tr><td>엔/달러</td><td class="n">158.85</td><td class="n">158.91</td>
+ <td class="n">2026-08-21</td></tr>
+<tr><td>김치프리미엄</td><td class="n">—</td><td class="n">0.33%</td>
+ <td class="n">2026-08-30</td></tr>
+<tr><td>일본 대내증권투자 (비거주자)</td><td class="n">-1.25</td>
+ <td class="n">0.44</td><td class="n">2026．8．16～8．22</td></tr>
+</tbody></table></div>
+<div class="col">
+<p><b>인상 당일 지수는 올랐고 외국인은 샀다.</b> 인상이 악재로 소화되지 않았다는 관측이다.</p>
+<div class="paper">외국인 순매수를 주가 방향의 근거로 쓰지 않는다.
+2026-08-18 재측정에서 “못 움직인다”가 “<b>덜</b> 움직인다”로 정정됐고
+(외국인→KOSPI F=9.03, 1% 유의) <b>방향은 유의하나 크기가 작다.</b>
+같은 표에서 개인이 받아냈다는 사실이 함께 보이고, 어느 쪽이 원인인지는 이 자료로 못 가른다.
+<cite>KOSPI 노드 판정 규칙 · 외국인 순매수는 환율을 움직이지만 주가는 못 움직인다</cite></div>
+</div></section>
+<section><span class="num">09</span>
+<h2>이 배열은 방향을 말해주지 않는다</h2>
+<div class="col">
+<p>지금의 배열 — <b>1개월 실질금리 하락 + 원거리 기대 상승</b> — 이
+과거에 있었을 때 그 뒤 무슨 일이 있었는지를 센다.
+조건은 1개월 실질 ≤ −5bp, 5y5y ≥ +5bp, 3개월 5y5y ≥ +10bp.
+2003년 이후 <b>독립 구간 57개</b>가 걸린다.</p>
+</div>
+<div class="wide"><figure class="chart"><svg viewBox="0 0 720 150" role="img" aria-label="같은 배열 이후 코스피 1개월 수익률" preserveAspectRatio="xMidYMid meet"><circle cx="282.4" cy="43.8" r="3" class="chart-pt-neg"/><circle cx="489.5" cy="53.5" r="3" class="chart-pt-pos"/><circle cx="406.2" cy="63.3" r="3" class="chart-pt-pos"/><circle cx="261.6" cy="73.0" r="3" class="chart-pt-neg"/><circle cx="446.3" cy="82.7" r="3" class="chart-pt-pos"/><circle cx="422.7" cy="92.5" r="3" class="chart-pt-pos"/><circle cx="436.3" cy="102.2" r="3" class="chart-pt-pos"/><circle cx="498.4" cy="43.8" r="3" class="chart-pt-pos"/><circle cx="467.3" cy="53.5" r="3" class="chart-pt-pos"/><circle cx="383.9" cy="63.3" r="3" class="chart-pt-neg"/><circle cx="630.7" cy="73.0" r="3" class="chart-pt-pos"/><circle cx="329.9" cy="82.7" r="3" class="chart-pt-neg"/><circle cx="587.5" cy="92.5" r="3" class="chart-pt-pos"/><circle cx="530.1" cy="102.2" r="3" class="chart-pt-pos"/><circle cx="333.8" cy="43.8" r="3" class="chart-pt-neg"/><circle cx="488.0" cy="53.5" r="3" class="chart-pt-pos"/><circle cx="290.5" cy="63.3" r="3" class="chart-pt-neg"/><circle cx="246.9" cy="73.0" r="3" class="chart-pt-neg"/><circle cx="441.7" cy="82.7" r="3" class="chart-pt-pos"/><circle cx="403.2" cy="92.5" r="3" class="chart-pt-pos"/><circle cx="382.0" cy="102.2" r="3" class="chart-pt-neg"/><circle cx="421.6" cy="43.8" r="3" class="chart-pt-pos"/><circle cx="89.3" cy="53.5" r="3" class="chart-pt-neg"/><circle cx="512.3" cy="63.3" r="3" class="chart-pt-pos"/><circle cx="460.9" cy="73.0" r="3" class="chart-pt-pos"/><circle cx="314.3" cy="82.7" r="3" class="chart-pt-neg"/><circle cx="465.1" cy="92.5" r="3" class="chart-pt-pos"/><circle cx="480.2" cy="102.2" r="3" class="chart-pt-pos"/><circle cx="459.7" cy="43.8" r="3" class="chart-pt-pos"/><circle cx="302.4" cy="53.5" r="3" class="chart-pt-neg"/><circle cx="434.5" cy="63.3" r="3" class="chart-pt-pos"/><circle cx="338.6" cy="73.0" r="3" class="chart-pt-neg"/><circle cx="419.7" cy="82.7" r="3" class="chart-pt-pos"/><circle cx="416.1" cy="92.5" r="3" class="chart-pt-pos"/><circle cx="339.9" cy="102.2" r="3" class="chart-pt-neg"/><circle cx="365.6" cy="43.8" r="3" class="chart-pt-neg"/><circle cx="392.4" cy="53.5" r="3" class="chart-pt-neg"/><circle cx="466.3" cy="63.3" r="3" class="chart-pt-pos"/><circle cx="431.6" cy="73.0" r="3" class="chart-pt-pos"/><circle cx="418.8" cy="82.7" r="3" class="chart-pt-pos"/><circle cx="421.1" cy="92.5" r="3" class="chart-pt-pos"/><circle cx="347.9" cy="102.2" r="3" class="chart-pt-neg"/><circle cx="540.6" cy="43.8" r="3" class="chart-pt-pos"/><circle cx="557.1" cy="53.5" r="3" class="chart-pt-pos"/><circle cx="414.4" cy="63.3" r="3" class="chart-pt-pos"/><circle cx="508.4" cy="73.0" r="3" class="chart-pt-pos"/><circle cx="503.5" cy="82.7" r="3" class="chart-pt-pos"/><circle cx="318.8" cy="92.5" r="3" class="chart-pt-neg"/><circle cx="382.3" cy="102.2" r="3" class="chart-pt-neg"/><circle cx="426.4" cy="43.8" r="3" class="chart-pt-pos"/><circle cx="378.7" cy="53.5" r="3" class="chart-pt-neg"/><circle cx="448.9" cy="63.3" r="3" class="chart-pt-pos"/><circle cx="306.9" cy="73.0" r="3" class="chart-pt-neg"/><circle cx="501.8" cy="82.7" r="3" class="chart-pt-pos"/><circle cx="551.6" cy="92.5" r="3" class="chart-pt-pos"/><circle cx="312.3" cy="102.2" r="3" class="chart-pt-neg"/><circle cx="412.6" cy="43.8" r="3" class="chart-pt-pos"/><line x1="393.9" y1="24" x2="393.9" y2="122" class="chart-zero"/><text x="393.9" y="20" class="chart-tick" text-anchor="middle">0</text><line x1="421.1" y1="28" x2="421.1" y2="118" class="chart-med"/><text x="421.1" y="136" class="chart-val" text-anchor="middle">중앙값 +1.6%</text><text x="46" y="144" class="chart-tick">-19.97%</text><text x="674" y="144" class="chart-tick" text-anchor="end">16.08%</text></svg><figcaption>같은 배열 이후 코스피 1개월 수익률 · n=57 · 음(−) 21/57 (37%)</figcaption></figure></div>
+<div class="wide"><figure class="chart"><svg viewBox="0 0 720 150" role="img" aria-label="같은 배열 이후 코스피 3개월 수익률" preserveAspectRatio="xMidYMid meet"><circle cx="439.9" cy="43.8" r="3" class="chart-pt-pos"/><circle cx="508.3" cy="53.5" r="3" class="chart-pt-pos"/><circle cx="514.7" cy="63.3" r="3" class="chart-pt-pos"/><circle cx="347.7" cy="73.0" r="3" class="chart-pt-neg"/><circle cx="516.5" cy="82.7" r="3" class="chart-pt-pos"/><circle cx="555.6" cy="92.5" r="3" class="chart-pt-pos"/><circle cx="289.8" cy="102.2" r="3" class="chart-pt-neg"/><circle cx="510.3" cy="43.8" r="3" class="chart-pt-pos"/><circle cx="509.2" cy="53.5" r="3" class="chart-pt-pos"/><circle cx="426.4" cy="63.3" r="3" class="chart-pt-pos"/><circle cx="622.0" cy="73.0" r="3" class="chart-pt-pos"/><circle cx="482.7" cy="82.7" r="3" class="chart-pt-pos"/><circle cx="580.7" cy="92.5" r="3" class="chart-pt-pos"/><circle cx="405.5" cy="102.2" r="3" class="chart-pt-pos"/><circle cx="425.4" cy="43.8" r="3" class="chart-pt-pos"/><circle cx="386.4" cy="53.5" r="3" class="chart-pt-pos"/><circle cx="377.3" cy="63.3" r="3" class="chart-pt-pos"/><circle cx="368.8" cy="73.0" r="3" class="chart-pt-pos"/><circle cx="501.1" cy="82.7" r="3" class="chart-pt-pos"/><circle cx="484.7" cy="92.5" r="3" class="chart-pt-pos"/><circle cx="394.8" cy="102.2" r="3" class="chart-pt-pos"/><circle cx="380.9" cy="43.8" r="3" class="chart-pt-pos"/><circle cx="222.1" cy="53.5" r="3" class="chart-pt-neg"/><circle cx="554.6" cy="63.3" r="3" class="chart-pt-pos"/><circle cx="395.2" cy="73.0" r="3" class="chart-pt-pos"/><circle cx="236.7" cy="82.7" r="3" class="chart-pt-neg"/><circle cx="446.4" cy="92.5" r="3" class="chart-pt-pos"/><circle cx="413.6" cy="102.2" r="3" class="chart-pt-pos"/><circle cx="374.1" cy="43.8" r="3" class="chart-pt-pos"/><circle cx="368.4" cy="53.5" r="3" class="chart-pt-pos"/><circle cx="347.1" cy="63.3" r="3" class="chart-pt-neg"/><circle cx="392.9" cy="73.0" r="3" class="chart-pt-pos"/><circle cx="304.9" cy="82.7" r="3" class="chart-pt-neg"/><circle cx="339.8" cy="92.5" r="3" class="chart-pt-neg"/><circle cx="373.0" cy="102.2" r="3" class="chart-pt-pos"/><circle cx="361.7" cy="43.8" r="3" class="chart-pt-neg"/><circle cx="405.5" cy="53.5" r="3" class="chart-pt-pos"/><circle cx="510.4" cy="63.3" r="3" class="chart-pt-pos"/><circle cx="436.8" cy="73.0" r="3" class="chart-pt-pos"/><circle cx="281.1" cy="82.7" r="3" class="chart-pt-neg"/><circle cx="407.7" cy="92.5" r="3" class="chart-pt-pos"/><circle cx="89.3" cy="102.2" r="3" class="chart-pt-neg"/><circle cx="630.7" cy="43.8" r="3" class="chart-pt-pos"/><circle cx="453.6" cy="53.5" r="3" class="chart-pt-pos"/><circle cx="443.5" cy="63.3" r="3" class="chart-pt-pos"/><circle cx="541.0" cy="73.0" r="3" class="chart-pt-pos"/><circle cx="448.4" cy="82.7" r="3" class="chart-pt-pos"/><circle cx="436.6" cy="92.5" r="3" class="chart-pt-pos"/><circle cx="398.6" cy="102.2" r="3" class="chart-pt-pos"/><circle cx="358.4" cy="43.8" r="3" class="chart-pt-neg"/><circle cx="266.2" cy="53.5" r="3" class="chart-pt-neg"/><circle cx="377.7" cy="63.3" r="3" class="chart-pt-pos"/><circle cx="332.9" cy="73.0" r="3" class="chart-pt-neg"/><circle cx="419.6" cy="82.7" r="3" class="chart-pt-pos"/><circle cx="533.2" cy="92.5" r="3" class="chart-pt-pos"/><circle cx="229.0" cy="102.2" r="3" class="chart-pt-neg"/><circle cx="551.9" cy="43.8" r="3" class="chart-pt-pos"/><line x1="367.9" y1="24" x2="367.9" y2="122" class="chart-zero"/><text x="367.9" y="20" class="chart-tick" text-anchor="middle">0</text><line x1="407.7" y1="28" x2="407.7" y2="118" class="chart-med"/><text x="407.7" y="136" class="chart-val" text-anchor="middle">중앙값 +3.0%</text><text x="46" y="144" class="chart-tick">-23.94%</text><text x="674" y="144" class="chart-tick" text-anchor="end">22.78%</text></svg><figcaption>같은 배열 이후 코스피 3개월 수익률 · n=57 · 음(−) 14/57 (25%)</figcaption></figure></div>
+<div class="scroll"><table>
+<thead><tr><th>지평</th><th class="n">n</th><th class="n">중앙값</th><th class="n">음(−)</th>
+<th class="n">최악</th><th class="n">최선</th></tr></thead><tbody>
+<tr><td>1개월</td><td class="n">57</td><td class="n">+1.6%</td>
+ <td class="n">21/57 (37%)</td>
+ <td class="n">-17.5%</td><td class="n">+13.6%</td></tr>
+<tr><td>3개월</td><td class="n">57</td><td class="n">+3.0%</td>
+ <td class="n">14/57 (25%)</td>
+ <td class="n">-20.7%</td><td class="n">+19.6%</td></tr>
+</tbody></table></div>
+<div class="col">
+<p><b>1개월은 사실상 동전던지기다</b>(37% 음).
+3개월은 중앙값 +3.0%로 약한 양(+) 편향이지만 최악이 -20.7%로 꼬리가 두껍다.
+따라서 <b>“실질금리가 꺾였으니 오른다”도 “한은이 올렸으니 빠진다”도 쓸 수 없다.</b>
+방향을 알려주는 것은 배열이 아니라 그 원인이고, 원인은 01·04·05·06에서 따로 다뤘다.</p>
+</div></section>
+<section><span class="num">10</span>
+<h2>트리거 전수 점검</h2>
+<div class="col"><p>레짐을 무너뜨릴 조건을 하나씩 대조한다.
+이번 주에 <b>세 개가 처음으로 판정 가능해졌다</b> — 계열을 새로 받았기 때문이다.</p></div>
+<div class="scroll"><table>
+<thead><tr><th>#</th><th>트리거</th><th>임계</th><th>상태</th><th>현재값 · 남은 거리</th></tr></thead><tbody>
+<tr><td class="n">①</td><td>Fed 완화 편향 문구 재등장</td><td>문구 유무</td><td>미발동</td><td class="n">9월 FOMC</td></tr>
+<tr><td class="n">②</td><td>FOMC 반대표가 인하 쪽으로</td><td>반대표 성격</td><td>미도래</td><td class="n">9월 FOMC</td></tr>
+<tr><td class="n">③</td><td>미 근원 PCE <b class="up">新</b></td><td>3.0% 하회</td><td>미발동</td><td class="n">3.34% — 0.34%p 남음</td></tr>
+<tr><td class="n">④</td><td>유로존 HICP 정점 <b class="up">新</b></td><td>3.4% 초과</td><td>미발동</td><td class="n">2.93% — 0.47%p 남음</td></tr>
+<tr><td class="n">⑤</td><td>유가 전쟁 전 수준 복귀</td><td>—</td><td>미도래</td><td class="n">WTI 83.90 · Brent 88.24</td></tr>
+<tr><td class="n">⑥</td><td>EFFR − IORB <b class="dn">訂</b></td><td>+3bp 이상 상승</td><td>미발동</td><td class="n">−2bp — 5bp 남음</td></tr>
+<tr><td class="n">⑦</td><td>한국은행 금통위 <b class="up">★</b></td><td>인상 = 레짐의 한국 확장</td><td>발동</td><td class="n">3.00%, 8/27, 6대1</td></tr>
+<tr><td class="n">⑧</td><td>주식-채권 상관 음(−) <b class="up">★</b></td><td>지속</td><td>발동 유지</td><td class="n">2026-08-09~</td></tr>
+<tr><td class="n">T-E</td><td>저인플레 두 기둥 약화 <b class="up">★</b></td><td>셰일·중국 capex</td><td>부분 발동</td><td class="n">유지</td></tr>
+</tbody></table></div>
+<div class="col"><p><span class="kv up">★</span> 발동 ·
+<span class="kv up">新</span> 이번 주 신설 계열로 처음 판정 ·
+<span class="kv dn">訂</span> 임계를 정정</p></div></section>
+<section><span class="num">11</span>
+<h2>레짐은 유지한다</h2>
+<div class="col">
+<p>트리거 ⑦이 인상 쪽으로 발동한 것은 <b>레짐을 확인한 것이지 바꾼 것이 아니다.</b>
+레짐 정의(공급충격 인플레 + AI 수요 → 중앙은행 긴축 재전환)는 그대로 둔다.
+매주 새 서사를 만들지 않는다.</p>
+<p>다만 다음 개정에 넣을 관측이 둘 생겼다 — <b>원거리 기대가 오르는 중</b>이고,
+<b>공급충격 쪽 계열이 광범위하게 완화</b>됐다. 둘은 서로 반대 방향이라
+어느 쪽이 이기는지가 다음 국면을 정한다.</p>
+
+<h3>Red Team — 이 판단을 죽이는 반대 논리</h3>
+<p><b>① “가격 3종이 함께 내렸으니 지정학이 진정됐다”는 순환일 수 있다.</b>
+유가·금·VIX는 서로 독립이 아니다. 실질금리가 오르면 금은 그것만으로 내리고,
+주식이 조용하면 VIX는 그것만으로 내린다. 셋의 동시 하락이 <b>지정학 프리미엄 이탈</b>인지
+<b>세 자산이 각자의 이유로 내린 것</b>인지 이 자료로는 못 가른다.
+가르려면 사건일 전후 초과수익을 재야 하는데 그 계산이 없다.
+반대 증거도 이미 표 안에 있다 — <b>GPRC(산유국)는 올랐고 농산물은 +14.6%</b>다.</p>
+<p><b>② EBP -0.319%p를 “순풍”으로 읽는 것은 원 논문이 검증한 방향이 아니다.</b>
+Gilchrist &amp; Zakrajšek(2012)이 보인 것은 EBP <b>상승</b>이 GDP를 낮춘다는 것이지,
+하락이 같은 크기로 올린다는 대칭성이 아니다. 게다가 EBP가 지금 수준 이하였던
+최근 밀집 구간은 <b>2021년과 2007년</b>이다 — 둘 다 그 뒤가 좋지 않았다.
+“싸다”를 “좋다”로 옮기는 순간 이 항목은 반증 불가능해진다.</p>
+
+<h3>무효화 조건 — 무엇이 나오면 이 판단을 버리는가</h3>
+<ul>
+<li><b>5y5y</b>가 3개월 창에서 <b>+5bp 아래</b>면 “원거리 기대 상승”을 철회한다
+ (현재 +8.0bp).</li>
+<li><b>실질 10Y</b>가 <b>2.10% 아래</b>면 94%ile 전제가 깨진다
+ (현재 2.34%).</li>
+<li><b>EBP</b>가 <b>0을 넘어</b> 양(+)이면 “위험을 싸게 판다”가 끝난 것이다
+ (현재 -0.319%p).</li>
+<li><b>국고채 3Y</b>가 <b>3.95% 상회</b>면 02의 “커브가 이미 반영했다”가 틀린 것이다
+ (현재 3.788%).</li>
+<li><b>EFFR−IORB</b>가 <b>+3bp 이상</b>이면 준비금 희소화가 가격에 나타난 것이다 (현재 −2bp).</li>
+<li><b>한국 반도체 수출</b>이 8월에 <b>300억 달러 아래</b>로 떨어지면
+ 한은의 인상 근거(수출 호조)가 무너지고, 볼트의 HBM 가설이 살아난다
+ (7월 327.2억, 2월 대비 +68%).</li>
+</ul>
+<p>위 여섯 중 <b>둘 이상</b>이 충족되면 레짐 뷰를 개정한다.</p>
+
+<h3>다음 세션까지 볼 것</h3>
+<ul>
+<li><b>ECOS 722Y001이 3.00%로 갱신되는가</b> — 금통위 채점을 확정한다.
+ 사전등록 규칙상 계열 반영 전에는 채점하지 않는다.</li>
+<li><b>9월 한국 수출 (1~20일 잠정)</b> — 반도체가 반등하는지가 02의 핵심이다.</li>
+<li><b>9월 FOMC 반대표 방향</b> — 인하 쪽으로 돌면 트리거 ②, 레짐 전환의 첫 신호다.</li>
+</ul>
+</div></section>
+<section><span class="num">12</span>
+<h2>과거에 비슷했던 때 — 그리고 이번엔 무엇이 다른가</h2>
+<div class="col">
+<p>지금의 상태를 <b>8개 축</b>(실질금리 3개월 변화·BEI·5y5y·실질금리 수준·커브·Baa 스프레드·
+VIX·NFCI)으로 요약해 2003년 이후 <b>1,172일</b> 중 가장 가까운 날을 찾았다.
+90일 안에 겹치는 날은 하나로 묶었고, 최근 1년은 뺐다(자기 자신이 뽑힌다).</p>
+</div>
+<div class="scroll"><table>
+<thead><tr><th>시점</th><th class="n">거리</th><th class="n">코스피 1개월</th>
+<th class="n">3개월</th><th class="n">6개월</th><th>이번과 가장 다른 축</th></tr></thead><tbody>
+<tr><td><b>2025-06-06</b></td><td class="n">0.41</td><td class="n">+8.6%</td><td class="n">+14.0%</td><td class="n">+45.8%</td><td>실질금리 수준 — 그때 2.20 → 지금 2.40</td></tr>
+<tr><td><b>2006-06-02</b></td><td class="n">0.56</td><td class="n">-1.1%</td><td class="n">+3.6%</td><td class="n">+9.6%</td><td>커브 2s10s — 그때 0.08 → 지금 0.50</td></tr>
+<tr><td><b>2007-07-20</b></td><td class="n">0.57</td><td class="n">-17.4%</td><td class="n">-0.7%</td><td class="n">-12.5%</td><td>커브 2s10s — 그때 0.17 → 지금 0.50</td></tr>
+<tr><td><b>2005-08-26</b></td><td class="n">0.75</td><td class="n">+8.2%</td><td class="n">+19.0%</td><td class="n">+25.7%</td><td>실질금리 수준 — 그때 1.81 → 지금 2.40</td></tr>
+<tr><td><b>2025-01-24</b></td><td class="n">0.76</td><td class="n">+4.6%</td><td class="n">+0.4%</td><td class="n">+26.0%</td><td>BEI 3개월 변화 — 그때 14.00 → 지금 -6.00</td></tr>
+<tr><td><b>2005-11-25</b></td><td class="n">0.81</td><td class="n">+5.1%</td><td class="n">+5.6%</td><td class="n">+2.3%</td><td>VIX 수준 — 그때 10.88 → 지금 15.13</td></tr>
+</tbody></table></div>
+<div class="scroll"><table>
+<thead><tr><th>이웃 6개 이후</th><th class="n">1개월 중앙값</th><th class="n">3개월</th><th class="n">6개월</th></tr></thead><tbody>
+<tr><td>코스피</td><td class="n">+4.9% (음 2/6)</td><td class="n">+4.6% (음 1/6)</td><td class="n">+17.6% (음 1/6)</td></tr>
+<tr><td>금</td><td class="n">+1.3% (음 2/6)</td><td class="n">+12.1% (음 1/6)</td><td class="n">+27.3% (음 0/6)</td></tr>
+<tr><td>WTI</td><td class="n">-1.3% (음 4/6)</td><td class="n">-4.8% (음 4/6)</td><td class="n">-7.4% (음 4/6)</td></tr>
+<tr><td>미 10Y</td><td class="n">-10.5bp (음 4/6)</td><td class="n">-30.5bp (음 4/6)</td><td class="n">-30.0bp (음 4/6)</td></tr>
+<tr><td>Baa 스프레드</td><td class="n">+3.0bp (음 2/6)</td><td class="n">+14.0bp (음 1/6)</td><td class="n">-0.5bp (음 3/6)</td></tr>
+</tbody></table></div>
+<div class="col">
+<h3>그때와 이번의 갈림</h3>
+<p><b>2007-07-20이 이웃으로 잡힌 것이 이 표에서 가장 중요한 대목이다.</b>
+그 뒤 1개월 코스피 −17.4%, Baa 스프레드 +46bp였다. 다만 <b>커브가 다르다</b> —
+그때 2s10s는 0.17이었고 지금은 0.50이다. 당시는 커브가 눌린 상태에서 신용이 벌어졌고,
+지금은 커브가 서 있는 상태에서 신용이 <b>좁아져</b> 있다.</p>
+<p><b>2025-06-06(거리 0.41)이 가장 가깝고 그 뒤는 정반대였다</b> —
+1개월 +8.6%, 6개월 +45.8%. 이 둘이 같은 이웃 목록에 있다는 사실이
+<b>이 배열만으로는 방향이 갈리지 않는다</b>는 것을 그대로 보여준다.</p>
+<p><b>2006-06-02(거리 0.56)에는 1개월 −1.1%, 3개월 +3.6%, 6개월 +9.6%였다.</b>
+그때도 커브가 0.08로 눌려 있었고 지금은 0.50이다 —
+<b>이웃 여섯 중 넷이 2005~2007에 몰려 있고, 그 시기는 모두 커브가 지금보다 훨씬 평탄했다.</b>
+같은 금리·신용 배열이라도 커브 모양이 다르면 그 뒤가 갈렸다는 뜻으로 읽는다.</p>
+<p>이웃 전체로 보면 코스피는 1개월 +4.9% (음 2/6), 6개월 +17.6% (음 1/6)로
+양(+) 편향이고, <b>금은 6개월 +27.3% (음 0/6)로 음(−)이 하나도 없다.</b>
+WTI와 미 10Y는 내리는 쪽이 우세했다(-4.8% (음 4/6) · -30.5bp (음 4/6)).</p>
+<div class="paper"><b>이웃이 가깝다는 것은 관측된 8축만 가깝다는 뜻이다.</b>
+정책 국면·제도·전쟁 유무는 벡터에 없다. <b>n=6은 방향을 부르기에 작다.</b>
+2005~2007이 넷이라 표본이 한 시기에 몰려 있는 것도 한계다.
+<span style="opacity:.85">적용 — 결과를 옮겨 쓰지 말고 「갈림」을 먼저 읽는다.</span>
+<cite>databook analog · 상태 8축 z점수 가중 유클리드, 2003~ 후보 1,172일</cite></div>
+</div></section>
+<section><span class="num">13</span>
+<h2>투자자에게 무엇을 뜻하나</h2>
+<div class="col">
+<p><b>방향을 부르지 않는다.</b> 이 자료의 기저율(n=57)은 1개월 음(−)이
+37%로 동전던지기고, 이웃 6개도 2007년과 2025년이 정반대다.
+그래서 아래는 <b>조건</b>이지 전망이 아니다. 각 항목에 시계·근거·무효화를 붙였다.</p>
+
+<h3>① 신용이 벌어지기 시작하면 그때가 신호다 — 시계 2주</h3>
+<p>지금 EBP는 -0.319%p(16%ile)로 위험이 싸게 팔린다.
+<b>Baa 스프레드가 2주 안에 +30bp를 넘으면</b> 위험자산 비중 축소가 유리하다.
+근거는 이웃들의 Baa 3개월 중앙값 +14.0bp (음 1/6)이고,
+2007-07-20 이웃에서는 6개월 +126bp까지 갔다.
+<b>시계를 2주로 자르는 이유</b>가 있다 — 신용스프레드의 유의 시차는 −10영업일이고
+−12일 이후는 전부 비유의다(최재용 2023). 분기 시계로 늘리면 근거가 사라진다.
+<b>무효화</b>: 2주 안에 +30bp가 안 나오면 이 조건은 발동하지 않은 것으로 닫는다.</p>
+
+<h3>② 금은 이웃 전체에서 음(−)이 없었다 — 시계 6개월</h3>
+<p>이웃 6개 이후 금은 6개월 +27.3% (음 0/6)로 <b>음이 0/6</b>이다.
+지금처럼 <b>실질금리가 94%ile인데 5y5y가 오르는</b> 배열에서 금이 버텼다는 기록이다.
+<b>다만 인과가 아니다</b> — 표본이 6개이고 2005~2007에 몰려 있다.
+<b>무효화</b>: 실질 10Y가 2.10% 아래로 내려오면(현재 2.34%)
+이 배열 자체가 깨지므로 이웃 비교를 다시 한다.</p>
+
+<h3>③ 한국물은 지정학 가격이 되돌면 먼저 맞는다 — 시계 1개월</h3>
+<p>VIX가 오르면 <b>원화는 절하되고 엔화는 절상</b>되며 원화 민감도가 엔의 3.5배다.
+지금은 VIX 14.51로 낮고 원/달러도 1,385.01로 내렸다.
+<b>VIX가 20을 넘으면</b> 같은 위험 이벤트에서 원화 표시 자산이
+엔화 표시보다 불리해진다. <b>무효화</b>: VIX가 20 아래에 머무는 동안 이 조건은 닫혀 있다.</p>
+
+<h3>④ 한은의 추가 인상은 커브가 먼저 말한다 — 시계 1개월</h3>
+<p>8/27 인상에 국고채는 반응하지 않았다(3Y −2.8bp). 커브가 이미 반영했다는 뜻이라면
+추가 인상 기대가 얹혀야 움직인다. <b>국고채 3Y가 3.95%를 상회하면</b>
+시장이 추가 인상을 새로 반영하기 시작한 것이고, 그때 원화 채권 듀레이션이 불리해진다.
+<b>무효화</b>: 3Y가 3.95% 아래에 머무는 동안은 “이미 반영” 판단을 유지한다.</p>
+
+<h3>지금 하지 말아야 할 것</h3>
+<ul>
+<li><b>“실질금리가 꺾였으니 주식”</b> — 기저율 1개월 음 37%로
+ 동전던지기다. 이 배열은 방향을 주지 않는다.</li>
+<li><b>“한은이 올렸으니 원화 강세”</b> — 커브가 안 움직였다. 정책금리 전달과
+ 시장금리 반응은 다른 사건이다.</li>
+<li><b>“스프레드가 좁으니 안전”</b> — EBP 16%ile은 안전이 아니라
+ <b>위험이 싸게 팔린다</b>는 뜻이다. 같은 수준이었던 최근 밀집 구간은 2021년과 2007년이다.</li>
+<li><b>지정학 지수(GPR)로 진입·청산 시점을 잡는 것</b> — 월간이라 이미 늦다.
+ 가격 3종이 먼저다.</li>
+</ul>
+<div class="paper"><b>최종 실행과 승인은 사람이 한다.</b>
+이 절은 추천이 아니라 <b>조건부 판단의 재료</b>다. 각 항목은 관측 가능한 숫자로
+발동·무효화가 정의돼 있으므로, 발동하지 않으면 아무것도 하지 않는 것이 이 자료의 지시다.
+<cite>최재용(2023) 신용스프레드 유효기간 · 볼트 Human Principle · 기저율 n=57</cite></div>
+</div></section>
+<details><summary>수치의 한계</summary><div class="col"><ul>
+<li><b>미검증</b> — 02의 “커브가 이미 반영했다”는 결정 직전 커브의 내재 인상폭을
+계산하지 않았다. 사후 해석일 수 있다.</li>
+<li><b>표본</b> — HY OAS 백분위는 2023-08부터 3년치뿐이고 EBP는 1973년부터 643개월이다.
+두 백분위를 같은 무게로 읽으면 안 된다.</li>
+<li><b>계수 전용</b> — GZ(2012) 계수는 1973–2010 표본이고, 부호를 뒤집어 순풍으로 읽는 것은
+원 논문이 검증한 방향이 아니다.</li>
+<li><b>비교 불가</b> — 한국 20일 수출·수입은 집계 구간이 01~10과 01~20으로 달라
+직접 비교하지 않고 방향만 읽었다.</li>
+<li><b>계산 불가</b> — 한국 CPI 전년비는 보유 관측이 6개월뿐이라 내지 못했다.
+대신 한은 기대인플레 2.7%를 썼다.</li>
+<li><b>단위</b> — 중위·절사평균 CPI는 월간 변화율의 연율이라 YoY와 같은 표에 놓지 않았다.
+침체확률(Chauvet-Piger)은 퍼센트로, 0.6은 0.6%다.</li>
+<li><b>지수 상이</b> — 코스피 기저율은 야후 ^KS11 기준이고 본문 표 종가는 토스증권이다.</li>
+</ul></div></details>
+
+<footer>
+자료 · macro-databook 지표 331개 중 325개 수집(2026-08-30) ·
+FRED · ECOS · 관세청 · 토스증권 · 연준 EBP · NY연준 · Dallas·Cleveland Fed ·
+BIS · CFTC · 일본 재무성 · 해관총서 · CREA · 오피넷<br>
+문헌 · Gilchrist &amp; Zakrajšek(2012) · Ball &amp; Mankiw(1995) · Bernanke &amp; Blanchard(2023) ·
+김석진(2024) · 주현도(2024) · 표상원(2016) · 이명수(2023) · 송종운(2019) · 자체 재현(2026-07)
+</footer></div>
