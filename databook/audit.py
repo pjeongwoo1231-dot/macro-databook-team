@@ -120,6 +120,41 @@ def _text(raw: str) -> str:
     return re.sub(r"[ \t ]+", " ", s)
 
 
+# HTML 구조 — 태그가 어긋나면 브라우저가 페이지를 못 그린다.
+# ⚠ 게이트 18종을 다 통과한 자료가 <div> 하나가 안 닫혀 열리지 않은 적이 있다(2026-08-30).
+#   내용 검사만으로는 이걸 못 잡는다.
+_VOID = {"br", "hr", "img", "input", "link", "meta", "source", "col", "area", "base", "wbr",
+         "circle", "rect", "line", "path", "polyline", "polygon", "text", "use", "stop",
+         "ellipse", "g", "defs", "title"}
+
+
+def _structure(raw: str) -> list[str]:
+    """열고 닫힌 태그가 맞는지. 어긋난 지점을 사람이 찾을 수 있게 주변 글자와 함께 돌려준다."""
+    stack: list[tuple[str, int]] = []
+    errs: list[str] = []
+    for m in re.finditer(r"<(/?)([a-zA-Z][a-zA-Z0-9]*)([^>]*?)(/?)>", raw):
+        close, tag, _attrs, selfclose = m.group(1), m.group(2).lower(), m.group(3), m.group(4)
+        if tag in _VOID or selfclose == "/":
+            continue
+        if not close:
+            stack.append((tag, m.start()))
+        elif not stack:
+            errs.append(f"짝 없는 </{tag}> (문서 시작 부분)")
+        elif stack[-1][0] != tag:
+            near = re.sub(r"\s+", " ", raw[max(0, m.start() - 70):m.start()])[-60:]
+            errs.append(f"<{stack[-1][0]}>가 열린 채 </{tag}>로 닫힘 — …{near}")
+            for k in range(len(stack) - 1, -1, -1):
+                if stack[k][0] == tag:
+                    del stack[k:]
+                    break
+        else:
+            stack.pop()
+    for tag, pos in stack[:5]:
+        near = re.sub(r"\s+", " ", raw[max(0, pos - 70):pos])[-60:]
+        errs.append(f"안 닫힌 <{tag}> — …{near}")
+    return errs
+
+
 def _snapshot() -> list[dict[str, Any]]:
     """가장 최근 스냅샷. **온전한 것**만 쓴다.
 
@@ -241,6 +276,10 @@ def audit(path: Path, gates: dict | None = None) -> dict[str, Any]:
         f"날짜가 붙은 사례 {len(ana)}개 / 최소 {g['min_analogs']}개 — "
         f"`databook analog`로 이웃을 찾는다")
 
+    struct = _structure(raw)
+    chk("HTML 구조", not struct,
+        "; ".join(struct[:2]) if struct else "태그 짝 맞음")
+
     banned_hits = []
     for pat, why in BANNED:
         m = re.search(pat, text)
@@ -254,7 +293,7 @@ def audit(path: Path, gates: dict | None = None) -> dict[str, Any]:
             "indicators": total, "per_team": per_team, "papers": papers,
             "charts": charts, "coefs": len(coefs), "max_n": max_n,
             "slots": len(slots), "prose": len(prose),
-            "implications": len(impl), "analogs": len(ana),
+            "implications": len(impl), "analogs": len(ana), "struct": len(struct),
             "unused": [i["name"] for i in items if i.get("name") not in hits][:400]}
 
 
