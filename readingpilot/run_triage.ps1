@@ -53,10 +53,29 @@ $OutFile = Join-Path $LogDir "$Date.stdout"
 $ErrFile = Join-Path $LogDir "$Date.stderr"
 W "START 판독 $Date (타임아웃 ${TimeoutMin}분)"
 
+# 플래그 근거 — code.claude.com/docs/en/headless · /cli-reference (2026-08-30 확인)
+#
+# --permission-mode acceptEdits
+#     -p 의 기본 모드는 **Manual**이라 반드시 명시해야 한다. acceptEdits 는 파일 쓰기를 통과시키지만
+#     "네트워크 요청은 여전히 --allowedTools 항목이 필요하다"고 문서에 못박혀 있다 → WebFetch 를 넣은 이유.
+# --strict-mcp-config (--mcp-config 없이)
+#     ⚠ 이게 없으면 -p 세션이 이 사용자 환경의 MCP 서버를 **전부 연결한다**(Canva·Gmail·Notion·
+#     Lucid·Higgsfield·크롬 등). 판독에 하나도 안 쓰는데 서버당 MCP_TIMEOUT 30초까지 잡아먹고
+#     매달릴 수 있다. 이 플래그로 --mcp-config 에 준 것만 쓰게 하고, 아무것도 안 주면 0개가 된다.
+# --disallowedTools mcp__*
+#     위와 겹치는 안전장치. MCP 툴을 컨텍스트에서 아예 제거한다.
+# --output-format json
+#     결과에 total_cost_usd 가 들어온다 → 매일 비용을 status.tsv 에 남긴다.
+#
+# --bare 는 쓰지 않는다: 시작은 빨라지지만 CLAUDE.md·자동메모리·볼트 규칙을 안 읽고,
+# OAuth 대신 ANTHROPIC_API_KEY 를 요구해 구독이 아닌 별도 과금이 된다.
 $sw = [Diagnostics.Stopwatch]::StartNew()
 $p = Start-Process -FilePath 'claude' `
         -ArgumentList '-p','--permission-mode','acceptEdits',
-                      '--allowedTools','Read,Write,Edit,Glob,Grep,WebFetch' `
+                      '--allowedTools','Read,Write,Edit,Glob,Grep,WebFetch',
+                      '--disallowedTools','mcp__*',
+                      '--strict-mcp-config',
+                      '--output-format','json' `
         -WorkingDirectory $Vault `
         -RedirectStandardInput $Tmp `
         -RedirectStandardOutput $OutFile `
@@ -75,12 +94,22 @@ Remove-Item $Tmp -ErrorAction SilentlyContinue
 Get-Content $ErrFile -ErrorAction SilentlyContinue | Select-Object -Last 20 | Add-Content $Log
 
 $mins = [math]::Round($sw.Elapsed.TotalMinutes,1)
+
+# --output-format json 의 결과에서 비용을 뽑는다. 실패해도 판정에는 영향 없다.
+$cost = '?'
+try {
+    $j = Get-Content $OutFile -Raw -ErrorAction Stop | ConvertFrom-Json
+    if ($null -ne $j.total_cost_usd) { $cost = '$' + [math]::Round($j.total_cost_usd, 3) }
+} catch { }
+
 if (Test-Path $Out) {
     $kb = [math]::Round((Get-Item $Out).Length/1KB,1)
-    W "OK 판독본 생성 ${kb}KB / ${mins}분 / exit=$rc"
-    S 'OK' "${kb}KB ${mins}min"
+    W "OK 판독본 생성 ${kb}KB / ${mins}분 / $cost / exit=$rc"
+    S 'OK' "${kb}KB ${mins}min $cost"
 } else {
-    W "FAIL 판독본 미생성 (exit=$rc, ${mins}분) — $ErrFile 확인"
-    S 'FAIL' "exit=$rc ${mins}min"
+    # exit 143 = SIGTERM (Task Scheduler 한도 초과 등). 문서상 그 턴은 미완으로 남는다.
+    $why = if ($rc -eq 143) { 'SIGTERM(외부 종료)' } else { "exit=$rc" }
+    W "FAIL 판독본 미생성 ($why, ${mins}분, $cost) — $ErrFile 확인"
+    S 'FAIL' "$why ${mins}min $cost"
     exit 1
 }
