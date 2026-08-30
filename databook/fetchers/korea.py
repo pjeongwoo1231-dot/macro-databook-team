@@ -233,21 +233,34 @@ def _fetch_itemtrade(ind: dict[str, Any], env: dict[str, str], endpoint: str) ->
     code = root.findtext(".//resultCode")
     if code != "00":
         return result(ind, "fail", error=f"관세청 응답 오류: {code} {root.findtext('.//resultMsg')}")
-    obs = []
+    # ⚠ 2026-08-30 수정 — 이 API는 **(월 × HS 세부품목)** 행을 준다(디램·플래시·모노리식…).
+    #   예전 코드는 모든 행에 같은 라벨("HS8542 수출(USD)")을 붙였다. 그러면 같은 달의
+    #   서로 다른 품목이 **시계열처럼 나란히** 서고, 전월 값은 잘려 나간다.
+    #   실제로 2026-07 수출 24.2억 옆에 같은 달 수입 32.8억이 붙어
+    #   **"전월비 −26%"로 오독돼 발표자료 제목까지 틀렸다.**
+    #   → 세부품목은 라벨로 구분하고, **품목을 합산한 월별 총계**를 헤드라인 계열로 만든다.
+    import re as _re
+    tot: dict[str, dict[str, float]] = {}
+    detail: list[dict[str, Any]] = []
+    hs = ind.get("hs_code")
     for item in root.iter("item"):
         ym = (item.findtext("year") or "").replace(".", "-")
-        # 이 API는 월별 행 사이에 연간·누계 행을 섞어 준다. 그대로 넣으면 월 24억 달러 옆에
-        # 연간 135억 달러가 붙어 "전월비 5배"로 읽힌다(실제 Data Book에서 그 상태였다).
-        # YYYY-MM 형태가 아닌 행은 전부 버린다.
-        import re as _re
+        # 월별 행 사이에 연간·누계 행이 섞여 온다 — YYYY-MM 형태가 아닌 행은 버린다
         if not ym or "총계" in ym or not _re.fullmatch(r"\d{4}-\d{2}", ym):
             continue
-        exp, imp = item.findtext("expDlr"), item.findtext("impDlr")
-        if exp is not None:
-            obs.append({"date": ym, "value": float(exp), "label": f"HS{ind.get('hs_code')} 수출(USD)"})
-        if imp is not None:
-            obs.append({"date": ym, "value": float(imp), "label": f"HS{ind.get('hs_code')} 수입(USD)"})
-    obs.sort(key=lambda o: o["date"], reverse=True)
+        name = (item.findtext("statKor") or "").strip() or (item.findtext("hsCode") or "")
+        for tag, kind in (("expDlr", "수출"), ("impDlr", "수입")):
+            raw = item.findtext(tag)
+            if raw is None:
+                continue
+            v = float(raw)
+            tot.setdefault(ym, {}).setdefault(kind, 0.0)
+            tot[ym][kind] += v
+            detail.append({"date": ym, "value": v, "label": f"{name} {kind}(USD)"})
+    # 헤드라인: 세부품목 합산 월별 총계 — 이것만 전월비를 말할 수 있다
+    obs = [{"date": ym, "value": kv[k], "label": f"HS{hs} {k} 합계(USD)"}
+           for ym, kv in tot.items() for k in ("수출", "수입") if k in kv]
+    obs.sort(key=lambda o: (o["date"], o["label"]), reverse=True)
     if not obs:
         return result(ind, "fail", error="관세청 응답에 관측치 없음")
     res = result(ind, "ok", observations=obs[:12], source_url="https://tradedata.go.kr")
