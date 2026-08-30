@@ -99,12 +99,14 @@ def _print_history() -> None:
                   f"{rows[1].split(',')[0]} → {rows[-1].split(',')[0]}")
 
 
-def run(since: str | None = None, limit: int = 30) -> int:
+def run(since: str | None = None, limit: int = 30, asof: str | None = None) -> int:
     from .query import cmd_diff, cmd_news, window_counts
     from .todo import cmd_todo
 
     today = date.today()
-    end = last_session(today)                       # 창의 끝 = 직전 세션
+    # 기준 시점은 기본이 **직전 세션**이다. 다만 세션 전에 최신까지 당겨보고 싶을 때가 있다
+    # (as-of 이후에 금통위 같은 큰 사건이 있었던 주). 그때만 --asof로 옮긴다.
+    end = date.fromisoformat(asof) if asof else last_session(today)
     start = date.fromisoformat(since) if since else end - timedelta(days=7)
     nxt = next_session(today)
     dday = (nxt - today).days
@@ -112,7 +114,8 @@ def run(since: str | None = None, limit: int = 30) -> int:
 
     print("=" * 68)
     print(f"세션 준비 자료  ·  오늘 {today.isoformat()}")
-    print(f"  기준 시점 : {end.isoformat()} (as-of · 직전 세션) — 준비 내내 고정")
+    tag = "직전 세션" if not asof else "**수동 지정 — 준비 중 바뀔 수 있다**"
+    print(f"  기준 시점 : {end.isoformat()} (as-of · {tag})")
     print(f"  발표      : {'오늘' if dday == 0 else nxt.isoformat() + f' (D-{dday})'}")
     print("=" * 68)
     print(f"[수집 상태] {'OK ' if ok else '! '} {msg}")
@@ -131,7 +134,12 @@ def run(since: str | None = None, limit: int = 30) -> int:
             print(f"[창 경고] {label} {want} 스냅샷이 없어 {got}로 대체됩니다"
                   f" ({(want - got).days}일 차이 — 그날 수집이 안 돌았습니다).")
 
-    print("기준 시점은 준비를 언제 하든 바뀌지 않습니다 — 수·목에 쓴 문장이 월요일에도 그대로 섭니다.")
+    if asof:
+        print("⚠ --asof로 기준 시점을 옮겼습니다. 준비 중 자료가 **바뀔 수 있습니다** —")
+        print("   다시 돌릴 때 같은 --asof를 주지 않으면 다른 자료가 나옵니다.")
+        print("   보고서 첫 줄에 이 기준 시점을 반드시 적으세요.")
+    else:
+        print("기준 시점은 준비를 언제 하든 바뀌지 않습니다 — 수·목에 쓴 문장이 월요일에도 그대로 섭니다.")
     print()
 
     # ── 1. 본 재료는 '그 시점의 전체 상태'다. 변경분이 아니다

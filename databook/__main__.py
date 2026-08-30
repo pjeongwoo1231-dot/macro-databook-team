@@ -38,6 +38,7 @@ def main() -> int:
     wk = sub.add_parser("weekly", help="주간 통합분석 자료 한 번에 (신선도+diff+news+todo)")
     wk.add_argument("--since", help="비교 기준일 YYYY-MM-DD (기본: 직전 화요일 자동)")
     wk.add_argument("--limit", type=int, default=30, help="기사 최대 건수")
+    wk.add_argument("--asof", help="기준 시점을 직전 세션이 아닌 다른 날로 (세션 전 최신 반영용)")
     q0 = sub.add_parser("todo", help="에이전트가 처리할 자리 (manual 슬롯·STALE 계열)")
     q0.add_argument("--kind", choices=["all","manual","stale"], default="all")
     q0.add_argument("--json", action="store_true", dest="as_json")
@@ -139,7 +140,7 @@ def main() -> int:
 
     if args.cmd == "weekly":
         from .weekly import run as run_weekly
-        return run_weekly(args.since, args.limit)
+        return run_weekly(args.since, args.limit, args.asof)
 
     if args.cmd == "daily":
         from .daily import run as run_daily
