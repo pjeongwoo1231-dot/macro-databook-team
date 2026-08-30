@@ -463,8 +463,63 @@ def build(asof: dt.date, out: Path) -> dict[str, Any]:
     P.append(_slot("기저율 해석", "동전던지기인가 편향이 있는가. 방향을 말할 수 있는지 없는지를 명시."))
     P.append("</section>")
 
+    # 유사 국면 — 「좋은 시황의 규칙」의 '사례' 축
+    try:
+        from .analog import find as _analog
+        ana = _analog(asof, top=6)
+    except Exception:
+        ana = None
+    if ana:
+        P.append('<section><span class="num">10</span>'
+                 '<h2>과거 유사 국면 — 그때는 이랬다</h2>')
+        head = ["시점", "거리"] + [f"코스피 {h}" for _, h in
+                                 (("", "1개월"), ("", "3개월"), ("", "6개월"))]
+        rows = []
+        for x in ana["rows"]:
+            rows.append((str(x["date"]), f"{x['dist']:.2f}",
+                         *[("—" if x.get(f"코스피·{h}") is None else f"{x[f'코스피·{h}']:+.1f}%")
+                           for h in ("1개월", "3개월", "6개월")]))
+        P.append(_tbl(rows, head))
+        srow = []
+        for lab, _n, unit in (("코스피", "", "%"), ("금", "", "%"), ("WTI", "", "%"),
+                              ("미 10Y", "", "bp"), ("Baa 스프레드", "", "bp")):
+            cells = [lab]
+            for h in ("1개월", "3개월", "6개월"):
+                st_ = ana["stats"].get(f"{lab}·{h}")
+                cells.append("—" if not st_ else
+                             f"{st_['median']:+.1f}{'%' if unit == '%' else 'bp'} "
+                             f"(음 {st_['neg']}/{st_['n']})")
+            srow.append(tuple(cells))
+        P.append(_tbl(srow, ["자산", "1개월 중앙값", "3개월", "6개월"]))
+        P.append('<div class="paper"><b>이웃이 가깝다는 것은 관측된 축들만 가깝다는 뜻이다.</b><br>'
+                 '정책 국면·제도·전쟁 유무처럼 상태 벡터에 없는 것은 비교되지 않았다. '
+                 'n=6은 방향을 부르기에 작다.<br>'
+                 '<span style="opacity:.85">적용 — 결과를 옮겨 쓰지 말고 '
+                 '「이번과 다른 점」을 먼저 쓴다.</span>'
+                 '<cite>databook analog · 상태 8축, 2003~ 후보 {:,}일</cite></div>'.format(ana["pool"]))
+        P.append(_slot("이번과 다른 점",
+                       "각 이웃에서 지금과 가장 갈리는 축을 짚는다. "
+                       "`python -m databook analog --asof <날짜>` 출력의 「이번과 다른 점」을 근거로."))
+        P.append("</section>")
+
+    # 투자자 함의 — 방향이 아니라 조건
+    P.append('<section><span class="num">11</span><h2>투자자에게 무엇을 뜻하나</h2>')
+    P.append('<div class="paper"><b>규칙 — 방향을 부르지 않는다. 조건을 쓴다.</b><br>'
+             '「X가 Y를 넘으면 Z가 유리하다」 형태로 쓰고, 각 항목에 <b>시계·근거·무효화</b>를 붙인다.'
+             '<br><span style="opacity:.85">시계는 지표의 실제 선행 기간에 맞춘다 — '
+             '신용스프레드의 유의 시차는 −10영업일이라 <b>2주 안에 실행 가능한 행동</b>과만 짝짓는다.'
+             '</span><br><span style="opacity:.85">⚠ 최종 실행과 승인은 사람이 한다. '
+             '이 절은 추천이 아니라 <b>조건부 판단의 재료</b>다.</span>'
+             '<cite>최재용(2023) 신용스프레드 유효기간 · 볼트 Human Principle</cite></div>')
+    P.append(_slot("함의 3~4개",
+                   "각 항목: ① 조건(숫자) ② 그러면 무엇이 유리/불리 ③ 시계 ④ 근거(기저율 n 또는 이웃 결과) "
+                   "⑤ 무효화(어떤 값이 나오면 이 함의를 버리나). 다섯이 다 없으면 쓰지 않는다."))
+    P.append(_slot("지금 하지 말아야 할 것",
+                   "기저율이 동전던지기인 배열로 방향을 부르는 것 같은, 이번 자료가 지지하지 않는 행동."))
+    P.append("</section>")
+
     # 판정
-    P.append('<section><span class="num">10</span><h2>트리거 · 레짐 판정</h2>')
+    P.append('<section><span class="num">12</span><h2>트리거 · 레짐 판정</h2>')
     P.append(_slot("트리거 전수 점검 표",
                    "05_Regime 최신 RegimeView의 트리거를 하나씩 대조. 발동/미발동/관측없음과 남은 거리를 숫자로."))
     P.append(_slot("레짐 유지 여부", "바꿀 근거가 없으면 '유지'라고 명시. 매주 새 서사를 만들지 않는다."))

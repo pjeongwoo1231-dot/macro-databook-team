@@ -43,6 +43,8 @@ GATES = {
     "min_dates": 25,            # 기준일 병기 횟수
     "min_prose": 2500,          # 표·차트를 뺀 **실제 문장** 글자 수
     "required": ["Red Team", "무효화", "다음"],   # 반드시 있어야 하는 절
+    "min_implications": 3,      # 투자자 함의 — 조건부 문장 최소 개수
+    "min_analogs": 3,           # 과거 유사 국면 — 날짜가 붙은 사례 최소 개수
 }
 
 # 볼트 「시황 분석 진입점」 §2 — 실제로 저지른 오류만 들어 있다
@@ -217,6 +219,28 @@ def audit(path: Path, gates: dict | None = None) -> dict[str, Any]:
     chk("필수 절", not miss,
         f"빠짐: {', '.join(miss)}" if miss else "Red Team · 무효화 조건 · 다음 세션 확인")
 
+    # 투자자 함의 — **조건부**여야 한다. "오른다"가 아니라 "X를 넘으면 Y가 유리하다".
+    # 볼트 Human Principle: 최종 실행과 승인은 사람이고 AI는 조건부 판단의 재료를 만든다.
+    impl = re.findall(r"(?:넘으면|상회하면|하회하면|아래면|위면|충족되면|나오면)"
+                      r"[^.。]{0,60}?(?:유리|불리|우위|약해|강해|바뀐다|버린다)", text)
+    chk("투자자 함의", len(impl) >= g["min_implications"],
+        f"조건부 문장 {len(impl)}개 / 최소 {g['min_implications']}개 — "
+        f"'X를 넘으면 Y가 유리하다' 형태로 쓴다")
+
+    # 과거 사례 — 「좋은 시황의 규칙」 근거 3축의 '사례'. 날짜가 붙어야 사례다
+    # 과거 사례 — 「좋은 시황의 규칙」 근거 3축의 '사례'.
+    #   날짜 뒤 60자 안에 결과를 말하는 말이 있어야 사례다. 날짜만 나열한 표는 사례가 아니다.
+    # 과거 사례 — 「좋은 시황의 규칙」 근거 3축의 '사례'.
+    #   날짜 뒤 80자 안에 결과를 말하는 말이 있어야 사례다. 날짜만 나열한 표는 사례가 아니다.
+    #   ⚠ 마침표로 문장을 끊으면 "(거리 0.56)" 같은 소수점에서 잘린다 — 길이로만 자른다.
+    ana = re.findall(
+        r"(?:19|20)\d{2}[-./]\d{1,2}[-./]\d{1,2}.{0,80}?"
+        r"(?:그때|당시|이후|그 뒤|직후|였다|갔다|겪|기록)",
+        text)
+    chk("과거 사례", len(ana) >= g["min_analogs"],
+        f"날짜가 붙은 사례 {len(ana)}개 / 최소 {g['min_analogs']}개 — "
+        f"`databook analog`로 이웃을 찾는다")
+
     banned_hits = []
     for pat, why in BANNED:
         m = re.search(pat, text)
@@ -230,6 +254,7 @@ def audit(path: Path, gates: dict | None = None) -> dict[str, Any]:
             "indicators": total, "per_team": per_team, "papers": papers,
             "charts": charts, "coefs": len(coefs), "max_n": max_n,
             "slots": len(slots), "prose": len(prose),
+            "implications": len(impl), "analogs": len(ana),
             "unused": [i["name"] for i in items if i.get("name") not in hits][:400]}
 
 
