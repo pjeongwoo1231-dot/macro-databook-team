@@ -41,6 +41,8 @@ GATES = {
     "min_charts": 4,
     "min_baserate_n": 20,       # 기저율 표본 하한
     "min_dates": 25,            # 기준일 병기 횟수
+    "min_prose": 2500,          # 표·차트를 뺀 **실제 문장** 글자 수
+    "required": ["Red Team", "무효화", "다음"],   # 반드시 있어야 하는 절
 }
 
 # 볼트 「시황 분석 진입점」 §2 — 실제로 저지른 오류만 들어 있다
@@ -81,6 +83,30 @@ _COEF = re.compile(
 _DATE = re.compile(r"(?:19|20)\d{2}[-./]\d{1,2}(?:[-./]\d{1,2})?|\b20\d{4}\b|\d{4}[-–]Q[1-4]|\d{4}:Q[1-4]")
 _NBASE = re.compile(r"\bn\s*[=＝]\s*(\d{1,4})")
 _DIRECTION = re.compile(r"(오른다|내린다|빠진다|상승한다|하락한다|오를\s*것|내릴\s*것|반등한다)")
+# 스캐폴드가 남긴 미작성 슬롯 — 하나라도 있으면 아직 자료가 아니다
+_SLOT = re.compile(r"WRITE\s*:")
+
+
+def _prose(raw: str) -> str:
+    """**작성자가 쓴 문장만** 센다.
+
+    빼는 것: 표·차트·코드는 물론 **슬롯 안내문(.slot)과 문헌 인용 박스(.paper)** 도 뺀다.
+    스캐폴드 안내문이 분량으로 세어지면 아무것도 안 쓰고 통과한다(실제로 그랬다).
+    문헌 박스는 남의 문장이라 내 해석의 분량이 아니다.
+    """
+    # ⚠ <style> 안의 CSS가 문장으로 세어져 11,864자가 잡힌 적이 있다 — 먼저 지운다
+    # ⚠ <style> 안의 CSS가 문장으로 세어져 11,864자가 잡힌 적이 있다 — 먼저 지운다.
+    #    역참조를 쓰면 편집 과정에서 이스케이프가 벗겨져 조용히 무력화된다 — 태그별로 돈다.
+    s = raw
+    for _tag in ('script', 'style', 'svg', 'table'):
+        s = re.sub(rf'(?is)<{_tag}[^>]*>.*?</{_tag}[^>]*>', ' ', s)
+    s = re.sub(r"(?is)<link[^>]*>|<title[^>]*>.*?</title>", " ", s)
+    s = re.sub(r'(?is)<div class="(slot|paper)".*?</div>', " ", s)
+    s = re.sub(r"(?s)<!--.*?-->", " ", s)
+    s = re.sub(r"(?is)<figure.*?</figure>", " ", s)
+    s = re.sub(r"(?s)<[^>]+>", " ", s)
+    s = unicodedata.normalize("NFKC", s)
+    return re.sub(r"\s+", " ", s).strip()
 
 
 def _text(raw: str) -> str:
@@ -179,6 +205,18 @@ def audit(path: Path, gates: dict | None = None) -> dict[str, Any]:
     chk("한계 명시", any(k in text for k in ("미검증", "표본", "관측 없음", "계산 불가", "한계")),
         "미검증·표본한계·못 보는 것 중 하나 이상")
 
+    slots = _SLOT.findall(raw)
+    chk("미작성 슬롯 없음", not slots,
+        f"WRITE 슬롯 {len(slots)}개 남음 — 스캐폴드는 자료가 아니다" if slots else "0개")
+
+    prose = _prose(raw)
+    chk("해석 분량", len(prose) >= g["min_prose"],
+        f"표·차트를 뺀 문장 {len(prose):,}자 / 최소 {g['min_prose']:,}자")
+
+    miss = [k for k in g["required"] if k not in text]
+    chk("필수 절", not miss,
+        f"빠짐: {', '.join(miss)}" if miss else "Red Team · 무효화 조건 · 다음 세션 확인")
+
     banned_hits = []
     for pat, why in BANNED:
         m = re.search(pat, text)
@@ -191,6 +229,7 @@ def audit(path: Path, gates: dict | None = None) -> dict[str, Any]:
     return {"path": str(path), "checks": checks, "failed": len(failed),
             "indicators": total, "per_team": per_team, "papers": papers,
             "charts": charts, "coefs": len(coefs), "max_n": max_n,
+            "slots": len(slots), "prose": len(prose),
             "unused": [i["name"] for i in items if i.get("name") not in hits][:400]}
 
 

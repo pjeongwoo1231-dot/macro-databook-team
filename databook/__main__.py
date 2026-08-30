@@ -35,6 +35,9 @@ def main() -> int:
                     help="N번째 이전 **스냅샷**과 비교(날짜 아님). 수집을 거른 날이 있으면 어긋난다")
     q2.add_argument("--since", help="이 날짜(YYYY-MM-DD) 시점과 비교. 주간 분석은 이쪽을 쓴다")
     q2.add_argument("--until", help="끝 시점(YYYY-MM-DD). 생략하면 최신. 닫힌 주간을 볼 때 쓴다")
+    rp = sub.add_parser("report", help="주간 발표자료 스캐폴드 생성 (차트·표·문헌 자동 배치)")
+    rp.add_argument("--asof", help="기준 시점 YYYY-MM-DD (기본: 직전 세션 화요일)")
+    rp.add_argument("--out", help="출력 경로 (기본: output/report_<asof>.html)")
     au = sub.add_parser("audit", help="발표자료 강제 검사 — 미달이면 exit 1")
     au.add_argument("target", help="검사할 .html 또는 .md")
     au.add_argument("--json", action="store_true", dest="as_json")
@@ -141,6 +144,10 @@ def main() -> int:
     if args.cmd == "surprise":
         from .surprise import run as run_sur
         return run_sur()
+
+    if args.cmd == "report":
+        from .report import cmd_report
+        return cmd_report(args.asof, args.out)
 
     if args.cmd == "audit":
         from .audit import cmd_audit
