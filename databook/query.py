@@ -34,8 +34,24 @@ from .core import OUTPUT_DIR, load_env
 # ─────────────────────────── 공통 ───────────────────────────
 
 def _snapshots() -> list[Path]:
-    """최신순 스냅샷 목록."""
-    return sorted(OUTPUT_DIR.glob("snapshot_*.json"), reverse=True)
+    """최신순 스냅샷 목록.
+
+    로컬 `output/`을 먼저 보고, **비어 있으면 볼트의 `04_DataBook/snapshots/`** 로 간다.
+
+    왜 폴백이 필요한가 — 팀원은 수집을 직접 돌리지 않는다. 저장소만 clone하고
+    데이터는 **Obsidian Sync로 볼트에서 받는다.** 그러면 `output/`은 비어 있어
+    `diff`·`weekly`가 "스냅샷이 없다"로 끝난다(실제로 갓 클론한 환경에서 그랬다).
+    볼트에는 같은 형식의 스냅샷이 들어 있으므로 그걸 쓰면 된다.
+    """
+    local = sorted(OUTPUT_DIR.glob("snapshot_*.json"), reverse=True)
+    if local:
+        return local
+    v = (load_env().get("OBSIDIAN_VAULT_PATH") or "").strip().strip('"')
+    if v:
+        vs = Path(v) / "04_DataBook" / "snapshots"
+        if vs.is_dir():
+            return sorted(vs.glob("snapshot_*.json"), reverse=True)
+    return []
 
 
 def _load(path: Path) -> list[dict[str, Any]]:
