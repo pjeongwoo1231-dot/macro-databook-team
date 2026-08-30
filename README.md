@@ -18,9 +18,17 @@ python -m databook run --dry-run  # 네트워크 없이 yaml·렌더 검증
 python -m databook run --only fred  # 특정 소스만
 python -m databook.news           # 뉴스만 따로 (run에 이미 포함 — 재생성할 때만)
 
+python -m databook weekly    # ★ 세션 준비 한 방 — 아래 5개를 한 덩어리로
+                            #   ① 수집 상태 ② 기준 시점(as-of) 전체 상태
+                            #   ③ 지난 한 주 변경분 ④ 장기 시계열 위치
+                            #   ⑤ 새 기사 · 손댈 자리
+
+
 # 조회 — 큰 산출물을 통째로 읽지 않기 위한 것 (실측 944,561 → 8,164 토큰)
 python -m databook show 중국 PPI            # 지표 하나만 (20,837 → 225)
 python -m databook diff                     # 어제 대비 값이 바뀐 지표만 (255,687 → 6,880)
+python -m databook diff --since 2026-08-25  # 날짜 기준 (--back은 날짜가 아니라 스냅샷 개수다)
+python -m databook diff --since A --until B # 구간을 양쪽 다 고정 — 매번 같은 자료가 나온다
 python -m databook news --q 중국 --new      # 어제 없던 새 기사만 (668,037 → 1,059)
 python -m databook todo                     # 에이전트가 채울 자리 (manual·STALE)
 

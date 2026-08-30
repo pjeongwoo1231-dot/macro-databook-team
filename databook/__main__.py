@@ -31,7 +31,13 @@ def main() -> int:
     q1.add_argument("--points", type=int, default=4)
     q2 = sub.add_parser("diff", help="이전 스냅샷 대비 값이 바뀐 지표만")
     q2.add_argument("terms", nargs="*")
-    q2.add_argument("--back", type=int, default=1)
+    q2.add_argument("--back", type=int, default=1,
+                    help="N번째 이전 **스냅샷**과 비교(날짜 아님). 수집을 거른 날이 있으면 어긋난다")
+    q2.add_argument("--since", help="이 날짜(YYYY-MM-DD) 시점과 비교. 주간 분석은 이쪽을 쓴다")
+    q2.add_argument("--until", help="끝 시점(YYYY-MM-DD). 생략하면 최신. 닫힌 주간을 볼 때 쓴다")
+    wk = sub.add_parser("weekly", help="주간 통합분석 자료 한 번에 (신선도+diff+news+todo)")
+    wk.add_argument("--since", help="비교 기준일 YYYY-MM-DD (기본: 직전 화요일 자동)")
+    wk.add_argument("--limit", type=int, default=30, help="기사 최대 건수")
     q0 = sub.add_parser("todo", help="에이전트가 처리할 자리 (manual 슬롯·STALE 계열)")
     q0.add_argument("--kind", choices=["all","manual","stale"], default="all")
     q0.add_argument("--json", action="store_true", dest="as_json")
@@ -121,7 +127,7 @@ def main() -> int:
         if args.cmd == "show":
             return cmd_show(args.terms, args.points)
         if args.cmd == "diff":
-            return cmd_diff(args.back, args.terms)
+            return cmd_diff(args.back, args.terms, args.since, args.until)
         return cmd_news(args.q, args.new, args.limit, args.team)
     if args.cmd == "setup":
         from .setup import run_wizard
@@ -130,6 +136,10 @@ def main() -> int:
     if args.cmd == "surprise":
         from .surprise import run as run_sur
         return run_sur()
+
+    if args.cmd == "weekly":
+        from .weekly import run as run_weekly
+        return run_weekly(args.since, args.limit)
 
     if args.cmd == "daily":
         from .daily import run as run_daily

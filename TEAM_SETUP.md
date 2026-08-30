@@ -78,6 +78,12 @@ python -m databook run          # 전체 수집
 python -m databook run --dry-run    # 네트워크 없이 설정만 검증
 python -m databook run --no-news    # 뉴스 빼고 수집
 python -m databook.news         # 뉴스만 따로 (run에 이미 포함)
+
+python -m databook weekly    # ★ 세션 준비 한 방 — 아래 5개를 한 덩어리로
+                            #   ① 수집 상태 ② 기준 시점(as-of) 전체 상태
+                            #   ③ 지난 한 주 변경분 ④ 장기 시계열 위치
+                            #   ⑤ 새 기사 · 손댈 자리
+
 ```
 
 ## 3-1. 조회 — 통째로 읽지 마세요
@@ -88,6 +94,7 @@ python -m databook.news         # 뉴스만 따로 (run에 이미 포함)
 ```bash
 python -m databook show 중국 PPI          # 지표 하나만        20,837 → 225 토큰
 python -m databook diff                   # 어제 대비 변경분만 255,687 → 6,880
+python -m databook diff --since 2026-08-25 --until 2026-09-01   # 구간 고정
 python -m databook news --q 중국 --new    # 어제 없던 새 기사   668,037 → 1,059
 python -m databook news --team 4팀 --limit 50
 ```

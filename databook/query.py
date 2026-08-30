@@ -95,36 +95,86 @@ def cmd_show(terms: list[str], points: int) -> int:
 
 # ─────────────────────────── diff ───────────────────────────
 
-def cmd_diff(days_back: int, terms: list[str]) -> int:
-    """어제(또는 N번째 이전) 스냅샷과 비교해 **값이 바뀐 지표만** 보여준다."""
-    snaps = _snapshots()
-    if len(snaps) < 2:
-        print("비교할 스냅샷이 2개 이상 필요합니다.")
-        return 1
-    idx = min(days_back, len(snaps) - 1)
-    cur, prev = _load(snaps[0]), _load(snaps[idx])
-    pmap = {i["name"]: i for i in prev}
+def _pick(snaps: list[Path], on_or_before: str) -> int | None:
+    """그 날짜 **이하**의 가장 최근 스냅샷 인덱스. 그날 수집을 걸렀어도 직전 것으로 잡힌다."""
+    for k, sp in enumerate(snaps):
+        if sp.stem[len("snapshot_"):] <= on_or_before:
+            return k
+    return None
 
-    changed, new, gone = [], [], []
+
+def _compare(cur: list[dict[str, Any]], prev: list[dict[str, Any]], terms: list[str]):
+    """두 스냅샷을 견줘 (변경, 신규, 사라짐)을 돌려준다. 출력은 하지 않는다."""
+    pmap = {i["name"]: i for i in prev}
+    changed, new = [], []
     for i in cur:
         if terms and not _match(i, terms):
             continue
-        p = pmap.get(i["name"])
-        if p is None:
+        q = pmap.get(i["name"])
+        if q is None:
             new.append(i)
             continue
-        # ⚠ 관측이 빈 지표가 있다(수집 실패·수동 슬롯). `or [{}]`만으로는 부족하다 —
+        # 관측이 빈 지표가 있다(수집 실패·수동 슬롯). `or [{}]`만으로는 부족하다 —
         # 리스트가 **존재하되 비어 있으면** [0] 접근에서 터진다(실제로 겪었다).
         a = (i.get("observations") or [{}]) or [{}]
-        b = (p.get("observations") or [{}]) or [{}]
+        b = (q.get("observations") or [{}]) or [{}]
         a0 = a[0] if a else {}
         b0 = b[0] if b else {}
         if (a0.get("date"), a0.get("value")) != (b0.get("date"), b0.get("value")):
             changed.append((i, b0))
     cnames = {i["name"] for i in cur}
-    gone = [p for p in prev if p["name"] not in cnames]
+    return changed, new, [q for q in prev if q["name"] not in cnames]
 
-    print(f"# {snaps[idx].stem} → {snaps[0].stem}\n")
+
+def window_counts(since: str, until: str, terms: list[str] | None = None):
+    """창 **밖** 변화량을 세는 용도. 개수만 돌려준다."""
+    snaps = _snapshots()
+    a, b = _pick(snaps, until), _pick(snaps, since)
+    if a is None or b is None or a == b:
+        return 0, 0, 0
+    c, n, g = _compare(_load(snaps[a]), _load(snaps[b]), terms or [])
+    return len(c), len(n), len(g)
+
+
+def cmd_diff(days_back: int, terms: list[str], since: str | None = None,
+             until: str | None = None) -> int:
+    """두 스냅샷을 견줘 **값이 바뀐 지표만** 보여준다.
+
+    ⚠ `--back`은 **날짜가 아니라 스냅샷 개수**다. 수집을 매일 돌리지 않으면
+    `--back 7`이 7일 전을 가리키지 않는다(실제로 08-28 기준 7칸 뒤는 08-19였다).
+    날짜로 자르려면 `--since`(시작) · `--until`(끝)을 쓴다.
+
+    `--until`이 없으면 끝은 **최신 스냅샷**이다. 학회처럼 **닫힌 주간**으로 고정해야
+    하면(지난 세션까지) `--until <지난 세션일>`을 함께 준다 — 그래야 준비 기간
+    아무 날에 돌려도 **매번 같은 자료**가 나온다.
+    """
+    snaps = _snapshots()
+    if len(snaps) < 2:
+        print("비교할 스냅샷이 2개 이상 필요합니다.")
+        return 1
+
+    cur_i = 0
+    if until:
+        cur_i = _pick(snaps, until)
+        if cur_i is None:
+            print(f"{until} 이전 스냅샷이 없습니다.")
+            return 1
+    if since:
+        idx = _pick(snaps, since)
+        if idx is None:
+            oldest = snaps[-1].stem[len("snapshot_"):]
+            print(f"{since} 이전 스냅샷이 없습니다. 가장 오래된 것은 {oldest}입니다.")
+            return 1
+    else:
+        idx = min(cur_i + days_back, len(snaps) - 1)
+    if idx == cur_i:
+        print(f"시작과 끝이 같은 스냅샷({snaps[idx].stem})입니다 — 비교할 것이 없습니다.")
+        return 1
+
+    cur, prev = _load(snaps[cur_i]), _load(snaps[idx])
+    changed, new, gone = _compare(cur, prev, terms)
+
+    print(f"# {snaps[idx].stem} → {snaps[cur_i].stem}\n")
     print(f"값 변경 {len(changed)} · 신규 {len(new)} · 사라짐 {len(gone)}\n")
     for i, old in changed:
         obs = i.get("observations") or []
