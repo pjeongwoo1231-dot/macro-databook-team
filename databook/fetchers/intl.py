@@ -174,6 +174,24 @@ def fetch_fed_rss(ind: dict[str, Any], env: dict[str, str]) -> dict[str, Any]:
     return result(ind, "ok", observations=obs, source_url=url,
                   note=(ind.get("note", "") + " — 링크는 각 항목 label 참조").strip(" —"))
 
+# ⚠ 2026-08-30 복구 — bb35aae(ponytail 정리)에서 fetch_mof_jgb를 지울 때
+#   이 상수 블록이 함께 삭제돼 두 지표가 NameError로 죽고 있었다.
+#   죽은 코드를 지울 때 **그 코드만 쓰던 상수인지** 확인하지 않은 것이 원인이다.
+MOF_WEEK = ("https://www.mof.go.jp/policy/international_policy/reference/"
+            "itn_transactions_in_securities/week.csv")
+MOF_LANDING = ("https://www.mof.go.jp/english/policy/international_policy/reference/"
+               "itn_transactions_in_securities/index.htm")
+
+# 열 인덱스 (2026-08-19 실측): 0=기간
+#  대외(거주자 취득): 1~3 주식 취·처·순 · 4~6 중장기채 · 7 소계순 · 8~10 단기채 · 11 합계순
+#  대내(비거주자):   12~14 주식 · 15~17 중장기채 · 18 소계순 · 19~21 단기채 · 22 합계순
+_MOF_COL = {
+    "out_equity": 3, "out_ltdebt": 6, "out_sub": 7, "out_stdebt": 10, "out_total": 11,
+    "in_equity": 14, "in_ltdebt": 17, "in_sub": 18, "in_stdebt": 21, "in_total": 22,
+}
+_MOF_CACHE: dict[str, Any] = {}
+
+
 def fetch_mof_portfolio(ind: dict[str, Any], env: dict[str, str]) -> dict[str, Any]:
     """yaml 예시:
         method: api

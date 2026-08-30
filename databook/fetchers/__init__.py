@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from . import bis, bls, boj_api, cftc, china, crea, crypto, deribit, e_stat, europe, fred, frbsf, intl, japan, korea, nyfed, ofr, research, scrape, sec_xbrl, spreadsheet, tossinvest, us_gov, worldbank
+from . import bis, bls, boj_api, cftc, china, crea, crypto, deribit, e_stat, europe, fred, frbsf, intl, japan, korea, nbs, nyfed, ofr, research, scrape, sec_xbrl, spreadsheet, tossinvest, us_gov, worldbank
 from .base import result
 from .news import fetch_news_indicator
 
@@ -75,6 +75,8 @@ DISPATCH = {
     "e_stat": e_stat.fetch,
     "gacc": china.fetch_gacc,
     "pboc": china.fetch_pboc,
+    # NBS 미러(DBnomics)가 2026-02에서 멈춰 원문 발표를 직접 읽는다 (2026-08-30 신설)
+    "nbs": nbs.fetch_nbs,
     "sec_xbrl": sec_xbrl.fetch,
     "boj_api": boj_api.fetch,
     "tossinvest": tossinvest.fetch,

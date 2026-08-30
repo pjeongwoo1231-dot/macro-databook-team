@@ -326,12 +326,18 @@ reading:
     tags: [energy, market]
     verified: true          # 15건, 당일
 
-  - id: bruegel
-    label: Bruegel
+  # 2026-08-30 제거: bruegel — 피드 전체 10건이 컨퍼런스 일정("Lunch", "Coffee break")뿐이고
+  # 발간물이 한 건도 오지 않는다. /rss/publications.xml · /feed · /rss · /rss/all.xml 전부 404이고
+  # 홈페이지에도 <link rel=alternate> 피드가 없다 — 대체 경로 자체가 없다.
+  # 유럽 거시는 아래 ecb_pub 으로 대체한다.
+
+  - id: ecb_pub
+    label: ECB 발간물
     handler: rss
-    url: "https://www.bruegel.org/rss.xml"
-    tags: [europe, econ]
-    verified: true          # 10건
+    url: "https://www.ecb.europa.eu/rss/pub.html"
+    tags: [europe, econ, primary]
+    limit: 15
+    verified: true          # 2026-08-30 실호출 15건 — 워킹페이퍼 제목 정상
 
   - id: oregon_group
     label: The Oregon Group
@@ -355,15 +361,37 @@ reading:
     verified: true          # 10건 — 마찬가지로 살아 있다
 
   - id: reuters_energy
-    label: Reuters 에너지 (GNews 우회)
+    label: Reuters 에너지 (헤드라인 전용)
     handler: rss
     url: "https://news.google.com/rss/search?q=site:reuters.com+crude+oil+OR+refinery+OR+LNG&hl=en"
     tags: [energy, wire]
-    limit: 20
+    limit: 8
+    headline_only: true     # ← 본문 확보 불가. write_reading 이 경고 배너를 붙인다
     verified: true
     note: |
-      ⚠ 이것만 검색엔진 경유다. **페이월 매체를 헤드라인 단위로 감시**하는 용도이고
-      본문은 원문에서 확인한다. 쿼리는 반드시 영어로 — 한국어로 긁으면 3차 재탕만 온다.
+      ⚠ **본문을 볼 수 없는 피드다. 헤드라인 신호로만 쓴다.** (2026-08-30 실측)
+      ① 링크가 news.google.com/rss/articles/CBMi… 리다이렉트인데 protobuf 인코딩이라
+         base64 안에 URL이 없고, 그냥 열면 빈 페이지가 온다.
+      ② Google 내부 batchexecute 로 실제 URL 복원은 되지만(시험 성공) 비공개 엔드포인트라 깨지기 쉽다.
+      ③ 복원해도 **reuters.com 자체가 봇 차단**이라 본문을 못 읽는다 — 복원할 실익이 없다.
+      그래서 limit을 20→8로 줄였다. 호르무즈·탱커 취재는 gcaptain 으로 대체한다(본문 판독 가능).
+
+  # 2026-08-30 신설 — Reuters가 못 주는 '읽히는' 해운·탱커 취재
+  - id: gcaptain
+    label: gCaptain (해운·탱커)
+    handler: rss
+    url: "https://gcaptain.com/feed/"
+    tags: [shipping, energy, geopolitics]
+    limit: 12
+    verified: true          # 실호출 12건 + 본문 판독 확인(파나마운하 혼잡: 대기 14척·최대 8일·$4.6M 새치기)
+
+  - id: hellenic_shipping
+    label: Hellenic Shipping News
+    handler: rss
+    url: "https://www.hellenicshippingnews.com/feed/"
+    tags: [shipping, freight, market]
+    limit: 12
+    verified: true          # 실호출 20건 — BDI·건화물·탱커 운임
 
 
   # ------------------------------------------------- 학술·중앙은행 (2026-08-24 실호출)

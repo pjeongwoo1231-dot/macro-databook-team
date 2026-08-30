@@ -405,22 +405,41 @@ tags: [type/indicator, domain/intel]
     return p
 
 
-def write_reading(vault: Path, feeds: dict[str, list[dict]]) -> Path:
+def write_reading(vault: Path, feeds: dict[str, list[dict]],
+                  headline_only: set[str] | None = None) -> Path:
+    """읽을거리 노트를 쓴다.
+
+    headline_only: 본문을 확보할 수 없는 피드의 label 집합.
+    그런 피드는 배너로 명시한다 — 표시하지 않으면 '수집됐다'는 착시만 남는다
+    (2026-08-30: Reuters 20건이 전부 판독 불가였는데 목록상으로는 정상으로 보였다).
+    """
+    headline_only = headline_only or set()
     p = vault / "15-reading" / f"{date.today().isoformat()}.md"
     p.parent.mkdir(parents=True, exist_ok=True)
-    secs = []
+    secs, n_read, n_head = [], 0, 0
     for label, items in feeds.items():
         rows = "\n".join(f"- [{i['title']}]({i['link']}) <small>{i['date']}</small>" for i in items)
-        secs.append(f"## {label}\n\n{rows or '_(항목 없음)_'}\n")
+        if label in headline_only:
+            n_head += len(items)
+            secs.append(f"## {label}\n\n"
+                        f"> ⚠ **본문 판독 불가 — 헤드라인 신호로만 쓴다.** 링크를 열어도 본문이 안 나온다.\n"
+                        f"> 여기 항목으로 주장을 세우지 말 것. 같은 사건은 다른 피드에서 본문을 찾는다.\n\n"
+                        f"{rows or '_(항목 없음)_'}\n")
+        else:
+            n_read += len(items)
+            secs.append(f"## {label}\n\n{rows or '_(항목 없음)_'}\n")
     p.write_text(f"""---
 type: reading
 retrieved: {date.today().isoformat()}
+readable: {n_read}
+headline_only: {n_head}
 tags: [type/reading, domain/intel]
 ---
 
 # 읽을거리 {date.today().isoformat()}
 
-> 기관 1차·2차 발간물 RSS. **검색엔진 결과가 아니다**(Reuters 항목만 GNews 우회이고, 본문은 원문에서 확인한다).
+> 기관 1차·2차 발간물 RSS. **검색엔진 결과가 아니다.**
+> **본문 판독 가능 {n_read}건 · 헤드라인 전용 {n_head}건** — 뒤쪽은 섹션마다 배너로 표시했다.
 > 트리아지 대기 — 읽고 값어치가 있으면 가설 노트나 지표 노트로 옮긴다.
 
 {chr(10).join(secs)}
@@ -509,11 +528,13 @@ def collect(only: str = "", dry_run: bool = False, log=print) -> int:
             ok += 1
 
     if only in ("", "reading"):
-        feeds = {}
+        feeds, headline_only = {}, set()
         for s in reg.get("reading", []):
             try:
                 items = h_rss(s)
                 feeds[s["label"]] = items
+                if s.get("headline_only"):
+                    headline_only.add(s["label"])
                 age = feed_age(items)
                 # 날짜를 못 읽는 피드(NBER 등)는 신선도를 판정할 수 없다 — 그것도 표시한다
                 tag = "날짜없음" if age is None else f"{age}일 전"
@@ -528,7 +549,7 @@ def collect(only: str = "", dry_run: bool = False, log=print) -> int:
                 log(f"  ✘ RSS {s['id']}: {type(e).__name__} {str(e)[:60]}")
                 fail += 1
         if feeds and not dry_run:
-            write_reading(vault, feeds)
+            write_reading(vault, feeds, headline_only)
 
     if only in ("", "catalysts") and not dry_run:
         p = write_catalysts(vault)

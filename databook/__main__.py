@@ -35,6 +35,10 @@ def main() -> int:
                     help="N번째 이전 **스냅샷**과 비교(날짜 아님). 수집을 거른 날이 있으면 어긋난다")
     q2.add_argument("--since", help="이 날짜(YYYY-MM-DD) 시점과 비교. 주간 분석은 이쪽을 쓴다")
     q2.add_argument("--until", help="끝 시점(YYYY-MM-DD). 생략하면 최신. 닫힌 주간을 볼 때 쓴다")
+    au = sub.add_parser("audit", help="발표자료 강제 검사 — 미달이면 exit 1")
+    au.add_argument("target", help="검사할 .html 또는 .md")
+    au.add_argument("--json", action="store_true", dest="as_json")
+    au.add_argument("--unused", type=int, default=0, help="쓰지 않은 지표를 N개까지 보여준다")
     wk = sub.add_parser("weekly", help="주간 통합분석 자료 한 번에 (신선도+diff+news+todo)")
     wk.add_argument("--since", help="비교 기준일 YYYY-MM-DD (기본: 직전 화요일 자동)")
     wk.add_argument("--limit", type=int, default=30, help="기사 최대 건수")
@@ -137,6 +141,10 @@ def main() -> int:
     if args.cmd == "surprise":
         from .surprise import run as run_sur
         return run_sur()
+
+    if args.cmd == "audit":
+        from .audit import cmd_audit
+        return cmd_audit(args.target, args.as_json, args.unused)
 
     if args.cmd == "weekly":
         from .weekly import run as run_weekly
