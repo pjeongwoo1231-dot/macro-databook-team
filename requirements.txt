@@ -1,12 +1,14 @@
-# macro-databook 런타임 의존성
+# macro-databook runtime dependencies
 #
-# 표준 라이브러리로 되는 것은 넣지 않는다 — 수집기는 urllib/json/re/xml로 돌아간다.
-# (뉴스 다이제스트도 외부 패키지 없이 동작한다)
+# ASCII only on purpose: pip reads this file with the locale encoding
+# (cp949 on Korean Windows) unless it has a BOM, so non-ASCII comments
+# crash the install with UnicodeDecodeError. Keep notes in Korean out of
+# this file - see README.md.
 #
-# ⚠ 이 파일은 GitHub Actions가 `pip install -r requirements.txt`로 부른다.
-#   2026-08-30까지 **파일 자체가 없어서** 그 단계가 실패하고 있었다.
+# Stdlib-only parts are not listed: the collector runs on urllib/json/re/xml,
+# and the news digest needs no third-party package.
 
-PyYAML>=6.0        # indicators.yaml 파싱 — 이게 없으면 아무것도 못 한다
-feedparser>=6.0    # RSS 수집 (intel·news 일부 경로)
-numpy>=1.24        # 파생지표 계산(derived) · 커브 적합
-xlrd>=2.0          # EIA 원유 .xls 판독 — FRED 원유계열 폐지 우회 경로
+PyYAML>=6.0        # indicators.yaml parsing - nothing works without it
+feedparser>=6.0    # RSS ingestion (intel / some news paths)
+numpy>=1.24        # derived indicators, curve fitting
+xlrd>=2.0          # EIA crude .xls reader (FRED crude series retired)
