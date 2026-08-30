@@ -799,6 +799,36 @@ team_2:
     source: fred
     series_id: ['DGS1MO', 'DGS3MO', 'DGS6MO', 'DGS1', 'DGS3', 'DGS5', 'DGS7', 'DGS20']
     note: 'Diebold-Li 3요인(레벨·기울기·곡률) 추정용. DGS2/10/30만으로는 3요인이 정확식별되어 잔차가 0이 된다(2026-08-05 추가)'
+  - name: 근원 PCE 물가 (트리거 3 판정)
+    vault_node: PCE (개인소비지출 물가)
+    tier: 1
+    method: api
+    source: fred
+    series_id: PCEPILFE
+    note: 'RegimeView 트리거 3(2026-12까지 3.0% 하회 시 "공급충격 소멸" 채택)의 판정 계열.
+      지수라 YoY를 계산해서 본다. 중위·절사평균 CPI(Cleveland)는 월간 변화율의 연율이라
+      단위가 달라 이 트리거 판정에 쓸 수 없다 — 그래서 계열을 따로 받는다.
+      (2026-08-30 추가: 트리거 3건이 계열 미수집으로 판정 불가 상태였다)'
+  - name: 유로존 HICP (트리거 4 판정)
+    tier: 1
+    method: api
+    source: fred
+    series_id: CP0000EZ19M086NEST
+    note: 'RegimeView 트리거 4(26Q3~Q4 정점이 3.4% 초과 시 ECB baseline 무효)의 판정 계열.
+      Eurostat 원계열의 FRED 미러. 지수라 YoY 계산이 필요하다. (2026-08-30 추가)'
+  - name: EFFR - IORB 스프레드 (트리거 6 판정)
+    vault_node: 글로벌 유동성
+    tier: 1
+    method: api
+    source: fred
+    series_id: ['EFFR', 'IORB']
+    note: '트리거 6(EFFR-IORB 마이너스 지속 시 ample reserves 판정 재검토)의 판정 계열.
+      진입점 §1 유동성 규칙 — 연방기금시장은 거래량이 아니라 EFFR-IORB로 본다(임계 +3bp).
+      두 계열을 함께 받아 차이를 본다. (2026-08-30 추가)
+      ⚠ 받아보니 **667영업일 연속 마이너스**(2026-08-27 -2bp)였다. EFFR이 IORB를 밑도는 것은
+      IOR을 못 받는 GSE가 그 아래로 빌려주기 때문이고 **현 제도의 정상 상태**다.
+      RegimeView 트리거 6이 "마이너스 지속 시 재검토"로 적어둔 것은 **부호가 반대**였고,
+      2026-08-30에 "+3bp 이상 상승 시"로 정정했다. 준비금이 마르면 EFFR이 올라 스프레드가 붙는다.'
   - name: 미 국채 30Y
     vault_node: 장단기 금리차
     tier: 1
