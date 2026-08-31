@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>튀르키예 경제 — 주가는 1위, 경제는 최악 (발표자료)</title>
+<style>
+/* ==========================================================
+   튀르키예 경제 발표자료 · 슬라이드 + 부가 설명 (완성본)
+   디자인 시스템 : ENGRAVED SECURITY
+   국채 증서의 인그레이빙 그린 · 원장의 붉은 선 · 각인 황동
+   ========================================================== */
+
+:root{
+  --ink:#101A16;          /* 잉크 그린블랙 : 다크 슬라이드 */
+  --ink-2:#18271F;
+  --engrave:#1D5B45;      /* 지폐 인그레이빙 그린 : 구조색 */
+  --engrave-lt:#3E8A6E;
+  --engrave-pale:#DCE7DF;
+  --paper:#F0EEE7;        /* 증서 종이 */
+  --paper-2:#E6E3D9;
+  --oxblood:#8E2A2A;      /* 원장 붉은 선 */
+  --oxblood-pale:#F2E2E0;
+  --brass:#A8802A;        /* 각인 인장 */
+  --brass-lt:#D9BE72;
+  --tx:#1A241F;
+  --tx-mid:#4E5A53;
+  --tx-faint:#8A948D;
+
+  --display:"Noto Serif KR","HANBatang",Batang,serif;
+  --body:"Noto Sans KR","Malgun Gothic",sans-serif;
+  --mono:"Consolas","D2Coding",monospace;
+
+  --slide-w:1040px;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--paper-2);color:var(--tx);
+  font-family:var(--body);font-weight:400;line-height:1.8;
+  letter-spacing:-0.01em;word-break:keep-all;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ---------- 슬라이드 단위 ---------- */
+.unit{max-width:var(--slide-w);margin:0 auto 64px}
+.unit:first-child{margin-top:64px}
+
+/* ---------- 표지 ---------- */
+.cover{justify-content:center}
+.covertitle{
+  font-family:var(--display);font-weight:800;font-size:62px;line-height:1.26;
+  letter-spacing:-0.04em;margin:0 0 28px;color:#fff;
+}
+.covertitle em{font-style:normal;color:var(--engrave-lt)}
+.coversub{
+  font-size:18px;line-height:1.8;color:rgba(220,231,223,.7);
+  max-width:52ch;margin:0 0 44px;
+}
+.coverparts{display:flex;flex-direction:column;gap:0;border-top:1px solid rgba(220,231,223,.2)}
+.coverparts div{
+  display:flex;gap:26px;align-items:baseline;padding:15px 0;
+  border-bottom:1px solid rgba(220,231,223,.2);
+}
+.coverparts .pn{
+  font-family:var(--mono);font-size:13px;letter-spacing:.14em;
+  color:var(--brass-lt);width:44px;flex-shrink:0;
+}
+.coverparts .pt{font-size:17px;color:#EAF0EC;font-weight:500}
+.coverparts .pd{font-size:14px;color:rgba(220,231,223,.5);margin-left:auto;font-family:var(--mono)}
+
+.slide{
+  position:relative;min-height:586px;padding:52px 56px 60px;
+  display:flex;flex-direction:column;
+  background:var(--paper);
+  box-shadow:0 1px 0 rgba(16,26,22,.10), 0 18px 40px -28px rgba(16,26,22,.55);
+}
+.slide.dark{background:var(--ink);color:#EAF0EC}
+
+/* 슬라이드 크롬 */
+.chrome{
+  display:flex;justify-content:space-between;align-items:baseline;
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;
+  color:var(--tx-faint);margin-bottom:34px;flex-shrink:0;
+}
+.dark .chrome{color:rgba(220,231,223,.42)}
+.chrome .lane{color:var(--engrave);font-weight:700}
+.dark .chrome .lane{color:var(--engrave-lt)}
+
+/* 슬라이드 제목 */
+.claim{
+  font-family:var(--display);font-weight:800;
+  font-size:40px;line-height:1.34;letter-spacing:-0.035em;
+  margin:0 0 16px;color:var(--ink);max-width:26ch;
+}
+.dark .claim{color:#fff}
+.claim.big{font-size:56px;line-height:1.28;max-width:20ch}
+.claim em{font-style:normal;color:var(--engrave)}
+.dark .claim em{color:var(--engrave-lt)}
+.claim mark{background:none;color:var(--oxblood)}
+.dark .claim mark{color:#E0736C}
+
+.sub{
+  font-size:17px;color:var(--tx-mid);margin:0 0 30px;max-width:60ch;line-height:1.75;
+}
+.dark .sub{color:rgba(220,231,223,.72)}
+
+/* 결론 바 — 슬라이드의 결정타. 캡션이 아니라 본체다 */
+.verdict{
+  margin-top:auto;display:flex;align-items:stretch;gap:0;flex-shrink:0;
+}
+.verdict .tag{
+  background:var(--engrave);color:#fff;font-family:var(--mono);
+  font-size:11.5px;letter-spacing:.16em;padding:16px 15px;
+  display:flex;align-items:center;flex-shrink:0;
+}
+.verdict .txt{
+  background:var(--engrave-pale);color:var(--ink);
+  padding:15px 22px;font-size:18px;font-weight:700;line-height:1.55;flex:1;
+  display:block;   /* flex 금지 — em/b 가 별도 아이템이 되어 줄이 쪼개진다 */
+}
+.dark .verdict .txt{background:rgba(62,138,110,.17);color:#EAF0EC}
+.verdict.warn .tag{background:var(--oxblood)}
+.verdict.warn .txt{background:var(--oxblood-pale);color:#4A1616}
+.verdict em{font-style:normal;color:var(--engrave)}
+.verdict.warn em{color:var(--oxblood)}
+.dark .verdict.warn em{color:#E0736C}
+.dark .verdict em{color:var(--engrave-lt)}
+
+/* 도형 영역 */
+.stage{flex:1;display:flex;align-items:center;justify-content:center;margin:6px 0 30px}
+.stage svg{width:100%;height:auto;display:block}
+
+/* ---------- 대형 수치 ---------- */
+.figures{display:flex;align-items:flex-end;gap:44px;flex-wrap:wrap}
+.fig{display:flex;flex-direction:column}
+.fig .lbl{
+  font-family:var(--mono);font-size:12px;letter-spacing:.14em;
+  color:var(--tx-faint);margin-bottom:6px;
+}
+.dark .fig .lbl{color:rgba(220,231,223,.5)}
+.fig .val{
+  font-family:var(--mono);font-weight:700;font-size:82px;line-height:1;
+  letter-spacing:-0.04em;color:var(--ink);
+}
+.dark .fig .val{color:#fff}
+.fig .val.dim{color:var(--tx-faint)}
+.dark .fig .val.dim{color:rgba(220,231,223,.4)}
+.fig .val.hot{color:var(--oxblood)}
+.dark .fig .val.hot{color:#E0736C}
+.fig .unit-s{font-size:30px;letter-spacing:0;margin-left:4px}
+.arrowbig{
+  font-family:var(--mono);font-size:52px;color:var(--brass);
+  line-height:1;padding-bottom:8px;
+}
+
+/* ---------- 2단 대조 ---------- */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--paper-2);flex:1}
+.pane{background:var(--paper);padding:28px 30px;display:flex;flex-direction:column}
+.pane.bad{background:#FAF0EF}
+.pane.good{background:#EFF4F0}
+.pane .ptag{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;
+  padding:5px 10px;align-self:flex-start;margin-bottom:18px;color:#fff;
+}
+.pane.bad .ptag{background:var(--oxblood)}
+.pane.good .ptag{background:var(--engrave)}
+.pane h4{
+  font-family:var(--display);font-weight:700;font-size:23px;line-height:1.45;
+  margin:0 0 14px;letter-spacing:-0.03em;
+}
+.pane.bad h4{color:var(--oxblood)}
+.pane.good h4{color:var(--engrave)}
+.pane p{margin:0 0 10px;font-size:15.5px;line-height:1.75;color:var(--tx-mid)}
+.pane p:last-child{margin-bottom:0}
+.pane b{color:var(--tx);font-weight:700}
+.pane .strike{text-decoration:line-through;text-decoration-color:var(--oxblood);
+  text-decoration-thickness:2px;color:var(--tx-faint)}
+
+/* ---------- 카드 그리드 ---------- */
+.cards{display:grid;gap:2px;background:var(--paper-2);flex:1;
+  grid-template-columns:repeat(2,1fr)}
+.cards.c3{grid-template-columns:repeat(3,1fr)}
+.cards.c4{grid-template-columns:repeat(4,1fr)}
+.card{background:var(--paper);padding:22px 22px;display:flex;flex-direction:column}
+.dark .cards{background:rgba(220,231,223,.14)}
+.dark .card{background:var(--ink)}
+.card .ctag{
+  font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--brass);
+  margin-bottom:10px;
+}
+.card h4{
+  font-family:var(--display);font-weight:700;font-size:20px;line-height:1.4;
+  margin:0 0 10px;letter-spacing:-0.03em;color:var(--ink);
+}
+.dark .card h4{color:#fff}
+.card p{margin:0 0 8px;font-size:14.5px;line-height:1.7;color:var(--tx-mid)}
+.dark .card p{color:rgba(220,231,223,.7)}
+.card p:last-child{margin-bottom:0}
+.card b{color:var(--tx);font-weight:700}
+.dark .card b{color:#EAF0EC}
+.card .out{
+  margin-top:auto;padding-top:12px;font-size:13.5px;color:var(--oxblood);font-weight:700;
+  border-top:1px solid var(--paper-2);
+}
+.dark .card .out{color:#E0736C;border-top-color:rgba(220,231,223,.18)}
+
+/* ---------- 표 ---------- */
+.tbl{width:100%;border-collapse:collapse;font-size:15px;flex-shrink:0}
+.tbl th{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.13em;font-weight:400;
+  text-align:left;padding:11px 14px;background:var(--ink);color:#EAF0EC;
+}
+.tbl td{padding:11px 14px;border-bottom:1px solid var(--paper-2);color:var(--tx-mid);
+  line-height:1.6;vertical-align:top}
+.tbl tr:nth-child(even) td{background:rgba(255,255,255,.45)}
+.tbl td:first-child{font-weight:700;color:var(--tx);white-space:nowrap}
+.tbl .mat{font-family:var(--mono);font-size:13.5px;color:var(--engrave);white-space:nowrap}
+.tbl .hot td:first-child{color:var(--oxblood)}
+
+/* 다크 슬라이드 위의 표 */
+.dark .tbl th{background:var(--engrave);color:#EAF0EC}
+.dark .tbl td{color:rgba(220,231,223,.78);border-bottom-color:rgba(220,231,223,.16)}
+.dark .tbl tr:nth-child(even) td{background:rgba(220,231,223,.05)}
+.dark .tbl td:first-child{color:#fff}
+.dark .tbl b{color:#fff}
+.dark .tbl .mat{color:#8FB3A2}
+.dark .tbl .hot td:first-child{color:#E0736C}
+
+/* ---------- 셀프체크 ---------- */
+.checks{display:grid;grid-template-columns:1fr 1fr;gap:0 34px;margin:0;padding:0;
+  list-style:none;counter-reset:ck;flex:1;align-content:start}
+.checks li{
+  counter-increment:ck;position:relative;padding:13px 0 13px 40px;
+  border-bottom:1px solid rgba(220,231,223,.16);font-size:15.5px;line-height:1.65;
+  color:rgba(234,240,236,.88);
+}
+.checks li::before{
+  content:counter(ck,decimal-leading-zero);position:absolute;left:0;top:14px;
+  font-family:var(--mono);font-size:12.5px;color:var(--brass-lt);letter-spacing:.06em;
+}
+.checks li b{color:#fff;font-weight:700}
+
+/* ---------- 판단 기록 양식 ---------- */
+.record{
+  border:1px solid rgba(220,231,223,.3);border-left:4px solid var(--brass);
+  padding:24px 28px;margin-bottom:20px;background:rgba(220,231,223,.05);
+}
+.record .rl{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  color:var(--brass-lt);margin-bottom:12px}
+.record p{margin:0 0 10px;font-size:17px;line-height:1.75;color:#EAF0EC}
+.record p:last-child{margin-bottom:0}
+.record .cond{color:var(--brass-lt);font-weight:700}
+
+
+/* ---------- 용어집 ---------- */
+.gloss{display:grid;grid-template-columns:1fr 1fr;gap:0 40px;flex:1;align-content:start}
+.gl{padding:11px 0;border-bottom:1px solid var(--paper-2)}
+.dark .gl{border-bottom-color:rgba(220,231,223,.16)}
+.gl .t{font-family:var(--display);font-weight:700;font-size:17px;letter-spacing:-0.02em;color:var(--ink)}
+.dark .gl .t{color:#fff}
+.gl .e{font-family:var(--mono);font-size:11px;color:var(--brass);margin-left:9px;letter-spacing:.08em}
+.dark .gl .e{color:var(--brass-lt)}
+.gl .d{font-size:13.5px;line-height:1.62;color:var(--tx-mid);margin-top:3px}
+.dark .gl .d{color:rgba(220,231,223,.72)}
+.gl .d b{color:var(--tx);font-weight:700}
+.dark .gl .d b{color:#EAF0EC}
+
+/* ---------- 슬라이드 안 용어 정의줄 ---------- */
+.termline{
+  display:flex;flex-wrap:wrap;gap:0 26px;margin:0 0 20px;padding:11px 0;
+  border-top:1px solid var(--paper-2);border-bottom:1px solid var(--paper-2);flex-shrink:0;
+}
+.dark .termline{border-color:rgba(220,231,223,.18)}
+.termline span{font-size:13.5px;color:var(--tx-mid);line-height:1.6}
+.dark .termline span{color:rgba(220,231,223,.7)}
+.termline b{font-family:var(--mono);font-size:12.5px;color:var(--engrave);font-weight:700;letter-spacing:.02em}
+.dark .termline b{color:var(--engrave-lt)}
+
+/* ---------- 노트 스트립 : 독학용 해설 ---------- */
+.note{
+  display:grid;grid-template-columns:132px 1fr;gap:0;
+  background:#E9E6DC;border-left:4px solid var(--brass);
+}
+.note .nlbl{
+  font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  color:var(--brass);padding:24px 0 24px 22px;line-height:1.7;
+}
+.note .nbody{padding:24px 30px 26px 8px}
+.note p{margin:0 0 12px;font-size:15.5px;line-height:1.85;color:#3B443E}
+.note p:last-child{margin-bottom:0}
+.note b{color:var(--ink);font-weight:700}
+.note .q{
+  font-family:var(--display);font-weight:700;font-size:17px;color:var(--engrave);
+  display:block;margin-bottom:6px;letter-spacing:-0.02em;
+}
+
+/* ---------- 반응형 ---------- */
+@media screen and (max-width:1100px){
+  .unit{max-width:100%;padding-left:16px;padding-right:16px}
+  .slide{padding:36px 28px 42px;min-height:0}
+  .claim{font-size:30px}
+  .claim.big{font-size:36px}
+  .fig .val{font-size:54px}
+  .split{grid-template-columns:1fr}
+  .cards,.cards.c3,.cards.c4{grid-template-columns:1fr}
+  .checks{grid-template-columns:1fr}
+  .gloss{grid-template-columns:1fr}
+  .tbl{font-size:13.5px}
+  .tbl th,.tbl td{padding:9px 10px}
+  .note{grid-template-columns:1fr}
+  .note .nlbl{padding:18px 22px 0}
+  .note .nbody{padding:10px 22px 22px}
+}
+/* ---------- PDF / 인쇄 : 1장 = 1페이지 (A4 가로) ---------- */
+@page{ size:297mm 210mm; margin:6mm; }
+@media print{
+  html,body{background:#fff;margin:0}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+
+  .unit{
+    max-width:none;margin:0;page-break-after:always;break-after:page;
+    page-break-inside:avoid;break-inside:avoid;
+    height:748px;display:flex;flex-direction:column;overflow:hidden;
+  }
+  .unit > .slide{flex:1 1 auto}
+  .unit > .note{flex:0 0 auto}
+  .unit:last-child{page-break-after:auto;break-after:auto}
+  .unit:first-child{margin-top:0}
+
+  .slide{min-height:0;box-shadow:none;padding:20px 30px 18px}
+  .chrome{margin-bottom:14px;font-size:9.5px}
+
+  .claim{font-size:26px;line-height:1.3;margin-bottom:7px;max-width:36ch}
+  .claim.big{font-size:33px;max-width:25ch}
+  .sub{font-size:12.5px;line-height:1.65;margin-bottom:11px;max-width:84ch}
+
+  .stage{margin:0 0 11px}
+  .stage svg{width:auto;max-width:100%;max-height:238px;margin:0 auto}
+
+  .verdict .tag{font-size:9.5px;padding:8px 10px}
+  .verdict .txt{font-size:13.5px;padding:8px 14px}
+
+  .figures{gap:26px;margin-bottom:11px!important}
+  .fig .val{font-size:44px}
+  .fig .unit-s{font-size:17px}
+  .fig .lbl{font-size:9.5px;margin-bottom:2px}
+  .arrowbig{font-size:30px}
+
+  .split{flex:0 0 auto}
+  .pane{padding:13px 16px}
+  .pane .ptag{font-size:9.5px;padding:3px 8px;margin-bottom:9px}
+  .pane h4{font-size:15.5px;margin-bottom:8px;line-height:1.4}
+  .pane p{font-size:11.4px;line-height:1.58;margin-bottom:6px}
+
+  .cards{flex:0 0 auto}
+  .card{padding:12px 14px}
+  .card .ctag{font-size:9px;margin-bottom:5px}
+  .card h4{font-size:14.5px;margin-bottom:6px;line-height:1.35}
+  .card p{font-size:11px;line-height:1.48;margin-bottom:4px}
+  .card .out{font-size:10.5px;padding-top:7px}
+
+  .tbl{font-size:11.4px}
+  .tbl th{font-size:9.5px;padding:6px 9px}
+  .tbl td{padding:6px 9px;line-height:1.45}
+  .tbl .mat{font-size:10.5px}
+
+  .checks li{font-size:11.4px;padding:7px 0 7px 30px;line-height:1.5}
+  .checks li::before{font-size:10px;top:8px}
+
+  .gloss{gap:0 24px}
+  .gl{padding:6px 0}
+  .gl .t{font-size:12.5px}
+  .gl .e{font-size:9px;margin-left:6px}
+  .gl .d{font-size:10.4px;line-height:1.42;margin-top:1px}
+  .termline{margin-bottom:10px;padding:7px 0;gap:0 18px}
+  .termline span{font-size:10.4px;line-height:1.5}
+  .termline b{font-size:9.8px}
+
+  .record{padding:14px 18px;margin-bottom:12px}
+  .record .rl{font-size:9px;margin-bottom:7px}
+  .record p{font-size:12px;line-height:1.5;margin-bottom:5px}
+
+  .note{border-left-width:3px}
+  .note .nlbl{padding:13px 0 13px 15px;font-size:9px;line-height:1.55}
+  .note .nbody{padding:13px 20px 13px 4px}
+  .note p{font-size:10.6px;line-height:1.5;margin-bottom:4px}
+  .note .q{font-size:12.2px;margin-bottom:2px}
+
+  /* 표지 */
+  .covertitle{font-size:46px;margin-bottom:20px}
+  .coversub{font-size:15px;margin-bottom:26px}
+  .coverparts div{padding:11px 0}
+  .coverparts .pt{font-size:14.5px}
+  .coverparts .pd{font-size:11.5px}
+}
+</style>
+</head>
+<body>
+<!-- ============ 표지 ============ -->
+<article class="unit">
+  <section class="slide dark cover">
+    <div class="chrome"><span class="lane">경제 발표</span><span>튀르키예 — 주가는 1위, 경제는 최악</span></div>
+    <h1 class="covertitle">주가가 <em>19배</em> 올랐는데<br>왜 다들 가난해졌나</h1>
+    <p class="coversub">OECD 국가 중 지난 13년 주가 상승률 1위는 미국도 한국도 아닌 <b>튀르키예</b>다.
+    같은 기간 리라는 95% 넘게 무너졌고 중산층은 붕괴했다.
+    "주가 상승"이라는 같은 단어가 전혀 다른 뜻일 수 있다는 것 — 이 발표의 주제다.</p>
+    <div class="coverparts">
+      <div><span class="pn">1부</span><span class="pt">현상 — 세 개의 자로 잰 같은 지수</span><span class="pd">01 – 03</span></div>
+      <div><span class="pn">2부</span><span class="pt">원인 — 금리를 거꾸로 내린 실험</span><span class="pd">04 – 05</span></div>
+      <div><span class="pn">3부</span><span class="pt">국민의 방어와 정부의 대응</span><span class="pd">06 – 08</span></div>
+      <div><span class="pn">4부</span><span class="pt">대가 — 기업 부실과 양극화</span><span class="pd">09 – 11</span></div>
+      <div><span class="pn">5부</span><span class="pt">2026년 지금, 그리고 우리에게 주는 질문</span><span class="pd">12 – 14</span></div>
+    </div>
+  </section>
+</article>
+
+
+<!-- ============ 01 · 퀴즈 (다크) ============ -->
+<article class="unit">
+  <section class="slide dark">
+    <div class="chrome"><span class="lane">1부 · 현상</span><span>01 / 여는 질문</span></div>
+
+    <h2 class="claim big">OECD 주가 상승률 <em>1위</em>는<br>어느 나라일까</h2>
+    <p class="sub">힌트 세 가지를 드립니다. 셋 다 지난 몇 년 사이에 실제로 벌어진 일입니다.</p>
+
+    <div class="stage">
+      <svg viewBox="0 0 900 232" role="img" aria-label="주가 상승률 1위, 개인투자자 4배 증가, 연기금 주식 의무비중 3배 상향이라는 세 가지 힌트">
+        <g font-family="'Noto Sans KR', sans-serif">
+          <rect x="0" y="10" width="288" height="120" fill="rgba(220,231,223,.07)" stroke="rgba(220,231,223,.25)"/>
+          <text x="24" y="42" font-family="Consolas, monospace" font-size="11.5" letter-spacing="1.6" fill="#8FB3A2">힌트 01</text>
+          <text x="24" y="76" font-size="18" font-weight="700" fill="#fff">13년간 주가 +1,795%</text>
+          <text x="24" y="104" font-size="14" fill="rgba(220,231,223,.75)">OECD 회원국 중 압도적 1위</text>
+
+          <rect x="306" y="10" width="288" height="120" fill="rgba(220,231,223,.07)" stroke="rgba(220,231,223,.25)"/>
+          <text x="330" y="42" font-family="Consolas, monospace" font-size="11.5" letter-spacing="1.6" fill="#8FB3A2">힌트 02</text>
+          <text x="330" y="76" font-size="18" font-weight="700" fill="#fff">개인 투자자 2년 만에 4배</text>
+          <text x="330" y="104" font-size="14" fill="rgba(220,231,223,.75)">230만 명 → 930만 명</text>
+
+          <rect x="612" y="10" width="288" height="120" fill="rgba(220,231,223,.07)" stroke="rgba(220,231,223,.25)"/>
+          <text x="636" y="42" font-family="Consolas, monospace" font-size="11.5" letter-spacing="1.6" fill="#8FB3A2">힌트 03</text>
+          <text x="636" y="76" font-size="18" font-weight="700" fill="#fff">연기금 주식 의무비중 3배</text>
+          <text x="636" y="104" font-size="14" fill="rgba(220,231,223,.75)">정부가 10% → 30%로 상향</text>
+
+          <text x="450" y="176" text-anchor="middle" font-size="16" fill="rgba(220,231,223,.8)">경제가 잘나가는 나라일까요?</text>
+          <rect x="270" y="192" width="360" height="40" fill="#8E2A2A"/>
+          <text x="450" y="219" text-anchor="middle" font-size="20" font-weight="700" fill="#fff">정답 — 튀르키예</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="verdict warn">
+      <span class="tag">반전</span>
+      <span class="txt">경제가 잘나가서가 아니라 <em>화폐가 무너져서</em> 오른 주가다. 그 차이를 오늘 따져본다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">해설 01<br>여는 질문</div>
+    <div class="nbody">
+      <p><span class="q">숫자 감각부터</span>
+      +1,795%는 <b>약 19배</b>다. 퍼센트로는 크기가 잘 안 와닿는데, <b>2013년에 100만 원을 넣었다면 지금 1,890만 원</b>이라고 바꿔 쓰면 규모가 분명해진다. 같은 기간 OECD 어느 나라도 이 근처에 오지 못했다.</p>
+      <p><span class="q">세 힌트의 공통점</span>
+      주가 1위, 개인 투자자 4배, 연기금 의무비중 3배 — 셋 다 <b>돈이 주식으로 밀려 들어간 결과</b>이지 기업이 더 벌어서 생긴 일이 아니다. 힌트를 이렇게 배열한 이유는, 세 가지가 각각 <b>가계 · 제도 · 시장</b>에서 같은 방향으로 작용했다는 걸 보여주기 위해서다.</p>
+      <p><span class="q">이 사례가 던지는 질문</span>
+      주가 상승에는 <b>이익이 늘어서 오르는 상승</b>과 <b>화폐가 무너져서 오르는 상승</b>이 있다. 튀르키예는 후자의 극단적인 사례이고, 그래서 '주가가 올랐다'는 문장만으로는 아무것도 판단할 수 없다는 걸 보여준다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 02 · 얼마나 올랐나 ============ -->
+<article class="unit">
+  <section class="slide">
+    <div class="chrome"><span class="lane">1부 · 현상</span><span>02 / 비교</span></div>
+
+    <h2 class="claim">2위 국가와도 <em>세 배</em> 차이</h2>
+    <p class="sub">2013년을 기준으로 한 13년간 주요국 대표지수 상승률. 튀르키예 BIST100은 다른 나라와 자릿수가 다르다.</p>
+
+    <div class="stage">
+      <svg viewBox="0 0 900 250" role="img" aria-label="튀르키예 헝가리 일본 미국 한국의 13년간 주가지수 상승률 비교 막대">
+        <g font-family="'Noto Sans KR', sans-serif">
+          <text x="0" y="42" font-size="15.5" font-weight="700" fill="#8E2A2A">튀르키예 BIST 100</text>
+          <rect x="230" y="24" width="620" height="28" fill="#8E2A2A"/>
+          <text x="500" y="44" text-anchor="middle" font-size="17" font-weight="700" fill="#fff">+1,795%</text>
+
+          <text x="0" y="94" font-size="15" fill="#1A241F">헝가리 BUX</text>
+          <rect x="230" y="76" width="235" height="28" fill="#1D5B45" opacity=".8"/>
+          <text x="478" y="96" font-size="15" font-weight="700" fill="#1D5B45">+680%</text>
+
+          <text x="0" y="146" font-size="15" fill="#1A241F">일본 니케이225</text>
+          <rect x="230" y="128" width="142" height="28" fill="#1D5B45" opacity=".65"/>
+          <text x="385" y="148" font-size="15" font-weight="700" fill="#1D5B45">+410%</text>
+
+          <text x="0" y="198" font-size="15" fill="#1A241F">미국 S&amp;P500</text>
+          <rect x="230" y="180" width="126" height="28" fill="#1D5B45" opacity=".55"/>
+          <text x="369" y="200" font-size="15" font-weight="700" fill="#1D5B45">+366%</text>
+
+          <text x="0" y="242" font-size="15" fill="#1A241F">한국 코스피</text>
+          <rect x="230" y="224" width="115" height="28" fill="#1D5B45" opacity=".5"/>
+          <text x="358" y="244" font-size="15" font-weight="700" fill="#1D5B45">+332%</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="verdict">
+      <span class="tag">숫자로 바꾸면</span>
+      <span class="txt">2013년에 100을 넣었다면 지금 <em>1,890</em>. 액면만 보면 세계 최고의 투자처였다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">해설 02<br>국가별 비교</div>
+    <div class="nbody">
+      <p><span class="q">격차의 크기</span>
+      2위 헝가리(+680%)와도 <b>세 배 가까이</b> 차이가 난다. 미국 S&amp;P500은 +366%로 튀르키예의 <b>5분의 1</b> 수준이다. 그런데 이 기간 튀르키예 경제가 미국보다 다섯 배 좋았을 리는 없다 — 이 모순이 다음 장의 출발점이다.</p>
+      <p><span class="q">왜 2013년이 기준인가</span>
+      튀르키예 주가가 본격적으로 오르기 시작한 해이자, <b>1인당 GDP가 정점을 찍은 해</b>이기도 하다. 이후 1인당 GDP는 10년이 지나서야 그 수준을 회복했다. 즉 2013년은 <b>주가와 국민소득이 서로 반대로 움직이기 시작한 분기점</b>이다.</p>
+      <p><span class="q">한국의 위치</span>
+      한국도 +332%로 낮지 않다. 다만 상승의 <b>구성</b>이 다르다. 같은 상승률이라도 기업 이익이 끌어올린 것인지, 통화가치 하락이 밀어올린 것인지에 따라 그 뒤에 벌어지는 일이 완전히 달라진다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 03 · 세 개의 자 (다크) ============ -->
+<article class="unit">
+  <section class="slide dark">
+    <div class="chrome"><span class="lane">1부 · 현상</span><span>03 / 반전</span></div>
+
+    <h2 class="claim">같은 지수를 <mark>다른 자</mark>로 재면</h2>
+    <p class="sub">2013년에 100을 투자했다고 하자. 리라로 계산하면 1,890이 됐다.
+    그런데 <b>달러로 환산하면 78</b>, <b>금으로 환산하면 23</b>이다.</p>
+
+    <div class="stage">
+      <svg viewBox="0 0 900 236" role="img" aria-label="BIST100 지수를 리라 달러 금 기준으로 각각 환산했을 때의 결과 비교">
+        <g font-family="'Noto Sans KR', sans-serif">
+          <line x1="60" y1="200" x2="880" y2="200" stroke="rgba(220,231,223,.3)"/>
+          <text x="0" y="204" font-size="13" fill="rgba(220,231,223,.6)">시작 100</text>
+          <line x1="60" y1="176" x2="880" y2="176" stroke="rgba(220,231,223,.2)" stroke-dasharray="4 4"/>
+
+          <rect x="120" y="30" width="150" height="170" fill="#3E8A6E"/>
+          <text x="195" y="60" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">리라 기준</text>
+          <text x="195" y="120" text-anchor="middle" font-family="Consolas, monospace" font-size="34" font-weight="700" fill="#fff">1,890</text>
+          <text x="195" y="152" text-anchor="middle" font-size="13" fill="rgba(255,255,255,.85)">약 19배</text>
+
+          <rect x="380" y="164" width="150" height="36" fill="#A8802A"/>
+          <text x="455" y="146" text-anchor="middle" font-size="15" font-weight="700" fill="#D9BE72">달러 기준</text>
+          <text x="455" y="190" text-anchor="middle" font-family="Consolas, monospace" font-size="22" font-weight="700" fill="#101A16">78</text>
+          <text x="455" y="224" text-anchor="middle" font-size="13" fill="#D9BE72">13년간 오히려 −22%</text>
+
+          <rect x="640" y="180" width="150" height="20" fill="#8E2A2A"/>
+          <text x="715" y="162" text-anchor="middle" font-size="15" font-weight="700" fill="#E0736C">금 기준</text>
+          <text x="715" y="196" text-anchor="middle" font-family="Consolas, monospace" font-size="16" font-weight="700" fill="#fff">23</text>
+          <text x="715" y="224" text-anchor="middle" font-size="13" fill="#E0736C">가치의 77%가 사라졌다</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="verdict warn">
+      <span class="tag">이 발표의 핵심</span>
+      <span class="txt">주가는 <em>화폐로 잰 값</em>이다. 화폐가 무너지면 지수는 오르는데 부(富)는 줄어든다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">해설 03<br>세 개의 자</div>
+    <div class="nbody">
+      <p><span class="q">왜 이런 일이 생기나</span>
+      주가지수는 <b>자국 통화로 표시된 가격</b>이다. 리라 가치가 20분의 1이 되면 주식 가격표의 숫자는 <b>20배가 돼야 겨우 본전</b>이다. 19배 상승은 대박이 아니라 본전 근처였다는 뜻이고, 실제로 달러로 환산하면 손실이었다.</p>
+      <p><span class="q">시험 성적에 비유하면</span>
+      평균 30점이던 시험이 쉬워져 평균 90점이 됐는데 내 점수가 50점에서 80점이 됐다면, 점수는 올랐지만 <b>등수는 떨어진 것</b>이다. 물가와 환율이 '평균'에 해당하고, 주가지수가 '내 점수'에 해당한다.</p>
+      <p><span class="q">국제 비교의 원칙</span>
+      인플레이션이 심한 나라의 지수를 다른 나라와 비교하려면 <b>공통 단위</b>가 필요하다. 그래서 달러 환산 지수를 함께 본다. 금 환산은 한 걸음 더 나아가 <b>모든 통화의 가치 변화까지 걷어낸</b> 기준이라, 화폐 신뢰가 흔들리는 국면에서 특히 유용하다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 04 · 원인 : 금리 실험 (다크) ============ -->
+<article class="unit">
+  <section class="slide dark">
+    <div class="chrome"><span class="lane">2부 · 원인</span><span>04 / 정책</span></div>
+
+    <h2 class="claim">물가가 <em>85%</em>인데<br>금리를 <em>9%</em>로 뒀다</h2>
+    <p class="sub">경제학 교과서와 정반대의 실험이 실제로 벌어졌다. 대통령은 "금리가 물가의 원인"이라고 주장했고,
+    반대한 중앙은행 총재들은 차례로 경질됐다.</p>
+
+    <div class="stage">
+      <svg viewBox="0 0 900 226" role="img" aria-label="2022년 튀르키예의 소비자물가 상승률과 기준금리 격차">
+        <g font-family="'Noto Sans KR', sans-serif">
+          <text x="0" y="18" font-family="Consolas, monospace" font-size="11.5" letter-spacing="1.5" fill="rgba(220,231,223,.5)">2022년 · 정책금리 vs 소비자물가</text>
+
+          <text x="0" y="66" font-size="15" fill="rgba(220,231,223,.85)">공식 소비자물가 상승률</text>
+          <rect x="240" y="48" width="600" height="30" fill="#8E2A2A"/>
+          <text x="852" y="70" font-family="Consolas, monospace" font-size="19" font-weight="700" fill="#E0736C">85.5%</text>
+
+          <text x="0" y="126" font-size="15" fill="rgba(220,231,223,.85)">기준금리</text>
+          <rect x="240" y="108" width="63" height="30" fill="#3E8A6E"/>
+          <text x="315" y="130" font-family="Consolas, monospace" font-size="19" font-weight="700" fill="#8FB3A2">9%</text>
+          <text x="390" y="130" font-size="14" fill="#D9BE72">실질금리 약 −76%p — 돈을 들고 있으면 손해</text>
+
+          <line x1="0" y1="158" x2="900" y2="158" stroke="rgba(220,231,223,.18)"/>
+          <text x="0" y="186" font-size="14.5" font-weight="700" fill="#fff">이러면 사람들은 어떻게 행동하나</text>
+          <text x="0" y="212" font-size="14" fill="rgba(220,231,223,.8)">예금에서 돈을 빼고 → 지금 당장 물건을 사고 → 실물(주식·부동산·금)로 갈아탄다 → 물가는 더 오른다</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="verdict warn">
+      <span class="tag">인과의 방향</span>
+      <span class="txt">저금리가 주가를 올린 게 아니라, <em>화폐를 믿을 수 없게 만들어</em> 실물로 돈을 밀어냈다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">해설 04<br>금리 실험</div>
+    <div class="nbody">
+      <p><span class="q">실질금리가 마이너스라는 뜻</span>
+      연필이 지금 100원인데 1년 뒤 185원이 되고, 은행에 넣으면 109원이 된다고 하자. 누구도 저축하지 않고 <b>지금 물건을 산다.</b> 그래서 물가는 더 오른다. 물가보다 금리가 낮으면 물가를 잡을 수 없다는 원리가 이것이고, 2022년 튀르키예가 정확히 그 상태였다.</p>
+      <p><span class="q">왜 이런 정책이 유지됐나</span>
+      에르도안 대통령은 <b>고금리가 오히려 물가를 올린다</b>는 비정통적 견해를 고수했다. 이에 반대한 중앙은행 총재들이 잇따라 교체되면서 <b>중앙은행의 독립성</b>이 사실상 사라졌다. 정책의 옳고 그름 이전에, 견제 장치가 없어지면 오류가 오래 지속된다는 게 이 사례의 교훈이다.</p>
+      <p><span class="q">시차가 만든 착시</span>
+      돈을 풀면 <b>자산 가격이 먼저 오르고 물가는 1~2년 뒤에</b> 따라온다. 그 시차 동안에는 '자산이 오르는 호황'처럼 보인다. 대가가 뒤늦게 청구되기 때문에, 정책의 성패를 짧은 기간으로 판단하면 거의 항상 틀린다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 05 · 리라 붕괴 ============ -->
+<article class="unit">
+  <section class="slide">
+    <div class="chrome"><span class="lane">2부 · 원인</span><span>05 / 환율</span></div>
+
+    <h2 class="claim">1달러 = <em>2리라</em>에서<br><em>44리라</em>로</h2>
+    <p class="sub">2013년에는 2리라면 1달러를 살 수 있었다. 2026년 3월 리라는 <b>달러당 44.1리라</b>로 사상 최저를 기록했다.
+    13년 만에 가치의 <b>95% 이상</b>이 사라졌다.</p>
+
+    <div class="stage">
+      <svg viewBox="0 0 900 220" role="img" aria-label="2013년부터 2026년까지 리라 환율 하락과 한국 원화로 환산한 비유">
+        <g font-family="'Noto Sans KR', sans-serif">
+          <line x1="60" y1="150" x2="860" y2="150" stroke="#B9C4BC"/>
+          <path d="M70,44 L180,52 L290,66 L400,84 L500,100 L600,116 L700,128 L800,138 L850,142"
+                fill="none" stroke="#8E2A2A" stroke-width="2.5"/>
+          <circle cx="70" cy="44" r="5" fill="#8E2A2A"/>
+          <circle cx="850" cy="142" r="5" fill="#8E2A2A"/>
+          <text x="70" y="32" font-size="14" font-weight="700" fill="#1A241F">1달러 = 2리라</text>
+          <text x="790" y="166" font-size="14" font-weight="700" fill="#8E2A2A">1달러 = 44리라</text>
+          <g font-family="Consolas, monospace" font-size="11.5" fill="#8A948D">
+            <text x="60" y="170">2013</text><text x="470" y="170">2020</text><text x="820" y="170">2026</text>
+          </g>
+          <text x="300" y="60" font-size="14" fill="#4E5A53">리라 가치가 계속 깎여 내려간 13년</text>
+
+          <rect x="0" y="186" width="900" height="34" fill="#F2E2E0"/>
+          <text x="16" y="209" font-size="14.5" fill="#8E2A2A">한국에 대입하면 — 1달러 1,500원이 <tspan font-weight="700">3만 3천 원</tspan>이 된 셈. 월급도 예금도 그대로인데 수입품 값만 22배가 된다.</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="verdict warn">
+      <span class="tag">체감</span>
+      <span class="txt">가만히 예금만 들고 있던 사람은 <em>아무 잘못 없이</em> 자산의 대부분을 잃었다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">해설 05<br>환율</div>
+    <div class="nbody">
+      <p><span class="q">통화 하락이 물가로 이어지는 경로</span>
+      튀르키예는 에너지와 원자재를 대부분 수입한다. 리라가 반토막 나면 같은 기름을 사는 데 두 배의 리라가 든다. <b>수입물가 → 국내물가</b>로 전이되고, 물가가 오르면 리라를 더 못 믿게 돼 다시 팔린다. 통화 약세와 인플레이션이 서로를 먹여 키우는 <b>악순환</b>이다.</p>
+      <p><span class="q">한국으로 옮겨보면</span>
+      지금 1달러가 1,500원인데 이것이 <b>3만 3천 원</b>이 된 셈이다. 월급도 예금도 그대로인데 수입품 값만 스무 배가 된다. 해외여행·전자제품·연료처럼 구체적인 품목에 대입하면 체감의 크기가 분명해진다.</p>
+      <p><span class="q">수치를 다룰 때</span>
+      리라는 2026년 3월 <b>달러당 44.1리라</b>로 사상 최저를 기록했다. 환율은 매일 바뀌므로 특정 숫자를 못 박기보다 <b>'40리라대 중반'</b> 같은 표현이 안전하고, 정확한 값이 필요하면 인용 시점을 함께 적는 것이 원칙이다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 06 · 국민의 방어 (다크) ============ -->
+<article class="unit">
+  <section class="slide dark">
+    <div class="chrome"><span class="lane">3부 · 방어와 대응</span><span>06 / 국민</span></div>
+
+    <h2 class="claim">그래서 국민은<br><em>리라를 버렸다</em></h2>
+    <p class="sub">돈 가치가 매년 반토막 나는 나라에서 합리적인 선택은 하나뿐이다 — <b>화폐를 실물로 바꾸는 것.</b>
+    세 가지 방향으로 동시에 탈출이 일어났다.</p>
+
+    <div class="cards c3">
+      <div class="card">
+        <span class="ctag">탈출 01</span>
+        <h4>달러 예금</h4>
+        <p>전체 예금 중 외화 비중이 <b>35% → 68%</b>로 치솟았다.</p>
+        <p>은행에 리라를 맡길 이유가 사라졌다.</p>
+        <p class="out">자국 통화 이탈</p>
+      </div>
+      <div class="card">
+        <span class="ctag">탈출 02</span>
+        <h4>주식</h4>
+        <p>개인 투자자가 <b>230만 → 930만 명</b>. 2년 만에 4배.</p>
+        <p>주식이 좋아서가 아니라 <b>현금으로 두면 녹으니까</b> 샀다.</p>
+        <p class="out">매달 40만 명씩 증가</p>
+      </div>
+      <div class="card">
+        <span class="ctag">탈출 03</span>
+        <h4>금</h4>
+        <p>가계가 <b>4,000~5,000톤</b> 보유 추정. 이 중 약 <b>3,000톤(4,150억 달러)</b>이 금융시스템 밖에 있다.</p>
+        <p>한국은행 보유량이 104톤이다.</p>
+        <p class="out">"베개 밑 금"</p>
+      </div>
+    </div>
+
+    <div class="verdict warn" style="margin-top:auto;padding-top:22px">
+      <span class="tag">중요한 관점</span>
+      <span class="txt">이건 투기가 아니라 <em>생존을 위한 방어</em>였다. 그래서 정부가 막을수록 더 강해졌다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">해설 06<br>국민의 방어</div>
+    <div class="nbody">
+      <p><span class="q">개인 투자자 증가를 다르게 읽기</span>
+      보통 개인 투자자 증가는 <b>시장에 대한 신뢰</b>로 해석된다. 튀르키예는 정반대다. <b>화폐에 대한 불신</b>이 사람들을 주식시장으로 밀어냈다. 같은 현상도 배경을 봐야 뜻이 정해진다는 걸 보여주는 사례다.</p>
+      <p><span class="q">금 보유 규모의 의미</span>
+      가계가 들고 있는 금은 한국은행 보유량(104톤)의 <b>40배 안팎</b>으로 추정된다. 1인당 GDP는 한국보다 낮은 나라에서 이런 일이 벌어졌다는 건, <b>금이 저축 수단이 아니라 생존 수단</b>이 됐다는 뜻이다.</p>
+      <p><span class="q">추정치의 한계</span>
+      장롱 속 금은 정확한 집계가 불가능하다. 수입량에서 유출량을 뺀 <b>간접 추정</b>이라 기관마다 4,000~5,000톤으로 편차가 있다. 이런 숫자는 단일 값보다 <b>범위와 추정 방식</b>을 함께 적는 것이 정확하다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 07 · 정부의 대응 ============ -->
+<article class="unit">
+  <section class="slide">
+    <div class="chrome"><span class="lane">3부 · 방어와 대응</span><span>07 / 정부</span></div>
+
+    <h2 class="claim">정부는 <mark>탈출구를 막았다</mark></h2>
+    <p class="sub">국민이 리라를 버리자 정부는 원인이 아니라 <b>행동</b>을 규제했다. 세 가지 방향으로.</p>
+
+    <table class="tbl">
+      <thead>
+        <tr><th style="width:22%">조치</th><th style="width:26%">내용</th><th>결과</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>금 수입 쿼터</td><td class="mat">2023년 8월</td><td>수입 총량을 제한 → 국내 금값이 국제 금값보다 더 오르고, <b>주얼리 형태 수입·밀수</b>가 늘었다</td></tr>
+        <tr class="hot"><td>연기금 주식 의무비중</td><td class="mat">10% → 30%</td><td>정부 매칭분의 주식 의무투자 비중을 3배로. 연금 자산의 주식 비중이 <b>15% → 29%</b>로 상승</td></tr>
+        <tr class="hot"><td>물가 통계 통제</td><td class="mat">현재 진행형</td><td>독립 물가조사(ENAG) 연구자를 <b>형사 고발</b>. 품목별 공개를 명한 법원 판결도 이행하지 않고 있다</td></tr>
+      </tbody>
+    </table>
+
+    <div class="verdict warn" style="margin-top:auto;padding-top:22px">
+      <span class="tag">패턴</span>
+      <span class="txt">통화가치 하락이라는 <em>원인</em>은 그대로 두고 <em>증상</em>만 막았다. 그래서 문제가 더 커졌다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">해설 07<br>정부의 대응</div>
+    <div class="nbody">
+      <p><span class="q">연기금 조치의 무게</span>
+      2023년 주가가 흔들리자 정부는 <b>연금의 주식 의무투자 비중을 10%에서 30%로</b> 올렸다. 그 결과 연금 자산 중 주식 비중이 15%에서 29%로 뛰었고, 이는 그 시기 <b>세계에서 가장 빠른 증가</b>였다. 주가가 국민 노후자금으로 떠받쳐진 셈이다.</p>
+      <p><span class="q">통계 통제가 심각한 이유</span>
+      물가 통계는 <b>임금 협상 · 계약 · 연금 인상률</b>의 기준이다. 이 숫자를 믿을 수 없게 되면 사회 전체의 계산 단위가 흔들린다. 숫자 하나가 틀리는 문제가 아니라, <b>모든 거래의 기준자가 사라지는</b> 문제다.</p>
+      <p><span class="q">원인 대신 증상을 막으면</span>
+      금 수입을 막자 주얼리 형태 수입과 밀수가 늘었고, 한 번 장롱에 들어간 금은 밖으로 나오지 않았다. 통화가치 하락이라는 <b>원인</b>은 그대로 둔 채 <b>행동</b>만 규제하면 자금이 더 깊이 숨어 문제가 커진다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 08 · 통계 신뢰 ============ -->
+<article class="unit">
+  <section class="slide">
+    <div class="chrome"><span class="lane">3부 · 방어와 대응</span><span>08 / 통계</span></div>
+
+    <h2 class="claim">물가가 <em>32%</em>인가 <em>51%</em>인가</h2>
+    <p class="sub">같은 나라, 같은 달의 물가 상승률인데 발표 주체에 따라 20%p 넘게 차이가 난다.
+    이 격차 자체가 튀르키예 경제의 현주소다.</p>
+
+    <div class="stage">
+      <svg viewBox="0 0 900 214" role="img" aria-label="2026년 공식 물가 통계와 독립 연구단체 추정치의 차이">
+        <g font-family="'Noto Sans KR', sans-serif">
+          <text x="0" y="18" font-family="Consolas, monospace" font-size="11.5" letter-spacing="1.5" fill="#8A948D">2026년 · 전년 대비 소비자물가 상승률</text>
+
+          <text x="0" y="66" font-size="15" fill="#1A241F">공식 통계 (TÜİK)</text>
+          <rect x="240" y="46" width="330" height="30" fill="#3E8A6E" opacity=".8"/>
+          <text x="584" y="68" font-family="Consolas, monospace" font-size="19" font-weight="700" fill="#1D5B45">31.8%</text>
+          <text x="668" y="68" font-size="13" fill="#4E5A53">2026년 7월</text>
+
+          <text x="0" y="126" font-size="15" fill="#8E2A2A">독립 연구단체 (ENAG)</text>
+          <rect x="240" y="106" width="533" height="30" fill="#8E2A2A"/>
+          <text x="787" y="128" font-family="Consolas, monospace" font-size="19" font-weight="700" fill="#8E2A2A">51.4%</text>
+          <text x="668" y="152" font-size="13" fill="#8A948D">2026년 6월 · 경제학자들이 자체 조사</text>
+
+          <rect x="0" y="176" width="900" height="38" fill="#F7EFD9"/>
+          <text x="16" y="201" font-size="14" fill="#7A5C16">두 숫자의 차이만큼 <tspan font-weight="700">국민의 체감물가와 공식 통계가 벌어져 있다.</tspan> 그리고 그 조사를 한 연구자들은 형사 고발됐다.</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="verdict warn">
+      <span class="tag">왜 중요한가</span>
+      <span class="txt">물가 통계는 <em>임금·연금·계약</em>의 기준이다. 이게 흔들리면 사회 전체의 계산이 틀어진다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">해설 08<br>통계 신뢰</div>
+    <div class="nbody">
+      <p><span class="q">ENAG란</span>
+      공식 물가 통계를 신뢰하기 어렵다고 본 튀르키예 경제학자들이 자체적으로 장바구니 물가를 조사해 발표하는 독립 연구단체다. 2026년 6월 기준 ENAG 추정치는 <b>51.4%</b>, 같은 시기 공식 통계는 <b>32.1%</b>였다.</p>
+      <p><span class="q">누가 맞는지보다 격차가 메시지</span>
+      어느 한쪽을 조작이라고 단정하기보다, <b>두 통계가 20%p 넘게 벌어져 있다는 사실</b> 자체가 신뢰 문제를 보여준다고 보는 편이 정확하다. 품목별 세부 자료를 공개하라는 법원 판결이 이행되지 않고 있다는 점도 함께 봐야 한다.</p>
+      <p><span class="q">공개성이 곧 신뢰</span>
+      한국에서도 '공식 물가와 체감 물가가 다르다'는 말이 흔하다. 차이는 <b>검증 가능성</b>이다. 품목별 가중치와 세부 자료가 공개돼 <b>누구나 다시 계산할 수 있으면</b> 그 통계는 논쟁의 대상이 될지언정 신뢰의 대상에서 벗어나지는 않는다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 09 · 뒤늦은 정상화 (다크) ============ -->
+<article class="unit">
+  <section class="slide dark">
+    <div class="chrome"><span class="lane">4부 · 대가</span><span>09 / 정책 전환</span></div>
+
+    <h2 class="claim">결국 금리를 <em>50%</em>까지 올렸다</h2>
+    <p class="sub">2023년 이후 튀르키예는 정통 통화정책으로 돌아섰다. 기준금리를 50%까지 올린 뒤
+    물가가 잡히는 만큼 조금씩 내려 <b>2026년 현재 37%</b>다. 문제는 그 사이의 비용이다.</p>
+
+    <div class="stage">
+      <svg viewBox="0 0 900 216" role="img" aria-label="기준금리가 9퍼센트에서 50퍼센트로 올랐다가 37퍼센트로 내려온 경로와 현재 시장금리">
+        <g font-family="'Noto Sans KR', sans-serif">
+          <line x1="60" y1="150" x2="520" y2="150" stroke="rgba(220,231,223,.3)"/>
+          <path d="M70,140 L150,140 L150,120 L210,120 L210,72 L280,72 L280,40 L360,40 L360,52 L420,52 L420,66 L500,66"
+                fill="none" stroke="#E0736C" stroke-width="2.5"/>
+          <text x="70" y="132" font-size="13" fill="rgba(220,231,223,.7)">9%</text>
+          <text x="286" y="32" font-size="14" font-weight="700" fill="#E0736C">50%</text>
+          <text x="470" y="60" font-size="14" font-weight="700" fill="#D9BE72">37%</text>
+          <g font-family="Consolas, monospace" font-size="10.5" fill="rgba(220,231,223,.5)">
+            <text x="62" y="168">2022</text><text x="266" y="168">2024</text><text x="470" y="168">2026</text>
+          </g>
+          <text x="0" y="196" font-size="13" fill="rgba(220,231,223,.7)">중앙은행 전망 : 물가 26%(2026말) → 15%(2027말) → 9%(2028말)</text>
+
+          <rect x="560" y="20" width="340" height="176" fill="rgba(142,42,42,.22)" stroke="#E0736C" stroke-width="1.2"/>
+          <text x="584" y="52" font-size="15" font-weight="700" fill="#fff">지금 국민이 무는 금리</text>
+          <text x="584" y="92" font-size="14" fill="rgba(220,231,223,.85)">10년물 국채</text>
+          <text x="820" y="92" text-anchor="end" font-family="Consolas, monospace" font-size="18" font-weight="700" fill="#E0736C">31.5%</text>
+          <text x="584" y="128" font-size="14" fill="rgba(220,231,223,.85)">주택담보대출</text>
+          <text x="820" y="128" text-anchor="end" font-family="Consolas, monospace" font-size="18" font-weight="700" fill="#E0736C">36.6%</text>
+          <text x="584" y="166" font-size="13" fill="rgba(255,255,255,.8)">2~3년이면 원리금이 두 배가 되는 수준</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="verdict warn">
+      <span class="tag">순서의 대가</span>
+      <span class="txt">물가를 늦게 잡을수록 <em>더 높은 금리로, 더 오래</em> 갚아야 한다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">해설 09<br>정책 전환</div>
+    <div class="nbody">
+      <p><span class="q">늦게 잡을수록 비싸다</span>
+      튀르키예는 결국 정통 정책으로 돌아섰지만, 이미 물가가 85%까지 오른 뒤였다. 물가를 늦게 잡을수록 필요한 금리는 더 높아지고 고통은 더 길어진다. <b>망가뜨리는 데 3년, 되돌리는 데 5년</b>이라는 비대칭이 여기서 나온다.</p>
+      <p><span class="q">주택담보대출 36.6%의 의미</span>
+      3천만 원을 빌리면 이자만 연 1,100만 원이다. 이 금리에서는 집을 사는 것도, 설비를 늘리는 것도 사실상 불가능하다. 금리가 높다는 건 숫자의 문제가 아니라 <b>경제활동 자체가 멈춘다</b>는 뜻이다.</p>
+      <p><span class="q">정상화의 시간표</span>
+      중앙은행은 물가가 목표 5%로 돌아가는 시점을 <b>2028년 이후</b>로 보고 있다. 방향은 맞게 잡혔지만, 그 사이의 기업·가계 부담은 계속 쌓인다. 정책 전환은 시작일 뿐 회복이 아니라는 점이 다음 두 장의 내용이다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 10 · 기업 부실 ============ -->
+<article class="unit">
+  <section class="slide">
+    <div class="chrome"><span class="lane">4부 · 대가</span><span>10 / 기업</span></div>
+
+    <h2 class="claim">기업이 <mark>먼저</mark> 무너지고 있다</h2>
+    <p class="sub">금리 36%를 감당할 수 있는 사업은 거의 없다. 실물 경제의 지표들이 동시에 나빠지고 있다.</p>
+
+    <div class="cards">
+      <div class="card">
+        <span class="ctag">법정관리 신청</span>
+        <h4>2년 만에 4배</h4>
+        <p>기업 회생 절차(콘코르다토) 신청이 <b>2023년 1,516건 → 2025년 약 6,361건</b>.</p>
+        <p>2025년 상반기에만 2,776건으로, 2023년 <b>한 해 전체보다 많았다.</b></p>
+        <p class="out">역대 최고 경신 중</p>
+      </div>
+      <div class="card">
+        <span class="ctag">은행 부실채권</span>
+        <h4>반년 만에 +48%</h4>
+        <p>NPL이 <b>2,870억 리라(2024년 말) → 4,250억 리라(2025년 6월)</b>.</p>
+        <p>5년 만의 최고 수준이다.</p>
+        <p class="out">금융권으로 전이되는 신호</p>
+      </div>
+      <div class="card">
+        <span class="ctag">좀비기업</span>
+        <h4>대기업의 18%</h4>
+        <p>영업이익으로 이자도 못 갚는 기업이 <b>대기업의 18%</b>, 비상장 부문에서는 20%에 육박한다.</p>
+        <p>IMF 보고서가 지목할 만큼 <b>세계 최고 수준</b>이다.</p>
+        <p class="out">고용과 신용의 시한폭탄</p>
+      </div>
+      <div class="card">
+        <span class="ctag">성장률</span>
+        <h4>11.4% → 3%대</h4>
+        <p>2021년 11.4%였던 성장률이 2024년 3.2%로 내려앉았고, 산업생산은 <b>감소</b>로 돌아섰다.</p>
+        <p class="out">자산은 오르는데 생산은 줄어든다</p>
+      </div>
+    </div>
+
+    <div class="verdict warn" style="margin-top:auto;padding-top:22px">
+      <span class="tag">구조</span>
+      <span class="txt">저금리로 <em>살려둔</em> 기업들이, 고금리 국면에서 <em>한꺼번에</em> 정리되고 있다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">해설 10<br>기업 부실</div>
+    <div class="nbody">
+      <p><span class="q">좀비기업이란</span>
+      영업으로 번 돈으로 <b>이자도 갚지 못하는데</b> 계속 빌려서 연명하는 기업이다. 저금리에서는 버틸 수 있지만 금리가 36%가 되면 버티는 것 자체가 불가능해진다. 튀르키예는 이 비율이 세계에서 가장 높은 축이고, IMF 보고서도 이를 지목했다.</p>
+      <p><span class="q">다섯 단계의 연쇄</span>
+      금리 급등 → 기업이 이자를 못 냄 → 법정관리 신청 급증 → 은행 부실채권 증가 → 대출이 더 조여짐 → 다시 기업이 무너짐. 네 개의 지표는 따로 있는 사건이 아니라 <b>하나의 사슬</b>이다.</p>
+      <p><span class="q">한 줄 대비</span>
+      주가지수는 사상 최고인데, 그 주가를 만드는 <b>기업들의 재무제표는 사상 최악</b>이다. 지수와 실물이 이렇게 오래 어긋날 수 있다는 것 자체가 그 상승이 실적이 아니라 화폐에서 나왔다는 증거다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 11 · 양극화 (다크) ============ -->
+<article class="unit">
+  <section class="slide dark">
+    <div class="chrome"><span class="lane">4부 · 대가</span><span>11 / 가계</span></div>
+
+    <h2 class="claim">자산을 <em>가진 쪽</em>과<br><mark>못 가진 쪽</mark>이 갈렸다</h2>
+    <p class="sub">주가 19배, 집값 20배. 자산이 있던 사람은 방어에 성공했고, 월급만 받던 사람은 그대로 무너졌다.
+    같은 나라에서 정반대의 13년이 지나갔다.</p>
+
+    <div class="split">
+      <div class="pane good">
+        <span class="ptag">자산을 가진 쪽</span>
+        <h4>개인 자산 증가율<br>세계 1위</h4>
+        <p>주식·부동산·금을 들고 있던 계층은 화폐가치 하락을 <b>피해갔다.</b></p>
+        <p>리라 기준 백만장자 수가 1년 새 <b>49% 증가</b>했다.</p>
+        <p>상위 10%가 순자산의 <b>68%</b>를 보유한다.</p>
+      </div>
+      <div class="pane bad">
+        <span class="ptag">그렇지 못한 쪽</span>
+        <h4>중위 자산은<br>오히려 −21%</h4>
+        <p>실질 기준 <b>중간층의 자산이 21% 감소</b>했다. 유럽에서 유일한 감소다.</p>
+        <p>하위 50%가 가진 순자산은 전체의 <b>2.6%</b>에 불과하다.</p>
+        <p>최저임금이 기아선을 밑도는 상황까지 나왔다.</p>
+      </div>
+    </div>
+
+    <div class="verdict warn" style="margin-top:auto;padding-top:22px">
+      <span class="tag">가장 무거운 지표</span>
+      <span class="txt">합계출산율 <em>2.38 → 1.42</em>. 무슬림 국가 평균(약 2.9)의 절반에도 못 미친다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">해설 11<br>양극화</div>
+    <div class="nbody">
+      <p><span class="q">평균의 함정</span>
+      국가 전체 개인자산 증가율은 <b>세계 1위</b>인데 중간층 자산은 <b>21% 줄었다.</b> 평균이 오르면서 중간이 내려간다는 건 위쪽이 압도적으로 벌었다는 뜻이다. 평균을 보면 부자 나라, 중간을 보면 가난해진 나라가 된다.</p>
+      <p><span class="q">출산율까지 이어지는 경로</span>
+      집값이 20배 오르는 동안 임금은 그만큼 오르지 않았다. 청년이 집을 구하지 못하고 결혼을 미루면 출산율이 떨어진다. 튀르키예 합계출산율은 <b>2.38 → 1.42</b>로, 종교·문화적 배경을 감안하면 매우 이례적인 하락이다.</p>
+      <p><span class="q">자산 인플레이션의 청구서</span>
+      자산 가격이 오르면 가진 사람은 방어에 성공하지만, 그 상승은 <b>다음 세대의 진입 비용</b>이 된다. 집값·출산율의 관계는 한국에서도 익숙한 주제이고, 튀르키예는 같은 메커니즘이 <b>극단적으로 빠르게</b> 진행된 경우다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 12 · 2026년 지금 ============ -->
+<article class="unit">
+  <section class="slide">
+    <div class="chrome"><span class="lane">5부 · 지금</span><span>12 / 2026년</span></div>
+
+    <h2 class="claim">그런데 <em>2026년</em>,<br>흐름이 조금 달라졌다</h2>
+    <p class="sub">발표를 "망했다"로 끝내면 절반만 본 것이다. 정통 정책으로 돌아선 뒤
+    <b>2026년 들어 시장은 다르게 반응하기 시작했다.</b></p>
+
+    <table class="tbl">
+      <thead>
+        <tr><th style="width:24%">2026년의 변화</th><th style="width:24%">숫자</th><th>무엇을 뜻하나</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>주가</td><td class="mat">1월 +22.9%</td><td>28년 만의 최고 1월. BIST100은 1월 말 사상 최고치를 경신했다</td></tr>
+        <tr class="hot"><td>달러 기준 지수</td><td class="mat">2024년 8월 이후 최고</td><td>리라가 아니라 <b>달러로 환산해도 오른</b> 첫 국면 — 03장과 정반대의 신호</td></tr>
+        <tr class="hot"><td>외국인 자금</td><td class="mat">순매수 전환</td><td>1월 중 국채 <b>35억 달러</b>, 주식 <b>10억 달러</b> 순매수. 떠났던 자금이 일부 돌아왔다</td></tr>
+        <tr><td>물가</td><td class="mat">32%대로 둔화</td><td>85%에서는 내려왔지만 여전히 <b>목표 5%와는 거리가 멀다</b></td></tr>
+        <tr><td>실질금리</td><td class="mat">플러스 전환</td><td>정책금리 37% &gt; 물가 32% — <b>드디어 교과서대로</b> 돌아왔다</td></tr>
+      </tbody>
+    </table>
+
+    <div class="verdict" style="margin-top:auto;padding-top:22px">
+      <span class="tag">균형 잡힌 결론</span>
+      <span class="txt">정책이 정상으로 돌아오자 <em>같은 주가 상승의 성격이 달라졌다.</em> 이게 이 사례의 진짜 교훈이다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">해설 12<br>2026년 현재</div>
+    <div class="nbody">
+      <p><span class="q">사례를 닫는 장</span>
+      '튀르키예는 망했다'로 끝내면 절반만 본 것이다. 정통 정책으로 돌아선 뒤 2026년 들어 시장 반응이 달라졌다. 특히 <b>달러 기준으로도 지수가 올랐다</b>는 점은 3장에서 세운 판별 기준을 다시 적용해 확인한 것이라, 자료의 논리가 여기서 맞물린다.</p>
+      <p><span class="q">과장하지 않는 선</span>
+      물가는 여전히 30%대이고 기업 부실은 진행 중이다. <b>'정상화가 시작됐다'까지가 사실이고 '위기가 끝났다'는 아직 이르다.</b> 확인 지표는 두 가지 — 실질금리 플러스가 유지되는지, 외국인 순매수가 이어지는지다.</p>
+      <p><span class="q">한 문장으로</span>
+      돈을 풀어서 오른 주가는 달러로 보면 하락이었고, 정책을 정상화한 뒤의 상승은 달러로도 상승이었다. <b>같은 '주가 상승'이라도 정책 환경에 따라 성격이 완전히 달라진다</b>는 것이 이 사례의 결론이다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 13 · 우리에게 주는 질문 (다크) ============ -->
+<article class="unit">
+  <section class="slide dark">
+    <div class="chrome"><span class="lane">5부 · 지금</span><span>13 / 적용</span></div>
+
+    <h2 class="claim">주가 상승에는 <em>세 종류</em>가 있다</h2>
+    <p class="sub">튀르키예 사례가 우리에게 주는 것은 공포가 아니라 <b>판별 기준</b>이다.</p>
+
+    <div class="stage">
+      <svg viewBox="0 0 900 214" role="img" aria-label="이익에 의한 상승, 유동성에 의한 상승, 화폐 불신에 의한 탈출성 상승의 세 유형 비교">
+        <g font-family="'Noto Sans KR', sans-serif">
+          <rect x="0" y="10" width="288" height="120" fill="rgba(62,138,110,.22)" stroke="#3E8A6E"/>
+          <text x="24" y="42" font-family="Consolas, monospace" font-size="11.5" fill="#8FB3A2">TYPE 1 · 좋은 상승</text>
+          <text x="24" y="74" font-size="17" font-weight="700" fill="#fff">이익이 늘어서</text>
+          <text x="24" y="104" font-size="13.5" fill="rgba(220,231,223,.78)">기업이 실제로 더 벌었다</text>
+
+          <rect x="306" y="10" width="288" height="120" fill="rgba(168,128,42,.25)" stroke="#A8802A"/>
+          <text x="330" y="42" font-family="Consolas, monospace" font-size="11.5" fill="#D9BE72">TYPE 2 · 위험한 상승</text>
+          <text x="330" y="74" font-size="17" font-weight="700" fill="#fff">돈이 풀려서</text>
+          <text x="330" y="104" font-size="13.5" fill="rgba(220,231,223,.78)">유동성이 자산으로 몰렸다</text>
+
+          <rect x="612" y="10" width="288" height="120" fill="rgba(142,42,42,.3)" stroke="#E0736C"/>
+          <text x="636" y="42" font-family="Consolas, monospace" font-size="11.5" fill="#E0736C">TYPE 3 · 가장 나쁜 상승</text>
+          <text x="636" y="74" font-size="17" font-weight="700" fill="#fff">화폐를 못 믿어서</text>
+          <text x="636" y="104" font-size="13.5" fill="rgba(255,255,255,.82)">탈출하려고 주식을 샀다</text>
+
+          <text x="450" y="166" text-anchor="middle" font-size="15" fill="rgba(220,231,223,.8)">튀르키예의 13년은 <tspan font-weight="700" fill="#E0736C">2번과 3번</tspan>이었다</text>
+          <text x="450" y="196" text-anchor="middle" font-size="15" fill="rgba(220,231,223,.8)">그렇다면 우리 시장은 몇 번인가 — 확인할 방법은 셋이다</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="verdict">
+      <span class="tag">판별 질문</span>
+      <span class="txt">① <em>달러·금으로 환산해도</em> 오르는가 　② <em>화폐가치 방어</em>가 목적인가 　③ 외국인이 떠난 자리를 <em>누가</em> 채우는가</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">해설 13<br>판별 기준</div>
+    <div class="nbody">
+      <p><span class="q">세 질문을 적용하는 법</span>
+      ① <b>달러·금 환산</b> — 자국 통화 약세를 걷어내도 오르는가. ② <b>매수 동기</b> — 기업이 돈을 벌어서 사는가, 현금을 들고 있으면 손해라서 사는가. ③ <b>수급 주체</b> — 외국인이 파는 물량을 개인이 계속 받아내는 구조인가.</p>
+      <p><span class="q">한국은 어느 쪽인가</span>
+      단정하기 어렵고, 근거를 나눠 보는 편이 정확하다. 반도체·조선처럼 <b>실적으로 설명되는 상승</b>이 있고 유동성과 환율 요인도 섞여 있다. 중요한 건 어느 쪽인지 맞히는 게 아니라 <b>세 질문을 계속 점검하는 습관</b>이다.</p>
+      <p><span class="q">건강한 상승의 조건</span>
+      금리와 환율이 안정된 상태에서 오르는 주가가 건강한 상승이다. 반대로 <b>금리와 환율이 불안한데 주가만 오르는 국면</b>은 튀르키예형에 가깝다. 지수 하나가 아니라 <b>세 가격을 함께</b> 보는 것이 이 사례가 남긴 실질적인 교훈이다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 14 · 요약 · Q&A (다크) ============ -->
+<article class="unit">
+  <section class="slide dark">
+    <div class="chrome"><span class="lane">마무리</span><span>14 / 요약 · 오해 정리</span></div>
+
+    <h2 class="claim">한 장 <em>요약</em>과 자주 나오는 오해</h2>
+    <p class="sub">이 사례를 옮겨 말할 때 가장 자주 어긋나는 지점들을 모았다.</p>
+
+    <div class="record">
+      <div class="rl">한 문장 요약</div>
+      <p>튀르키예 주가는 13년간 <b>19배</b> 올라 OECD 1위였지만, 달러로는 <b>−22%</b>, 금으로는 <b>−77%</b>였다.</p>
+      <p class="cond">화폐가 무너지자 국민이 실물로 탈출한 결과였고, 그 대가로 기업 부실·중산층 붕괴·출산율 급락이 남았다.</p>
+    </div>
+
+    <ol class="checks" style="margin-top:18px">
+      <li><b>"왜 금리를 안 올렸나"</b> → 고금리가 물가를 올린다는 비정통 견해 + 중앙은행 독립성 훼손</li>
+      <li><b>"주식 산 사람은 이득 아닌가"</b> → 리라 기준 이득, 달러·금 기준 손실. 현금 보유자보다는 나았다</li>
+      <li><b>"금 5,000톤이 정확한가"</b> → 장롱 보유라 간접 추정. 4,000~5,000톤 범위로 말하는 게 정확</li>
+      <li><b>"물가 통계 조작인가"</b> → 단정 대신 <b>공식 32% vs 독립 51%의 격차</b>와 법원 판결 미이행을 근거로</li>
+      <li><b>"한국도 같은 길인가"</b> → 아니다. 다만 <b>판별 질문 3개</b>는 어느 시장에나 적용된다</li>
+      <li><b>"지금 튀르키예에 투자해도 되나"</b> → 실질금리 플러스 유지 · 외국인 순매수 지속 여부가 확인 조건</li>
+    </ol>
+
+    <div class="verdict" style="margin-top:auto;padding-top:20px">
+      <span class="tag">데이터 출처</span>
+      <span class="txt">TÜİK · ENAG · 튀르키예 중앙은행 · World Gold Council · UBS 글로벌 웰스 리포트 · Borsa İstanbul</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">해설 14<br>정리</div>
+    <div class="nbody">
+      <p><span class="q">이 자료를 다시 볼 때</span>
+      핵심은 세 장이다 — <b>3장(세 개의 자)</b>이 현상을 뒤집고, <b>9~11장</b>이 대가를 보여주며, <b>13장(판별 질문)</b>이 적용 방법을 준다. 나머지는 이 셋을 뒷받침하는 근거이므로, 시간이 없다면 이 세 장만 다시 봐도 전체가 복원된다.</p>
+      <p><span class="q">가장 흔한 반박에 대하여</span>
+      '인플레이션이 심한 나라는 원래 명목 주가가 오른다'는 지적이 나올 수 있다. 맞는 말이고, <b>그것이 바로 이 자료의 요지</b>다. 명목 상승이 당연하기 때문에 <b>실질 기준(달러·금)으로 봐야 한다</b>는 결론이 성립한다.</p>
+      <p><span class="q">수치의 시점</span>
+      환율과 물가는 매달 바뀐다. 인용할 때는 <b>기준 시점</b>을 함께 적는 것이 원칙이다. 반면 13년 누적 수익률, 자산 분포, 출산율 같은 구조적 수치는 쉽게 바뀌지 않으므로 이 자료의 뼈대는 당분간 유효하다.</p>
+    </div>
+  </aside>
+</article>
+
+</body>
+</html>

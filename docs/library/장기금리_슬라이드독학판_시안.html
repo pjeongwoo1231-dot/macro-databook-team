@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3회차 장기금리와 재정 — 슬라이드 독학판 시안</title>
+<style>
+/* ==========================================================
+   3회차 「장기금리와 재정」 슬라이드 독학판
+   디자인 시스템 : ENGRAVED SECURITY
+   국채 증서의 인그레이빙 그린 · 원장의 붉은 선 · 각인 황동
+   ========================================================== */
+
+:root{
+  --ink:#101A16;          /* 잉크 그린블랙 : 다크 슬라이드 */
+  --ink-2:#18271F;
+  --engrave:#1D5B45;      /* 지폐 인그레이빙 그린 : 구조색 */
+  --engrave-lt:#3E8A6E;
+  --engrave-pale:#DCE7DF;
+  --paper:#F0EEE7;        /* 증서 종이 */
+  --paper-2:#E6E3D9;
+  --oxblood:#8E2A2A;      /* 원장 붉은 선 */
+  --oxblood-pale:#F2E2E0;
+  --brass:#A8802A;        /* 각인 인장 */
+  --brass-lt:#D9BE72;
+  --tx:#1A241F;
+  --tx-mid:#4E5A53;
+  --tx-faint:#8A948D;
+
+  --display:"Noto Serif KR","HANBatang",Batang,serif;
+  --body:"Noto Sans KR","Malgun Gothic",sans-serif;
+  --mono:"Consolas","D2Coding",monospace;
+
+  --slide-w:1040px;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--paper-2);color:var(--tx);
+  font-family:var(--body);font-weight:400;line-height:1.8;
+  letter-spacing:-0.01em;word-break:keep-all;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ---------- 슬라이드 단위 ---------- */
+.unit{max-width:var(--slide-w);margin:0 auto 64px}
+.unit:first-child{margin-top:64px}
+
+/* ---------- 표지 ---------- */
+.cover{justify-content:center}
+.covertitle{
+  font-family:var(--display);font-weight:800;font-size:62px;line-height:1.26;
+  letter-spacing:-0.04em;margin:0 0 28px;color:#fff;
+}
+.covertitle em{font-style:normal;color:var(--engrave-lt)}
+.coversub{
+  font-size:18px;line-height:1.8;color:rgba(220,231,223,.7);
+  max-width:52ch;margin:0 0 54px;
+}
+.coverparts{display:flex;flex-direction:column;gap:0;border-top:1px solid rgba(220,231,223,.2)}
+.coverparts div{
+  display:flex;gap:26px;align-items:baseline;padding:17px 0;
+  border-bottom:1px solid rgba(220,231,223,.2);
+}
+.coverparts .pn{
+  font-family:var(--mono);font-size:13px;letter-spacing:.14em;
+  color:var(--brass-lt);width:44px;flex-shrink:0;
+}
+.coverparts .pt{font-size:17px;color:#EAF0EC;font-weight:500}
+
+.slide{
+  position:relative;min-height:586px;padding:52px 56px 60px;
+  display:flex;flex-direction:column;
+  background:var(--paper);
+  box-shadow:0 1px 0 rgba(16,26,22,.10), 0 18px 40px -28px rgba(16,26,22,.55);
+}
+.slide.dark{background:var(--ink);color:#EAF0EC}
+
+/* 슬라이드 크롬 */
+.chrome{
+  display:flex;justify-content:space-between;align-items:baseline;
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;
+  color:var(--tx-faint);margin-bottom:34px;flex-shrink:0;
+}
+.dark .chrome{color:rgba(220,231,223,.42)}
+.chrome .lane{color:var(--engrave);font-weight:700}
+.dark .chrome .lane{color:var(--engrave-lt)}
+
+/* 슬라이드 제목 */
+.claim{
+  font-family:var(--display);font-weight:800;
+  font-size:40px;line-height:1.34;letter-spacing:-0.035em;
+  margin:0 0 16px;color:var(--ink);max-width:26ch;
+}
+.dark .claim{color:#fff}
+.claim.big{font-size:56px;line-height:1.28;max-width:20ch}
+.claim em{font-style:normal;color:var(--engrave)}
+.dark .claim em{color:var(--engrave-lt)}
+.claim mark{background:none;color:var(--oxblood)}
+.dark .claim mark{color:#E0736C}
+
+.sub{
+  font-size:17px;color:var(--tx-mid);margin:0 0 30px;max-width:60ch;line-height:1.75;
+}
+.dark .sub{color:rgba(220,231,223,.72)}
+
+/* 결론 바 — 슬라이드의 결정타. 캡션이 아니라 본체다 */
+.verdict{
+  margin-top:auto;display:flex;align-items:stretch;gap:0;flex-shrink:0;
+}
+.verdict .tag{
+  background:var(--engrave);color:#fff;font-family:var(--mono);
+  font-size:11.5px;letter-spacing:.16em;padding:16px 15px;
+  display:flex;align-items:center;flex-shrink:0;
+}
+.verdict .txt{
+  background:var(--engrave-pale);color:var(--ink);
+  padding:15px 22px;font-size:18px;font-weight:700;line-height:1.55;flex:1;
+  display:flex;align-items:center;
+}
+.dark .verdict .txt{background:rgba(62,138,110,.17);color:#EAF0EC}
+.verdict.warn .tag{background:var(--oxblood)}
+.verdict.warn .txt{background:var(--oxblood-pale);color:#4A1616}
+
+/* 도형 영역 */
+.stage{flex:1;display:flex;align-items:center;justify-content:center;margin:6px 0 30px}
+.stage svg{width:100%;height:auto;display:block}
+
+/* ---------- 대형 수치 ---------- */
+.figures{display:flex;align-items:flex-end;gap:44px;flex-wrap:wrap}
+.fig{display:flex;flex-direction:column}
+.fig .lbl{
+  font-family:var(--mono);font-size:12px;letter-spacing:.14em;
+  color:var(--tx-faint);margin-bottom:6px;
+}
+.dark .fig .lbl{color:rgba(220,231,223,.5)}
+.fig .val{
+  font-family:var(--mono);font-weight:700;font-size:82px;line-height:1;
+  letter-spacing:-0.04em;color:var(--ink);
+}
+.dark .fig .val{color:#fff}
+.fig .val.dim{color:var(--tx-faint)}
+.dark .fig .val.dim{color:rgba(220,231,223,.4)}
+.fig .val.hot{color:var(--oxblood)}
+.dark .fig .val.hot{color:#E0736C}
+.fig .unit-s{font-size:30px;letter-spacing:0;margin-left:4px}
+.arrowbig{
+  font-family:var(--mono);font-size:52px;color:var(--brass);
+  line-height:1;padding-bottom:8px;
+}
+
+/* ---------- 2단 대조 ---------- */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--paper-2);flex:1}
+.pane{background:var(--paper);padding:28px 30px;display:flex;flex-direction:column}
+.pane.bad{background:#FAF0EF}
+.pane.good{background:#EFF4F0}
+.pane .ptag{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;
+  padding:5px 10px;align-self:flex-start;margin-bottom:18px;color:#fff;
+}
+.pane.bad .ptag{background:var(--oxblood)}
+.pane.good .ptag{background:var(--engrave)}
+.pane h4{
+  font-family:var(--display);font-weight:700;font-size:23px;line-height:1.45;
+  margin:0 0 14px;letter-spacing:-0.03em;
+}
+.pane.bad h4{color:var(--oxblood)}
+.pane.good h4{color:var(--engrave)}
+.pane p{margin:0 0 10px;font-size:15.5px;line-height:1.75;color:var(--tx-mid)}
+.pane p:last-child{margin-bottom:0}
+.pane b{color:var(--tx);font-weight:700}
+.pane .strike{text-decoration:line-through;text-decoration-color:var(--oxblood);
+  text-decoration-thickness:2px;color:var(--tx-faint)}
+
+/* ---------- 노트 스트립 : 독학용 해설 ---------- */
+.note{
+  display:grid;grid-template-columns:132px 1fr;gap:0;
+  background:#E9E6DC;border-left:4px solid var(--brass);
+}
+.note .nlbl{
+  font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  color:var(--brass);padding:24px 0 24px 22px;line-height:1.7;
+}
+.note .nbody{padding:24px 30px 26px 8px}
+.note p{margin:0 0 12px;font-size:15.5px;line-height:1.85;color:#3B443E}
+.note p:last-child{margin-bottom:0}
+.note b{color:var(--ink);font-weight:700}
+.note .q{
+  font-family:var(--display);font-weight:700;font-size:17px;color:var(--engrave);
+  display:block;margin-bottom:6px;letter-spacing:-0.02em;
+}
+
+/* ---------- 반응형 ---------- */
+@media screen and (max-width:1100px){
+  .unit{max-width:100%;padding-left:16px;padding-right:16px}
+  .slide{padding:36px 28px 42px;min-height:0}
+  .claim{font-size:30px}
+  .claim.big{font-size:36px}
+  .fig .val{font-size:54px}
+  .split{grid-template-columns:1fr}
+  .note{grid-template-columns:1fr}
+  .note .nlbl{padding:18px 22px 0}
+  .note .nbody{padding:10px 22px 22px}
+}
+/* ---------- PDF / 인쇄 : 1장 = 1페이지 (A4 가로) ---------- */
+@page{ size:297mm 210mm; margin:8mm; }
+@media print{
+  html,body{background:#fff;margin:0}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+
+  .unit{
+    max-width:none;margin:0;page-break-after:always;break-after:page;
+    page-break-inside:avoid;break-inside:avoid;
+    height:730px;display:flex;flex-direction:column;overflow:hidden;
+  }
+  .unit > .slide{flex:1 1 auto}
+  .unit > .note{flex:0 0 auto}
+  .unit:last-child{page-break-after:auto;break-after:auto}
+  .unit:first-child{margin-top:0}
+
+  .slide{min-height:0;box-shadow:none;padding:20px 30px 18px}
+  .chrome{margin-bottom:14px;font-size:9.5px}
+
+  .claim{font-size:26px;line-height:1.3;margin-bottom:7px;max-width:36ch}
+  .claim.big{font-size:33px;max-width:25ch}
+  .sub{font-size:12.5px;line-height:1.65;margin-bottom:11px;max-width:84ch}
+
+  .stage{margin:0 0 11px}
+  .stage svg{width:auto;max-width:100%;max-height:238px;margin:0 auto}
+
+  .verdict .tag{font-size:9.5px;padding:8px 10px}
+  .verdict .txt{font-size:13.5px;padding:8px 14px}
+
+  .figures{gap:26px;margin-bottom:11px!important}
+  .fig .val{font-size:44px}
+  .fig .unit-s{font-size:17px}
+  .fig .lbl{font-size:9.5px;margin-bottom:2px}
+  .arrowbig{font-size:30px}
+
+  .split{flex:0 0 auto}
+  .pane{padding:13px 16px}
+  .pane .ptag{font-size:9.5px;padding:3px 8px;margin-bottom:9px}
+  .pane h4{font-size:15.5px;margin-bottom:8px;line-height:1.4}
+  .pane p{font-size:11.4px;line-height:1.58;margin-bottom:6px}
+
+  .note{border-left-width:3px}
+  .note .nlbl{padding:13px 0 13px 15px;font-size:9px;line-height:1.55}
+  .note .nbody{padding:13px 20px 13px 4px}
+  .note p{font-size:10.9px;line-height:1.56;margin-bottom:5px}
+  .note .q{font-size:12.2px;margin-bottom:2px}
+
+  /* 표지 */
+  .covertitle{font-size:46px;margin-bottom:20px}
+  .coversub{font-size:15px;margin-bottom:34px}
+  .coverparts div{padding:13px 0}
+  .coverparts .pt{font-size:14.5px}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ 표지 ============ -->
+<article class="unit">
+  <section class="slide dark cover">
+    <div class="chrome"><span class="lane">상경대학 경제학회 SCOPE</span><span>매크로 경제 읽기 · 3회차</span></div>
+    <h1 class="covertitle">기준금리를 내리는데<br><em>장기금리는 왜 오르나</em></h1>
+    <p class="coversub">미국 장기국채 금리와 재정. 10년물이 4.5%를 넘을 때마다
+    증시가 흔들리는 이유를, 채권을 파는 쪽과 사는 쪽에서부터 따라간다.</p>
+    <div class="coverparts">
+      <div><span class="pn">2부</span><span class="pt">수급 — 누가 찍고 누가 사는가</span></div>
+      <div><span class="pn">3부</span><span class="pt">재정 되먹임 — 이게 저절로 풀리는가</span></div>
+    </div>
+  </section>
+</article>
+
+
+<!-- ============ 01 · 질문 (다크) ============ -->
+<article class="unit">
+  <section class="slide dark">
+    <div class="chrome"><span class="lane">2부 · 수급</span><span>01 / 여는 질문</span></div>
+
+    <h2 class="claim big">파는 사람은 늘었다.<br><em>그럼 사는 사람은?</em></h2>
+    <p class="sub">1부에서 장기금리를 둘로 쪼갰다. 기대 단기금리 + 텀 프리미엄.
+    2부는 그중 텀 프리미엄을 밀어올리는 첫 번째 힘을 판다. 그 힘의 이름은 수급이다.</p>
+
+    <div class="stage">
+      <svg viewBox="0 0 900 190" role="img" aria-label="발행은 늘어나는데 매수는 정체된 구조를 나타낸 막대 비교">
+        <g font-family="Consolas, monospace">
+          <text x="0" y="20" fill="#8FB3A2" font-size="13" letter-spacing="2">SUPPLY · 발행</text>
+          <rect x="0" y="34" width="180" height="16" fill="#3E8A6E" opacity=".35"/>
+          <rect x="0" y="56" width="330" height="16" fill="#3E8A6E" opacity=".55"/>
+          <rect x="0" y="78" width="640" height="16" fill="#3E8A6E"/>
+          <text x="656" y="91" fill="#EAF0EC" font-size="14" font-weight="700">계속 증가</text>
+
+          <text x="0" y="132" fill="#8FB3A2" font-size="13" letter-spacing="2">DEMAND · 매수</text>
+          <rect x="0" y="146" width="175" height="16" fill="#A8802A" opacity=".45"/>
+          <rect x="0" y="168" width="196" height="16" fill="#A8802A" opacity=".7"/>
+          <text x="212" y="181" fill="#D9BE72" font-size="14" font-weight="700">제자리</text>
+          <line x1="640" y1="28" x2="640" y2="188" stroke="#8E2A2A" stroke-width="2" stroke-dasharray="5 4"/>
+          <text x="632" y="24" text-anchor="end" fill="#E0736C" font-size="13" font-weight="700">이 격차가 곧 텀 프리미엄</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="verdict">
+      <span class="tag">2부의 질문</span>
+      <span class="txt">누가 이 국채를 다 사주고 있었나. 그리고 그 사람은 아직도 사고 있나.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 01<br>여는 질문</div>
+    <div class="nbody">
+      <p><span class="q">이 슬라이드를 보는 법</span>
+      막대 두 줄만 보면 된다. 위는 국채 발행량, 아래는 실제 매수량이다. 위는 계속 길어지는데 아래는 거의 그대로다.
+      <b>이 벌어진 간격을 메우려면 가격을 깎아야 하고, 채권에서 가격을 깎는다는 건 금리를 올린다는 뜻이다.</b></p>
+      <p>1부에서 배운 식을 다시 꺼내자. 장기금리 = 기대 단기금리 평균 + 텀 프리미엄.
+      연준이 기준금리를 내리면 앞항이 내려간다. 그런데도 장기금리가 올랐다면 뒷항이 앞항보다 더 크게 오른 것이다.
+      <b>그 뒷항을 밀어올린 게 이 그림의 간격이다.</b></p>
+      <p>2부는 이 그림을 두 방향에서 판다. 먼저 파는 쪽 — 재무부는 얼마를 빌릴지만 정하는 게 아니라
+      <b>어느 만기로 빌릴지</b>를 고른다. 그다음 사는 쪽 — 연준·외국인·MMF·은행, 그리고 5년 전엔 없던 매수자 하나.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 02 · 개념 해부 ============ -->
+<article class="unit">
+  <section class="slide">
+    <div class="chrome"><span class="lane">2부 · 수급</span><span>02 / 2-3 옐런의 선택</span></div>
+
+    <h2 class="claim">역레포는 <em>연준 안에 만든 저수지</em>다</h2>
+    <p class="sub">MMF가 남는 현금을 하룻밤 연준에 맡기고 이자를 받는 창구. 여기 들어간 돈은 시장에서 사라진다.</p>
+
+    <div class="stage">
+      <svg viewBox="0 0 900 300" role="img" aria-label="MMF가 연준에 현금을 맡기고 국채를 담보로 받는 역레포 구조와 저수지에 잠긴 자금">
+        <defs>
+          <pattern id="eng" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(0)">
+            <line x1="0" y1="0" x2="6" y2="0" stroke="#FFFFFF" stroke-width="1" opacity=".28"/>
+          </pattern>
+          <marker id="mA" markerWidth="9" markerHeight="7" refX="8.5" refY="3.5" orient="auto">
+            <path d="M0,0 L9,3.5 L0,7 Z" fill="#1D5B45"/>
+          </marker>
+          <marker id="mB" markerWidth="9" markerHeight="7" refX="8.5" refY="3.5" orient="auto">
+            <path d="M0,0 L9,3.5 L0,7 Z" fill="#A8802A"/>
+          </marker>
+        </defs>
+        <g font-family="'Noto Sans KR', sans-serif">
+
+          <!-- 왼쪽 : MMF -->
+          <rect x="0" y="86" width="192" height="104" fill="#DCE7DF"/>
+          <text x="96" y="122" text-anchor="middle" font-size="19" font-weight="700" fill="#1A241F">MMF · 시중은행</text>
+          <text x="96" y="148" text-anchor="middle" font-size="13.5" fill="#4E5A53">굴릴 곳 없는 현금</text>
+          <text x="96" y="170" text-anchor="middle" font-size="13.5" fill="#4E5A53">보유 중</text>
+
+          <!-- 통로 -->
+          <path d="M198,118 L352,118" stroke="#1D5B45" stroke-width="3" marker-end="url(#mA)"/>
+          <text x="275" y="108" text-anchor="middle" font-size="14" font-weight="700" fill="#1D5B45">현금</text>
+          <path d="M352,162 L198,162" stroke="#A8802A" stroke-width="3" marker-end="url(#mB)"/>
+          <text x="275" y="182" text-anchor="middle" font-size="14" font-weight="700" fill="#A8802A">국채(담보) + 하루치 이자</text>
+
+          <!-- 저수지 : 연준 -->
+          <path d="M366,44 L366,244 Q366,268 392,268 L560,268 Q586,268 586,244 L586,44"
+                fill="none" stroke="#101A16" stroke-width="3"/>
+          <path d="M369,120 L369,243 Q369,265 392,265 L560,265 Q583,265 583,243 L583,120 Z" fill="#1D5B45"/>
+          <path d="M369,120 L369,243 Q369,265 392,265 L560,265 Q583,265 583,243 L583,120 Z" fill="url(#eng)"/>
+          <line x1="358" y1="120" x2="594" y2="120" stroke="#8E2A2A" stroke-width="2"/>
+          <text x="476" y="196" text-anchor="middle" font-size="17" font-weight="700" fill="#fff">잠긴 자금</text>
+          <text x="476" y="222" text-anchor="middle" font-family="Consolas, monospace" font-size="30" font-weight="700" fill="#fff">2.55조 $</text>
+          <text x="476" y="32" text-anchor="middle" font-size="19" font-weight="700" fill="#1A241F">연준 (Fed)</text>
+          <text x="476" y="86" text-anchor="middle" font-size="13.5" fill="#4E5A53">역레포 창구 · 하룻밤짜리</text>
+
+          <!-- 오른쪽 : 시장 -->
+          <path d="M600,155 L700,155" stroke="#8A948D" stroke-width="2" stroke-dasharray="6 5"/>
+          <circle cx="700" cy="155" r="4" fill="#8E2A2A"/>
+          <line x1="686" y1="141" x2="714" y2="169" stroke="#8E2A2A" stroke-width="3"/>
+          <line x1="714" y1="141" x2="686" y2="169" stroke="#8E2A2A" stroke-width="3"/>
+          <text x="800" y="146" text-anchor="middle" font-size="16" font-weight="700" fill="#8E2A2A">실물 경제로</text>
+          <text x="800" y="170" text-anchor="middle" font-size="16" font-weight="700" fill="#8E2A2A">흘러가지 않음</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="verdict">
+      <span class="tag">기억할 것</span>
+      <span class="txt">유동성은 총량이 아니라 <em>어디에 있느냐</em>의 문제다. 저수지에 잠긴 2.55조는 없는 돈이나 마찬가지였다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 02<br>역레포</div>
+    <div class="nbody">
+      <p><span class="q">왜 이런 창구가 필요한가</span>
+      코로나 이후 시중에 돈이 너무 많이 풀렸다. MMF는 그 돈을 어딘가 굴려야 하는데 마땅한 데가 없었다.
+      연준이 "그럼 나한테 하룻밤 맡겨라, 이자 주겠다"고 열어준 창구가 역레포다.
+      연준 입장에서는 <b>시중의 남는 돈을 빨아들여 금리 하한을 지키는 장치</b>였다.</p>
+      <p>이름이 헷갈릴 텐데, 방향으로 외우면 된다. 레포는 연준이 돈을 <b>푸는</b> 것, 역레포는 연준이 돈을 <b>거둬들이는</b> 것이다.
+      그림에서 현금 화살표가 연준 쪽으로 향하는 게 그 이유다.</p>
+      <p>여기서 중요한 건 잔고 2.55조라는 숫자 자체가 아니라 <b>그 돈이 놀고 있었다는 사실</b>이다.
+      국채를 사지도, 대출로 나가지도, 주식을 사지도 않고 연준 계좌에 하룻밤씩 반복해서 묶여 있었다.
+      다음 장에서 옐런이 이 저수지를 어떻게 열었는지 본다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 03 · 수치 (다크) ============ -->
+<article class="unit">
+  <section class="slide dark">
+    <div class="chrome"><span class="lane">2부 · 수급</span><span>03 / 2-3 옐런의 선택</span></div>
+
+    <h2 class="claim">저수지를 <em>열었다</em></h2>
+    <p class="sub">단기국채 금리를 역레포 금리보다 높게 만들자 MMF가 연준 계좌를 비우고 국채로 갈아탔다.
+    국채를 대량으로 찍었는데 시중 유동성은 줄지 않았다.</p>
+
+    <div class="stage">
+      <svg viewBox="0 0 900 210" role="img" aria-label="역레포 잔고가 2.55조에서 0.17조로 줄어드는 과정">
+        <defs>
+          <pattern id="eng2" width="6" height="6" patternUnits="userSpaceOnUse">
+            <line x1="0" y1="0" x2="6" y2="0" stroke="#FFFFFF" stroke-width="1" opacity=".22"/>
+          </pattern>
+        </defs>
+        <g font-family="'Noto Sans KR', sans-serif">
+          <!-- 저수지 A -->
+          <path d="M40,10 L40,160 Q40,182 62,182 L188,182 Q210,182 210,160 L210,10"
+                fill="none" stroke="#3E8A6E" stroke-width="2.5"/>
+          <path d="M43,34 L43,159 Q43,179 62,179 L188,179 Q207,179 207,159 L207,34 Z" fill="#3E8A6E"/>
+          <path d="M43,34 L43,159 Q43,179 62,179 L188,179 Q207,179 207,159 L207,34 Z" fill="url(#eng2)"/>
+          <text x="125" y="202" text-anchor="middle" font-family="Consolas, monospace" font-size="13" fill="#8FB3A2">2022</text>
+
+          <!-- 흐름 -->
+          <path d="M232,96 L618,96" stroke="#A8802A" stroke-width="2" stroke-dasharray="10 7"/>
+          <g fill="#A8802A" font-family="'Noto Sans KR', sans-serif">
+            <text x="425" y="76" text-anchor="middle" font-size="15" font-weight="700">단기국채 금리 &gt; 역레포 금리</text>
+            <text x="425" y="126" text-anchor="middle" font-size="14" opacity=".85">MMF가 연준을 떠나 T-Bill로 이동</text>
+          </g>
+          <path d="M612,88 L628,96 L612,104 Z" fill="#A8802A"/>
+
+          <!-- 저수지 B -->
+          <path d="M650,10 L650,160 Q650,182 672,182 L798,182 Q820,182 820,160 L820,10"
+                fill="none" stroke="#3E8A6E" stroke-width="2.5"/>
+          <path d="M653,166 L653,159 Q653,179 672,179 L798,179 Q817,179 817,159 L817,166 Z" fill="#E0736C"/>
+          <text x="735" y="202" text-anchor="middle" font-family="Consolas, monospace" font-size="13" fill="#8FB3A2">2024</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="figures" style="margin-bottom:30px">
+      <div class="fig"><span class="lbl">역레포 잔고 · 2022</span><span class="val dim">2.55<span class="unit-s">조 $</span></span></div>
+      <div class="arrowbig">&rarr;</div>
+      <div class="fig"><span class="lbl">역레포 잔고 · 2024</span><span class="val hot">0.17<span class="unit-s">조 $</span></span></div>
+      <div class="fig"><span class="lbl">감소율</span><span class="val">−93<span class="unit-s">%</span></span></div>
+    </div>
+
+    <div class="verdict">
+      <span class="tag">그래서</span>
+      <span class="txt">시장은 이걸 <em>스텔스 QE</em>라고 불렀다. 연준이 돈을 푼 게 아니라, 재무부가 잠긴 돈을 꺼내 쓴 것이다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 03<br>스텔스 QE</div>
+    <div class="nbody">
+      <p><span class="q">왜 이게 QE처럼 작동했나</span>
+      원래 정부가 국채를 대량 발행하면 시중 자금이 국채로 빨려 들어가 유동성이 줄어든다. 그래서 금리가 오른다.
+      그런데 이번엔 <b>이미 놀고 있던 돈(역레포)이 국채를 샀다.</b> 시장에서 돌던 돈은 그대로였다.
+      국채를 2조 넘게 찍었는데 주식시장이 멀쩡했던 이유가 여기 있다.</p>
+      <p>조건은 단순했다. MMF가 연준에 맡기면 받는 금리보다 T-Bill 금리가 높기만 하면 된다.
+      금리 몇 bp 차이로 2조 달러가 움직인 것이다. <b>돈에는 애국심이 없고 금리만 있다.</b></p>
+      <p>단, 공짜는 아니었다. 단기로 빌린 만큼 <b>만기가 계속 돌아온다.</b>
+      3개월짜리로 빌리면 1년에 네 번 다시 빌려야 하고, 그때마다 그 시점 금리를 새로 문다.
+      이 청구서가 3부에서 이자비용으로 돌아온다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 04 · 인과 사슬 ============ -->
+<article class="unit">
+  <section class="slide">
+    <div class="chrome"><span class="lane">2부 · 수급</span><span>04 / 2-5 베선트의 선택</span></div>
+
+    <h2 class="claim">저수지가 마르자 <em>새 지류</em>를 팠다</h2>
+    <p class="sub">옐런은 역레포에 잠긴 돈을 끌어왔다. 베선트는 스테이블코인 준비자산을 끌어온다. 논리가 같다.</p>
+
+    <div class="stage">
+      <svg viewBox="0 0 900 372" role="img" aria-label="역레포 고갈 이후 스테이블코인이 새로운 단기국채 매수자로 등장하는 구조">
+        <defs>
+          <marker id="mC" markerWidth="9" markerHeight="7" refX="8.5" refY="3.5" orient="auto">
+            <path d="M0,0 L9,3.5 L0,7 Z" fill="#1D5B45"/>
+          </marker>
+          <pattern id="eng3" width="6" height="6" patternUnits="userSpaceOnUse">
+            <line x1="0" y1="0" x2="6" y2="0" stroke="#FFFFFF" stroke-width="1" opacity=".3"/>
+          </pattern>
+        </defs>
+        <g font-family="'Noto Sans KR', sans-serif">
+
+          <!-- 저수지 1 : 역레포 (고갈) -->
+          <text x="107" y="28" text-anchor="middle" font-size="15.5" font-weight="700" fill="#8A948D">역레포</text>
+          <path d="M40,40 L40,140 Q40,158 58,158 L157,158 Q175,158 175,140 L175,40"
+                fill="none" stroke="#B9C4BC" stroke-width="2.5"/>
+          <path d="M43,148 Q43,155 58,155 L157,155 Q172,155 172,148 Z" fill="#C6C2B7"/>
+          <text x="107" y="182" text-anchor="middle" font-family="Consolas, monospace" font-size="14" font-weight="700" fill="#8A948D">고갈</text>
+
+          <!-- 저수지 2 : 스테이블코인 (차오름) -->
+          <text x="107" y="212" text-anchor="middle" font-size="15.5" font-weight="700" fill="#1A241F">스테이블코인</text>
+          <path d="M40,224 L40,324 Q40,342 58,342 L157,342 Q175,342 175,324 L175,224"
+                fill="none" stroke="#1D5B45" stroke-width="2.5"/>
+          <path d="M43,262 L43,323 Q43,339 58,339 L157,339 Q172,339 172,323 L172,262 Z" fill="#1D5B45"/>
+          <path d="M43,262 L43,323 Q43,339 58,339 L157,339 Q172,339 172,323 L172,262 Z" fill="url(#eng3)"/>
+          <text x="107" y="366" text-anchor="middle" font-family="Consolas, monospace" font-size="14" font-weight="700" fill="#1D5B45">차오르는 중</text>
+
+          <!-- 수로 : 역레포에서 (이미 마름) -->
+          <path d="M183,102 L300,102 L300,166 L392,166" fill="none" stroke="#B9C4BC" stroke-width="3" stroke-dasharray="7 5"/>
+          <text x="194" y="90" font-size="12.5" fill="#8A948D">금리차로 끌어옴 (2023~24)</text>
+
+          <!-- 수로 : 스테이블코인에서 -->
+          <path d="M183,284 L300,284 L300,192 L392,192" fill="none" stroke="#1D5B45" stroke-width="3" marker-end="url(#mC)"/>
+          <text x="194" y="306" font-size="12.5" fill="#1D5B45" font-weight="700">GENIUS Act · 준비자산 의무</text>
+
+          <!-- T-Bill 게이트 -->
+          <rect x="400" y="140" width="185" height="78" fill="#101A16"/>
+          <text x="492" y="176" text-anchor="middle" font-size="19" font-weight="700" fill="#fff">T-Bill</text>
+          <text x="492" y="201" text-anchor="middle" font-size="13.5" fill="#8FB3A2">1년 이하 단기국채</text>
+
+          <!-- 차단 -->
+          <path d="M593,179 L694,179" stroke="#B9C4BC" stroke-width="2" stroke-dasharray="6 5"/>
+          <line x1="628" y1="165" x2="656" y2="193" stroke="#8E2A2A" stroke-width="3.5"/>
+          <line x1="656" y1="165" x2="628" y2="193" stroke="#8E2A2A" stroke-width="3.5"/>
+          <text x="642" y="240" text-anchor="middle" font-size="13.5" fill="#8E2A2A" font-weight="700">이 자금은 장기물로 넘어가지 않는다</text>
+
+          <!-- 장기물 -->
+          <rect x="700" y="140" width="185" height="78" fill="#F2E2E0" stroke="#8E2A2A" stroke-width="1.5"/>
+          <text x="792" y="172" text-anchor="middle" font-size="16.5" font-weight="700" fill="#8E2A2A">10년 · 30년 장기물</text>
+          <text x="792" y="197" text-anchor="middle" font-size="13.5" fill="#8E2A2A">매수자 그대로</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="verdict warn">
+      <span class="tag">함정</span>
+      <span class="txt">늘어난 수요는 전부 단기물에만 몰린다. 정작 문제인 장기금리에는 도움이 되지 않는다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 04<br>스테이블코인</div>
+    <div class="nbody">
+      <p><span class="q">크립토가 왜 국채 수업에 나오나</span>
+      2025년 제정된 GENIUS Act가 스테이블코인 발행사에게 <b>준비자산을 현금·T-Bill 같은 안전 유동자산으로 100% 채우도록</b> 의무화했다.
+      그 결과 스테이블코인이 발행될 때마다 T-Bill이 자동으로 팔린다.
+      <b>5년 전에는 존재하지 않던 매수자 카테고리</b>가 생긴 것이다. 베선트는 이 시장이 2030년 3조 달러까지 큰다고 본다.</p>
+      <p>구조를 보면 옐런 때와 똑같다. 잠겨 있거나 새로 생기는 자금 풀을 찾아 T-Bill로 연결한다.
+      다른 점은 그 풀이 <b>연준 계좌가 아니라 크립토 시장</b>이라는 것뿐이다.</p>
+      <p><span class="q">반드시 같이 볼 반론 세 가지</span>
+      ① 이게 새로 생긴 수요인가, 원래 MMF로 갈 돈이 옮겨간 것뿐인가.
+      ② 이 돈은 T-Bill에만 간다. 장기물 수요는 1도 늘지 않는다.
+      ③ 크립토가 급락해 스테이블코인이 대량 상환되면 준비자산 T-Bill을 <b>강제 매도</b>해야 한다.
+      국채 시장이 크립토 사고에 노출되는 새 경로가 생긴 것이다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 05 · 함정 (2단 대조) ============ -->
+<article class="unit">
+  <section class="slide">
+    <div class="chrome"><span class="lane">3부 · 재정 루프</span><span>05 / 3-6 은행 미실현손실</span></div>
+
+    <h2 class="claim">숫자가 큰 것과 <mark>위험한 것</mark>은 다르다</h2>
+    <p class="sub">"미국 은행들이 2.5조 달러를 깔고 앉아 있다" — 뉴스에서 한 번쯤 본 문장이다.
+    규모만 보면 무섭지만, 조건을 붙이는 순간 성격이 완전히 달라진다.</p>
+
+    <div class="split">
+      <div class="pane bad">
+        <span class="ptag">이렇게 읽으면 틀린다</span>
+        <h4>미실현손실 2.5조 &gt; 자본금 2.3조<br>→ 대다수 은행이 자본잠식</h4>
+        <p class="strike">손실이 자본보다 크니 미국 은행 대부분은 이미 껍데기다.</p>
+        <p><b>왜 틀렸나</b> — 미실현손실은 아직 팔지 않아 장부에만 있는 숫자다.
+        만기까지 들고 가면 액면가를 받으므로 <b>손실은 실현되지 않는다.</b></p>
+        <p>게다가 만기보유증권(HTM)의 평가손실은 <b>자기자본에서 차감되지도 않는다.</b></p>
+      </div>
+      <div class="pane good">
+        <span class="ptag">이렇게 읽어야 한다</span>
+        <h4>예금이 빠져나가 만기 전에<br>팔아야 할 때, 그때 위험해진다</h4>
+        <p><b>AFS</b>(매도가능) — 평가손익이 자본에 반영된다. 이미 반영된 손실.</p>
+        <p><b>HTM</b>(만기보유) — 평가손실이 자본에 반영되지 않는다. 단, <b>중간에 팔면 그 순간 실현된다.</b></p>
+        <p>즉 미실현손실은 <b>조건부 폭탄</b>이다. 조건은 하나 — 예금 이탈로 강제 매각이 발생하는 것.
+        평시에는 회계상 숫자에 불과하다.</p>
+      </div>
+    </div>
+
+    <div class="verdict warn" style="margin-top:22px">
+      <span class="tag">조건 충족 사례</span>
+      <span class="txt">SVB(2023) — 예금 이탈 → HTM 강제 매각 → 손실 실현 → 자본 훼손 → 뱅크런. 순서가 이 방향이다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 05<br>함정 슬라이드</div>
+    <div class="nbody">
+      <p><span class="q">큰 숫자를 만났을 때</span>
+      매크로에서 가장 자주 속는 게 이런 종류의 숫자다. 절대 규모는 충격적인데, 실제로 사고가 나려면
+      조건이 하나 더 필요하다. <b>"2.5조"라는 크기보다 "언제 터지는가"라는 조건이 훨씬 중요한 정보다.</b></p>
+      <p>검증은 세 질문이면 된다. ① <b>실현된 손실인가 평가상의 손실인가.</b>
+      ② 회계상 <b>자본에 반영되는가.</b> ③ 사고가 나려면 <b>무엇이 더 일어나야 하는가.</b></p>
+      <p>그리고 이 기억 때문에 미국 은행들은 지금도 <b>장기채를 잘 사지 않는다.</b>
+      장기물을 사줄 곳이 하나 더 줄어든 셈이고, 그게 다시 장기금리를 밀어올린다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 06 · 루프 (다크) ============ -->
+<article class="unit">
+  <section class="slide dark">
+    <div class="chrome"><span class="lane">3부 · 재정 루프</span><span>06 / 3-1 되먹임 구조</span></div>
+
+    <h2 class="claim">여기서 화살표는 <em>직선</em>이 아니라 <mark>원</mark>이다</h2>
+    <p class="sub">"국채를 많이 찍어서 금리가 올랐다"까지는 누구나 안다. 그런데 그 오른 금리가
+    다시 국채 발행을 늘린다. 출발점으로 돌아오는 것이다.</p>
+
+    <div class="stage">
+      <svg viewBox="0 0 900 330" role="img" aria-label="금리 상승이 이자비용과 적자와 발행을 거쳐 다시 금리 상승으로 돌아오는 순환 구조">
+        <defs>
+          <marker id="mL" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+            <path d="M0,0 L10,4 L0,8 Z" fill="#A8802A"/>
+          </marker>
+        </defs>
+        <g font-family="'Noto Sans KR', sans-serif">
+
+          <!-- 흔한 이해 -->
+          <text x="0" y="18" font-family="Consolas, monospace" font-size="12" letter-spacing="2" fill="rgba(220,231,223,.45)">보통 이렇게 안다</text>
+          <rect x="0" y="36" width="104" height="46" fill="none" stroke="rgba(220,231,223,.35)" stroke-width="1.5"/>
+          <text x="52" y="65" text-anchor="middle" font-size="13.5" fill="rgba(220,231,223,.7)">발행 증가</text>
+          <path d="M112,59 L156,59" stroke="rgba(220,231,223,.35)" stroke-width="2"/>
+          <path d="M150,53 L164,59 L150,65 Z" fill="rgba(220,231,223,.35)"/>
+          <rect x="170" y="36" width="104" height="46" fill="none" stroke="rgba(220,231,223,.35)" stroke-width="1.5"/>
+          <text x="222" y="65" text-anchor="middle" font-size="13.5" fill="rgba(220,231,223,.7)">금리 상승</text>
+          <text x="292" y="65" font-size="14" fill="rgba(220,231,223,.45)">— 여기서 끝난다</text>
+
+          <line x1="0" y1="112" x2="880" y2="112" stroke="rgba(220,231,223,.18)"/>
+
+          <!-- 루프 -->
+          <text x="0" y="146" font-family="Consolas, monospace" font-size="12" letter-spacing="2" fill="#D9BE72">실제 구조</text>
+
+          <g>
+            <rect x="272" y="160" width="164" height="56" fill="#1D5B45"/>
+            <text x="354" y="194" text-anchor="middle" font-size="16" font-weight="700" fill="#fff">금리 상승</text>
+
+            <rect x="530" y="160" width="164" height="56" fill="#18271F" stroke="#3E8A6E" stroke-width="1.5"/>
+            <text x="612" y="194" text-anchor="middle" font-size="16" font-weight="700" fill="#EAF0EC">이자비용 증가</text>
+
+            <rect x="530" y="264" width="164" height="56" fill="#18271F" stroke="#3E8A6E" stroke-width="1.5"/>
+            <text x="612" y="298" text-anchor="middle" font-size="16" font-weight="700" fill="#EAF0EC">재정적자 확대</text>
+
+            <rect x="272" y="264" width="164" height="56" fill="#18271F" stroke="#3E8A6E" stroke-width="1.5"/>
+            <text x="354" y="298" text-anchor="middle" font-size="16" font-weight="700" fill="#EAF0EC">국채 발행 증가</text>
+
+            <path d="M444,188 L520,188" stroke="#A8802A" stroke-width="2.5" marker-end="url(#mL)"/>
+            <path d="M612,224 L612,256" stroke="#A8802A" stroke-width="2.5" marker-end="url(#mL)"/>
+            <path d="M522,292 L446,292" stroke="#A8802A" stroke-width="2.5" marker-end="url(#mL)"/>
+            <path d="M354,256 L354,224" stroke="#A8802A" stroke-width="2.5" marker-end="url(#mL)"/>
+
+            <text x="483" y="245" text-anchor="middle" font-size="13" fill="#D9BE72">멈추는 지점이</text>
+            <text x="483" y="264" text-anchor="middle" font-size="13" fill="#D9BE72">구조상 없다</text>
+          </g>
+
+          <!-- 좌측 주석 -->
+          <text x="0" y="186" font-size="14" fill="rgba(220,231,223,.75)">이자비용은</text>
+          <text x="0" y="208" font-size="14" fill="rgba(220,231,223,.75)">금리 상승의</text>
+          <text x="0" y="230" font-size="14" fill="rgba(220,231,223,.75)">결과인 동시에</text>
+          <text x="0" y="258" font-size="14" fill="#D9BE72">다음 금리 상승의</text>
+          <text x="0" y="280" font-size="14" fill="#D9BE72">원인이 된다.</text>
+
+          <!-- 우측 -->
+          <text x="740" y="192" font-size="14" fill="rgba(220,231,223,.75)">한 바퀴 돌 때마다</text>
+          <text x="740" y="214" font-size="14" fill="rgba(220,231,223,.75)">빚이 조금씩</text>
+          <text x="740" y="236" font-size="14" fill="rgba(220,231,223,.75)">커진 채로</text>
+          <text x="740" y="258" font-size="14" fill="rgba(220,231,223,.75)">제자리에 온다.</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="verdict">
+      <span class="tag">3부의 명제</span>
+      <span class="txt">시간이 지나면 저절로 풀리는 문제가 아니다. 원을 끊으려면 밖에서 무언가 들어와야 한다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 06<br>되먹임 루프</div>
+    <div class="nbody">
+      <p><span class="q">직선과 원의 차이</span>
+      직선으로 보면 "발행이 늘어서 금리가 올랐다"는 <b>지나간 사건</b>이 된다. 원으로 보면 "그래서 앞으로 어떻게 되는가"라는
+      <b>구조</b>가 보인다. 금리가 한 번 오르면 그걸로 끝이 아니라, 다음 바퀴의 출발점이 조금 더 높아진다는 뜻이다.</p>
+      <p>카드 돌려막기를 떠올리면 된다. 이자를 내려고 다시 빌리고, 빌릴수록 이자가 커진다.
+      개인이라면 소득을 늘리거나 원금을 갚아야 끊긴다. 국가로 치면 <b>성장률을 올리거나 기초재정수지를 흑자로 돌리는 것</b>이고,
+      그게 3-4단원의 r vs g 이야기다.</p>
+      <p>그리고 2부에서 배운 게 여기서 청구서로 돌아온다. 옐런이 만기를 짧게 가져간 탓에
+      <b>굴려야 할 물량이 더 많다.</b> 저금리 때 빌린 돈이 고금리로 갈아타는 속도가 그만큼 빠르다는 뜻이다.</p>
+    </div>
+  </aside>
+</article>
+
+</body>
+</html>

@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3회차 장기금리와 재정 — 5부 실전 (슬라이드 독학판)</title>
+<style>
+/* ==========================================================
+   3회차 「장기금리와 재정」 5부 실전 슬라이드 독학판 (완성본)
+   디자인 시스템 : ENGRAVED SECURITY
+   국채 증서의 인그레이빙 그린 · 원장의 붉은 선 · 각인 황동
+   ========================================================== */
+
+:root{
+  --ink:#101A16;          /* 잉크 그린블랙 : 다크 슬라이드 */
+  --ink-2:#18271F;
+  --engrave:#1D5B45;      /* 지폐 인그레이빙 그린 : 구조색 */
+  --engrave-lt:#3E8A6E;
+  --engrave-pale:#DCE7DF;
+  --paper:#F0EEE7;        /* 증서 종이 */
+  --paper-2:#E6E3D9;
+  --oxblood:#8E2A2A;      /* 원장 붉은 선 */
+  --oxblood-pale:#F2E2E0;
+  --brass:#A8802A;        /* 각인 인장 */
+  --brass-lt:#D9BE72;
+  --tx:#1A241F;
+  --tx-mid:#4E5A53;
+  --tx-faint:#8A948D;
+
+  --display:"Noto Serif KR","HANBatang",Batang,serif;
+  --body:"Noto Sans KR","Malgun Gothic",sans-serif;
+  --mono:"Consolas","D2Coding",monospace;
+
+  --slide-w:1040px;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--paper-2);color:var(--tx);
+  font-family:var(--body);font-weight:400;line-height:1.8;
+  letter-spacing:-0.01em;word-break:keep-all;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ---------- 슬라이드 단위 ---------- */
+.unit{max-width:var(--slide-w);margin:0 auto 64px}
+.unit:first-child{margin-top:64px}
+
+/* ---------- 표지 ---------- */
+.cover{justify-content:center}
+.covertitle{
+  font-family:var(--display);font-weight:800;font-size:62px;line-height:1.26;
+  letter-spacing:-0.04em;margin:0 0 28px;color:#fff;
+}
+.covertitle em{font-style:normal;color:var(--engrave-lt)}
+.coversub{
+  font-size:18px;line-height:1.8;color:rgba(220,231,223,.7);
+  max-width:52ch;margin:0 0 44px;
+}
+.coverparts{display:flex;flex-direction:column;gap:0;border-top:1px solid rgba(220,231,223,.2)}
+.coverparts div{
+  display:flex;gap:26px;align-items:baseline;padding:15px 0;
+  border-bottom:1px solid rgba(220,231,223,.2);
+}
+.coverparts .pn{
+  font-family:var(--mono);font-size:13px;letter-spacing:.14em;
+  color:var(--brass-lt);width:44px;flex-shrink:0;
+}
+.coverparts .pt{font-size:17px;color:#EAF0EC;font-weight:500}
+.coverparts .pd{font-size:14px;color:rgba(220,231,223,.5);margin-left:auto;font-family:var(--mono)}
+
+.slide{
+  position:relative;min-height:586px;padding:52px 56px 60px;
+  display:flex;flex-direction:column;
+  background:var(--paper);
+  box-shadow:0 1px 0 rgba(16,26,22,.10), 0 18px 40px -28px rgba(16,26,22,.55);
+}
+.slide.dark{background:var(--ink);color:#EAF0EC}
+
+/* 슬라이드 크롬 */
+.chrome{
+  display:flex;justify-content:space-between;align-items:baseline;
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;
+  color:var(--tx-faint);margin-bottom:34px;flex-shrink:0;
+}
+.dark .chrome{color:rgba(220,231,223,.42)}
+.chrome .lane{color:var(--engrave);font-weight:700}
+.dark .chrome .lane{color:var(--engrave-lt)}
+
+/* 슬라이드 제목 */
+.claim{
+  font-family:var(--display);font-weight:800;
+  font-size:40px;line-height:1.34;letter-spacing:-0.035em;
+  margin:0 0 16px;color:var(--ink);max-width:26ch;
+}
+.dark .claim{color:#fff}
+.claim.big{font-size:56px;line-height:1.28;max-width:20ch}
+.claim em{font-style:normal;color:var(--engrave)}
+.dark .claim em{color:var(--engrave-lt)}
+.claim mark{background:none;color:var(--oxblood)}
+.dark .claim mark{color:#E0736C}
+
+.sub{
+  font-size:17px;color:var(--tx-mid);margin:0 0 30px;max-width:60ch;line-height:1.75;
+}
+.dark .sub{color:rgba(220,231,223,.72)}
+
+/* 결론 바 — 슬라이드의 결정타. 캡션이 아니라 본체다 */
+.verdict{
+  margin-top:auto;display:flex;align-items:stretch;gap:0;flex-shrink:0;
+}
+.verdict .tag{
+  background:var(--engrave);color:#fff;font-family:var(--mono);
+  font-size:11.5px;letter-spacing:.16em;padding:16px 15px;
+  display:flex;align-items:center;flex-shrink:0;
+}
+.verdict .txt{
+  background:var(--engrave-pale);color:var(--ink);
+  padding:15px 22px;font-size:18px;font-weight:700;line-height:1.55;flex:1;
+  display:block;   /* flex 금지 — em/b 가 별도 아이템이 되어 줄이 쪼개진다 */
+}
+.dark .verdict .txt{background:rgba(62,138,110,.17);color:#EAF0EC}
+.verdict.warn .tag{background:var(--oxblood)}
+.verdict.warn .txt{background:var(--oxblood-pale);color:#4A1616}
+.verdict em{font-style:normal;color:var(--engrave)}
+.verdict.warn em{color:var(--oxblood)}
+.dark .verdict.warn em{color:#E0736C}
+.dark .verdict em{color:var(--engrave-lt)}
+
+/* 도형 영역 */
+.stage{flex:1;display:flex;align-items:center;justify-content:center;margin:6px 0 30px}
+.stage svg{width:100%;height:auto;display:block}
+
+/* ---------- 대형 수치 ---------- */
+.figures{display:flex;align-items:flex-end;gap:44px;flex-wrap:wrap}
+.fig{display:flex;flex-direction:column}
+.fig .lbl{
+  font-family:var(--mono);font-size:12px;letter-spacing:.14em;
+  color:var(--tx-faint);margin-bottom:6px;
+}
+.dark .fig .lbl{color:rgba(220,231,223,.5)}
+.fig .val{
+  font-family:var(--mono);font-weight:700;font-size:82px;line-height:1;
+  letter-spacing:-0.04em;color:var(--ink);
+}
+.dark .fig .val{color:#fff}
+.fig .val.dim{color:var(--tx-faint)}
+.dark .fig .val.dim{color:rgba(220,231,223,.4)}
+.fig .val.hot{color:var(--oxblood)}
+.dark .fig .val.hot{color:#E0736C}
+.fig .unit-s{font-size:30px;letter-spacing:0;margin-left:4px}
+.arrowbig{
+  font-family:var(--mono);font-size:52px;color:var(--brass);
+  line-height:1;padding-bottom:8px;
+}
+
+/* ---------- 2단 대조 ---------- */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--paper-2);flex:1}
+.pane{background:var(--paper);padding:28px 30px;display:flex;flex-direction:column}
+.pane.bad{background:#FAF0EF}
+.pane.good{background:#EFF4F0}
+.pane .ptag{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;
+  padding:5px 10px;align-self:flex-start;margin-bottom:18px;color:#fff;
+}
+.pane.bad .ptag{background:var(--oxblood)}
+.pane.good .ptag{background:var(--engrave)}
+.pane h4{
+  font-family:var(--display);font-weight:700;font-size:23px;line-height:1.45;
+  margin:0 0 14px;letter-spacing:-0.03em;
+}
+.pane.bad h4{color:var(--oxblood)}
+.pane.good h4{color:var(--engrave)}
+.pane p{margin:0 0 10px;font-size:15.5px;line-height:1.75;color:var(--tx-mid)}
+.pane p:last-child{margin-bottom:0}
+.pane b{color:var(--tx);font-weight:700}
+.pane .strike{text-decoration:line-through;text-decoration-color:var(--oxblood);
+  text-decoration-thickness:2px;color:var(--tx-faint)}
+
+/* ---------- 카드 그리드 ---------- */
+.cards{display:grid;gap:2px;background:var(--paper-2);flex:1;
+  grid-template-columns:repeat(2,1fr)}
+.cards.c3{grid-template-columns:repeat(3,1fr)}
+.cards.c4{grid-template-columns:repeat(4,1fr)}
+.card{background:var(--paper);padding:22px 22px;display:flex;flex-direction:column}
+.dark .cards{background:rgba(220,231,223,.14)}
+.dark .card{background:var(--ink)}
+.card .ctag{
+  font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--brass);
+  margin-bottom:10px;
+}
+.card h4{
+  font-family:var(--display);font-weight:700;font-size:20px;line-height:1.4;
+  margin:0 0 10px;letter-spacing:-0.03em;color:var(--ink);
+}
+.dark .card h4{color:#fff}
+.card p{margin:0 0 8px;font-size:14.5px;line-height:1.7;color:var(--tx-mid)}
+.dark .card p{color:rgba(220,231,223,.7)}
+.card p:last-child{margin-bottom:0}
+.card b{color:var(--tx);font-weight:700}
+.dark .card b{color:#EAF0EC}
+.card .out{
+  margin-top:auto;padding-top:12px;font-size:13.5px;color:var(--oxblood);font-weight:700;
+  border-top:1px solid var(--paper-2);
+}
+.dark .card .out{color:#E0736C;border-top-color:rgba(220,231,223,.18)}
+
+/* ---------- 표 ---------- */
+.tbl{width:100%;border-collapse:collapse;font-size:15px;flex-shrink:0}
+.tbl th{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.13em;font-weight:400;
+  text-align:left;padding:11px 14px;background:var(--ink);color:#EAF0EC;
+}
+.tbl td{padding:11px 14px;border-bottom:1px solid var(--paper-2);color:var(--tx-mid);
+  line-height:1.6;vertical-align:top}
+.tbl tr:nth-child(even) td{background:rgba(255,255,255,.45)}
+.tbl td:first-child{font-weight:700;color:var(--tx);white-space:nowrap}
+.tbl .mat{font-family:var(--mono);font-size:13.5px;color:var(--engrave);white-space:nowrap}
+.tbl .hot td:first-child{color:var(--oxblood)}
+
+/* 다크 슬라이드 위의 표 */
+.dark .tbl th{background:var(--engrave);color:#EAF0EC}
+.dark .tbl td{color:rgba(220,231,223,.78);border-bottom-color:rgba(220,231,223,.16)}
+.dark .tbl tr:nth-child(even) td{background:rgba(220,231,223,.05)}
+.dark .tbl td:first-child{color:#fff}
+.dark .tbl b{color:#fff}
+.dark .tbl .mat{color:#8FB3A2}
+.dark .tbl .hot td:first-child{color:#E0736C}
+
+/* ---------- 셀프체크 ---------- */
+.checks{display:grid;grid-template-columns:1fr 1fr;gap:0 34px;margin:0;padding:0;
+  list-style:none;counter-reset:ck;flex:1;align-content:start}
+.checks li{
+  counter-increment:ck;position:relative;padding:13px 0 13px 40px;
+  border-bottom:1px solid rgba(220,231,223,.16);font-size:15.5px;line-height:1.65;
+  color:rgba(234,240,236,.88);
+}
+.checks li::before{
+  content:counter(ck,decimal-leading-zero);position:absolute;left:0;top:14px;
+  font-family:var(--mono);font-size:12.5px;color:var(--brass-lt);letter-spacing:.06em;
+}
+.checks li b{color:#fff;font-weight:700}
+
+/* ---------- 판단 기록 양식 ---------- */
+.record{
+  border:1px solid rgba(220,231,223,.3);border-left:4px solid var(--brass);
+  padding:24px 28px;margin-bottom:20px;background:rgba(220,231,223,.05);
+}
+.record .rl{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  color:var(--brass-lt);margin-bottom:12px}
+.record p{margin:0 0 10px;font-size:17px;line-height:1.75;color:#EAF0EC}
+.record p:last-child{margin-bottom:0}
+.record .cond{color:var(--brass-lt);font-weight:700}
+
+
+/* ---------- 용어집 ---------- */
+.gloss{display:grid;grid-template-columns:1fr 1fr;gap:0 40px;flex:1;align-content:start}
+.gl{padding:11px 0;border-bottom:1px solid var(--paper-2)}
+.dark .gl{border-bottom-color:rgba(220,231,223,.16)}
+.gl .t{font-family:var(--display);font-weight:700;font-size:17px;letter-spacing:-0.02em;color:var(--ink)}
+.dark .gl .t{color:#fff}
+.gl .e{font-family:var(--mono);font-size:11px;color:var(--brass);margin-left:9px;letter-spacing:.08em}
+.dark .gl .e{color:var(--brass-lt)}
+.gl .d{font-size:13.5px;line-height:1.62;color:var(--tx-mid);margin-top:3px}
+.dark .gl .d{color:rgba(220,231,223,.72)}
+.gl .d b{color:var(--tx);font-weight:700}
+.dark .gl .d b{color:#EAF0EC}
+
+/* ---------- 슬라이드 안 용어 정의줄 ---------- */
+.termline{
+  display:flex;flex-wrap:wrap;gap:0 26px;margin:0 0 20px;padding:11px 0;
+  border-top:1px solid var(--paper-2);border-bottom:1px solid var(--paper-2);flex-shrink:0;
+}
+.dark .termline{border-color:rgba(220,231,223,.18)}
+.termline span{font-size:13.5px;color:var(--tx-mid);line-height:1.6}
+.dark .termline span{color:rgba(220,231,223,.7)}
+.termline b{font-family:var(--mono);font-size:12.5px;color:var(--engrave);font-weight:700;letter-spacing:.02em}
+.dark .termline b{color:var(--engrave-lt)}
+
+/* ---------- 노트 스트립 : 독학용 해설 ---------- */
+.note{
+  display:grid;grid-template-columns:132px 1fr;gap:0;
+  background:#E9E6DC;border-left:4px solid var(--brass);
+}
+.note .nlbl{
+  font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  color:var(--brass);padding:24px 0 24px 22px;line-height:1.7;
+}
+.note .nbody{padding:24px 30px 26px 8px}
+.note p{margin:0 0 12px;font-size:15.5px;line-height:1.85;color:#3B443E}
+.note p:last-child{margin-bottom:0}
+.note b{color:var(--ink);font-weight:700}
+.note .q{
+  font-family:var(--display);font-weight:700;font-size:17px;color:var(--engrave);
+  display:block;margin-bottom:6px;letter-spacing:-0.02em;
+}
+
+/* ---------- 반응형 ---------- */
+@media screen and (max-width:1100px){
+  .unit{max-width:100%;padding-left:16px;padding-right:16px}
+  .slide{padding:36px 28px 42px;min-height:0}
+  .claim{font-size:30px}
+  .claim.big{font-size:36px}
+  .fig .val{font-size:54px}
+  .split{grid-template-columns:1fr}
+  .cards,.cards.c3,.cards.c4{grid-template-columns:1fr}
+  .checks{grid-template-columns:1fr}
+  .gloss{grid-template-columns:1fr}
+  .tbl{font-size:13.5px}
+  .tbl th,.tbl td{padding:9px 10px}
+  .note{grid-template-columns:1fr}
+  .note .nlbl{padding:18px 22px 0}
+  .note .nbody{padding:10px 22px 22px}
+}
+/* ---------- PDF / 인쇄 : 1장 = 1페이지 (A4 가로) ---------- */
+@page{ size:297mm 210mm; margin:6mm; }
+@media print{
+  html,body{background:#fff;margin:0}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+
+  .unit{
+    max-width:none;margin:0;page-break-after:always;break-after:page;
+    page-break-inside:avoid;break-inside:avoid;
+    height:748px;display:flex;flex-direction:column;overflow:hidden;
+  }
+  .unit > .slide{flex:1 1 auto}
+  .unit > .note{flex:0 0 auto}
+  .unit:last-child{page-break-after:auto;break-after:auto}
+  .unit:first-child{margin-top:0}
+
+  .slide{min-height:0;box-shadow:none;padding:20px 30px 18px}
+  .chrome{margin-bottom:14px;font-size:9.5px}
+
+  .claim{font-size:26px;line-height:1.3;margin-bottom:7px;max-width:36ch}
+  .claim.big{font-size:33px;max-width:25ch}
+  .sub{font-size:12.5px;line-height:1.65;margin-bottom:11px;max-width:84ch}
+
+  .stage{margin:0 0 11px}
+  .stage svg{width:auto;max-width:100%;max-height:238px;margin:0 auto}
+
+  .verdict .tag{font-size:9.5px;padding:8px 10px}
+  .verdict .txt{font-size:13.5px;padding:8px 14px}
+
+  .figures{gap:26px;margin-bottom:11px!important}
+  .fig .val{font-size:44px}
+  .fig .unit-s{font-size:17px}
+  .fig .lbl{font-size:9.5px;margin-bottom:2px}
+  .arrowbig{font-size:30px}
+
+  .split{flex:0 0 auto}
+  .pane{padding:13px 16px}
+  .pane .ptag{font-size:9.5px;padding:3px 8px;margin-bottom:9px}
+  .pane h4{font-size:15.5px;margin-bottom:8px;line-height:1.4}
+  .pane p{font-size:11.4px;line-height:1.58;margin-bottom:6px}
+
+  .cards{flex:0 0 auto}
+  .card{padding:12px 14px}
+  .card .ctag{font-size:9px;margin-bottom:5px}
+  .card h4{font-size:14.5px;margin-bottom:6px;line-height:1.35}
+  .card p{font-size:11px;line-height:1.48;margin-bottom:4px}
+  .card .out{font-size:10.5px;padding-top:7px}
+
+  .tbl{font-size:11.4px}
+  .tbl th{font-size:9.5px;padding:6px 9px}
+  .tbl td{padding:6px 9px;line-height:1.45}
+  .tbl .mat{font-size:10.5px}
+
+  .checks li{font-size:11.4px;padding:7px 0 7px 30px;line-height:1.5}
+  .checks li::before{font-size:10px;top:8px}
+
+  .gloss{gap:0 24px}
+  .gl{padding:6px 0}
+  .gl .t{font-size:12.5px}
+  .gl .e{font-size:9px;margin-left:6px}
+  .gl .d{font-size:10.4px;line-height:1.42;margin-top:1px}
+  .termline{margin-bottom:10px;padding:7px 0;gap:0 18px}
+  .termline span{font-size:10.4px;line-height:1.5}
+  .termline b{font-size:9.8px}
+
+  .record{padding:14px 18px;margin-bottom:12px}
+  .record .rl{font-size:9px;margin-bottom:7px}
+  .record p{font-size:12px;line-height:1.5;margin-bottom:5px}
+
+  .note{border-left-width:3px}
+  .note .nlbl{padding:13px 0 13px 15px;font-size:9px;line-height:1.55}
+  .note .nbody{padding:13px 20px 13px 4px}
+  .note p{font-size:10.6px;line-height:1.5;margin-bottom:4px}
+  .note .q{font-size:12.2px;margin-bottom:2px}
+
+  /* 표지 */
+  .covertitle{font-size:46px;margin-bottom:20px}
+  .coversub{font-size:15px;margin-bottom:26px}
+  .coverparts div{padding:11px 0}
+  .coverparts .pt{font-size:14.5px}
+  .coverparts .pd{font-size:11.5px}
+}
+</style>
+</head>
+<body>
+<!-- ============ 표지 ============ -->
+<article class="unit">
+  <section class="slide dark cover">
+    <div class="chrome"><span class="lane">상경대학 경제학회 SCOPE</span><span>매크로 경제 읽기 · 3회차 · 5부</span></div>
+    <h1 class="covertitle">안전자산이<br><em>안전하지 않았던 주</em></h1>
+    <p class="coversub">3회차 「장기금리와 재정」 5부 · 실전.
+    2025년 4월, 관세 발표 뒤 주식이 무너지자 미국채로 돈이 몰렸다 — 여기까지는 교과서다.
+    그런데 며칠 뒤 <b>국채가 주식과 함께 팔렸고</b>, 10년물은 3.87%에서 4.59%까지 튀며 2001년 이후 최대 주간 상승을 기록했다.
+    1~4부의 도구로 그 며칠을 복기하고, 그 뒤 2026년까지 이어진 흐름을 추적한다.</p>
+    <div class="coverparts">
+      <div><span class="pn">5-1</span><span class="pt">그 주에 실제로 벌어진 일</span><span class="pd">01 – 03</span></div>
+      <div><span class="pn">5-2</span><span class="pt">세 개가 동시에 — 금리↑ 주가↓ 달러↓</span><span class="pd">04</span></div>
+      <div><span class="pn">5-3</span><span class="pt">원인 후보와 증거 등급</span><span class="pd">05 – 06</span></div>
+      <div><span class="pn">5-4</span><span class="pt">1부의 공식으로 다시 읽기</span><span class="pd">07</span></div>
+      <div><span class="pn">5-5</span><span class="pt">채권시장이 정책을 되돌린 날</span><span class="pd">08 – 09</span></div>
+      <div><span class="pn">5-6</span><span class="pt">2026년 지금은 어디인가</span><span class="pd">10</span></div>
+      <div><span class="pn">5-7</span><span class="pt">교훈 · 판단 기록 실습 · 종합</span><span class="pd">11 – 13</span></div>
+      <div><span class="pn">부록</span><span class="pt">용어집 · 사건 대응 체크리스트</span><span class="pd">A</span></div>
+    </div>
+  </section>
+</article>
+
+
+<!-- ============ 01 · 그 주 (다크) ============ -->
+<article class="unit">
+  <section class="slide dark">
+    <div class="chrome"><span class="lane">5부 · 실전</span><span>01 / 여는 장면</span></div>
+
+    <h2 class="claim big">주식이 무너졌는데<br><em>국채도 같이 팔렸다</em></h2>
+    <p class="sub">위기가 오면 돈은 미국채로 도망친다. 지난 40년간 거의 예외 없이 그랬다.
+    2025년 4월 둘째 주에는 <b>그 규칙이 며칠 동안 작동하지 않았다.</b>
+    10년물은 월요일 저점 <b>3.87%</b>에서 <b>4.59%</b>까지, 사흘 만에 72bp를 오갔다.</p>
+
+    <div class="stage">
+      <svg viewBox="0 0 900 236" role="img" aria-label="2025년 4월 관세 발표 이후 10년물 금리가 급락했다가 급등한 경로">
+        <g font-family="'Noto Sans KR', sans-serif">
+          <line x1="60" y1="26" x2="60" y2="170" stroke="rgba(220,231,223,.3)"/>
+          <line x1="60" y1="170" x2="860" y2="170" stroke="rgba(220,231,223,.3)"/>
+          <g font-family="Consolas, monospace" font-size="11.5" fill="rgba(220,231,223,.5)">
+            <text x="14" y="42">4.6%</text>
+            <text x="14" y="112">4.2%</text>
+            <text x="14" y="174">3.9%</text>
+            <text x="96" y="192">4/2</text><text x="300" y="192">4/4</text>
+            <text x="500" y="192">4/7</text><text x="700" y="192">4/9</text><text x="820" y="192">4/11</text>
+          </g>
+
+          <path d="M100,96 L180,110 L260,142 L320,158 L400,120 L480,92 L560,66 L640,44 L720,38 L800,52 L850,58"
+                fill="none" stroke="#E0736C" stroke-width="2.5"/>
+          <circle cx="320" cy="158" r="5" fill="#8FB3A2"/>
+          <text x="286" y="178" font-size="12.5" fill="#8FB3A2" font-weight="700">3.87%</text>
+          <circle cx="720" cy="38" r="6" fill="#E0736C"/>
+          <text x="736" y="34" font-size="13" fill="#E0736C" font-weight="700">4.59% (장중)</text>
+
+          <line x1="100" y1="26" x2="100" y2="170" stroke="#D9BE72" stroke-width="1.5" stroke-dasharray="5 4"/>
+          <text x="108" y="40" font-size="12.5" fill="#D9BE72" font-weight="700">4/2 상호관세 발표</text>
+
+          <text x="150" y="212" font-size="12.5" fill="#8FB3A2">① 교과서대로 — 주식↓ 국채로 도피(금리↓)</text>
+          <text x="470" y="30" font-size="12.5" fill="#E0736C" font-weight="700">② 반전 — 주식도 국채도 같이 팔림</text>
+
+          <line x1="720" y1="26" x2="720" y2="170" stroke="rgba(220,231,223,.4)" stroke-width="1.2" stroke-dasharray="4 4"/>
+          <text x="666" y="212" font-size="12.5" fill="rgba(220,231,223,.7)">4/9 관세 90일 유예 발표</text>
+
+          <rect x="0" y="216" width="900" height="20" fill="rgba(142,42,42,.25)"/>
+          <text x="14" y="231" font-size="12.5" fill="#E0736C">10년물 주간 <tspan font-weight="700">+약 50bp — 2001년 11월 이후 최대</tspan>　·　30년물 주간 상승폭은 <tspan font-weight="700">1982년 이후 최대</tspan></text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="verdict warn">
+      <span class="tag">5부의 질문</span>
+      <span class="txt">무엇이 <em>안전자산이라는 가정</em>을 며칠 동안 정지시켰나.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 01<br>여는 장면</div>
+    <div class="nbody">
+      <p><span class="q">왜 이 사건을 케이스로 고르나</span>
+      1~4부에서 배운 것이 <b>한 주 안에 전부</b> 나타났기 때문이다.
+      텀 프리미엄(1부), 매수자 이탈과 베이시스 트레이드(2부), 재정 신뢰(3부), 자산으로의 파급(4부)이
+      <b>동시에 관측된 몇 안 되는 구간</b>이다. 교과서를 실제 사건 위에 겹쳐보는 훈련으로는 최적이다.</p>
+      <p><span class="q">먼저 사실관계를 정확히</span>
+      관세 발표 직후 <b>이틀 정도는 교과서대로</b> 움직였다. 주식이 급락하자 안전자산 수요로 국채가 강세(금리 하락)를 보였다.
+      반전은 그 다음이다. 다음 주 초부터 <b>국채가 급격히 팔리며 금리가 튀었고</b>, 주식도 함께 흔들렸다.
+      <b>이 순서를 헷갈리면 원인 분석이 통째로 어긋난다.</b></p>
+      <p><span class="q">숫자로 확인하면</span>
+      10년물은 4월 7일 장중 저점 <b>3.87%</b>에서 4월 11일 <b>4.59%</b>까지 올랐고, 주간 상승폭은 약 <b>50bp</b>로
+      <b>2001년 11월 이후 최대</b>였다. 30년물의 주간 상승폭은 <b>1982년 이후 최대</b>로 기록됐다.
+      4월 9일 유예 발표 직후 S&amp;P500은 <b>+9.5%</b>, 나스닥은 <b>+12%</b>를 기록했다 — 채권이 흔든 시장을 채권이 되돌렸다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 02 · 평소 패턴 vs 그날 ============ -->
+<article class="unit">
+  <section class="slide">
+    <div class="chrome"><span class="lane">5부 · 실전</span><span>02 / 무엇이 이상했나</span></div>
+
+    <h2 class="claim">평소라면 <em>이렇게</em> 움직인다</h2>
+    <p class="sub">위기 국면의 자산 반응에는 정해진 문법이 있다. 그 문법이 깨졌다는 사실 자체가
+    <b>이번 충격의 성격</b>을 알려주는 가장 강한 단서다.</p>
+
+    <div class="split">
+      <div class="pane good">
+        <span class="ptag">평소의 위험회피 — 40년의 규칙</span>
+        <h4>주식 ↓ → 국채 ↑ → 달러 ↑</h4>
+        <p><b>주식</b> 급락. 위험자산에서 돈이 빠진다.</p>
+        <p><b>국채</b> 강세(금리 하락). 갈 곳 없는 돈이 세계에서 가장 깊은 시장으로 들어온다.</p>
+        <p><b>달러</b> 강세. 미국채를 사려면 달러가 필요하다.</p>
+        <p>이 조합이 성립하는 이유는 하나다 — <b>모두가 미국채를 최후의 담보물로 인정</b>하기 때문이다.</p>
+      </div>
+      <div class="pane bad">
+        <span class="ptag">2025년 4월 둘째 주</span>
+        <h4>주식 ↓ → 국채 <b>↓</b> → 달러 <b>↓</b></h4>
+        <p><b>주식</b> 급락 — 여기까지는 같다.</p>
+        <p><b>국채</b>도 하락(금리 급등). 도피처가 아니라 <b>매도 대상</b>이 됐다.</p>
+        <p><b>달러</b>도 약세. 금리가 오르는데 통화가 약해지는 <b>모순된 조합</b>.</p>
+        <p>이 셋이 동시에 나오는 건 보통 <b>선진국이 아니라 신흥국</b>에서 보던 패턴이다.</p>
+      </div>
+    </div>
+
+    <div class="verdict warn" style="margin-top:auto;padding-top:22px">
+      <span class="tag">판독</span>
+      <span class="txt">금리 상승 + 통화 약세 = <em>그 나라 자산에서 돈이 빠져나가는 중</em>이라는 신호다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 02<br>깨진 문법</div>
+    <div class="nbody">
+      <p><span class="q">왜 보통은 금리↑ = 통화 강세인가</span>
+      금리가 높은 나라 자산에 투자하려면 그 나라 통화를 사야 하므로, <b>금리 상승은 통화 강세</b>로 이어지는 게 기본이다.
+      그런데 <b>그 나라의 신뢰 자체가 흔들려서</b> 금리가 오르는 경우에는 반대가 된다.
+      투자자가 <b>채권도 팔고 그 돈을 자국으로 되가져가기</b> 때문이다. 이때는 금리와 통화가 같은 방향으로 무너진다.</p>
+      <p><span class="q">"신흥국 패턴"이라는 표현의 무게</span>
+      2022년 영국(감세안 발표 후 길트 급락 + 파운드 급락)이 선진국에서 이 패턴이 나온 대표 사례다.
+      2025년 4월에 <b>미국에서 며칠간 같은 조합</b>이 관측되자 시장이 크게 놀란 것이다.
+      다만 <b>며칠짜리 현상과 구조적 지위 상실은 다르다</b> — 이 구분을 못 하면 과장된 결론으로 간다(10장에서 다시 다룬다).</p>
+      <p><span class="q">이 표를 체크리스트로 쓰는 법</span>
+      앞으로 시장이 흔들리는 날에는 <b>세 칸을 채워보라.</b> 주식 · 금리 · 달러.
+      셋이 <b>왼쪽 조합</b>이면 평범한 위험회피이고, <b>오른쪽 조합</b>이면 성격이 다른 사건이다.
+      이 30초짜리 점검만으로도 그날의 뉴스를 어떻게 읽어야 할지가 갈린다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 03 · 타임라인 ============ -->
+<article class="unit">
+  <section class="slide">
+    <div class="chrome"><span class="lane">5부 · 실전</span><span>03 / 타임라인</span></div>
+
+    <h2 class="claim">일주일을 <em>네 국면</em>으로 자른다</h2>
+    <p class="sub">사건을 복기할 때는 반드시 <b>국면을 나눠야</b> 한다. 뭉뚱그리면 "관세 때문에 금리가 올랐다"는
+    부정확한 한 줄이 되고, 나누면 <b>어느 국면에서 무엇이 바뀌었는지</b>가 보인다.</p>
+
+    <table class="tbl">
+      <thead>
+        <tr><th style="width:14%">국면</th><th style="width:20%">무슨 일</th><th style="width:30%">시장 반응</th><th>이 국면의 성격</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>① 충격</td><td class="mat">4/2 관세 발표</td><td>주식 급락 · 10년물 <b>3.87%</b>까지 하락</td><td><b>교과서대로</b> — 위험회피, 안전자산 수요</td></tr>
+        <tr class="hot"><td>② 반전</td><td class="mat">4/7~4/9</td><td>금리 급등 · 주간 <b>+50bp</b>(2001년 이후 최대), 달러 동반 약세</td><td><b>도피처가 매도 대상으로</b> — 여기가 사건의 핵심</td></tr>
+        <tr class="hot"><td>③ 정점</td><td class="mat">4/9~4/11</td><td>10년물 장중 <b>4.59%</b>, 30년물 주간 상승폭 1982년 이후 최대</td><td><b>유동성 스트레스</b> — 호가가 얇아지는 구간</td></tr>
+        <tr><td>④ 진정</td><td class="mat">4/9 유예 발표</td><td>S&amp;P500 <b>+9.5%</b>, 나스닥 <b>+12%</b> · 금리 일부 되돌림</td><td><b>정책이 시장에 반응</b> — 방향이 거꾸로 흘렀다</td></tr>
+      </tbody>
+    </table>
+
+    <div class="record" style="margin-top:22px">
+      <div class="rl">복기의 원칙</div>
+      <p>"관세 때문에 금리가 올랐다"는 <b>①과 ②를 뭉뚱그린 문장</b>이라 틀렸다.</p>
+      <p class="cond">정확히는 — 관세 발표는 ①에서 금리를 <b>내렸고</b>, ②에서 금리를 올린 것은 <b>다른 힘</b>이었다.</p>
+    </div>
+
+    <div class="verdict" style="margin-top:auto;padding-top:20px">
+      <span class="tag">다음 질문</span>
+      <span class="txt">그럼 ②에서 작동한 <em>다른 힘</em>은 무엇인가. 후보는 셋이다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 03<br>타임라인</div>
+    <div class="nbody">
+      <p><span class="q">국면을 나누면 원인이 좁혀진다</span>
+      ①에서 관세는 <b>성장 둔화 재료</b>로 읽혔다. 성장이 나빠지면 연준이 내릴 테니 금리는 내려간다 — 1부의 <b>앞항</b> 이야기다.
+      그런데 ②에서 금리가 급등했다는 건 <b>앞항으로는 설명이 안 된다.</b>
+      며칠 사이에 연준 경로 기대가 그렇게 급변할 이유가 없었기 때문이다.
+      <b>남는 건 뒷항 — 텀 프리미엄</b>이다. 이 소거법이 07장의 결론으로 이어진다.</p>
+      <p><span class="q">③의 "호가가 얇아진다"는 말</span>
+      평소 미국채는 <b>세계에서 가장 깊은 시장</b>이라 수십억 달러를 팔아도 가격이 크게 안 밀린다.
+      그런데 스트레스 구간에서는 딜러들이 위험을 줄이며 호가를 넓히고, <b>같은 규모를 팔아도 가격이 크게 밀린다.</b>
+      이때 채권 변동성 지표(MOVE)가 급등하고, 매도가 다시 매도를 부르는 <b>악순환</b>이 생긴다.</p>
+      <p><span class="q">④가 가장 중요한 국면인 이유</span>
+      보통은 <b>정책이 원인, 시장이 결과</b>다. 그런데 이 사건에서는 <b>시장이 원인, 정책이 결과</b>가 됐다.
+      채권시장의 반응이 관세 정책의 속도를 되돌린 것이다. 08장에서 이 지점을 따로 다룬다 —
+      <b>3부에서 배운 "채권 자경단"이 실제로 작동한 장면</b>이기 때문이다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 04 · 트리플 (다크) ============ -->
+<article class="unit">
+  <section class="slide dark">
+    <div class="chrome"><span class="lane">5부 · 실전</span><span>04 / 세 개가 동시에</span></div>
+
+    <h2 class="claim">셋이 <mark>같은 방향</mark>으로 무너졌다</h2>
+    <p class="sub">개별 자산의 움직임보다 <b>조합</b>이 정보다. 이 조합에는 이름이 붙어 있다 —
+    시장에서는 그 주에 <b>"미국 자산 회피"</b>라는 서사가 돌았다.</p>
+
+    <div class="stage">
+      <svg viewBox="0 0 900 236" role="img" aria-label="주식 채권 달러가 동시에 하락한 조합과 그 해석">
+        <g font-family="'Noto Sans KR', sans-serif">
+          <g>
+            <rect x="0" y="20" width="280" height="118" fill="rgba(142,42,42,.24)" stroke="#E0736C" stroke-width="1.2"/>
+            <text x="24" y="52" font-size="16" font-weight="700" fill="#fff">주식 ↓</text>
+            <text x="24" y="82" font-size="13.5" fill="rgba(220,231,223,.8)">관세 → 성장·이익 훼손 우려</text>
+            <text x="24" y="106" font-size="13.5" fill="rgba(220,231,223,.8)">여기까지는 누구나 예상한 반응</text>
+            <text x="24" y="128" font-size="13" fill="#8FB3A2">정상</text>
+
+            <rect x="310" y="20" width="280" height="118" fill="rgba(142,42,42,.34)" stroke="#E0736C" stroke-width="1.5"/>
+            <text x="334" y="52" font-size="16" font-weight="700" fill="#fff">국채 ↓ (금리 ↑)</text>
+            <text x="334" y="82" font-size="13.5" fill="rgba(255,255,255,.85)">도피처가 되지 못했다</text>
+            <text x="334" y="106" font-size="13.5" fill="rgba(255,255,255,.85)">오히려 팔아서 현금을 만드는 대상</text>
+            <text x="334" y="128" font-size="13" fill="#E0736C" font-weight="700">이상</text>
+
+            <rect x="620" y="20" width="280" height="118" fill="rgba(142,42,42,.34)" stroke="#E0736C" stroke-width="1.5"/>
+            <text x="644" y="52" font-size="16" font-weight="700" fill="#fff">달러 ↓</text>
+            <text x="644" y="82" font-size="13.5" fill="rgba(255,255,255,.85)">금리가 오르는데 통화가 약해졌다</text>
+            <text x="644" y="106" font-size="13.5" fill="rgba(255,255,255,.85)">= 자금이 미국 밖으로 나간다</text>
+            <text x="644" y="128" font-size="13" fill="#E0736C" font-weight="700">이상</text>
+          </g>
+
+          <path d="M140,146 L420,176" stroke="#A8802A" stroke-width="1.5"/>
+          <path d="M450,146 L450,176" stroke="#A8802A" stroke-width="1.5"/>
+          <path d="M760,146 L480,176" stroke="#A8802A" stroke-width="1.5"/>
+
+          <rect x="230" y="180" width="440" height="52" fill="#D9BE72"/>
+          <text x="450" y="212" text-anchor="middle" font-size="17" font-weight="700" fill="#101A16">"미국 자산에서 돈이 빠진다"는 서사</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="verdict warn">
+      <span class="tag">주의</span>
+      <span class="txt">서사는 <em>사실이 아니라 해석</em>이다. 며칠짜리 현상을 <em>기축통화 지위 상실</em>로 확대하면 과장이 된다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 04<br>조합 읽기</div>
+    <div class="nbody">
+      <p><span class="q">왜 조합이 개별 지표보다 강한 정보인가</span>
+      주식 하락 하나만 보면 원인이 열 가지다. 그런데 <b>주식·금리·달러 세 칸을 동시에</b> 채우면
+      가능한 원인이 급격히 줄어든다. 금리가 오르면서 달러가 약해지는 조합은
+      <b>인플레·수급·신뢰</b> 쪽 원인이 아니면 잘 나오지 않기 때문이다.
+      매크로에서 <b>"조합으로 판정한다"</b>는 원칙이 가장 잘 드러나는 사례다.</p>
+      <p><span class="q">서사와 사실을 구분하는 습관</span>
+      "미국 자산 회피"는 그 주의 <b>가격 움직임을 설명하기 위해 만들어진 이야기</b>다.
+      실제로 외국인이 대규모로 팔았는지는 <b>TIC 통계</b>로 몇 달 뒤에야 확인된다.
+      리서치는 <b>가격은 사실, 이유는 가설</b>이라는 구분을 유지해야 한다. 다음 두 장이 그 가설들을 등급 매기는 작업이다.</p>
+      <p><span class="q">한국 투자자에게 곧바로 오는 함의</span>
+      이 조합이 나오면 원/달러는 오히려 <b>덜 오르거나 내릴</b> 수 있다(달러 약세이므로).
+      그런데 국내 주식은 미국 주식과 같이 빠진다. <b>평소의 "위험회피 = 원화 약세" 공식이 흔들리는 국면</b>이라
+      환헤지 판단이 어려워진다. 4부 11장의 세 경로 중 <b>환율 경로가 평소와 다르게 작동</b>하는 케이스다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 05 · 베이시스 트레이드 ============ -->
+<article class="unit">
+  <section class="slide">
+    <div class="chrome"><span class="lane">5부 · 실전</span><span>05 / 원인 후보 ①</span></div>
+
+    <h2 class="claim">2부에서 예고한 <em>그 수요</em>가<br>매도로 뒤집혔다</h2>
+    <p class="sub">2부 13장에서 "헤지펀드의 국채 매수는 레버리지 수요라 변동성이 튀면 가장 먼저 사라진다"고 적었다.
+    그 문장이 회수되는 장면이다.</p>
+
+    <div class="stage">
+      <svg viewBox="0 0 900 250" role="img" aria-label="베이시스 트레이드의 구조와 변동성 급등 시 청산이 국채 매도로 이어지는 경로">
+        <defs>
+          <marker id="b1" markerWidth="9" markerHeight="7" refX="8.5" refY="3.5" orient="auto">
+            <path d="M0,0 L9,3.5 L0,7 Z" fill="#8E2A2A"/>
+          </marker>
+        </defs>
+        <g font-family="'Noto Sans KR', sans-serif">
+          <text x="0" y="16" font-family="Consolas, monospace" font-size="11" letter-spacing="1.5" fill="#8A948D">평상시 · 베이시스 트레이드</text>
+
+          <rect x="0" y="30" width="250" height="76" fill="#EFF4F0"/>
+          <text x="125" y="58" text-anchor="middle" font-size="15" font-weight="700" fill="#1D5B45">국채 현물 매수</text>
+          <text x="125" y="82" text-anchor="middle" font-size="13" fill="#4E5A53">+ 선물 매도</text>
+          <text x="125" y="100" text-anchor="middle" font-size="12.5" fill="#8A948D">둘의 미세한 가격차를 먹는다</text>
+
+          <text x="270" y="72" font-size="22" fill="#A8802A">+</text>
+
+          <rect x="300" y="30" width="250" height="76" fill="#F7EFD9"/>
+          <text x="425" y="58" text-anchor="middle" font-size="15" font-weight="700" fill="#7A5C16">레버리지 수십 배</text>
+          <text x="425" y="82" text-anchor="middle" font-size="13" fill="#7A5C16">레포로 자금을 빌려 규모를 키운다</text>
+          <text x="425" y="100" text-anchor="middle" font-size="12.5" fill="#8A948D">수익폭이 작아 크게 걸어야 남는다</text>
+
+          <text x="570" y="72" font-size="22" fill="#A8802A">=</text>
+
+          <rect x="600" y="30" width="300" height="76" fill="#101A16"/>
+          <text x="750" y="58" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">시장에는 국채 수요처럼 보인다</text>
+          <text x="750" y="84" text-anchor="middle" font-size="13" fill="#8FB3A2">평온할 때는 실제로 수요 역할을 한다</text>
+
+          <line x1="0" y1="126" x2="900" y2="126" stroke="#DAD6CA"/>
+          <text x="0" y="152" font-family="Consolas, monospace" font-size="11" letter-spacing="1.5" fill="#8E2A2A">스트레스 발생 · 청산</text>
+
+          <g font-size="13.5">
+            <rect x="0" y="166" width="176" height="60" fill="#FAF0EF"/>
+            <text x="88" y="192" text-anchor="middle" font-weight="700" fill="#8E2A2A">변동성 급등</text>
+            <text x="88" y="212" text-anchor="middle" font-size="12.5" fill="#4E5A53">MOVE 지수 상승</text>
+            <path d="M182,196 L212,196" stroke="#8E2A2A" stroke-width="2" marker-end="url(#b1)"/>
+
+            <rect x="222" y="166" width="176" height="60" fill="#FAF0EF"/>
+            <text x="310" y="192" text-anchor="middle" font-weight="700" fill="#8E2A2A">증거금 요구 증가</text>
+            <text x="310" y="212" text-anchor="middle" font-size="12.5" fill="#4E5A53">마진콜</text>
+            <path d="M404,196 L434,196" stroke="#8E2A2A" stroke-width="2" marker-end="url(#b1)"/>
+
+            <rect x="444" y="166" width="176" height="60" fill="#F2E2E0"/>
+            <text x="532" y="192" text-anchor="middle" font-weight="700" fill="#8E2A2A">포지션 청산</text>
+            <text x="532" y="212" text-anchor="middle" font-size="12.5" fill="#4E5A53">현물을 판다</text>
+            <path d="M626,196 L656,196" stroke="#8E2A2A" stroke-width="2" marker-end="url(#b1)"/>
+
+            <rect x="666" y="166" width="234" height="60" fill="#8E2A2A"/>
+            <text x="783" y="192" text-anchor="middle" font-weight="700" fill="#fff">국채 매도 → 금리 급등</text>
+            <text x="783" y="212" text-anchor="middle" font-size="12.5" fill="rgba(255,255,255,.85)">그리고 다시 변동성으로 되돌아간다</text>
+          </g>
+        </g>
+      </svg>
+    </div>
+
+    <div class="verdict warn">
+      <span class="tag">구조</span>
+      <span class="txt">가장 필요한 순간에 <em>수요가 매도로 뒤집히는</em> 자기강화 고리. 2020년 3월에도 같은 일이 있었다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 05<br>베이시스 트레이드</div>
+    <div class="nbody">
+      <p><span class="q">왜 이런 거래가 존재하나</span>
+      국채 현물과 선물 가격에는 아주 작은 차이가 생긴다. 이 차이는 <b>거의 무위험</b>에 가까워 보이지만
+      수익률이 워낙 낮아서 <b>레버리지를 크게 써야</b> 의미 있는 이익이 난다.
+      그래서 헤지펀드가 레포로 자금을 빌려 규모를 키운다. <b>안전한 거래를 위험하게 만드는 건 거래 자체가 아니라 레버리지</b>다.</p>
+      <p><span class="q">왜 하필 국채 시장에서 사고가 나나</span>
+      역설적이지만 <b>가장 안전한 자산이라서</b> 레버리지가 가장 크게 붙는다.
+      위험이 낮다고 평가되면 담보 인정 비율이 높아지고, 그만큼 크게 빌릴 수 있다.
+      그래서 <b>안전자산 시장이 오히려 레버리지의 집합소</b>가 되고, 변동성이 튀는 순간 청산 물량이 쏟아진다.
+      2020년 3월 코로나 충격 때도 정확히 같은 경로로 미국채가 급락했다.</p>
+      <p><span class="q">이 후보의 증거 강도</span>
+      <b>정황 증거는 강하다</b> — 스와프 스프레드 급변, 변동성 급등, 유동성 지표 악화가 동시에 관측됐다.
+      다만 <b>직접 확인은 어렵다.</b> 헤지펀드 포지션은 실시간으로 공개되지 않기 때문이다.
+      그래서 다음 장에서 <b>후보별 증거 등급</b>을 매기는 훈련을 한다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 06 · 후보 비교 ============ -->
+<article class="unit">
+  <section class="slide">
+    <div class="chrome"><span class="lane">5부 · 실전</span><span>06 / 원인 후보 비교</span></div>
+
+    <h2 class="claim">후보에 <em>증거 등급</em>을 매긴다</h2>
+    <p class="sub">리서치의 핵심 기술은 원인을 하나로 단정하지 않고 <b>후보를 나열한 뒤 증거의 강도를 표시</b>하는 것이다.
+    같은 사건을 두고도 이 표를 쓰면 논쟁이 정리된다.</p>
+
+    <div class="cards c3">
+      <div class="card">
+        <span class="ctag">후보 A · 증거 강함</span>
+        <h4>레버리지 청산</h4>
+        <p>베이시스 트레이드 등 <b>레버리지 포지션의 강제 청산.</b></p>
+        <p><b>확인 가능한 흔적</b> — 스와프 스프레드 급변, 변동성 지표 급등, 호가 스프레드 확대.</p>
+        <p class="out">정황 증거 다수 · 직접 확인 불가</p>
+      </div>
+      <div class="card">
+        <span class="ctag">후보 B · 증거 보통</span>
+        <h4>재정·정책 신뢰 저하</h4>
+        <p>관세와 재정 경로에 대한 우려가 <b>텀 프리미엄</b>을 밀어올렸다.</p>
+        <p><b>흔적</b> — 장기물이 단기물보다 크게 상승(커브 스티프닝), 달러 동반 약세.</p>
+        <p class="out">방향은 일관 · 크기는 측정 어려움</p>
+      </div>
+      <div class="card">
+        <span class="ctag">후보 C · 증거 약함</span>
+        <h4>해외 보복성 매도</h4>
+        <p>특정 국가가 <b>보복으로 미국채를 팔았다</b>는 설.</p>
+        <p><b>문제</b> — 그 시점에 확인할 자료가 없다. TIC 통계는 <b>두 달 이상 뒤</b>에 나온다.</p>
+        <p class="out">서사로는 강력 · 근거는 사후적</p>
+      </div>
+    </div>
+
+    <div class="verdict warn" style="margin-top:auto;padding-top:22px">
+      <span class="tag">태도</span>
+      <span class="txt">셋을 <em>배타적으로</em> 볼 필요는 없다. B가 방아쇠를 당기고 A가 증폭시킨 조합이 가장 설명력이 높다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 06<br>증거 등급</div>
+    <div class="nbody">
+      <p><span class="q">왜 후보 C가 가장 인기 있는 설명이었나</span>
+      <b>이야기가 선명하기 때문</b>이다. "보복으로 국채를 던졌다"는 문장은 기억하기 쉽고 뉴스 제목이 된다.
+      반면 "레버리지 포지션의 증거금 요구 증가로 인한 강제 청산"은 설명하는 데 세 문장이 필요하다.
+      <b>매크로에서 인기 있는 설명은 대체로 검증하기 어려운 설명</b>이라는 걸 기억해두면 좋다.</p>
+      <p><span class="q">증거 등급을 매기는 기준 세 가지</span>
+      ① <b>관측 가능한가</b>(그 시점에 데이터가 있는가) ② <b>시점이 맞는가</b>(원인이 결과보다 먼저인가)
+      ③ <b>다른 자산과 일관된가</b>(달러·주식·변동성의 움직임이 그 설명과 맞는가).
+      후보 C는 ①에서 바로 걸린다 — <b>그날 확인할 방법이 없다.</b></p>
+      <p><span class="q">"조합"이 가장 좋은 답인 이유</span>
+      큰 시장 사건은 대개 <b>방아쇠 + 증폭기</b> 구조다. 방아쇠는 뉴스(관세·재정), 증폭기는 시장 구조(레버리지·유동성).
+      방아쇠만 말하면 <b>왜 이렇게까지 컸는지</b>를 설명 못 하고, 증폭기만 말하면 <b>왜 하필 그날인지</b>를 설명 못 한다.
+      <b>둘을 같이 쓰는 문장</b>이 리서치에서 가장 안전하고 정확하다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 07 · 공식 적용 (다크) ============ -->
+<article class="unit">
+  <section class="slide dark">
+    <div class="chrome"><span class="lane">5부 · 실전</span><span>07 / 1부 공식으로</span></div>
+
+    <h2 class="claim">앞항으로는 <em>설명이 안 된다</em></h2>
+    <p class="sub">1부의 분해를 이 사건에 대본다. 소거법으로 접근하면 답이 하나만 남는다.</p>
+
+    <div class="stage">
+      <svg viewBox="0 0 900 240" role="img" aria-label="관세 충격이 기대 단기금리와 텀 프리미엄에 각각 미친 영향을 비교한 소거법">
+        <g font-family="'Noto Sans KR', sans-serif">
+          <rect x="0" y="0" width="900" height="52" fill="#1D5B45"/>
+          <text x="450" y="33" text-anchor="middle" font-size="19" font-weight="700" fill="#fff">장기금리 = 기대 단기금리 평균 + 텀 프리미엄</text>
+
+          <rect x="0" y="76" width="430" height="152" fill="rgba(220,231,223,.07)" stroke="rgba(220,231,223,.28)"/>
+          <text x="24" y="106" font-size="17" font-weight="700" fill="#fff">앞항 — 기대 단기금리</text>
+          <text x="24" y="138" font-size="14" fill="rgba(220,231,223,.8)">관세 = 성장 둔화 재료</text>
+          <text x="24" y="162" font-size="14" fill="rgba(220,231,223,.8)">→ 연준이 <tspan font-weight="700">더 내릴</tspan> 이유가 된다</text>
+          <text x="24" y="186" font-size="14" fill="#8FB3A2">→ 앞항은 오히려 <tspan font-weight="700">내려가야</tspan> 한다</text>
+          <text x="24" y="216" font-size="14" fill="#8FB3A2" font-weight="700">실제로 ①국면에서 그렇게 움직였다</text>
+
+          <rect x="470" y="76" width="430" height="152" fill="rgba(142,42,42,.24)" stroke="#E0736C" stroke-width="1.5"/>
+          <text x="494" y="106" font-size="17" font-weight="700" fill="#fff">뒷항 — 텀 프리미엄</text>
+          <text x="494" y="138" font-size="14" fill="rgba(220,231,223,.85)">① 관세 → <tspan font-weight="700">인플레 불확실성</tspan> 확대</text>
+          <text x="494" y="162" font-size="14" fill="rgba(220,231,223,.85)">② 레버리지 청산 → <tspan font-weight="700">유동성</tspan> 악화</text>
+          <text x="494" y="186" font-size="14" fill="rgba(220,231,223,.85)">③ 재정·정책 신뢰 → <tspan font-weight="700">재정 프리미엄</tspan></text>
+          <text x="494" y="216" font-size="14" fill="#E0736C" font-weight="700">1부 06장의 세 구성요소가 전부 커졌다</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="verdict warn">
+      <span class="tag">결론</span>
+      <span class="txt">이 주의 금리 급등은 <em>경기 기대의 변화가 아니라 위험값의 재평가</em>였다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 07<br>공식 적용</div>
+    <div class="nbody">
+      <p><span class="q">소거법이 왜 강력한가</span>
+      "무엇이 올렸나"를 직접 증명하기는 어렵다. 대신 <b>"무엇으로는 설명이 안 되나"</b>를 따지면 후보가 줄어든다.
+      관세는 성장에 부정적이니 <b>연준 경로 기대는 내려가야</b> 맞다. 그런데 금리는 올랐다.
+      따라서 <b>앞항이 아니다.</b> 이 한 줄이 이 사건 분석의 뼈대이고, 1부 공식이 없으면 나올 수 없는 문장이다.</p>
+      <p><span class="q">관세가 텀 프리미엄을 키우는 두 경로</span>
+      ① <b>인플레 불확실성</b> — 관세는 수입물가를 올린다. 물가 경로가 넓어지면 장기채를 들고 있을 위험이 커진다.
+      ② <b>정책 예측 가능성</b> — 정책이 갑자기 바뀌는 환경 자체가 프리미엄을 요구하게 만든다.
+      <b>물가 수준이 아니라 물가의 불확실성</b>이 문제라는 게 핵심이다. 1부 06장에서 미리 깔아둔 논리다.</p>
+      <p><span class="q">그래서 4부와 어떻게 연결되나</span>
+      뒷항이 올라서 오른 금리는 <b>주식에 나쁜 금리</b>였다(4부 03장). 실제로 주식과 채권이 함께 빠졌다.
+      또 이 국면에서 <b>60/40 분산이 작동하지 않았다.</b>
+      4부에서 "이론적으로 그렇다"고 배운 것이 <b>며칠 만에 실물로 확인된</b> 셈이다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 08 · 정책이 되돌아갔다 ============ -->
+<article class="unit">
+  <section class="slide">
+    <div class="chrome"><span class="lane">5부 · 실전</span><span>08 / 반전</span></div>
+
+    <h2 class="claim">채권시장이 <em>정책을 되돌렸다</em></h2>
+    <p class="sub">보통은 정책이 원인이고 시장이 결과다. 이 사건에서는 그 방향이 거꾸로 흘렀다.
+    3부에서 개념으로만 배운 <b>채권 자경단</b>이 실제로 작동한 장면이다.</p>
+
+    <div class="stage">
+      <svg viewBox="0 0 900 218" role="img" aria-label="정책이 시장을 움직이는 평소 방향과 시장이 정책을 되돌린 이번 사건의 방향 비교">
+        <defs>
+          <marker id="d1" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+            <path d="M0,0 L10,4 L0,8 Z" fill="#8A948D"/>
+          </marker>
+          <marker id="d2" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+            <path d="M0,0 L10,4 L0,8 Z" fill="#8E2A2A"/>
+          </marker>
+        </defs>
+        <g font-family="'Noto Sans KR', sans-serif">
+          <text x="0" y="18" font-family="Consolas, monospace" font-size="11" letter-spacing="1.5" fill="#8A948D">평소</text>
+          <rect x="0" y="32" width="180" height="50" fill="#EFEDE6"/>
+          <text x="90" y="62" text-anchor="middle" font-size="15" fill="#4E5A53">정책 결정</text>
+          <path d="M190,57 L250,57" stroke="#8A948D" stroke-width="2" marker-end="url(#d1)"/>
+          <rect x="264" y="32" width="180" height="50" fill="#EFEDE6"/>
+          <text x="354" y="62" text-anchor="middle" font-size="15" fill="#4E5A53">시장 반응</text>
+
+          <line x1="0" y1="102" x2="900" y2="102" stroke="#DAD6CA"/>
+
+          <text x="0" y="130" font-family="Consolas, monospace" font-size="11" letter-spacing="1.5" fill="#8E2A2A">2025년 4월</text>
+          <rect x="0" y="144" width="200" height="56" fill="#F2E2E0"/>
+          <text x="100" y="168" text-anchor="middle" font-size="14.5" font-weight="700" fill="#8E2A2A">국채 금리 급등</text>
+          <text x="100" y="190" text-anchor="middle" font-size="12.5" fill="#4E5A53">30년물 5% 부근 접근</text>
+
+          <path d="M210,172 L266,172" stroke="#8E2A2A" stroke-width="2.5" marker-end="url(#d2)"/>
+
+          <rect x="280" y="144" width="200" height="56" fill="#F2E2E0"/>
+          <text x="380" y="168" text-anchor="middle" font-size="14.5" font-weight="700" fill="#8E2A2A">조달비용 · 시장 안정</text>
+          <text x="380" y="190" text-anchor="middle" font-size="12.5" fill="#4E5A53">정부가 감당할 수 없는 수준</text>
+
+          <path d="M490,172 L546,172" stroke="#8E2A2A" stroke-width="2.5" marker-end="url(#d2)"/>
+
+          <rect x="560" y="144" width="340" height="56" fill="#8E2A2A"/>
+          <text x="730" y="168" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">4/9 관세 90일 유예 발표</text>
+          <text x="730" y="190" text-anchor="middle" font-size="12.5" fill="rgba(255,255,255,.85)">시장이 정책의 속도를 되돌렸다</text>
+
+          <text x="560" y="128" font-size="13" fill="#8E2A2A" font-weight="700">"사람들이 채권시장을 보고 불안해하더라" — 발표 직후 나온 설명</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="verdict warn">
+      <span class="tag">3부 회수</span>
+      <span class="txt">텀 프리미엄 상승은 <em>시장이 정부에 보내는 청구서</em>다. 이번엔 정부가 그 청구서를 읽었다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 08<br>채권 자경단</div>
+    <div class="nbody">
+      <p><span class="q">왜 주식이 아니라 채권이 정책을 되돌렸나</span>
+      주식이 빠지는 건 정부 입장에서 <b>불편한 뉴스</b>지만, 채권 금리가 급등하는 건 <b>직접적인 재정 문제</b>다.
+      3부에서 봤듯 정부는 매년 막대한 물량을 <b>차환</b>해야 한다. 금리가 튀면 그 비용이 즉시 커지고,
+      동시에 <b>모기지·기업 조달까지 전부 조인다</b>(4부). 정책 결정자가 가장 못 견디는 건
+      <b>"국채를 팔 수 없는 상태"</b>다.</p>
+      <p><span class="q">2022년 영국과 나란히 놓고 보기</span>
+      영국은 감세안 발표 후 국채가 급락하자 <b>연기금 담보 요구가 연쇄</b>되며 중앙은행이 긴급 개입했고,
+      결국 정책이 철회되고 총리가 사임했다. 2025년 4월 미국은 그 정도까지 가지 않았지만
+      <b>"시장이 정책을 되돌린다"는 같은 문법</b>이 관측됐다.
+      선진국 재정이 시장의 감시를 받는 시대라는 점에서 3부의 결론과 정확히 맞물린다.</p>
+      <p><span class="q">이 장이 남기는 실전 감각</span>
+      앞으로 큰 정책 발표가 나오면 <b>주가보다 30년물과 달러를 먼저</b> 보라.
+      주식은 하루 만에 되돌릴 수 있지만, 장기금리와 통화가 같이 무너지면
+      <b>정책이 수정될 확률이 급격히 올라간다.</b> 이건 정치 뉴스보다 빠른 신호다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 09 · 그 뒤 ============ -->
+<article class="unit">
+  <section class="slide">
+    <div class="chrome"><span class="lane">5부 · 실전</span><span>09 / 그 뒤에 일어난 일</span></div>
+
+    <h2 class="claim">유예로 <mark>끝난 게 아니었다</mark></h2>
+    <p class="sub">4/9 이후 금리는 되돌아왔다. 그런데 <b>완전히</b> 돌아오지는 않았고, 한 달 뒤 같은 주제가 다시 나왔다.
+    그리고 1년이 지난 지금까지도 끝나지 않았다. 사건이 아니라 <b>구조</b>였기 때문이다.</p>
+
+    <div class="cards c3">
+      <div class="card">
+        <span class="ctag">4월 말</span>
+        <h4>되돌림, 그러나 절반만</h4>
+        <p>유예 발표 후 금리는 내려왔지만 <b>4월 초 수준으로는 복귀하지 않았다.</b></p>
+        <p>텀 프리미엄에 붙은 <b>재정·정책 프리미엄</b>이 남았다는 해석.</p>
+        <p class="out">1부 06장 · 뒷항은 회의 한 번으로 안 내려온다</p>
+      </div>
+      <div class="card">
+        <span class="ctag">2025년 5월</span>
+        <h4>무디스 강등</h4>
+        <p>108년 만에 최고등급 상실. 발표 직후 30년물이 장중 <b>5.03%</b>를 찍었다.</p>
+        <p>등급 자체보다 <b>서사의 변화</b>가 텀 프리미엄에 얹혔다(3부 20장).</p>
+        <p class="out">3부와 5부가 만나는 지점</p>
+      </div>
+      <div class="card">
+        <span class="ctag">2025년 9~12월</span>
+        <h4>세 번 더 내렸는데<br>커브는 더 가팔라졌다</h4>
+        <p>연준은 9월부터 <b>세 차례 인하</b>했다. 그런데 2년물부터 30년물까지 <b>오히려 올랐다.</b></p>
+        <p class="out">1부 01장의 패턴이 두 번째로 반복</p>
+      </div>
+    </div>
+
+    <div class="verdict warn" style="margin-top:auto;padding-top:22px">
+      <span class="tag">판정</span>
+      <span class="txt">4월의 며칠은 <em>사건</em>이었지만, 그 뒤의 반복은 <em>구조</em>였다. 구조는 뉴스로 안 풀린다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 09<br>사건과 구조</div>
+    <div class="nbody">
+      <p><span class="q">"절반만 되돌아왔다"가 왜 중요한가</span>
+      충격이 완전히 되돌아오면 <b>일시적 사건</b>이고, 일부가 남으면 <b>가격에 새 정보가 반영된 것</b>이다.
+      후자라면 시장이 "이 나라 채권을 들고 있는 위험이 예전보다 크다"고 <b>영구적으로</b> 판단했다는 뜻이 된다.
+      되돌림의 <b>정도</b>를 재는 습관은 모든 이벤트 분석에 쓰인다.</p>
+      <p><span class="q">사건과 구조를 가르는 기준</span>
+      ① <b>반복되는가</b> ② <b>원인이 남아 있는가</b> ③ <b>정책으로 되돌릴 수 있는가</b>.
+      4월의 유동성 충격은 며칠 만에 진정됐으니 사건이다.
+      그런데 <b>발행은 계속되고 매수자는 늘지 않는다</b>는 조건은 그대로였다. 그래서 같은 압력이 5월에도, 그 뒤에도 반복됐다.
+      1회차에서 배운 <b>경기적 둔화 vs 구조적 둔화</b>의 채권 시장 판이다.</p>
+      <p><span class="q">3회차 전체가 여기서 닫힌다</span>
+      <b>1부</b>가 세운 공식(뒷항이 지배한다)이 <b>2·3부</b>에서 수급과 재정으로 설명됐고,
+      <b>4부</b>에서 자산으로 퍼졌으며, <b>5부</b>에서 그 전부가 한 주에 동시에 관측됐다.
+      다섯 부가 하나의 문장으로 요약된다 — <b>구조적으로 안 내려오는 금리는, 평온할 때는 비용이고 흔들릴 때는 뇌관이다.</b></p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 10 · 2026년 지금 (다크) ============ -->
+<article class="unit">
+  <section class="slide dark">
+    <div class="chrome"><span class="lane">5부 · 실전</span><span>10 / 지금은 어디인가</span></div>
+
+    <h2 class="claim">2025년 4월은 <em>예고편</em>이었다</h2>
+    <p class="sub">그날의 급등은 며칠 만에 진정됐다. 그런데 그 뒤 1년 4개월 동안 금리는 내려오지 않았다.
+    2026년 8월 현재 상태를 지표별로 세워두면, 이 자료가 다룬 구조가 <b>지금도 작동 중</b>이라는 게 보인다.</p>
+
+    <table class="tbl">
+      <thead>
+        <tr><th style="width:16%">항목</th><th style="width:24%">2026년 8월 현재</th><th>무엇을 뜻하나</th></tr>
+      </thead>
+      <tbody>
+        <tr class="hot"><td>10년물</td><td class="mat">4.70% · 18개월 최고</td><td>정책금리(3.50~3.75%)보다 <b>1%p 위</b>. 인하가 장기금리로 전달되지 않았다</td></tr>
+        <tr class="hot"><td>30년물</td><td class="mat">5.2% · 2007년 이후 최고</td><td>5% 위에 머문 기간도 2007년 이후 최장. 7월 입찰은 <b>2007년 이후 최고 낙찰금리</b></td></tr>
+        <tr><td>연준</td><td class="mat">5회 연속 동결</td><td>인하 시점을 <b>2027년 이후</b>로 미뤘고, 일부 위원은 <b>인상</b>을 주장하며 반대표</td></tr>
+        <tr><td>물가</td><td class="mat">중동 분쟁發 유가</td><td>공급 충격이 목표 복귀를 막는다 → <b>1부 06장의 인플레 불확실성</b>이 다시 커졌다</td></tr>
+        <tr class="hot"><td>새 발행자</td><td class="mat">AI 하이퍼스케일러</td><td>2025년 5개사가 <b>1,210억 달러</b> 발행(직전 5년 평균의 4배). 국채와 <b>듀레이션 수요를 놓고 경쟁</b></td></tr>
+        <tr><td>해외 매수</td><td class="mat">일본의 회귀</td><td>일본 30년물이 <b>3.52%</b>(사상 최고)까지 오르자, 일본계는 2026년 1분기 미국채를 <b>296억 달러 순매도</b></td></tr>
+      </tbody>
+    </table>
+
+    <div class="verdict warn" style="margin-top:auto;padding-top:20px">
+      <span class="tag">판정</span>
+      <span class="txt">2부의 <em>매수자 이탈</em>과 3부의 <em>재정 루프</em>가 2026년에 그대로 진행 중이다. 여기에 <em>새 경쟁 발행자</em>가 하나 더 붙었다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 10<br>2026년 현황</div>
+    <div class="nbody">
+      <p><span class="q">이 표가 자료 전체의 채점표다</span>
+      2부에서 "매수자별 이탈 조건"을 표로 적어뒀다. 그중 <b>일본 행</b>은 "자국 금리 상승 → 이탈"이었는데,
+      2026년 1월 일본 30년물이 사상 최고를 찍자 실제로 <b>순매도</b>가 나왔다.
+      3부에서 적은 "이자비용이 계단식으로 오른다"도 30년물 입찰 낙찰금리가 2007년 이후 최고를 기록하며 확인됐다.
+      <b>판단이 맞았는지를 이렇게 조건별로 채점하는 것</b>이 3부 24장에서 말한 판단 기록의 목적이다.</p>
+      <p><span class="q">2026년에 새로 등장한 변수 — AI 발행</span>
+      빅테크가 AI 설비투자를 <b>현금이 아니라 채권으로</b> 조달하기 시작했다.
+      2025년 상위 5개사의 발행액이 직전 5년 평균의 네 배를 넘었고, 2026년 미국 투자등급 총발행은 사상 최대가 예상된다.
+      국채 입장에서는 <b>같은 만기 구간에서 자금을 놓고 다투는 경쟁자</b>가 새로 생긴 것이다.
+      2부에서 배운 수급 프레임에 <b>행을 하나 더 추가해야</b> 하는 변화다.</p>
+      <p><span class="q">그래서 지금 이 자료를 어떻게 쓰나</span>
+      1~4부의 구조는 <b>여전히 유효</b>하고, 5부의 사건은 그 구조가 어떻게 터지는지를 보여준 예행연습이었다.
+      다음에 비슷한 충격이 오면 확인 순서는 같다 — <b>주식·금리·달러 세 칸 → 커브 어느 구간 → 변동성과 호가 → 강제 매도 주체 → 판단과 무효화 조건 기록.</b>
+      달라진 건 배경 금리 수준이 <b>더 높아졌다</b>는 것뿐이고, 그만큼 4부의 임계값들은 더 가까워졌다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 11 · 교훈 (다크) ============ -->
+<article class="unit">
+  <section class="slide dark">
+    <div class="chrome"><span class="lane">5부 · 실전</span><span>11 / 교훈</span></div>
+
+    <h2 class="claim">이 한 주가 남긴 <em>다섯 문장</em></h2>
+    <p class="sub">사건 복기의 목적은 사실 암기가 아니라 <b>다음에 쓸 수 있는 문장</b>을 만드는 것이다.</p>
+
+    <table class="tbl">
+      <thead>
+        <tr><th style="width:22%">교훈</th><th style="width:34%">무엇을 배웠나</th><th>다음에 어떻게 쓰나</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>가정을 점검하라</td><td>"국채는 위기 때 오른다"는 <b>가정이지 법칙이 아니다</b></td><td>위험회피 날마다 주식·금리·달러 <b>세 칸</b>을 채워본다</td></tr>
+        <tr class="hot"><td>레버리지를 보라</td><td>안전자산일수록 <b>레버리지가 크게</b> 붙는다</td><td>변동성 급등 시 <b>누가 강제로 팔아야 하나</b>를 먼저 묻는다</td></tr>
+        <tr><td>상관관계는 변한다</td><td>분산은 <b>평온할 때만</b> 작동한다</td><td>주식·채권이 같이 빠지는 국면을 <b>따로 대비</b>한다</td></tr>
+        <tr class="hot"><td>유동성이 먼저다</td><td>가격보다 <b>거래가 되느냐</b>가 먼저 무너진다</td><td>호가 스프레드·변동성 지표를 <b>가격과 함께</b> 본다</td></tr>
+        <tr><td>서사와 사실을 나눠라</td><td>"보복 매도"는 그날 <b>확인할 수 없는</b> 이야기였다</td><td>후보마다 <b>증거 등급</b>을 매겨 기록한다</td></tr>
+      </tbody>
+    </table>
+
+    <div class="record" style="margin-top:22px">
+      <div class="rl">과장하지 않기 — 이 사건으로 말할 수 없는 것</div>
+      <p>"미국채가 안전자산 지위를 잃었다"는 <b>이 사건만으로는 증명되지 않는다.</b></p>
+      <p class="cond">며칠간의 유동성 스트레스와 기축통화 지위의 구조적 변화는 <b>다른 시간축의 이야기</b>다. 후자를 주장하려면 준비자산 비중·결제 통화 비중 같은 <b>다년간 데이터</b>가 필요하다.</p>
+    </div>
+
+    <div class="verdict" style="margin-top:auto;padding-top:20px">
+      <span class="tag">태도</span>
+      <span class="txt">큰 사건일수록 <em>말할 수 있는 것과 없는 것</em>을 구분해서 쓰는 사람이 신뢰를 얻는다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 11<br>다섯 교훈</div>
+    <div class="nbody">
+      <p><span class="q">두 번째 교훈이 가장 실전적이다</span>
+      시장이 급변할 때 <b>"누가 강제로 팔아야 하나"</b>를 묻는 습관은 거의 모든 위기에서 유효하다.
+      2020년 3월(코로나), 2022년 영국(연기금 담보), 2025년 4월(베이시스 트레이드) 모두
+      <b>팔고 싶어서가 아니라 팔아야만 해서</b> 매도가 나왔다. 자발적 매도와 강제 매도는 성격이 완전히 다르고,
+      후자는 <b>가격과 무관하게</b> 나오기 때문에 낙폭이 커진다.</p>
+      <p><span class="q">유동성이 가격보다 먼저 무너진다</span>
+      사고가 나기 전 <b>먼저 나타나는 신호는 가격이 아니라 거래 조건</b>이다.
+      호가 간격이 벌어지고, 대량 주문이 시장을 밀고, 변동성 지표가 뛴다.
+      그래서 채권 쪽에서는 <b>MOVE 지수</b>와 <b>스와프 스프레드</b>를 가격과 함께 본다.
+      "값은 아직 안 빠졌는데 거래가 이상하다"는 관찰이 종종 하루 이틀 앞선다.</p>
+      <p><span class="q">마지막 교훈이 학회에서 특히 중요한 이유</span>
+      발표에서 가장 흔한 실수가 <b>확인되지 않은 이유를 단정하는 것</b>이다.
+      "중국이 던졌다"고 말하면 그럴듯하지만, 근거를 묻는 질문 하나에 무너진다.
+      대신 <b>"레버리지 청산이 증폭 요인으로 보이며, 해외 매도는 그 시점에 확인 불가"</b>라고 쓰면
+      <b>같은 내용인데 반박당하지 않는다.</b> 이게 리서치의 문장력이다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 12 · 판단 기록 실습 ============ -->
+<article class="unit">
+  <section class="slide dark">
+    <div class="chrome"><span class="lane">5부 · 실전</span><span>12 / 판단 기록 실습</span></div>
+
+    <h2 class="claim">그날 나는 <em>무엇을 썼어야</em> 했나</h2>
+    <p class="sub">3부에서 배운 판단 기록 양식을 그대로 쓴다. 사후 설명이 아니라
+    <b>그 시점에 쓸 수 있었던 문장</b>으로 적는 게 훈련의 핵심이다.</p>
+
+    <div class="record">
+      <div class="rl">판단 기록 · 2025년 4월 둘째 주 작성 가정</div>
+      <p><b>관측</b> — 관세 발표 후 주식 급락에도 <b>장기금리가 급등</b>했고 달러가 동반 약세를 보였다.
+      단기물보다 장기물 상승폭이 컸다.</p>
+      <p><b>판단</b> — 이번 상승은 기대 단기금리(앞항)가 아니라 <b>텀 프리미엄(뒷항)</b>이 주도한 것으로 본다.
+      방아쇠는 정책 불확실성, 증폭기는 <b>레버리지 청산</b>으로 추정한다.</p>
+      <p class="cond"><b>무효화 조건</b> — ① 달러가 강세로 돌아서면서 금리가 오른다면 앞항 주도로 재해석한다.
+      ② 변동성 지표와 호가 스프레드가 정상화됐는데도 금리가 계속 오르면 증폭기가 아니라 <b>구조적 매도</b>다.
+      ③ 정책이 후퇴했는데도 금리가 안 내려오면 재정 프리미엄이 <b>영구 반영</b>된 것으로 본다.</p>
+    </div>
+
+    <div class="cards" style="flex:0 0 auto;margin-top:20px">
+      <div class="card">
+        <span class="ctag">그 뒤 실제로</span>
+        <h4>①은 발생하지 않았다</h4>
+        <p>달러는 약세였다. → 앞항 주도 해석은 <b>기각</b>.</p>
+      </div>
+      <div class="card">
+        <span class="ctag">그 뒤 실제로</span>
+        <h4>②는 부분적으로 해소</h4>
+        <p>유예 발표 후 변동성이 진정되며 금리도 되돌림. → <b>증폭기 가설과 정합</b>.</p>
+      </div>
+      <div class="card">
+        <span class="ctag">그 뒤 실제로</span>
+        <h4>③은 일부 성립</h4>
+        <p>완전히 복귀하지 않았고 5월에 강등이 이어졌다. → <b>재정 프리미엄 일부 잔존</b>.</p>
+      </div>
+      <div class="card">
+        <span class="ctag">그래서</span>
+        <h4>판단은 살아남았다</h4>
+        <p>세 조건 중 둘이 정합, 하나가 부분 수정. <b>기록이 있어야 이 채점이 가능하다.</b></p>
+      </div>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 12<br>판단 기록</div>
+    <div class="nbody">
+      <p><span class="q">왜 사후 설명이 아니라 기록이어야 하나</span>
+      사건이 끝난 뒤에는 <b>어떤 설명이든 그럴듯해 보인다.</b> 사후 설명은 실력을 늘려주지 않는다.
+      반면 <b>그 시점에 관측 가능한 것만으로 판단을 쓰고, 무효화 조건을 붙여두면</b>
+      나중에 <b>스스로 채점</b>할 수 있다. 이 채점의 누적이 곧 실력이고, 취업 포트폴리오로도 그대로 쓰인다.</p>
+      <p><span class="q">무효화 조건을 잘 쓰는 요령</span>
+      ① <b>관측 가능해야</b> 한다(달러 방향, 변동성 지표처럼).
+      ② <b>내 판단과 반대 방향</b>이어야 한다 — 유리한 조건만 적으면 기록이 아니라 응원이다.
+      ③ <b>기간을 붙인다</b>(며칠, 3개월). 3부 24장에서 쓴 "3개월 연속 하락"이 바로 이 형식이다.</p>
+      <p><span class="q">학회 활동으로 이어가려면</span>
+      큰 사건이 있을 때마다 이 양식으로 <b>A4 한 장</b>을 남겨라. 관측 → 판단 → 무효화 조건 → (한 달 뒤) 채점.
+      1년이면 열 건 남짓이 쌓이고, 그게 <b>"나는 이렇게 판단했고 이렇게 틀렸다"</b>는 기록이 된다.
+      <b>맞힌 기록보다 수정한 기록이 더 설득력 있다.</b></p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 13 · 종합 + 셀프체크 (다크) ============ -->
+<article class="unit">
+  <section class="slide dark">
+    <div class="chrome"><span class="lane">5부 · 실전</span><span>13 / 3회차 종합</span></div>
+
+    <h2 class="claim">3회차 전체를 <em>한 장</em>으로</h2>
+    <p class="sub">다섯 부가 어떻게 이어지는지 확인하고, 마지막 셀프체크로 닫는다.</p>
+
+    <div class="stage" style="flex:0 0 auto;margin-bottom:18px">
+      <svg viewBox="0 0 900 92" role="img" aria-label="1부부터 5부까지의 논리 흐름">
+        <defs>
+          <marker id="z1" markerWidth="9" markerHeight="7" refX="8.5" refY="3.5" orient="auto">
+            <path d="M0,0 L9,3.5 L0,7 Z" fill="#A8802A"/>
+          </marker>
+        </defs>
+        <g font-family="'Noto Sans KR', sans-serif" font-size="13">
+          <rect x="0" y="16" width="160" height="60" fill="#1D5B45"/>
+          <text x="80" y="42" text-anchor="middle" font-size="14.5" font-weight="700" fill="#fff">1부 해부</text>
+          <text x="80" y="63" text-anchor="middle" font-size="12" fill="#BFD8CB">앞항 + 뒷항</text>
+          <path d="M168,46 L188,46" stroke="#A8802A" stroke-width="2" marker-end="url(#z1)"/>
+
+          <rect x="196" y="16" width="160" height="60" fill="#18271F" stroke="#3E8A6E"/>
+          <text x="276" y="42" text-anchor="middle" font-size="14.5" font-weight="700" fill="#EAF0EC">2부 수급</text>
+          <text x="276" y="63" text-anchor="middle" font-size="12" fill="rgba(220,231,223,.6)">지금 남아도는가</text>
+          <path d="M364,46 L384,46" stroke="#A8802A" stroke-width="2" marker-end="url(#z1)"/>
+
+          <rect x="392" y="16" width="160" height="60" fill="#18271F" stroke="#3E8A6E"/>
+          <text x="472" y="42" text-anchor="middle" font-size="14.5" font-weight="700" fill="#EAF0EC">3부 재정</text>
+          <text x="472" y="63" text-anchor="middle" font-size="12" fill="rgba(220,231,223,.6)">계속 남아도는가</text>
+          <path d="M560,46 L580,46" stroke="#A8802A" stroke-width="2" marker-end="url(#z1)"/>
+
+          <rect x="588" y="16" width="150" height="60" fill="#18271F" stroke="#3E8A6E"/>
+          <text x="663" y="42" text-anchor="middle" font-size="14.5" font-weight="700" fill="#EAF0EC">4부 파급</text>
+          <text x="663" y="63" text-anchor="middle" font-size="12" fill="rgba(220,231,223,.6)">무엇이 부서지나</text>
+          <path d="M746,46 L766,46" stroke="#A8802A" stroke-width="2" marker-end="url(#z1)"/>
+
+          <rect x="774" y="16" width="126" height="60" fill="#8E2A2A"/>
+          <text x="837" y="42" text-anchor="middle" font-size="14.5" font-weight="700" fill="#fff">5부 실전</text>
+          <text x="837" y="63" text-anchor="middle" font-size="12" fill="rgba(255,255,255,.8)">한 주에 전부</text>
+        </g>
+      </svg>
+    </div>
+
+    <ol class="checks">
+      <li>2025년 4월 <b>①국면과 ②국면</b>에서 금리가 반대로 움직인 이유는? (03)</li>
+      <li>주식↓ 금리↑ 달러↓ 조합이 뜻하는 것은? (02·04)</li>
+      <li>베이시스 트레이드가 <b>수요에서 매도로</b> 뒤집히는 경로를 그려보라. (05)</li>
+      <li>원인 후보에 <b>증거 등급</b>을 매기는 세 기준은? (06)</li>
+      <li>이번 금리 급등이 <b>앞항이 아닌</b> 이유를 소거법으로 설명하라. (07)</li>
+      <li>관세가 텀 프리미엄을 키우는 <b>두 경로</b>는? (07)</li>
+      <li>왜 주식이 아니라 <b>채권</b>이 정책을 되돌렸나? (08)</li>
+      <li>"절반만 되돌아왔다"가 왜 중요한 정보인가? (09)</li>
+      <li>사건과 구조를 가르는 <b>세 기준</b>은? (09)</li>
+      <li>2026년 현재 <b>여섯 지표</b>가 각각 무엇을 확인해주나? (10)</li>
+      <li>이 사건으로 <b>말할 수 없는 것</b>은 무엇인가? (11)</li>
+      <li>판단 기록의 <b>무효화 조건</b>을 잘 쓰는 세 요령은? (12)</li>
+      <li>1~5부를 <b>한 문장</b>으로 이어보라. (13)</li>
+    </ol>
+
+    <div class="verdict" style="margin-top:auto;padding-top:20px">
+      <span class="tag">3회차 결론</span>
+      <span class="txt">구조적으로 안 내려오는 금리는, <em>평온할 때는 비용이고 흔들릴 때는 뇌관</em>이다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 13<br>종합</div>
+    <div class="nbody">
+      <p><span class="q">12번 문항의 모범 답안</span>
+      "연준이 정하는 건 하룻밤 금리뿐이고 장기금리는 <b>기대 경로 + 텀 프리미엄</b>으로 결정된다(1부).
+      지금은 뒷항이 지배하는데, <b>발행은 늘고 사줄 곳은 줄었으며</b>(2부) 그 상태가 <b>재정 루프로 고착</b>됐다(3부).
+      그래서 높게 유지되는 금리가 <b>주식·부동산·기업·은행에 순서대로 청구서</b>를 내고(4부),
+      2025년 4월에는 그 구조가 <b>레버리지 청산과 만나 며칠 만에 한꺼번에</b> 드러났다(5부)."</p>
+      <p><span class="q">이 자료를 다 본 다음에 할 일</span>
+      ① FRED에서 <b>DGS10 · DGS30 · T10YIE · MOVE</b>를 즐겨찾기에 넣는다.
+      ② 뉴욕 연은 <b>ACM 텀 프리미엄</b> 페이지를 월 1회 확인한다.
+      ③ 큰 사건이 생기면 <b>11장의 양식으로 A4 한 장</b>을 남긴다.
+      이 셋만 습관이 되면 이 자료의 목적은 달성된 것이다.</p>
+      <p><span class="q">다음 회차로</span>
+      3회차는 <b>장기금리라는 하나의 가격</b>을 끝까지 팠다.
+      다음 단계는 이 금리를 <b>자산배분 판단</b>으로 옮기는 것 — 듀레이션을 늘릴 것인가,
+      주식 비중을 어떻게 할 것인가, 환헤지는 어떻게 할 것인가.
+      <b>가격을 이해하는 것과 포지션을 정하는 것은 다른 기술</b>이고, 그건 다음 회차의 주제다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 부록 A · 용어집 ============ -->
+<article class="unit">
+  <section class="slide dark">
+    <div class="chrome"><span class="lane">5부 · 실전</span><span>부록 A / 용어집 · 체크리스트</span></div>
+
+    <h2 class="claim">사건이 터졌을 때 <em>보는 것들</em></h2>
+    <p class="sub">5부의 열 단어는 대부분 <b>스트레스를 재는 도구</b>다. 평소에는 안 보다가 필요할 때 찾으면 늦는다.</p>
+
+    <div class="gloss">
+      <div class="gl"><span class="t">베이시스 트레이드</span><span class="e">BASIS TRADE</span><div class="d">국채 현물 매수 + 선물 매도. 수익폭이 작아 <b>레버리지를 크게</b> 쓰므로 변동성에 취약.</div></div>
+      <div class="gl"><span class="t">디레버리징</span><span class="e">DELEVERAGING</span><div class="d">빌린 돈을 줄이기 위해 <b>가격과 무관하게</b> 파는 것. 강제 매도의 대표 형태.</div></div>
+      <div class="gl"><span class="t">마진콜</span><span class="e">MARGIN CALL</span><div class="d">증거금 추가 납입 요구. 못 내면 <b>포지션이 강제 청산</b>된다.</div></div>
+      <div class="gl"><span class="t">MOVE 지수</span><span class="e">MOVE INDEX</span><div class="d">채권판 VIX. <b>금리 변동성</b>을 나타내며 급등하면 레버리지 청산 압력이 커진다.</div></div>
+      <div class="gl"><span class="t">스와프 스프레드</span><span class="e">SWAP SPREAD</span><div class="d">금리스왑 − 국채금리. 급변하면 <b>국채 시장 내부에 수급 이상</b>이 있다는 신호.</div></div>
+      <div class="gl"><span class="t">호가 스프레드</span><span class="e">BID-ASK</span><div class="d">사는 값과 파는 값의 차이. 벌어지면 <b>유동성이 얇아졌다</b>는 뜻.</div></div>
+      <div class="gl"><span class="t">안전자산 도피</span><span class="e">FLIGHT TO QUALITY</span><div class="d">위기 시 국채·달러로 몰리는 현상. <b>법칙이 아니라 가정</b>이라는 게 5부의 교훈.</div></div>
+      <div class="gl"><span class="t">채권 자경단</span><span class="e">BOND VIGILANTES</span><div class="d">재정이 방만해 보이면 <b>더 높은 금리를 요구해</b> 정책에 제동을 거는 투자자들.</div></div>
+      <div class="gl"><span class="t">상관관계 붕괴</span><span class="e">CORRELATION BREAK</span><div class="d">주식·채권이 <b>같이</b> 빠지는 국면. 분산이 작동하지 않는다.</div></div>
+      <div class="gl"><span class="t">TIC 통계</span><span class="e">TREASURY INTL. CAPITAL</span><div class="d">국가별 미국채 보유·거래. <b>두 달 이상 시차</b>가 있어 실시간 판단에는 못 쓴다.</div></div>
+    </div>
+
+    <div class="termline" style="margin:22px 0 0">
+      <span><b>사건 당일 체크리스트</b> ① 주식·금리·달러 세 칸 ② 커브 어느 구간이 움직였나 ③ 변동성·호가 상태 ④ 강제 매도 주체가 있나 ⑤ 판단 + 무효화 조건 기록</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">부록 A<br>용어 · 체크리스트</div>
+    <div class="nbody">
+      <p><span class="q">평소에 열어둘 화면</span>
+      <b>DGS10 · DGS30</b>(수준), <b>T10Y2Y</b>(커브), <b>T10YIE</b>(기대인플레), <b>MOVE</b>(변동성),
+      <b>하이일드 스프레드</b>(신용). 다섯 개면 이 자료에서 다룬 거의 모든 판단을 할 수 있다.
+      매일 볼 필요는 없고 <b>주 1회, 그리고 큰 뉴스가 있는 날</b>만 확인하면 충분하다.</p>
+      <p><span class="q">체크리스트의 순서에 이유가 있다</span>
+      ①에서 <b>사건의 성격</b>이 갈리고, ②에서 <b>원인의 위치</b>가 좁혀지고, ③에서 <b>증폭기 여부</b>가 확인되고,
+      ④에서 <b>지속 가능성</b>이 판단된다. ⑤는 그 판단을 <b>나중에 채점하기 위한</b> 기록이다.
+      순서를 지키면 30분이면 한 사건에 대한 견해가 만들어진다.</p>
+      <p><span class="q">마지막 당부</span>
+      이 자료의 목적은 <b>2025년 4월을 외우는 것</b>이 아니라
+      <b>다음에 비슷한 일이 벌어졌을 때 30분 만에 자기 판단을 세우는 것</b>이다.
+      그때 이 체크리스트 다섯 줄과 1부의 공식 한 줄만 기억나면 된다. 나머지는 그 위에 다시 붙는다.</p>
+    </div>
+  </aside>
+</article>
+
+</body>
+</html>
