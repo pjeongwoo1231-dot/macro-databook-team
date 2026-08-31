@@ -15,9 +15,9 @@
 
 read:
   # ── 2026-08-31 · 원자재·불확실성·무역 ─────────────────────────────
-  - file: "Econometrica - 2009 - Kilian - The Impact of Oil Price Shocks on the US Stock Market"
+  - file: "Int Economic Review - 2009 - Kilian - THE IMPACT OF OIL PRICE SHOCKS ON THE U S  STOCK MARKET"
     note: "유가 상승이 주가에 미치는 부호는 유가가 왜 올랐는지가 정한다"
-  - file: "불확실성 충격 Bloom 2009"
+  - file: "Econometrica - 2009 - Bloom - The Impact of Uncertainty Shocks"
     note: "불확실성 충격은 짧고 날카로운 침체를 만든다 — 그리고 되돌린다"
   - file: "Econometrica - 2003 - Melitz - The Impact of Trade on Intra-Industry Reallocations"
     note: "무역의 이득은 평균 기업이 좋아져서가 아니라 나쁜 기업이 죽어서 나온다"
@@ -229,3 +229,23 @@ read:
     skip: "코로나기 통화-재정 넥서스 서베이(EME 중앙은행 대상). 서술적 정리이며 BIS AER 2026 Ch.II 제텔이 같은 주제를 더 최신·구체로 덮는다"
   - file: "BIS-AER-2025"
     note: "채점 결과 — BIS의 구조 진단은 맞았고 경기 전망은 빗나갔다"
+
+  # ── 2026-09-01 · 대장 키 정정 + 판본 대조 ────────────────────────
+  # ⚠ 이 아래는 "이미 읽었으나 대장 키가 실제 파일명과 달라 미분해로 뜨던" 것들이다.
+  #    처음에 설명형 키를 넣은 것이 원인 — 대장에는 **실제 파일명 stem**만 넣는다.
+  - file: "The Journal of Finance - 2002 - Bessembinder - Equilibrium Pricing and Optimal Hedging in Electricity Forward Markets"
+    note: "저장할 수 없는 재화의 선도가격은 수요 분포의 왜도가 정한다"
+  - file: "The Journal of Finance - 2012 - SCHWARTZ - The Stochastic Behavior of Commodity Prices  Implications for Valuation and"
+    note: "원자재의 평균회귀는 두 종류다 — 어느 측도에서 회귀하는지가 함의를 가른다"
+  - file: "The Journal of Finance - 2005 - CASASSUS - Stochastic Convenience Yield Implied from Commodity Futures and Interest Rates"
+    note: "원자재의 평균회귀는 두 종류다 — 어느 측도에서 회귀하는지가 함의를 가른다"
+  - file: "150-years-of-boom-and-bust-what-drives-mineral-commodity-prices"
+    note: "원자재 가격의 지배 요인은 시계에 따라 갈린다 — 1년은 재고, 10년은 세계 GDP"
+    # ⚠ 이것은 게재판(Macroeconomic Dynamics 2018)이고 앞서 읽은 ssrn-2244796은 워킹페이퍼다.
+    #    사양이 다르다(원유 제외 / 분산분해 표 없음) -> 제텔에 정정 주석을 달았다
+  - file: "Econometrica - 2003 - Melitz - The Impact of Trade on Intra‐Industry Reallocations and Aggregate Industry Productivity"
+    note: "무역의 이득은 평균 기업이 좋아져서가 아니라 나쁜 기업이 죽어서 나온다"
+  - file: "Arthritis   Rheumatism - 2011 - Crowson - The lifetime risk of adult‐onset rheumatoid arthritis and other inflammatory"
+    skip: "의학 논문. 저자명 충돌로 인한 오다운로드(광물경제학자 Crowson과 동명이인)"
+  - file: "Population   Development Rev - 2024 - Karra - Economic Foundations of Contraceptive Transitions  Theories and a Review of"
+    skip: "피임 전환의 경제학 리뷰. 인구·거시 축에서 멀어 현재 볼트 구조에 붙는 자리가 없다"

@@ -36,7 +36,24 @@ NOTE_DIRS = ("02_Papers", "04_Zettel", "05_Library", "06_SourceArchive")
 # 읽은 원문 대장 — 파일명↔노트 제목 매칭이 실패하는 경우를 사람이 직접 기록한다
 READ_LEDGER = "reading_log.yaml"
 # 원문이 쌓이는 곳 (저장소 기준 상대 + 홈 기준 절대)
-SCAN_DIRS = ("docs/library", "docs/vault/06_SourceArchive", "docs/vault/Attachments")
+#
+# ⚠ 2026-09-01 확장 — **스캔 범위가 좁아 미분해 편수를 크게 과소보고하고 있었다.**
+#   종전 목록은 저장소 안(docs/*)만 봤다. 그런데 사용자가 실제로 논문을 받는 곳은
+#   `~/Downloads`와 **`~/OneDrive/Desktop/새 폴더*`** 다.
+#   Desktop 267편이 통째로 빠진 채 "미분해 370편"으로 보고돼 왔다 — 실제로는 694편이었다.
+#   **받는 곳을 스캔하지 않으면 대장은 진실을 말하지 않는다.**
+SCAN_DIRS = (
+    "docs/library",
+    "docs/vault/06_SourceArchive",
+    "docs/vault/Attachments",
+    "~/Downloads",
+    "~/OneDrive/Desktop",
+    "~/Documents/MacroVault/Attachments",
+    "~/Documents/MacroVault/06_SourceArchive",
+    "~/OneDrive/ドキュメント/카카오톡 받은 파일",
+)
+# 세지 않는 곳 — 백업·캐시·미러. 경로에 이 조각이 있으면 건너뛴다.
+SKIP_PARTS = ("backup", ".pdfcache", "sep_cache", "macro-source-library-clean")
 
 # 실증 논문의 흔적 — 표·계수·표본기간이 본문에 있다
 _EMPIRIC = [
@@ -185,27 +202,53 @@ def scan(extra: list[Path] | None = None, repo: Path | None = None) -> dict[str,
     notes = _existing_notes(vault) if vault else []
 
     seen: set[Path] = set()
+    dupkeys: set[str] = set()
     pdfs: list[Path] = []
     for d in list(SCAN_DIRS) + [str(p) for p in (extra or [])]:
-        base = Path(d)
+        # ⚠ expanduser 를 **먼저** 한다. `~/Downloads`는 is_absolute()가 False라서
+        #   순서를 바꾸면 `repo/~/Downloads`가 되어 조용히 사라진다(2026-09-01 실제로 그랬다).
+        base = Path(d).expanduser()
         if not base.is_absolute():
             base = repo / base
-        base = base.expanduser()
         if not base.is_dir():
             continue
         for f in base.rglob("*.pdf"):
+            if any(sp in str(f) for sp in SKIP_PARTS):
+                continue
             rp = f.resolve()
-            if rp not in seen:
-                seen.add(rp)
-                pdfs.append(f)
+            if rp in seen:
+                continue
+            seen.add(rp)
+            # 같은 원문이 여러 위치에 있으면 한 번만 센다(대장 키 기준)
+            k = _key(f.stem)
+            if k in dupkeys:
+                continue
+            dupkeys.add(k)
+            pdfs.append(f)
 
     ledger = _ledger(repo)
-    done, todo = [], []
+    # 판정을 **세 상태**로 가른다 — 2026-09-01 개정.
+    #   done   : 대장에 있다. **확인된 사실**
+    #   maybe  : 제목이 겹친다. **추측일 뿐이다**
+    #   todo   : 아무 근거도 없다
+    #
+    # ⚠ 왜 갈랐나
+    #   종전에는 `ledger or _matched` 로 묶어 하나의 "분해됨"으로 셌다.
+    #   그 결과 **가짜 분해됨이 대량 생산**됐다 — 실측 표본:
+    #     Basak "A Model of Financialization of Commodities" -> "2012 Index Investment..."(다른 논문)
+    #     amiti-et-al-2019 관세 논문 -> "2003 Melitz"(완전히 무관)
+    #   788편 중 "분해됨 392"로 보고됐으나 **대장 근거는 94편뿐**이었다.
+    #   **추측을 사실과 같은 칸에 세면 백로그가 사라진 것처럼 보인다.**
+    done, maybe, todo = [], [], []
     for f in sorted(pdfs):
-        hit = ledger.get(_key(f.stem)) or _matched(f.stem, notes)
-        (done if hit else todo).append((f, hit))
+        led = ledger.get(_key(f.stem))
+        if led:
+            done.append((f, led))
+            continue
+        hit = _matched(f.stem, notes)
+        (maybe if hit else todo).append((f, hit))
     return {"vault": vault, "notes": len(notes), "total": len(pdfs), "ledger": len(ledger),
-            "done": done, "todo": [f for f, _ in todo]}
+            "done": done, "maybe": maybe, "todo": [f for f, _ in todo]}
 
 
 def cmd_intake(limit: int, detail: bool, extra_dirs: list[str] | None) -> int:
@@ -216,8 +259,10 @@ def cmd_intake(limit: int, detail: bool, extra_dirs: list[str] | None) -> int:
     print(f"\n원문 {r['total']}편 · 볼트 노트 {r['notes']}개와 대조"
           + (f" · 대장 {r['ledger']}건" if r.get("ledger") else " · **대장 없음**"))
     print("=" * 70)
-    print(f"  이미 분해된 것으로 보임 : {len(r['done'])}편")
-    print(f"  아직 안 읽은 것         : {len(r['todo'])}편")
+    print(f"  ✅ 분해 확인 (대장 근거)   : {len(r['done'])}편")
+    print(f"  ❓ 제목만 겹침 (추측)      : {len(r.get('maybe', []))}편  ← 확인 전까지 읽은 것이 아니다")
+    print(f"  ⬜ 근거 없음               : {len(r['todo'])}편")
+    print(f"  ── 실제 남은 일           : {len(r.get('maybe', [])) + len(r['todo'])}편")
     print("=" * 70)
     if not r["todo"]:
         print("  읽을 것이 없습니다.")
