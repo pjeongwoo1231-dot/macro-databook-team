@@ -35,6 +35,10 @@ def main() -> int:
                     help="N번째 이전 **스냅샷**과 비교(날짜 아님). 수집을 거른 날이 있으면 어긋난다")
     q2.add_argument("--since", help="이 날짜(YYYY-MM-DD) 시점과 비교. 주간 분석은 이쪽을 쓴다")
     q2.add_argument("--until", help="끝 시점(YYYY-MM-DD). 생략하면 최신. 닫힌 주간을 볼 때 쓴다")
+    ik = sub.add_parser("intake", help="원문 인테이크 — 무엇이 아직 안 읽혔나")
+    ik.add_argument("--limit", type=int, default=10, help="보여줄 편수 (기본 10)")
+    ik.add_argument("--detail", action="store_true", help="본문을 읽어 실증/이론을 판정")
+    ik.add_argument("--dir", action="append", dest="dirs", help="추가로 훑을 폴더 (반복 가능)")
     an = sub.add_parser("analog", help="과거 유사 국면 탐색 — 그때 무슨 일이 있었나")
     an.add_argument("--asof", help="기준 시점 YYYY-MM-DD")
     an.add_argument("--top", type=int, default=6, help="이웃 개수 (기본 6)")
@@ -147,6 +151,10 @@ def main() -> int:
     if args.cmd == "surprise":
         from .surprise import run as run_sur
         return run_sur()
+
+    if args.cmd == "intake":
+        from .intake import cmd_intake
+        return cmd_intake(args.limit, args.detail, args.dirs)
 
     if args.cmd == "analog":
         from .analog import cmd_analog
