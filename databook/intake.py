@@ -33,6 +33,8 @@ from .core import load_env
 
 # 볼트에서 이미 분해된 것을 찾는 곳
 NOTE_DIRS = ("02_Papers", "04_Zettel", "05_Library", "06_SourceArchive")
+# 읽은 원문 대장 — 파일명↔노트 제목 매칭이 실패하는 경우를 사람이 직접 기록한다
+READ_LEDGER = "reading_log.yaml"
 # 원문이 쌓이는 곳 (저장소 기준 상대 + 홈 기준 절대)
 SCAN_DIRS = ("docs/library", "docs/vault/06_SourceArchive", "docs/vault/Attachments")
 
@@ -68,6 +70,39 @@ def _norm(s: str) -> str:
 
 def _tokens(s: str) -> set[str]:
     return {t for t in _norm(s).split() if len(t) > 2}
+
+
+def _key(stem: str) -> str:
+    """대장 조회용 키. 브라우저가 붙이는 ` (1)` 사본 접미사를 같은 원문으로 본다."""
+    return _norm(stem)
+
+
+def _ledger(repo: Path) -> dict[str, str]:
+    """읽은 원문 대장을 읽는다 — `파일명 stem: 남긴 노트 제목` 매핑.
+
+    ⚠ 왜 필요한가
+        `_matched()`는 **파일명 토큰과 노트 제목의 겹침**으로 판정한다.
+        그런데 제텔 제목은 파일명이 아니라 **주장 문장**이다
+        (`ssrn-2244796.pdf` → "원자재 가격의 지배 요인은 시계에 따라 갈린다").
+        겹치는 토큰이 0이라 **분해를 끝낸 논문이 계속 미분해로 뜬다.**
+        2026-08-31에 29편을 분해했는데 목록이 전혀 줄지 않아 드러났다.
+
+        자동 매칭을 더 똑똑하게 만드는 대신 **사람이 적는 대장**을 둔다 —
+        느슨한 추론보다 명시적 기록이 낫다. 파일이 없으면 조용히 건너뛴다.
+    """
+    f = repo / READ_LEDGER
+    if not f.is_file():
+        return {}
+    try:
+        import yaml
+        raw = yaml.safe_load(f.read_text(encoding="utf-8")) or {}
+    except Exception:
+        return {}
+    out: dict[str, str] = {}
+    for e in (raw.get("read") or []):
+        if isinstance(e, dict) and e.get("file"):
+            out[_key(str(e["file"]))] = str(e.get("note") or "대장 기록")
+    return out
 
 
 def _text(pdf: Path, sample: int = 16) -> str:
@@ -164,11 +199,12 @@ def scan(extra: list[Path] | None = None, repo: Path | None = None) -> dict[str,
                 seen.add(rp)
                 pdfs.append(f)
 
+    ledger = _ledger(repo)
     done, todo = [], []
     for f in sorted(pdfs):
-        hit = _matched(f.stem, notes)
+        hit = ledger.get(_key(f.stem)) or _matched(f.stem, notes)
         (done if hit else todo).append((f, hit))
-    return {"vault": vault, "notes": len(notes), "total": len(pdfs),
+    return {"vault": vault, "notes": len(notes), "total": len(pdfs), "ledger": len(ledger),
             "done": done, "todo": [f for f, _ in todo]}
 
 
@@ -177,7 +213,8 @@ def cmd_intake(limit: int, detail: bool, extra_dirs: list[str] | None) -> int:
     r = scan(extra)
     if not r["vault"]:
         print("OBSIDIAN_VAULT_PATH 가 없습니다 — 볼트 노트와 대조할 수 없습니다.")
-    print(f"\n원문 {r['total']}편 · 볼트 노트 {r['notes']}개와 대조")
+    print(f"\n원문 {r['total']}편 · 볼트 노트 {r['notes']}개와 대조"
+          + (f" · 대장 {r['ledger']}건" if r.get("ledger") else " · **대장 없음**"))
     print("=" * 70)
     print(f"  이미 분해된 것으로 보임 : {len(r['done'])}편")
     print(f"  아직 안 읽은 것         : {len(r['todo'])}편")
