@@ -319,6 +319,22 @@ related: ["[[지표 MOC]]"]
 > `indicators.yaml`에 **부문 가동률 `CAPUTLG331S`** 와 **신규수주 `AMTMNO`** 를 신설했다(331→333).
 > **총지수 TCU로는 대체할 수 없다** — 논문의 근거가 부문 지표이기 때문이다.
 
+**거시 고전 — 제텔 0건이던 3편** *(2026-08-31 6차)*
+
+`Attachments/macro_classics/` 12편 중 **제텔이 하나도 없던 것이 정확히 3편**이었다.
+(Solow·Lucas·Romer·Barro·Kydland-Prescott·Long-Plosser·Hsieh-Klenow는 이미 분해돼 있다.)
+
+- ◆ [[필립스 곡선의 상충은 정태가 아니라 동태다 — 그래서 답은 시간선호가 정한다]] — Phelps(1967) Economica 34(135)
+- ◆ [[저장모형은 원자재 급등은 설명하지만 지속성은 설명하지 못한다]] — Deaton & Laroque(1992) RES 59(1)
+- ◆ [[현재가치 모형은 소비되는 원자재에서만 작동한다]] — Pindyck(1993) NBER WP 4083 / EJ 103
+
+> 🔗 **세 편이 이번 세션의 신규 제텔과 직접 맞물린다.**
+> Deaton-Laroque ↔ Stürmer(재고의 역할이 **반대**) · Pindyck ↔ Casassus(금은 편의수익이 없다) ·
+> Phelps ↔ 한국 기대인플레 후향성(**Phelps 가정이 그대로 성립** → 디스인플레 비용 최대치)
+
+> 📌 **재현 가능한 검정 후보**: Pindyck의 현재가치 검정은 **현물·선물 가격만** 있으면 된다.
+> 재고·생산비가 필요 없으므로 현재 파이프라인으로 재현 가능하다 → [[제텔 → 트리거 변환 큐]]
+
 > ⏭ **중복으로 확인돼 건너뜀**: `ssrn-147128`(Bessembinder & Lemmon 워킹페이퍼)은
 > 이미 분해한 JF 2002 논문의 초고판이다. `Arthritis & Rheumatism - 2011 - Crowson`은 의학 논문(오다운로드).
 
