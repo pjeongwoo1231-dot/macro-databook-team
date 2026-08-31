@@ -5,6 +5,8 @@ aliases:
   - "Misallocation and Manufacturing TFP in China and India"
 type: paper
 status: unverified
+verified_counterpart: "[[2009 Misallocation and Manufacturing TFP in China and India (Hsieh & Klenow)]]"
+promotion_date: 2026-08-31
 duplicate_of: "[[L166 Misallocation and Manufacturing TFP in China and India]]"
 dedup_key: "title+author+year"
 source_url_missing: "false"
@@ -26,6 +28,11 @@ verified_source_url: "https://doi.org/10.2139/ssrn.1442871"
 > 원문 확보·대조 후 `02_Papers`로 승격하고 `status: verified`로 바꾼다.
 
 # 403. Misallocation and Manufacturing TFP in China and India
+
+> [!success] 승격 노트가 있다 — 인용은 그쪽에서
+> **[[2009 Misallocation and Manufacturing TFP in China and India (Hsieh & Klenow)]]** (`02_Papers`, `verification: full`)로 승격했다(2026-08-31).
+> 전문을 판독하고 서지를 Crossref로 대조했다. **수치·주장 인용은 승격 노트에서 한다.**
+
 
 
 > [!danger] 같은 원문의 중복본 — 이 노트를 쓰지 말 것

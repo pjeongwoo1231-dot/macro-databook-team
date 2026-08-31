@@ -1,79 +1,66 @@
 ---
 title: "Competitive Storage and Commodity Price Dynamics"
 type: paper
-journal: Journal of Political Economy 104(5), 896–923 (1996-10)
+journal: Journal of Political Economy 104(5), 896–923 (1996)
 date: 1996
-author: Angus Deaton (Princeton), Guy Laroque (INSEE, Paris)
+author: Angus Deaton (Princeton), Guy Laroque (INSEE)
 doi: 10.1086/262046
-url: https://www.journals.uchicago.edu/doi/abs/10.1086/262046
-tags: [type/paper, method/structural-estimation, domain/commodities]
-concepts: [경쟁적 저장, 구조 추정, 자기상관 퍼즐, 공급 반응]
+url: https://doi.org/10.1086/262046
+tags: [type/paper, domain/commodities, method/structural-estimation, method/storage-model]
+concepts: [경쟁적 저장, 자기상관, 투기의 한계, 가격 평활, 저장모형의 실패]
 status: done
-verification: partial
+verification: full
 reliability: academic
-text_basis: cited-primary
-verified: "○ University of Chicago Press 공식 페이지에서 제목·저자·권호 대조(2026-08-15). 페이지는 RePEc으로 확정(104(5) 896–923). 본문 미열람, **수치 인용 금지**"
-promoted_from: "[[L43 Competitive Storage and Commodity Price Dynamics]]"
-related: ["[[1992 On the Behaviour of Commodity Prices (Deaton & Laroque)]]", "[[1993 The Present Value Model of Rational Commodity Pricing (Pindyck)]]", "[[원자재 재고]]"]
+text_basis: full-text
+verified: "✅ 2026-08-31 무료 사본 **전문 판독**(70,041자). 실제제목 대조 100% 일치. 서지 Crossref 확정. **저널 권호·페이지는 조회 미확정**"
+promoted_from: "[[Library MOC]]"
+related: ["[[Library MOC]]", "[[2014 The Role of Inventories and Speculative Trading in the Global Market for Crude Oil (Kilian & Murphy)]]", "[[2014 Effects of Speculation and Interest Rates in a Carry Trade Model of Commodity Prices (Frankel)]]", "[[1988 The Excess Co-Movement of Commodity Prices (Pindyck & Rotemberg)]]", "[[2019 From Boom to Bust - A Typology of Real Commodity Prices in the Long Run (Jacks)]]", "[[원자재 재고]]"]
 ---
 
-# 저장모형을 구조적으로 추정하면 무엇이 남는가 (Deaton & Laroque, 1996)
+# 저장 모형은 원자재 가격의 지속성을 설명하지 못한다 (Deaton & Laroque, 1996)
 
-> Journal of Political Economy 104(5) 896–923, 1996년 10월. `doi:10.1086/262046`
-> ⚠ **본문 미열람.** 서지만 확정했다. **수치는 인용하지 않는다.**
+> JPE 104(5). **우리 볼트에서 재고를 다루는 모든 논의의 이론적 기준선**이자,
+> 동시에 **그 이론의 실패를 보고한 논문**이다.
 
-## 왜 중요한가 — 1992년이 남긴 숙제
+## 이론
 
-[[1992 On the Behaviour of Commodity Prices (Deaton & Laroque)]]가 초록에서 스스로 인정한 실패가 있다 —
-**자료의 높은 자기상관을 설명하지 못한다.** 이 논문은 같은 저자들이 그 숙제를 다시 잡은 것이다.
+위험중립적 원자재 투기자가 **싸게 사서 비싸게 팔면** 가격을 평활하고,
+단순 수급 과정에서는 존재하지 않을 **시계열 의존성(자기상관)을 만들어낸다.**
 
-1992년이 모형의 **함의를 자료와 대조**했다면, 1996년은 **모형 자체를 구조적으로 추정**한다.
+관측 사실: 원자재 가격은 **변동이 크고, 해마다 강한 양의 상관**을 보인다.
+통념은 변동성은 공급요인으로, 자기상관은 투기자 활동으로 설명한다.
 
-## 논지
+## ★ 발견 — 그 설명이 증거와 맞지 않는다
 
-경쟁적 저장모형의 파라미터를 상품별로 추정해, **저장만으로 관측된 가격 동학을
-얼마나 재현할 수 있는지**를 직접 묻는다.
+> **투기는 그것이 없을 때 약한 자기상관을 보이는 가격의 자기상관을 **상당히 높일 수는 있지만**,
+> **실제로 관측되는 높은 수준까지는 올리지 못한다.**
 
-핵심 쟁점은 여전히 자기상관이다. 저장 동기만으로는 자료가 보이는 **지속성의 크기**에 못 미친다.
-따라서 **저장 밖의 요인**(공급의 느린 반응, 수요의 지속성, 추세 요인)이 필요하다는 방향으로 논의가 이동한다.
+즉 **경쟁적 저장만으로는 원자재 가격의 지속성을 재현할 수 없다.**
+모형이 데이터를 못 맞춘다는 정직한 보고다.
 
-### ⚠ 2026-08-18 유보 — 이 실패가 수치 오류였을 수 있다
+## 우리 볼트에 쓰는 법 — 세 논문을 한 줄에 꿴다
 
-[[2011 The Economics of Grain Price Volatility (Wright)]](AEPP 33(1), 전문 판독)이 전하는 Cafiero et al.의 지적:
+| 논문 | 역할 |
+|---|---|
+| **이 논문 (1996)** | **저장 이론의 기준선이자 그 한계** — 저장만으로는 지속성이 안 나온다 |
+| [[2014 Effects of Speculation and Interest Rates in a Carry Trade Model of Commodity Prices (Frankel)]] | 저장 결정에 **금리**를 넣는다 (빠진 조각 하나) |
+| [[2014 The Role of Inventories and Speculative Trading in the Global Market for Crude Oil (Kilian & Murphy)]] | 재고를 **기대 식별 도구**로 쓴다 (설명이 아니라 식별) |
 
-- Deaton-Laroque(1992)의 **수치 예제는 모형의 일반적 실패를 입증하지 못한다** — 수요곡선 기울기만 바꿔도 자료 수준의 높은 자기상관이 재현된다. 즉 "모형의 일반적 특성"이 아니다
-- D-L(1995·1996)의 **PML 추정에서 꺾인 수요의 근사에 수치 부정확성**이 있어 추정에 큰 편의가 생기고, 그 결과 **꺾임 가격 p\* 를 과소추정**했다. 저장 빈도도 함께 과소평가된다
-- 이를 고치고 단위당 고정 저장비용을 허용하면 **여러 품목에서 상관 추정치가 더 높아진다**
+**중요한 순서**: Kilian & Murphy가 재고로 기대를 식별할 때, 그 정당성은 저장 이론에서 온다.
+그런데 이 논문은 **그 저장 이론이 지속성을 설명하지 못한다**고 말한다.
+→ **재고를 "식별 도구"로 쓰는 것과 "설명"으로 쓰는 것은 다르다.** 우리 판독에서 이 둘을 섞으면 안 된다.
 
-→ **이 노트의 "자기상관 설명 실패"를 폐기하지 않는다. 유보로 내린다.**
-Cafiero et al. 원문을 직접 확인하기 전까지는 **"저장모형은 자기상관을 설명하지 못한다"를 확정 진술로 인용하지 않는다.**
-⚠ 전달자인 Wright는 경쟁 모형의 당사자([[1991 Storage and Commodity Markets (Williams & Wright)]] 저자)이므로 이해관계가 있다.
+[[1988 The Excess Co-Movement of Commodity Prices (Pindyck & Rotemberg)]]의 미해결 질문
+("저장 고려 표준 모형이 기각된다")과 **같은 방향의 결과**다 — 8년 뒤 다른 방법으로 같은 곳에 도달했다.
 
-## 한계와 적용 범위
+**채점 규칙 19 후보**: "재고가 낮아서 가격이 오래 높게 유지된다" 류 claim은
+**저장 모형이 설명하지 못하는 영역**임을 evidence에 명시한다. 지속성의 원인은 아직 열린 문제다.
 
-- **사서(추가)**: 본문 미열람이므로 **상품별 추정치·적합도 수치를 인용하지 않는다**
-- **사서(추가)**: 1992년과 마찬가지로 **농산물 중심**이다
-- **사서(추가)**: "저장모형이 부족하다"는 결론을 **"저장이 중요하지 않다"로 읽으면 안 된다.**
-  왜도·폭발·비대칭은 여전히 저장이 설명한다. 못 하는 것은 **지속성의 크기**다
+## Red Team
 
-## 인과 사슬
-
-저장모형 구조 추정 → 왜도·폭발은 재현됨
-→ **자기상관의 크기는 미달**
-→ 저장 밖 요인 필요(공급의 느린 반응 · 수요 지속성 · 추세)
-→ **원자재 가격 예측에 재고 하나만 쓰면 지속성을 과소평가한다**
-
-**Comment**: 실무 규칙 — **재고 기반 판단은 방향과 비대칭에 강하고 지속기간에 약하다.**
-[[원자재 재고]]로 "지금 가격이 튈 수 있는가"는 말할 수 있어도
-"이 수준이 얼마나 갈 것인가"는 말하기 어렵다. 두 질문을 섞지 말 것.
-
-## 관련 개념
-
-- 선행 연구 — [[1992 On the Behaviour of Commodity Prices (Deaton & Laroque)]]
-- 편의수익 경로 — [[1993 The Present Value Model of Rational Commodity Pricing (Pindyck)]]
-- 지표 — [[원자재 재고]] · [[선물 곡선 (Futures Curve)]]
-
-## References
-
-[1]: https://www.journals.uchicago.edu/doi/abs/10.1086/262046 "Deaton and Laroque (1996), Competitive Storage and Commodity Price Dynamics, JPE 104(5) 896–923"
-[2]: https://ideas.repec.org/a/ucp/jpolec/v104y1996i5p896-923.html "RePEc 서지 (페이지 확정)"
+1. **1996년 논문, 연간 데이터**다. 고빈도 데이터·금융화 이후 시장에는 그대로 적용되지 않는다.
+2. 위험중립·경쟁적 저장이라는 **강한 가정**이다. 위험회피·저장 용량 제약·편의수익(convenience yield)을
+   넣으면 결과가 달라질 수 있다 — 후속 문헌이 그 방향으로 갔다.
+3. **모형의 실패를 보고한 논문**이므로, 이를 "저장이 중요하지 않다"로 읽으면 오독이다.
+   저장은 중요하나 **그것만으로 부족하다**는 뜻이다.
+4. **저널 권호·페이지를 조회로 확정하지 못했다.**

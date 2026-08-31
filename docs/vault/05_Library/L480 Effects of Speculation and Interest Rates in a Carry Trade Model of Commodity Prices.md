@@ -5,6 +5,8 @@ aliases:
   - "Effects of Speculation and Interest Rates in a Carry Trade Model of Commodity Prices"
 type: paper
 status: unverified
+verified_counterpart: "[[2014 Effects of Speculation and Interest Rates in a Carry Trade Model of Commodity Prices (Frankel)]]"
+promotion_date: 2026-08-31
 duplicate_of: "[[L45 Effects of Speculation and Interest Rates in a “Carry Trade” Model of Commodity Prices]]"
 dedup_key: "title+author+year"
 source_url_missing: "false"
@@ -26,6 +28,11 @@ verified_source_url: "https://doi.org/10.3386/w19463"
 > 원문 확보·대조 후 `02_Papers`로 승격하고 `status: verified`로 바꾼다.
 
 # 480. Effects of Speculation and Interest Rates in a "Carry Trade" Model of Commodity Prices
+
+> [!success] 승격 노트가 있다 — 인용은 그쪽에서
+> **[[2014 Effects of Speculation and Interest Rates in a Carry Trade Model of Commodity Prices (Frankel)]]** (`02_Papers`, `verification: full`)로 승격했다(2026-08-31).
+> 공개 전문을 직접 판독하고 서지를 Crossref로 재확인했다. **수치·주장 인용은 승격 노트에서 한다.**
+
 
 
 > [!danger] 같은 원문의 중복본 — 이 노트를 쓰지 말 것

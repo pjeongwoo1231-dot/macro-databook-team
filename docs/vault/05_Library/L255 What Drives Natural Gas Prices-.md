@@ -5,6 +5,8 @@ aliases:
   - "What Drives Natural Gas Prices-"
 type: paper
 status: unverified
+verified_counterpart: "[[2008 What Drives Natural Gas Prices (Brown & Yucel)]]"
+promotion_date: 2026-08-31
 source_url_missing: "false"
 reliability: secondary
 verified: "❌ 원문 미대조 — Manus AI 생성 2차 자료"
@@ -24,6 +26,11 @@ verified_source_url: "https://doi.org/10.5547/issn0195-6574-ej-vol29-no2-3"
 > 원문 확보·대조 후 `02_Papers`로 승격하고 `status: verified`로 바꾼다.
 
 # 255. What Drives Natural Gas Prices?
+
+> [!success] 승격 노트가 있다 — 인용은 그쪽에서
+> **[[2008 What Drives Natural Gas Prices (Brown & Yucel)]]** (`02_Papers`, `verification: full`)로 승격했다(2026-08-31).
+> 전문을 직접 판독하고 서지를 Crossref로 재확인했다. **수치·주장 인용은 승격 노트에서 한다.**
+
 
 
 

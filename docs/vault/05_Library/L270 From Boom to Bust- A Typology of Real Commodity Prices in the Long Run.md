@@ -5,6 +5,8 @@ aliases:
   - "From Boom to Bust- A Typology of Real Commodity Prices in the Long Run"
 type: paper
 status: unverified
+verified_counterpart: "[[2019 From Boom to Bust - A Typology of Real Commodity Prices in the Long Run (Jacks)]]"
+promotion_date: 2026-08-31
 source_url_missing: "false"
 reliability: secondary
 verified: "❌ 원문 미대조 — Manus AI 생성 2차 자료"
@@ -24,6 +26,11 @@ verified_source_url: "https://doi.org/10.1007/s11698-018-0173-5"
 > 원문 확보·대조 후 `02_Papers`로 승격하고 `status: verified`로 바꾼다.
 
 # 270. From boom to bust: a typology of real commodity prices in the long run
+
+> [!success] 승격 노트가 있다 — 인용은 그쪽에서
+> **[[2019 From Boom to Bust - A Typology of Real Commodity Prices in the Long Run (Jacks)]]** (`02_Papers`, `verification: full`)로 승격했다(2026-08-31).
+> 무료 사본 전문을 판독하고 실제 제목을 Crossref로 대조했다. **수치·주장 인용은 승격 노트에서 한다.**
+
 
 
 

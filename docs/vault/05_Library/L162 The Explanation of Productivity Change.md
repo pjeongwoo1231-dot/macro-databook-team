@@ -23,15 +23,15 @@ verified_counterpart: "[[1967 The Explanation of Productivity Change (Jorgenson 
 
 ### 1. Bibliographic Information
 
-| 항목 | 내용 |
-|---|---|
-| Title | The Explanation of Productivity Change |
-| Authors | Jorgenson & Griliches |
-| Year | 1967 |
-| Journal / Working Paper | 공식 출처와 원문 서지정보 참조 |
-| DOI / URL | [https://ideas.repec.org/a/oup/restud/v34y1967i3p249-283..html](https://ideas.repec.org/a/oup/restud/v34y1967i3p249-283..html) |
-| Research Field | 생산성·성장·기술 |
-| Keywords | 자본서비스, 노동서비스, 품질, 산출, TFP |
+| 항목                      | 내용                                                                                                                             |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| Title                   | The Explanation of Productivity Change                                                                                         |
+| Authors                 | Jorgenson & Griliches                                                                                                          |
+| Year                    | 1967                                                                                                                           |
+| Journal / Working Paper | 공식 출처와 원문 서지정보 참조                                                                                                              |
+| DOI / URL               | [https://ideas.repec.org/a/oup/restud/v34y1967i3p249-283..html](https://ideas.repec.org/a/oup/restud/v34y1967i3p249-283..html) |
+| Research Field          | 생산성·성장·기술                                                                                                                      |
+| Keywords                | 자본서비스, 노동서비스, 품질, 산출, TFP                                                                                                      |
 
 **One-Sentence Thesis.** 생산성 증가의 정확한 측정에는 자본·노동의 질과 요소서비스 지수를 반영해야 한다.
 

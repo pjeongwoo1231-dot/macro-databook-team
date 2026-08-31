@@ -5,6 +5,8 @@ aliases:
   - "Competitive Storage and Commodity Price Dynamics"
 type: paper
 status: unverified
+verified_counterpart: "[[1996 Competitive Storage and Commodity Price Dynamics (Deaton & Laroque)]]"
+promotion_date: 2026-08-31
 duplicate_of: "[[L43 Competitive Storage and Commodity Price Dynamics]]"
 dedup_key: "title+author+year"
 source_url_missing: "false"
@@ -26,6 +28,11 @@ verified_source_url: "https://doi.org/10.1086/262046"
 > 원문 확보·대조 후 `02_Papers`로 승격하고 `status: verified`로 바꾼다.
 
 # 485. Competitive Storage and Commodity Price Dynamics
+
+> [!success] 승격 노트가 있다 — 인용은 그쪽에서
+> **[[1996 Competitive Storage and Commodity Price Dynamics (Deaton & Laroque)]]** (`02_Papers`, `verification: full`)로 승격했다(2026-08-31).
+> 무료 사본 전문을 판독하고 실제 제목을 Crossref로 대조했다. **수치·주장 인용은 승격 노트에서 한다.**
+
 
 
 > [!danger] 같은 원문의 중복본 — 이 노트를 쓰지 말 것

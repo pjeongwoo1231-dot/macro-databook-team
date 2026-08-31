@@ -5,6 +5,8 @@ aliases:
   - "Time as a Trade Barrier"
 type: paper
 status: unverified
+verified_counterpart: "[[2013 Time as a Trade Barrier (Hummels & Schaur)]]"
+promotion_date: 2026-08-31
 duplicate_of: "[[L37 Time as a Trade Barrier]]"
 dedup_key: "title+author+year"
 source_url_missing: "false"
@@ -26,6 +28,11 @@ verified_source_url: "https://doi.org/10.3386/w17758"
 > 원문 확보·대조 후 `02_Papers`로 승격하고 `status: verified`로 바꾼다.
 
 # 332. Time as a Trade Barrier
+
+> [!success] 승격 노트가 있다 — 인용은 그쪽에서
+> **[[2013 Time as a Trade Barrier (Hummels & Schaur)]]** (`02_Papers`, `verification: full`)로 승격했다(2026-08-31).
+> 전문을 판독하고 실제 제목·저자를 Crossref로 대조했다. **수치·주장 인용은 승격 노트에서 한다.**
+
 
 
 > [!danger] 같은 원문의 중복본 — 이 노트를 쓰지 말 것

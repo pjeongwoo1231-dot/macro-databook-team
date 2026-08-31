@@ -46,12 +46,12 @@ verified_source_url: "https://onlinelibrary.wiley.com/doi/10.3982/ECTA6248"
 
 ## 출처·서지 검증 (2026-08-15)
 
-| 항목 | 기록 |
-|---|---|
-| 원문 제목 — **저자(명시)** | The Impact of Uncertainty Shocks |
-| 저자·연도 — **저자(명시)** | Nicholas Bloom; 2009 |
+| 항목                       | 기록                                                                                                                                   |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
+| 원문 제목 — **저자(명시)**       | The Impact of Uncertainty Shocks                                                                                                     |
+| 저자·연도 — **저자(명시)**       | Nicholas Bloom; 2009                                                                                                                 |
 | DOI·발행처 URL — **사서(추가)** | [https://onlinelibrary.wiley.com/doi/10.3982/ECTA6248](https://onlinelibrary.wiley.com/doi/10.3982/ECTA6248); DOI `10.3982/ECTA6248` |
-| 검증 범위 — **사서(추가)** | 발행처 페이지에서 제목·저자·2009년·DOI를 직접 대조. 이전 URL은 오류·오연결로 교체했으며, 본문 분석은 원문 재독 없이 변경하지 않았다. |
+| 검증 범위 — **사서(추가)**       | 발행처 페이지에서 제목·저자·2009년·DOI를 직접 대조. 이전 URL은 오류·오연결로 교체했으며, 본문 분석은 원문 재독 없이 변경하지 않았다.                                                   |
 
 ### 1. Bibliographic Information
 

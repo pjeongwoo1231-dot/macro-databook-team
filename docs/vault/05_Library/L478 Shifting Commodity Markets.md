@@ -29,12 +29,12 @@ verified_source_url: "https://www.imf.org/en/Publications/WP/Issues/2017/01/27/S
 
 ## 출처·서지 검증 (2026-08-15)
 
-| 항목 | 기록 |
-|---|---|
-| 원문 제목 — **저자(명시)** | Shifting Commodity Markets |
-| 저자·연도 — **저자(명시)** | Rabah Arezki, Frederick van der Ploeg, Federico Toscani; 2017 |
+| 항목                       | 기록                                                                                                                                                                                                                        |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 원문 제목 — **저자(명시)**       | Shifting Commodity Markets                                                                                                                                                                                                |
+| 저자·연도 — **저자(명시)**       | Rabah Arezki, Frederick van der Ploeg, Federico Toscani; 2017                                                                                                                                                             |
 | DOI·발행처 URL — **사서(추가)** | [https://www.imf.org/en/Publications/WP/Issues/2017/01/27/Shifting-Commodity-Markets-44588](https://www.imf.org/en/Publications/WP/Issues/2017/01/27/Shifting-Commodity-Markets-44588) · DOI: `10.5089/9781484306872.001` |
-| 검증 범위 — **사서(추가)** | 발행처·기관 원문 페이지를 외부 검증자가 직접 열어 제목·저자·연도를 대조. 본문 분석은 원문 재독 없이 변경하지 않았다. |
+| 검증 범위 — **사서(추가)**       | 발행처·기관 원문 페이지를 외부 검증자가 직접 열어 제목·저자·연도를 대조. 본문 분석은 원문 재독 없이 변경하지 않았다.                                                                                                                                                      |
 
 ### 1. Bibliographic Information
 

@@ -5,6 +5,7 @@ aliases:
   - "Global Supply Chains Will Not Be the Same in the Post-COVID-19 World"
 type: paper
 status: unverified
+doi_error: "10.3386/w27093 는 다른 논문(Dranove 외, 신약 혁신). 재식별 필요"
 source_url_missing: "false"
 reliability: secondary
 verified: "❌ 원문 미대조 — Manus AI 생성 2차 자료"
@@ -24,6 +25,16 @@ verified_source_url: "https://www.nber.org/papers/w27093"
 > 원문 확보·대조 후 `02_Papers`로 승격하고 `status: verified`로 바꾼다.
 
 # 394. Global Supply Chains Will Not Be the Same in the Post-COVID-19 World
+
+> [!danger] ⚠ 기록된 DOI가 **다른 논문**이다 — 대조 전까지 쓰지 말 것
+> `verified_doi: 10.3386/w27093` 로 적혀 있으나, Crossref 조회 결과 w27093 은
+> **Dranove·Garthwaite·Hermosilla, "Expected Profits and The Scientific Novelty of Innovation"** 이다.
+> 공급망 논문이 아니라 신약 혁신 논문이다.
+>
+> 2026-08-31 자동 수확기가 이 DOI로 **엉뚱한 논문 전문을 받아왔고**, 제목 대조로 잡아 폐기했다.
+> 이후 수확기에 `title_matches()` 검사를 넣어 같은 사고를 막았다.
+> **올바른 DOI를 다시 찾기 전까지 이 노트의 서지를 인용하지 않는다.**
+
 
 
 

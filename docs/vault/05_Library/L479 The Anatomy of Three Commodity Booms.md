@@ -5,6 +5,8 @@ aliases:
   - "The Anatomy of Three Commodity Booms"
 type: paper
 status: unverified
+verified_counterpart: "[[2006 The Anatomy of Three Commodity Booms (Radetzki)]]"
+promotion_date: 2026-08-31
 duplicate_of: "[[L365 The Anatomy of Three Commodity Booms]]"
 dedup_key: "title+author+year"
 source_url_missing: "false"
@@ -26,6 +28,11 @@ verified_source_url: "https://doi.org/10.1016/j.resourpol.2006.06.003"
 > 원문 확보·대조 후 `02_Papers`로 승격하고 `status: verified`로 바꾼다.
 
 # 479. The anatomy of three commodity booms
+
+> [!success] 승격 노트가 있다 — 인용은 그쪽에서
+> **[[2006 The Anatomy of Three Commodity Booms (Radetzki)]]** (`02_Papers`, `verification: full`)로 승격했다(2026-08-31).
+> 전문을 판독하고 실제 제목을 Crossref로 대조했다. **수치·주장 인용은 승격 노트에서 한다.**
+
 
 
 > [!danger] 같은 원문의 중복본 — 이 노트를 쓰지 말 것

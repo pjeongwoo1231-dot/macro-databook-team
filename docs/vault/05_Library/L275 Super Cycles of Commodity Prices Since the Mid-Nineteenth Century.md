@@ -5,6 +5,8 @@ aliases:
   - "Super Cycles of Commodity Prices Since the Mid-Nineteenth Century"
 type: paper
 status: unverified
+verified_counterpart: "[[2013 Super Cycles of Commodity Prices Since the Mid-Nineteenth Century (Erten & Ocampo)]]"
+promotion_date: 2026-08-31
 duplicate_of: "[[L242 Super Cycles of Commodity Prices Since the Mid-Nineteenth Century]]"
 dedup_key: "title+author+year"
 source_url_missing: "false"
@@ -27,6 +29,11 @@ verified_source_url: "https://doi.org/10.1016/j.worlddev.2012.11.013"
 
 # 275. Super Cycles of Commodity Prices Since the Mid-Nineteenth Century
 
+> [!success] 승격 노트가 있다 — 인용은 그쪽에서
+> **[[2013 Super Cycles of Commodity Prices Since the Mid-Nineteenth Century (Erten & Ocampo)]]** (`02_Papers`, `verification: full`)로 승격했다(2026-08-31).
+> 무료 사본 전문을 판독하고 실제 제목을 Crossref로 대조했다. **수치·주장 인용은 승격 노트에서 한다.**
+
+
 
 > [!danger] 같은 원문의 중복본 — 이 노트를 쓰지 말 것
 > **[[L242 Super Cycles of Commodity Prices Since the Mid-Nineteenth Century]]**과 제목·저자·연도가 같다 (erten ocampo 2013).
@@ -38,12 +45,12 @@ verified_source_url: "https://doi.org/10.1016/j.worlddev.2012.11.013"
 
 ## 출처·서지 검증 (2026-08-15)
 
-| 항목 | 기록 |
-|---|---|
-| 원문 제목 — **저자(명시)** | Super Cycles of Commodity Prices Since the Mid-Nineteenth Century |
-| 저자·연도 — **저자(명시)** | Bilge Erten; José Antonio Ocampo; 2013 |
+| 항목                       | 기록                                                                                                                                       |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| 원문 제목 — **저자(명시)**       | Super Cycles of Commodity Prices Since the Mid-Nineteenth Century                                                                        |
+| 저자·연도 — **저자(명시)**       | Bilge Erten; José Antonio Ocampo; 2013                                                                                                   |
 | DOI·발행처 URL — **사서(추가)** | [https://doi.org/10.1016/j.worlddev.2012.11.013](https://doi.org/10.1016/j.worlddev.2012.11.013) · DOI: `10.1016/j.worlddev.2012.11.013` |
-| 검증 범위 — **사서(추가)** | Crossref 메타데이터에서 제목·저자·연도를 보수적 기준으로 대조하고 DOI 영구 식별자를 기록. 본문 분석은 원문 재독 없이 변경하지 않았다. |
+| 검증 범위 — **사서(추가)**       | Crossref 메타데이터에서 제목·저자·연도를 보수적 기준으로 대조하고 DOI 영구 식별자를 기록. 본문 분석은 원문 재독 없이 변경하지 않았다.                                                       |
 
 ### 1. Bibliographic Information
 

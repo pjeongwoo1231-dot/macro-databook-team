@@ -5,6 +5,8 @@ aliases:
   - "The Role of Inventories and Speculative Trading in the Global Market for Crude Oil"
 type: paper
 status: unverified
+verified_counterpart: "[[2014 The Role of Inventories and Speculative Trading in the Global Market for Crude Oil (Kilian & Murphy)]]"
+promotion_date: 2026-08-31
 wrong_source_url: true
 url_actually_points_to: "NBER w15224 = 'Partisan Representation in Congress and the Geographic Distribution of Federal Funds'"
 correct_source: "Kilian & Murphy (2014), Journal of Applied Econometrics 29(3) 454-478"
@@ -26,6 +28,11 @@ verified_source_url: "https://onlinelibrary.wiley.com/doi/10.1002/jae.2322"
 > 원문 확보·대조 후 `02_Papers`로 승격하고 `status: verified`로 바꾼다.
 
 # 218. The Role of Inventories and Speculative Trading in the Global Market for Crude Oil
+
+> [!success] 승격 노트가 있다 — 인용은 그쪽에서
+> **[[2014 The Role of Inventories and Speculative Trading in the Global Market for Crude Oil (Kilian & Murphy)]]** (`02_Papers`, `verification: full`)로 승격했다(2026-08-31).
+> 전문을 직접 판독하고 서지를 Crossref로 재확인했다. **수치·주장 인용은 승격 노트에서 한다.**
+
 
 > [!danger] 기재된 NBER 번호가 무관한 논문이다
 > 확인 결과 그 번호는 **'Partisan Representation in Congress and the Geographic Distribution of Federal Funds'** 이다.

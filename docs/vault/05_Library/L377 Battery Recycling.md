@@ -5,6 +5,8 @@ aliases:
   - "Battery Recycling"
 type: paper
 status: unverified
+verified_counterpart: "[[2019 Recycling Lithium-Ion Batteries from Electric Vehicles (Harper et al.)]]"
+promotion_date: 2026-08-31
 source_url_missing: "false"
 reliability: secondary
 verified: "❌ 원문 미대조 — Manus AI 생성 2차 자료"
@@ -24,6 +26,11 @@ verified_source_url: "https://www.nature.com/articles/s41586-019-1682-5"
 > 원문 확보·대조 후 `02_Papers`로 승격하고 `status: verified`로 바꾼다.
 
 # 377. Recycling lithium-ion batteries from electric vehicles
+
+> [!success] 승격 노트가 있다 — 인용은 그쪽에서
+> **[[2019 Recycling Lithium-Ion Batteries from Electric Vehicles (Harper et al.)]]** (`02_Papers`, `verification: full`)로 승격했다(2026-08-31).
+> 전문을 판독하고 서지를 Crossref로 대조했다. **수치·주장 인용은 승격 노트에서 한다.**
+
 
 
 
