@@ -1,0 +1,1512 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>매크로 경제 읽기 1회차 — 1부 성장 (슬라이드 독학판)</title>
+<style>
+/* ==========================================================
+   매크로 경제 읽기 1회차 · 1부 성장 슬라이드 독학판 (완성본)
+   디자인 시스템 : ENGRAVED SECURITY
+   국채 증서의 인그레이빙 그린 · 원장의 붉은 선 · 각인 황동
+   ========================================================== */
+
+:root{
+  --ink:#101A16;          /* 잉크 그린블랙 : 다크 슬라이드 */
+  --ink-2:#18271F;
+  --engrave:#1D5B45;      /* 지폐 인그레이빙 그린 : 구조색 */
+  --engrave-lt:#3E8A6E;
+  --engrave-pale:#DCE7DF;
+  --paper:#F0EEE7;        /* 증서 종이 */
+  --paper-2:#E6E3D9;
+  --oxblood:#8E2A2A;      /* 원장 붉은 선 */
+  --oxblood-pale:#F2E2E0;
+  --brass:#A8802A;        /* 각인 인장 */
+  --brass-lt:#D9BE72;
+  --tx:#1A241F;
+  --tx-mid:#4E5A53;
+  --tx-faint:#8A948D;
+
+  --display:"Noto Serif KR","HANBatang",Batang,serif;
+  --body:"Noto Sans KR","Malgun Gothic",sans-serif;
+  --mono:"Consolas","D2Coding",monospace;
+
+  --slide-w:1040px;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--paper-2);color:var(--tx);
+  font-family:var(--body);font-weight:400;line-height:1.8;
+  letter-spacing:-0.01em;word-break:keep-all;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ---------- 슬라이드 단위 ---------- */
+.unit{max-width:var(--slide-w);margin:0 auto 64px}
+.unit:first-child{margin-top:64px}
+
+/* ---------- 표지 ---------- */
+.cover{justify-content:center}
+.covertitle{
+  font-family:var(--display);font-weight:800;font-size:62px;line-height:1.26;
+  letter-spacing:-0.04em;margin:0 0 28px;color:#fff;
+}
+.covertitle em{font-style:normal;color:var(--engrave-lt)}
+.coversub{
+  font-size:18px;line-height:1.8;color:rgba(220,231,223,.7);
+  max-width:52ch;margin:0 0 44px;
+}
+.coverparts{display:flex;flex-direction:column;gap:0;border-top:1px solid rgba(220,231,223,.2)}
+.coverparts div{
+  display:flex;gap:26px;align-items:baseline;padding:15px 0;
+  border-bottom:1px solid rgba(220,231,223,.2);
+}
+.coverparts .pn{
+  font-family:var(--mono);font-size:13px;letter-spacing:.14em;
+  color:var(--brass-lt);width:44px;flex-shrink:0;
+}
+.coverparts .pt{font-size:17px;color:#EAF0EC;font-weight:500}
+.coverparts .pd{font-size:14px;color:rgba(220,231,223,.5);margin-left:auto;font-family:var(--mono)}
+
+.slide{
+  position:relative;min-height:586px;padding:52px 56px 60px;
+  display:flex;flex-direction:column;
+  background:var(--paper);
+  box-shadow:0 1px 0 rgba(16,26,22,.10), 0 18px 40px -28px rgba(16,26,22,.55);
+}
+.slide.dark{background:var(--ink);color:#EAF0EC}
+
+/* 슬라이드 크롬 */
+.chrome{
+  display:flex;justify-content:space-between;align-items:baseline;
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;
+  color:var(--tx-faint);margin-bottom:34px;flex-shrink:0;
+}
+.dark .chrome{color:rgba(220,231,223,.42)}
+.chrome .lane{color:var(--engrave);font-weight:700}
+.dark .chrome .lane{color:var(--engrave-lt)}
+
+/* 슬라이드 제목 */
+.claim{
+  font-family:var(--display);font-weight:800;
+  font-size:40px;line-height:1.34;letter-spacing:-0.035em;
+  margin:0 0 16px;color:var(--ink);max-width:26ch;
+}
+.dark .claim{color:#fff}
+.claim.big{font-size:56px;line-height:1.28;max-width:20ch}
+.claim em{font-style:normal;color:var(--engrave)}
+.dark .claim em{color:var(--engrave-lt)}
+.claim mark{background:none;color:var(--oxblood)}
+.dark .claim mark{color:#E0736C}
+
+.sub{
+  font-size:17px;color:var(--tx-mid);margin:0 0 30px;max-width:60ch;line-height:1.75;
+}
+.dark .sub{color:rgba(220,231,223,.72)}
+
+/* 결론 바 — 슬라이드의 결정타. 캡션이 아니라 본체다 */
+.verdict{
+  margin-top:auto;display:flex;align-items:stretch;gap:0;flex-shrink:0;
+}
+.verdict .tag{
+  background:var(--engrave);color:#fff;font-family:var(--mono);
+  font-size:11.5px;letter-spacing:.16em;padding:16px 15px;
+  display:flex;align-items:center;flex-shrink:0;
+}
+.verdict .txt{
+  background:var(--engrave-pale);color:var(--ink);
+  padding:15px 22px;font-size:18px;font-weight:700;line-height:1.55;flex:1;
+  display:block;   /* flex 금지 — em/b 가 별도 아이템이 되어 줄이 쪼개진다 */
+}
+.dark .verdict .txt{background:rgba(62,138,110,.17);color:#EAF0EC}
+.verdict.warn .tag{background:var(--oxblood)}
+.verdict.warn .txt{background:var(--oxblood-pale);color:#4A1616}
+.verdict em{font-style:normal;color:var(--engrave)}
+.verdict.warn em{color:var(--oxblood)}
+.dark .verdict.warn em{color:#E0736C}
+.dark .verdict em{color:var(--engrave-lt)}
+
+/* 도형 영역 */
+.stage{flex:1;display:flex;align-items:center;justify-content:center;margin:6px 0 30px}
+.stage svg{width:100%;height:auto;display:block}
+
+/* ---------- 대형 수치 ---------- */
+.figures{display:flex;align-items:flex-end;gap:44px;flex-wrap:wrap}
+.fig{display:flex;flex-direction:column}
+.fig .lbl{
+  font-family:var(--mono);font-size:12px;letter-spacing:.14em;
+  color:var(--tx-faint);margin-bottom:6px;
+}
+.dark .fig .lbl{color:rgba(220,231,223,.5)}
+.fig .val{
+  font-family:var(--mono);font-weight:700;font-size:82px;line-height:1;
+  letter-spacing:-0.04em;color:var(--ink);
+}
+.dark .fig .val{color:#fff}
+.fig .val.dim{color:var(--tx-faint)}
+.dark .fig .val.dim{color:rgba(220,231,223,.4)}
+.fig .val.hot{color:var(--oxblood)}
+.dark .fig .val.hot{color:#E0736C}
+.fig .unit-s{font-size:30px;letter-spacing:0;margin-left:4px}
+.arrowbig{
+  font-family:var(--mono);font-size:52px;color:var(--brass);
+  line-height:1;padding-bottom:8px;
+}
+
+/* ---------- 2단 대조 ---------- */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--paper-2);flex:1}
+.pane{background:var(--paper);padding:28px 30px;display:flex;flex-direction:column}
+.pane.bad{background:#FAF0EF}
+.pane.good{background:#EFF4F0}
+.pane .ptag{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;
+  padding:5px 10px;align-self:flex-start;margin-bottom:18px;color:#fff;
+}
+.pane.bad .ptag{background:var(--oxblood)}
+.pane.good .ptag{background:var(--engrave)}
+.pane h4{
+  font-family:var(--display);font-weight:700;font-size:23px;line-height:1.45;
+  margin:0 0 14px;letter-spacing:-0.03em;
+}
+.pane.bad h4{color:var(--oxblood)}
+.pane.good h4{color:var(--engrave)}
+.pane p{margin:0 0 10px;font-size:15.5px;line-height:1.75;color:var(--tx-mid)}
+.pane p:last-child{margin-bottom:0}
+.pane b{color:var(--tx);font-weight:700}
+.pane .strike{text-decoration:line-through;text-decoration-color:var(--oxblood);
+  text-decoration-thickness:2px;color:var(--tx-faint)}
+
+/* ---------- 카드 그리드 ---------- */
+.cards{display:grid;gap:2px;background:var(--paper-2);flex:1;
+  grid-template-columns:repeat(2,1fr)}
+.cards.c3{grid-template-columns:repeat(3,1fr)}
+.cards.c4{grid-template-columns:repeat(4,1fr)}
+.card{background:var(--paper);padding:22px 22px;display:flex;flex-direction:column}
+.dark .cards{background:rgba(220,231,223,.14)}
+.dark .card{background:var(--ink)}
+.card .ctag{
+  font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--brass);
+  margin-bottom:10px;
+}
+.card h4{
+  font-family:var(--display);font-weight:700;font-size:20px;line-height:1.4;
+  margin:0 0 10px;letter-spacing:-0.03em;color:var(--ink);
+}
+.dark .card h4{color:#fff}
+.card p{margin:0 0 8px;font-size:14.5px;line-height:1.7;color:var(--tx-mid)}
+.dark .card p{color:rgba(220,231,223,.7)}
+.card p:last-child{margin-bottom:0}
+.card b{color:var(--tx);font-weight:700}
+.dark .card b{color:#EAF0EC}
+.card .out{
+  margin-top:auto;padding-top:12px;font-size:13.5px;color:var(--oxblood);font-weight:700;
+  border-top:1px solid var(--paper-2);
+}
+.dark .card .out{color:#E0736C;border-top-color:rgba(220,231,223,.18)}
+
+/* ---------- 표 ---------- */
+.tbl{width:100%;border-collapse:collapse;font-size:15px;flex-shrink:0}
+.tbl th{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.13em;font-weight:400;
+  text-align:left;padding:11px 14px;background:var(--ink);color:#EAF0EC;
+}
+.tbl td{padding:11px 14px;border-bottom:1px solid var(--paper-2);color:var(--tx-mid);
+  line-height:1.6;vertical-align:top}
+.tbl tr:nth-child(even) td{background:rgba(255,255,255,.45)}
+.tbl td:first-child{font-weight:700;color:var(--tx);white-space:nowrap}
+.tbl .mat{font-family:var(--mono);font-size:13.5px;color:var(--engrave);white-space:nowrap}
+.tbl .hot td:first-child{color:var(--oxblood)}
+
+/* 다크 슬라이드 위의 표 */
+.dark .tbl th{background:var(--engrave);color:#EAF0EC}
+.dark .tbl td{color:rgba(220,231,223,.78);border-bottom-color:rgba(220,231,223,.16)}
+.dark .tbl tr:nth-child(even) td{background:rgba(220,231,223,.05)}
+.dark .tbl td:first-child{color:#fff}
+.dark .tbl b{color:#fff}
+.dark .tbl .mat{color:#8FB3A2}
+.dark .tbl .hot td:first-child{color:#E0736C}
+
+/* ---------- 셀프체크 ---------- */
+.checks{display:grid;grid-template-columns:1fr 1fr;gap:0 34px;margin:0;padding:0;
+  list-style:none;counter-reset:ck;flex:1;align-content:start}
+.checks li{
+  counter-increment:ck;position:relative;padding:13px 0 13px 40px;
+  border-bottom:1px solid rgba(220,231,223,.16);font-size:15.5px;line-height:1.65;
+  color:rgba(234,240,236,.88);
+}
+.checks li::before{
+  content:counter(ck,decimal-leading-zero);position:absolute;left:0;top:14px;
+  font-family:var(--mono);font-size:12.5px;color:var(--brass-lt);letter-spacing:.06em;
+}
+.checks li b{color:#fff;font-weight:700}
+
+/* ---------- 판단 기록 양식 ---------- */
+.record{
+  border:1px solid rgba(220,231,223,.3);border-left:4px solid var(--brass);
+  padding:24px 28px;margin-bottom:20px;background:rgba(220,231,223,.05);
+}
+.record .rl{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  color:var(--brass-lt);margin-bottom:12px}
+.record p{margin:0 0 10px;font-size:17px;line-height:1.75;color:#EAF0EC}
+.record p:last-child{margin-bottom:0}
+.record .cond{color:var(--brass-lt);font-weight:700}
+
+
+/* ---------- 용어집 ---------- */
+.gloss{display:grid;grid-template-columns:1fr 1fr;gap:0 40px;flex:1;align-content:start}
+.gl{padding:11px 0;border-bottom:1px solid var(--paper-2)}
+.dark .gl{border-bottom-color:rgba(220,231,223,.16)}
+.gl .t{font-family:var(--display);font-weight:700;font-size:17px;letter-spacing:-0.02em;color:var(--ink)}
+.dark .gl .t{color:#fff}
+.gl .e{font-family:var(--mono);font-size:11px;color:var(--brass);margin-left:9px;letter-spacing:.08em}
+.dark .gl .e{color:var(--brass-lt)}
+.gl .d{font-size:13.5px;line-height:1.62;color:var(--tx-mid);margin-top:3px}
+.dark .gl .d{color:rgba(220,231,223,.72)}
+.gl .d b{color:var(--tx);font-weight:700}
+.dark .gl .d b{color:#EAF0EC}
+
+/* ---------- 슬라이드 안 용어 정의줄 ---------- */
+.termline{
+  display:flex;flex-wrap:wrap;gap:0 26px;margin:0 0 20px;padding:11px 0;
+  border-top:1px solid var(--paper-2);border-bottom:1px solid var(--paper-2);flex-shrink:0;
+}
+.dark .termline{border-color:rgba(220,231,223,.18)}
+.termline span{font-size:13.5px;color:var(--tx-mid);line-height:1.6}
+.dark .termline span{color:rgba(220,231,223,.7)}
+.termline b{font-family:var(--mono);font-size:12.5px;color:var(--engrave);font-weight:700;letter-spacing:.02em}
+.dark .termline b{color:var(--engrave-lt)}
+
+/* ---------- 노트 스트립 : 독학용 해설 ---------- */
+.note{
+  display:grid;grid-template-columns:132px 1fr;gap:0;
+  background:#E9E6DC;border-left:4px solid var(--brass);
+}
+.note .nlbl{
+  font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  color:var(--brass);padding:24px 0 24px 22px;line-height:1.7;
+}
+.note .nbody{padding:24px 30px 26px 8px}
+.note p{margin:0 0 12px;font-size:15.5px;line-height:1.85;color:#3B443E}
+.note p:last-child{margin-bottom:0}
+.note b{color:var(--ink);font-weight:700}
+.note .q{
+  font-family:var(--display);font-weight:700;font-size:17px;color:var(--engrave);
+  display:block;margin-bottom:6px;letter-spacing:-0.02em;
+}
+
+/* ---------- 반응형 ---------- */
+@media screen and (max-width:1100px){
+  .unit{max-width:100%;padding-left:16px;padding-right:16px}
+  .slide{padding:36px 28px 42px;min-height:0}
+  .claim{font-size:30px}
+  .claim.big{font-size:36px}
+  .fig .val{font-size:54px}
+  .split{grid-template-columns:1fr}
+  .cards,.cards.c3,.cards.c4{grid-template-columns:1fr}
+  .checks{grid-template-columns:1fr}
+  .gloss{grid-template-columns:1fr}
+  .tbl{font-size:13.5px}
+  .tbl th,.tbl td{padding:9px 10px}
+  .note{grid-template-columns:1fr}
+  .note .nlbl{padding:18px 22px 0}
+  .note .nbody{padding:10px 22px 22px}
+}
+/* ---------- PDF / 인쇄 : 1장 = 1페이지 (A4 가로) ---------- */
+@page{ size:297mm 210mm; margin:6mm; }
+@media print{
+  html,body{background:#fff;margin:0}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+
+  .unit{
+    max-width:none;margin:0;page-break-after:always;break-after:page;
+    page-break-inside:avoid;break-inside:avoid;
+    height:748px;display:flex;flex-direction:column;overflow:hidden;
+  }
+  .unit > .slide{flex:1 1 auto}
+  .unit > .note{flex:0 0 auto}
+  .unit:last-child{page-break-after:auto;break-after:auto}
+  .unit:first-child{margin-top:0}
+
+  .slide{min-height:0;box-shadow:none;padding:20px 30px 18px}
+  .chrome{margin-bottom:14px;font-size:9.5px}
+
+  .claim{font-size:26px;line-height:1.3;margin-bottom:7px;max-width:36ch}
+  .claim.big{font-size:33px;max-width:25ch}
+  .sub{font-size:12.5px;line-height:1.65;margin-bottom:11px;max-width:84ch}
+
+  .stage{margin:0 0 11px}
+  .stage svg{width:auto;max-width:100%;max-height:238px;margin:0 auto}
+
+  .verdict .tag{font-size:9.5px;padding:8px 10px}
+  .verdict .txt{font-size:13.5px;padding:8px 14px}
+
+  .figures{gap:26px;margin-bottom:11px!important}
+  .fig .val{font-size:44px}
+  .fig .unit-s{font-size:17px}
+  .fig .lbl{font-size:9.5px;margin-bottom:2px}
+  .arrowbig{font-size:30px}
+
+  .split{flex:0 0 auto}
+  .pane{padding:13px 16px}
+  .pane .ptag{font-size:9.5px;padding:3px 8px;margin-bottom:9px}
+  .pane h4{font-size:15.5px;margin-bottom:8px;line-height:1.4}
+  .pane p{font-size:11.4px;line-height:1.58;margin-bottom:6px}
+
+  .cards{flex:0 0 auto}
+  .card{padding:12px 14px}
+  .card .ctag{font-size:9px;margin-bottom:5px}
+  .card h4{font-size:14.5px;margin-bottom:6px;line-height:1.35}
+  .card p{font-size:11px;line-height:1.48;margin-bottom:4px}
+  .card .out{font-size:10.5px;padding-top:7px}
+
+  .tbl{font-size:11.4px}
+  .tbl th{font-size:9.5px;padding:6px 9px}
+  .tbl td{padding:6px 9px;line-height:1.45}
+  .tbl .mat{font-size:10.5px}
+
+  .checks li{font-size:11.4px;padding:7px 0 7px 30px;line-height:1.5}
+  .checks li::before{font-size:10px;top:8px}
+
+  .gloss{gap:0 24px}
+  .gl{padding:6px 0}
+  .gl .t{font-size:12.5px}
+  .gl .e{font-size:9px;margin-left:6px}
+  .gl .d{font-size:10.4px;line-height:1.42;margin-top:1px}
+  .termline{margin-bottom:10px;padding:7px 0;gap:0 18px}
+  .termline span{font-size:10.4px;line-height:1.5}
+  .termline b{font-size:9.8px}
+
+  .record{padding:14px 18px;margin-bottom:12px}
+  .record .rl{font-size:9px;margin-bottom:7px}
+  .record p{font-size:12px;line-height:1.5;margin-bottom:5px}
+
+  .note{border-left-width:3px}
+  .note .nlbl{padding:13px 0 13px 15px;font-size:9px;line-height:1.55}
+  .note .nbody{padding:13px 20px 13px 4px}
+  .note p{font-size:10.6px;line-height:1.5;margin-bottom:4px}
+  .note .q{font-size:12.2px;margin-bottom:2px}
+
+  /* 표지 */
+  .covertitle{font-size:46px;margin-bottom:20px}
+  .coversub{font-size:15px;margin-bottom:26px}
+  .coverparts div{padding:11px 0}
+  .coverparts .pt{font-size:14.5px}
+  .coverparts .pd{font-size:11.5px}
+}
+</style>
+</head>
+<body>
+<!-- ============ 표지 ============ -->
+<article class="unit">
+  <section class="slide dark cover">
+    <div class="chrome"><span class="lane">상경대학 경제학회 SCOPE</span><span>매크로 경제 읽기 · 1회차 · 1부</span></div>
+    <h1 class="covertitle">GDP는 크기가 아니라<br><em>속도를 재는 자</em>다</h1>
+    <p class="coversub">1회차 「경기와 물가」 1부 · 성장(Growth).
+    "GDP +2.1%" 한 줄에서 무엇을 확인해야 하는지, 그리고 그 숫자가 왜 금리로 이어지는지까지 따라간다.</p>
+    <div class="coverparts">
+      <div><span class="pn">01</span><span class="pt">매크로는 왜 순서가 있는가</span><span class="pd">01</span></div>
+      <div><span class="pn">02</span><span class="pt">GDP 해부 — 무게중심과 방향타</span><span class="pd">02 – 03</span></div>
+      <div><span class="pn">03</span><span class="pt">측정의 자 — QoQ · YoY · SAAR</span><span class="pd">04 – 05</span></div>
+      <div><span class="pn">04</span><span class="pt">성장기여도 — 누가 끌고 누가 깎았나</span><span class="pd">06 – 07</span></div>
+      <div><span class="pn">05</span><span class="pt">잠재성장률과 GDP갭 — 금리로 가는 다리</span><span class="pd">08 – 10</span></div>
+      <div><span class="pn">06</span><span class="pt">컨센서스 · 데이터 수정 · 나우캐스팅</span><span class="pd">11 – 13</span></div>
+      <div><span class="pn">07</span><span class="pt">실전 독해 · 셀프체크</span><span class="pd">14 – 15</span></div>
+      <div><span class="pn">부록</span><span class="pt">용어집 · FRED 코드</span><span class="pd">A – B</span></div>
+    </div>
+  </section>
+</article>
+
+
+<!-- ============ 01 · 순서 (다크) ============ -->
+<article class="unit">
+  <section class="slide dark">
+    <div class="chrome"><span class="lane">1부 · 성장</span><span>01 / 여는 질문</span></div>
+
+    <h2 class="claim big">지표를 외운 사람과<br><em>순서를 아는 사람</em></h2>
+    <p class="sub">"환율이 왜 올랐어요?"에 3초 안에 답하는 사람은 지표를 100개 외운 사람이 아니다.
+    지표들이 서로를 밀어내는 순서를 아는 사람이다.</p>
+
+    <div class="stage">
+      <svg viewBox="0 0 900 250" role="img" aria-label="실물에서 물가, 정책, 자산가격으로 이어지는 매크로 4단계 사슬과 병원 진료 비유">
+        <defs>
+          <marker id="c1" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+            <path d="M0,0 L10,4 L0,8 Z" fill="#A8802A"/>
+          </marker>
+        </defs>
+        <g font-family="'Noto Sans KR', sans-serif">
+          <g>
+            <rect x="0" y="40" width="196" height="74" fill="#1D5B45"/>
+            <text x="98" y="72" text-anchor="middle" font-size="17" font-weight="700" fill="#fff">① 실물</text>
+            <text x="98" y="96" text-anchor="middle" font-size="13" fill="#BFD8CB">성장 · 고용 — 체력</text>
+
+            <rect x="234" y="40" width="196" height="74" fill="#18271F" stroke="#3E8A6E" stroke-width="1.5"/>
+            <text x="332" y="72" text-anchor="middle" font-size="17" font-weight="700" fill="#EAF0EC">② 물가</text>
+            <text x="332" y="96" text-anchor="middle" font-size="13" fill="rgba(220,231,223,.65)">CPI · PCE — 열</text>
+
+            <rect x="468" y="40" width="196" height="74" fill="#18271F" stroke="#3E8A6E" stroke-width="1.5"/>
+            <text x="566" y="72" text-anchor="middle" font-size="17" font-weight="700" fill="#EAF0EC">③ 정책</text>
+            <text x="566" y="96" text-anchor="middle" font-size="13" fill="rgba(220,231,223,.65)">금리 — 처방</text>
+
+            <rect x="702" y="40" width="196" height="74" fill="#18271F" stroke="#3E8A6E" stroke-width="1.5"/>
+            <text x="800" y="72" text-anchor="middle" font-size="17" font-weight="700" fill="#EAF0EC">④ 자산</text>
+            <text x="800" y="96" text-anchor="middle" font-size="13" fill="rgba(220,231,223,.65)">주식 · 채권 · 환율</text>
+
+            <path d="M204,77 L226,77" stroke="#A8802A" stroke-width="2.5" marker-end="url(#c1)"/>
+            <path d="M438,77 L460,77" stroke="#A8802A" stroke-width="2.5" marker-end="url(#c1)"/>
+            <path d="M672,77 L694,77" stroke="#A8802A" stroke-width="2.5" marker-end="url(#c1)"/>
+          </g>
+
+          <text x="0" y="22" font-family="Consolas, monospace" font-size="12" letter-spacing="2" fill="#D9BE72">인과의 방향 — 뒤집으면 논리가 무너진다</text>
+
+          <line x1="0" y1="146" x2="900" y2="146" stroke="rgba(220,231,223,.18)"/>
+
+          <text x="0" y="176" font-family="Consolas, monospace" font-size="12" letter-spacing="2" fill="rgba(220,231,223,.45)">같은 순서 · 병원</text>
+          <g font-size="14" fill="rgba(220,231,223,.8)">
+            <text x="0" y="206">체온·혈압을 재고</text>
+            <text x="234" y="206">염증 수치를 보고</text>
+            <text x="468" y="206">약을 얼마나 쓸지 정하고</text>
+            <text x="702" y="206">퇴원일을 말한다</text>
+          </g>
+          <text x="0" y="238" font-size="13.5" fill="#E0736C">체온도 안 재고 "다음 주 퇴원입니다"라고 하는 의사 = 실물 진단 없이 "코스피 3500" 하는 리포트</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="verdict">
+      <span class="tag">읽는 법</span>
+      <span class="txt">리포트를 펼치면 먼저 묻는다. <em>이 글은 지금 몇 번 칸에 있나.</em></span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 01<br>매크로의 순서</div>
+    <div class="nbody">
+      <p><span class="q">왜 하필 이 순서인가</span>
+      경제가 잘 돌아가면 사람들이 돈을 더 쓰고(①), 그러면 물건값이 오르고(②), 물건값이 오르면 중앙은행이 금리를 올려 식히려 하고(③),
+      금리가 오르면 자산 가격이 전부 다시 계산된다(④). <b>거꾸로 주가가 GDP를 결정하지는 않는다.</b>
+      증권사에서 나오는 매크로 리포트는 표지 디자인만 다르지 전부 이 사슬의 어느 고리를 다루는 중이다.</p>
+      <p><span class="q">이 그림이 실제로 쓰이는 순간</span>
+      혼란은 대부분 <b>②번 얘기를 하다가 갑자기 ④번 결론이 튀어나올 때</b> 생긴다.
+      "물가가 끈적하다"까지 말해놓고 곧바로 "그래서 반도체를 사라"고 하면, ③번(정책이 어떻게 반응하는가)이 통째로 비어 있는 것이다.
+      리포트를 읽다 막히면 <b>빠진 고리가 어디인지</b>를 찾으면 된다. 대개 거기가 그 리포트의 약점이다.</p>
+      <p><span class="q">1회차 전체가 서 있는 자리</span>
+      1회차 4개 부(성장·경기순환·물가·고용)는 전부 <b>①과 ②</b>를 다룬다. ③ 정책과 ④ 자산은 2회차다.
+      그래서 1부는 GDP 하나만 집요하게 판다. <b>여기서 자를 잘못 잡으면 뒤의 물가·고용 해석이 전부 근거를 잃기 때문</b>이다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 02 · GDP 해부 ============ -->
+<article class="unit">
+  <section class="slide">
+    <div class="chrome"><span class="lane">1부 · 성장</span><span>02 / GDP 해부</span></div>
+
+    <h2 class="claim">GDP는 <em>누가 돈을 썼는가</em>로 쪼갠다</h2>
+    <p class="sub">GDP는 생산·분배·지출 어디서 봐도 같은 값이 나온다(삼면등가). 그중 실무가 지출 측면만 쓰는 이유는 하나다.
+    <b>원인을 짚으려면 "누가"가 필요하기 때문</b>이다.</p>
+
+    <div class="termline">
+      <span><b>명목 GDP</b> 그 해 가격 그대로 — 물가 상승분이 섞여 있다</span>
+      <span><b>실질 GDP</b> 기준연도 가격 고정 — 리포트의 "성장률"은 거의 항상 이쪽</span>
+    </div>
+
+    <div class="stage">
+      <svg viewBox="0 0 900 268" role="img" aria-label="C I G NX 네 항목의 비중과 변동성을 나란히 비교한 막대">
+        <g font-family="'Noto Sans KR', sans-serif">
+          <text x="0" y="14" font-family="Consolas, monospace" font-size="11.5" letter-spacing="1.5" fill="#8A948D">항목</text>
+          <text x="300" y="14" font-family="Consolas, monospace" font-size="11.5" letter-spacing="1.5" fill="#8A948D">비중 — 무게중심</text>
+          <text x="596" y="14" font-family="Consolas, monospace" font-size="11.5" letter-spacing="1.5" fill="#8E2A2A">분기 변동성 — 방향타</text>
+          <line x1="0" y1="24" x2="900" y2="24" stroke="#101A16" stroke-width="1.5"/>
+
+          <g font-size="15">
+            <text x="0" y="58" font-weight="700" fill="#1A241F">C 민간소비</text>
+            <text x="0" y="80" font-size="12.5" fill="#8A948D">가계가 쓴 돈</text>
+            <rect x="300" y="44" width="200" height="22" fill="#1D5B45"/>
+            <text x="510" y="61" font-family="Consolas, monospace" font-size="13" fill="#1D5B45">45~50%</text>
+            <rect x="596" y="44" width="30" height="22" fill="#8E2A2A" opacity=".45"/>
+            <text x="636" y="61" font-size="13" fill="#4E5A53">±0.5%p — 밥은 계속 먹는다</text>
+
+            <text x="0" y="118" font-weight="700" fill="#1A241F">I 총투자</text>
+            <text x="0" y="140" font-size="12.5" fill="#8A948D">설비 · 건설 · 재고</text>
+            <rect x="300" y="104" width="68" height="22" fill="#1D5B45" opacity=".55"/>
+            <text x="378" y="121" font-family="Consolas, monospace" font-size="13" fill="#1D5B45">약 17%</text>
+            <rect x="596" y="104" width="216" height="22" fill="#8E2A2A"/>
+            <text x="822" y="121" font-size="13" fill="#8E2A2A" font-weight="700">±10% 이상</text>
+
+            <text x="0" y="178" font-weight="700" fill="#1A241F">G 정부지출</text>
+            <text x="0" y="200" font-size="12.5" fill="#8A948D">정부 소비 + 투자</text>
+            <rect x="300" y="164" width="72" height="22" fill="#1D5B45" opacity=".55"/>
+            <text x="382" y="181" font-family="Consolas, monospace" font-size="13" fill="#1D5B45">약 18%</text>
+            <rect x="596" y="164" width="72" height="22" fill="#8E2A2A" opacity=".6"/>
+            <text x="678" y="181" font-size="13" fill="#4E5A53">예산 집행 시기에 따라</text>
+
+            <text x="0" y="238" font-weight="700" fill="#1A241F">NX 순수출</text>
+            <text x="0" y="260" font-size="12.5" fill="#8A948D">수출 − 수입</text>
+            <rect x="300" y="224" width="22" height="22" fill="#1D5B45" opacity=".4"/>
+            <text x="332" y="241" font-family="Consolas, monospace" font-size="13" fill="#1D5B45">작다</text>
+            <rect x="596" y="224" width="248" height="22" fill="#8E2A2A"/>
+            <text x="596" y="264" font-size="13" fill="#8E2A2A" font-weight="700">반도체 단가 한 번에 기여도가 통째로 뒤집힌다</text>
+          </g>
+        </g>
+      </svg>
+    </div>
+
+    <div class="verdict">
+      <span class="tag">이 그림의 결론</span>
+      <span class="txt">비중이 큰 항목이 경기를 흔드는 게 아니다. <em>변동성이 큰 항목이 흔든다.</em></span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 02<br>C+I+G+NX</div>
+    <div class="nbody">
+      <p><span class="q">먼저 실질과 명목</span>
+      GDP는 "새로 생산된 최종 재화·서비스의 <b>시장가치</b>"다. 시장가치라는 말 때문에 문제가 생긴다 — 물가가 오르면 생산량이 그대로여도 금액은 커진다.
+      작년에 사과 100개를 1,000원에, 올해 100개를 1,200원에 팔았다면 <b>명목은 20% 성장, 실질은 0%</b>다. 사과는 여전히 100개다.
+      명목을 쓰는 건 세수 추계나 부채비율(부채÷명목GDP)처럼 <b>금액 자체가 중요한 맥락</b>뿐이다.</p>
+      <p><span class="q">한국에서 왜 수출과 설비투자만 보나</span>
+      민간소비가 GDP의 절반인데도 애널리스트는 매일 수출 20일 실적, 반도체 단가, 기계수주를 본다.
+      <b>비중은 레벨(수준)의 이야기이고, 경기 판단은 변화(증감)의 이야기</b>이기 때문이다.
+      사람들이 경기가 나쁘다고 밥을 안 먹지는 않지만, CEO는 불확실하면 라인 증설 결정을 그냥 미뤄버린다.</p>
+      <p><span class="q">헷갈리는 규칙 하나</span>
+      복지수당·연금 같은 <b>이전지출은 G에 들어가지 않는다.</b> 그 돈으로 가계가 물건을 살 때 C로 잡힌다.
+      정부가 주고 가계가 쓰는 걸 둘 다 세면 이중계산이 되기 때문이다. 국민계정에는 이런 <b>"한 번만 센다"</b> 규칙이 곳곳에 있다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 03 · 함정 3개 ============ -->
+<article class="unit">
+  <section class="slide">
+    <div class="chrome"><span class="lane">1부 · 성장</span><span>03 / 신입이 틀리는 지점</span></div>
+
+    <h2 class="claim">여기서 <mark>세 번</mark> 미끄러진다</h2>
+    <p class="sub">GDP 분해는 공식이 중학교 수준이라 다들 안다고 생각한다. 실제로 발표에서 물리는 건 공식이 아니라 아래 셋이다.</p>
+
+    <div class="cards c3">
+      <div class="card">
+        <span class="ctag">함정 01</span>
+        <h4>비중 = 중요도<br>라고 착각한다</h4>
+        <p>"소비가 GDP의 절반이니 소비만 보면 되겠네" — 틀렸다.</p>
+        <p>비중은 <b>지금 어디 있는지</b>를, 변동성은 <b>어디로 갈지</b>를 알려준다. 리서치는 방향을 파는 일이다.</p>
+        <p class="out">→ 06장 기여도가 이 둘을 갈라준다</p>
+      </div>
+      <div class="card">
+        <span class="ctag">함정 02</span>
+        <h4>수입이 늘면<br>무조건 나쁘다고 읽는다</h4>
+        <p>NX = 수출 − 수입이니 수입이 늘면 GDP는 깎인다. 그런데 그게 <b>설비 투자용 자본재 수입</b>이라면?</p>
+        <p>당장은 마이너스 기여지만 <b>다음 분기 생산능력의 씨앗</b>이다.</p>
+        <p class="out">부호만 보고 판단하면 안 되는 대표 사례</p>
+      </div>
+      <div class="card">
+        <span class="ctag">함정 03</span>
+        <h4>재고를<br>그냥 넘긴다</h4>
+        <p>안 팔려서 창고에 쌓인 재고도 회계상 <b>투자(I)</b>로 잡힌다. 그래서 GDP가 좋아 보이는 착시가 생긴다.</p>
+        <p>헤드라인이 좋은데 재고 기여도가 컸다면 그건 호재가 아니다.</p>
+        <p class="out">호재가 아니라 경고다</p>
+      </div>
+    </div>
+
+    <div class="verdict warn" style="margin-top:auto;padding-top:22px">
+      <span class="tag">한 문장</span>
+      <span class="txt">C는 경제의 <em>무게중심</em>, I·NX는 경제의 <em>방향타</em>. 무게중심은 위치를, 방향타는 진로를 알려준다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 03<br>세 가지 함정</div>
+    <div class="nbody">
+      <p><span class="q">함정 2를 실전에서 만나면</span>
+      "무역적자 확대로 성장률이 깎였다"는 기사를 보면 <b>수입 품목 구성</b>을 확인해야 한다.
+      원유·가스처럼 안 쓸 수 없는 것이 비싸져서 늘어난 수입과, 반도체 장비처럼 <b>공장을 더 돌리려고</b> 들여온 수입은 의미가 정반대다.
+      전자는 소득이 해외로 빠져나간 것이고, 후자는 내년 생산능력을 사 온 것이다.</p>
+      <p><span class="q">함정 3이 특히 무서운 이유</span>
+      재고는 <b>다음 분기에 반대 방향으로 되돌아오는 성질</b>(평균회귀)이 강하다.
+      이번 분기에 재고가 성장률을 +0.3%p 밀어올렸다면, 다음 분기엔 그만큼 발목을 잡을 확률이 높다.
+      그래서 실무에서는 <b>재고를 뺀 최종수요(final sales)</b> 기준 성장률을 따로 계산한다. 그게 진짜 실력이다.</p>
+      <p><span class="q">이 세 함정의 공통점</span>
+      전부 <b>"숫자의 부호나 크기만 보고 의미를 단정"</b>한 데서 나온다.
+      매크로 지표는 같은 숫자라도 <b>어디서 왔는지</b>에 따라 해석이 뒤집힌다.
+      그래서 이 자료는 계속 같은 질문을 반복한다 — <b>이 숫자는 무엇 때문에 이렇게 나왔나.</b></p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 04 · 세 가지 자 (다크) ============ -->
+<article class="unit">
+  <section class="slide dark">
+    <div class="chrome"><span class="lane">1부 · 성장</span><span>04 / 측정 기준</span></div>
+
+    <h2 class="claim">같은 분기인데<br><em>0.5%</em>도 맞고 <em>2.0%</em>도 맞다</h2>
+    <p class="sub">"미국은 3% 성장인데 한국은 0.6%밖에 안 됐네" — 이 문장이 틀린 이유는 경제가 아니라 <b>자(尺)</b>에 있다.</p>
+
+    <div class="stage">
+      <svg viewBox="0 0 900 262" role="img" aria-label="전기비 전년동기비 연율 세 측정 기준의 계산 방식과 사용처 비교">
+        <g font-family="'Noto Sans KR', sans-serif">
+          <rect x="0" y="0" width="284" height="150" fill="rgba(220,231,223,.07)" stroke="rgba(220,231,223,.22)"/>
+          <text x="22" y="32" font-family="Consolas, monospace" font-size="11.5" letter-spacing="1.5" fill="#8FB3A2">QoQ</text>
+          <text x="22" y="60" font-size="18" font-weight="700" fill="#fff">전기비</text>
+          <text x="22" y="88" font-size="13.5" fill="rgba(220,231,223,.75)">직전 분기 대비 (계절조정)</text>
+          <text x="22" y="112" font-size="13.5" fill="rgba(220,231,223,.75)">단기 모멘텀 — 가속인가 감속인가</text>
+          <text x="22" y="136" font-size="13" fill="#D9BE72">한국 · 유럽 · 일본</text>
+
+          <rect x="308" y="0" width="284" height="150" fill="rgba(220,231,223,.07)" stroke="rgba(220,231,223,.22)"/>
+          <text x="330" y="32" font-family="Consolas, monospace" font-size="11.5" letter-spacing="1.5" fill="#8FB3A2">YoY</text>
+          <text x="330" y="60" font-size="18" font-weight="700" fill="#fff">전년동기비</text>
+          <text x="330" y="88" font-size="13.5" fill="rgba(220,231,223,.75)">1년 전 같은 분기 대비</text>
+          <text x="330" y="112" font-size="13.5" fill="rgba(220,231,223,.75)">추세와 레벨 — 계절성 자동 제거</text>
+          <text x="330" y="136" font-size="13" fill="#D9BE72">중국 · 신흥국 · 물가 지표</text>
+
+          <rect x="616" y="0" width="284" height="150" fill="rgba(142,42,42,.22)" stroke="#E0736C"/>
+          <text x="638" y="32" font-family="Consolas, monospace" font-size="11.5" letter-spacing="1.5" fill="#E0736C">SAAR</text>
+          <text x="638" y="60" font-size="18" font-weight="700" fill="#fff">연율</text>
+          <text x="638" y="88" font-size="13.5" fill="rgba(220,231,223,.82)">이 속도가 1년 가면 몇 %일지</text>
+          <text x="638" y="112" font-size="13.5" fill="rgba(220,231,223,.82)">방향은 선명, 진폭은 과장</text>
+          <text x="638" y="136" font-size="13" fill="#E0736C">미국(BEA) 표준</text>
+
+          <rect x="0" y="176" width="900" height="86" fill="#18271F" stroke="#3E8A6E" stroke-width="1.5"/>
+          <text x="30" y="212" font-family="Consolas, monospace" font-size="19" font-weight="700" fill="#fff">SAAR = [ (1 + QoQ)⁴ − 1 ] × 100</text>
+          <text x="30" y="240" font-size="14" fill="rgba(220,231,223,.75)">전기비를 네 번 복리로 굴린 값 — 0.5% → (1.005)⁴ − 1 ≈ 2.02%</text>
+          <text x="620" y="212" font-size="14" fill="#D9BE72">한국 0.6% QoQ = 연율 약 2.4%</text>
+          <text x="620" y="240" font-size="14" fill="#D9BE72">자를 통일해야 비교가 성립한다</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="verdict warn">
+      <span class="tag">습관</span>
+      <span class="txt">성장률 숫자를 보면 <em>라벨부터</em> 읽는다. 라벨이 없으면 그 리포트를 의심해야 한다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 04<br>세 가지 자</div>
+    <div class="nbody">
+      <p><span class="q">SAAR을 자동차 속도계로 이해하기</span>
+      지금 시속 100km로 달린다고 해서 하루에 2,400km를 가는 건 아니다. 신호에 걸리고 휴게소도 들른다.
+      SAAR은 <b>"지금 이 속도가 1년 내내 유지된다면"</b>이라는 가정법이다.
+      가정법이라서 유용하고(방향이 선명하다), 가정법이라서 위험하다(<b>일시적 급가속을 1년치로 뻥튀기한다</b>).</p>
+      <p><span class="q">4배 증폭이 실제로 어떻게 보이나</span>
+      2020년 미국 실질 GDP는 2분기 −28%, 3분기 +34%(둘 다 SAAR)였다. 숫자만 보면 경제가 3분의 1로 줄었다가 다시 3분의 1이 늘어난 것 같다.
+      <b>전기비로 환산하면 각각 약 −8%, +8%</b>다. 여전히 역사적 충격이지만, 연율이 진폭을 얼마나 부풀리는지 보여준다.
+      반대로 말하면 전기비 0.3%p 차이가 연율에서는 1.2%p — <b>시장이 크게 반응할 수치</b>가 된다.</p>
+      <p><span class="q">그래서 실무 표준은</span>
+      단일 분기 SAAR에 일희일비하지 않고 <b>4분기 이동평균이나 YoY를 함께</b> 본다.
+      파업 한 번, 이상기후 한 번, 대형 수주 한 건이 SAAR에서는 네 배로 확대되기 때문이다.
+      "미국 지표가 급등했다"고 느껴지면 <b>전기비로 되돌려 실제 진폭을 다시 재보는 습관</b>을 들이면 웬만한 오독은 사라진다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 05 · 자 통일 (2단 대조) ============ -->
+<article class="unit">
+  <section class="slide">
+    <div class="chrome"><span class="lane">1부 · 성장</span><span>05 / 리포트 해독</span></div>
+
+    <h2 class="claim">같은 문장을 <em>두 번</em> 읽는다</h2>
+    <p class="sub">"3분기 실질 GDP는 전기 대비 0.6% 성장하며 시장 컨센서스(0.5%)를 소폭 상회했다. 연율 기준으로는 2.4% 수준이다."</p>
+
+    <div class="split">
+      <div class="pane bad">
+        <span class="ptag">이렇게 읽으면 틀린다</span>
+        <h4>한국 0.6% vs 미국 2.8%<br>→ 미국이 4배 빠르다</h4>
+        <p class="strike">한국 경제가 미국보다 한참 뒤처지고 있다.</p>
+        <p><b>무엇을 놓쳤나</b> — 한국 수치는 <b>QoQ</b>, 미국 수치는 <b>SAAR</b>이다. 서로 다른 자로 잰 값을 나란히 놓았다.</p>
+        <p>한국 0.6% QoQ를 연율로 바꾸면 <b>약 2.4%</b>. 이렇게 통일해야 비로소 "미국이 조금 더 좋다"는 문장이 성립한다.</p>
+      </div>
+      <div class="pane good">
+        <span class="ptag">이렇게 읽어야 한다</span>
+        <h4>한 문장에서 네 가지를<br>차례로 확인한다</h4>
+        <p><b>① "실질 · 전기비"</b> — 자를 확인했다. 한국식 QoQ. 이게 기준선이다.</p>
+        <p><b>② "컨센서스 0.5%"</b> — 비교 대상도 같은 QoQ여야 한다. +0.1%p 상회 = 서프라이즈지만 폭은 작다.</p>
+        <p><b>③ "연율 2.4%"</b> — 친절한 리포트다. 자를 변환해줬다. 이 문장이 없으면 직접 환산해야 한다.</p>
+        <p><b>④ 숨은 질문</b> — 그 0.6%가 <b>무엇 때문에</b> 나왔는지는 아직 안 나왔다. 그게 다음 장이다.</p>
+      </div>
+    </div>
+
+    <div class="verdict" style="margin-top:auto;padding-top:22px">
+      <span class="tag">기록 원칙</span>
+      <span class="txt">지표를 인용할 땐 <em>발표치 · 컨센서스 · 직전치</em>를 항상 세트로 적는다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 05<br>자 통일</div>
+    <div class="nbody">
+      <p><span class="q">왜 나라마다 자가 다른가</span>
+      게으름이 아니라 <b>경제 구조와 통계 관행의 차이</b>다. 미국은 분기 변동이 커서 방향을 선명하게 보여주는 연율을 쓰고,
+      한국·유럽·일본은 진폭 과장을 피하려 전기비를 쓴다. 중국은 분기 계절조정 신뢰도 문제 때문에 전년동기비를 쓴다.
+      <b>어느 쪽이 옳은 게 아니라, 목적이 다른 것</b>이다. 그래서 비교할 땐 내가 통일해야 한다.</p>
+      <p><span class="q">환산은 계산기 없이도 대충 된다</span>
+      전기비를 연율로 바꾸려면 <b>대략 4배</b>라고 생각하면 된다. 정확히는 복리라서 조금 더 크지만,
+      0.5% → 2.0%, 0.6% → 2.4%, 0.8% → 3.2% 수준이면 실무 대화에는 충분하다.
+      반대로 미국 연율을 전기비로 되돌릴 땐 <b>4로 나눈다.</b> 회의 중에 이 암산이 되면 자를 헷갈릴 일이 없다.</p>
+      <p><span class="q">이 장의 진짜 교훈</span>
+      매크로에서 <b>가장 흔한 오류는 어려운 개념을 몰라서가 아니라 단위를 안 맞춰서</b> 생긴다.
+      %와 %p, QoQ와 SAAR, 명목과 실질, 계절조정 여부 — 이 네 쌍만 항상 확인해도 신입 실수의 대부분이 사라진다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 06 · 기여도 정의 ============ -->
+<article class="unit">
+  <section class="slide">
+    <div class="chrome"><span class="lane">1부 · 성장</span><span>06 / 성장기여도</span></div>
+
+    <h2 class="claim">기여도는 <em>지분 × 성과</em>다</h2>
+    <p class="sub">GDP 발표날 선배들이 헤드라인보다 먼저 여는 표. 성장률은 항목별로 더할 수 없지만,
+    <b>기여도는 그냥 더하면 전체가 된다.</b> 이 성질이 기여도를 강력하게 만든다.</p>
+
+    <div class="stage">
+      <svg viewBox="0 0 900 254" role="img" aria-label="기여도 공식과 주력사업부 신사업부 비교 예시">
+        <g font-family="'Noto Sans KR', sans-serif">
+          <rect x="0" y="0" width="900" height="76" fill="#101A16"/>
+          <text x="30" y="34" font-family="Consolas, monospace" font-size="18" font-weight="700" fill="#fff">기여도(%p) = 항목 비중(%) × 항목 성장률(%)</text>
+          <text x="30" y="60" font-size="13.5" fill="#8FB3A2">모든 항목 기여도의 합 = 전체 GDP 성장률 (통계적으로 항상 성립)</text>
+          <text x="640" y="34" font-size="14" font-weight="700" fill="#D9BE72">단위가 % 가 아니라 %p</text>
+          <text x="640" y="60" font-size="13" fill="rgba(220,231,223,.6)">이게 가장 중요한 힌트다</text>
+
+          <text x="0" y="110" font-size="14.5" font-weight="700" fill="#1A241F">회사 매출로 바꿔보면 — 어느 쪽이 매출 성장을 만들었나</text>
+
+          <g>
+            <text x="0" y="146" font-size="14.5" fill="#1A241F">주력 사업부</text>
+            <text x="0" y="168" font-size="12.5" fill="#8A948D">비중 80% · 성장 5%</text>
+            <rect x="180" y="130" width="430" height="26" fill="#1D5B45"/>
+            <text x="624" y="149" font-family="Consolas, monospace" font-size="17" font-weight="700" fill="#1D5B45">4.0%p</text>
+            <text x="700" y="149" font-size="13" fill="#4E5A53">← 성장의 대부분</text>
+
+            <text x="0" y="208" font-size="14.5" fill="#1A241F">신사업부</text>
+            <text x="0" y="230" font-size="12.5" fill="#8A948D">비중 2% · 성장 50%</text>
+            <rect x="180" y="192" width="108" height="26" fill="#A8802A"/>
+            <text x="302" y="211" font-family="Consolas, monospace" font-size="17" font-weight="700" fill="#A8802A">1.0%p</text>
+            <text x="380" y="211" font-size="13" fill="#8E2A2A">← 성장률은 10배인데 기여는 1/4</text>
+          </g>
+          <line x1="0" y1="244" x2="900" y2="244" stroke="#DAD6CA"/>
+        </g>
+      </svg>
+    </div>
+
+    <div class="verdict">
+      <span class="tag">구분</span>
+      <span class="txt">"성장률이 크다"와 "성장에 기여했다"는 <em>전혀 다른 말</em>이다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 06<br>기여도</div>
+    <div class="nbody">
+      <p><span class="q">왜 %p라는 단위를 쓰나</span>
+      기여도는 "전체 성장률 중 이 항목이 만든 몫"이다. 전체가 %인 값의 일부를 떼어낸 것이라 <b>퍼센트포인트</b>가 된다.
+      그래서 "성장률 0.6% 중 순수출 0.3%p, 소비 0.4%p, 설비투자 −0.2%p, 재고 +0.1%p"처럼 <b>완전한 분해</b>가 가능하다.
+      다 더하면 정확히 0.6%가 나온다. 이 깔끔함이 기여도가 리포트의 본문인 이유다.</p>
+      <p><span class="q">가장 흔한 혼동</span>
+      <b>"설비투자가 −0.2%p 기여" ≠ "설비투자가 0.2% 감소"</b>다.
+      앞은 전체에서 깎아낸 몫이고 뒤는 설비투자 자체의 증감률이다.
+      설비투자 비중이 10%라면 −0.2%p 기여는 <b>설비투자가 약 −2% 역성장</b>했다는 뜻이다. 공식을 거꾸로 쓰면 바로 확인된다.</p>
+      <p><span class="q">읽는 순서 세 단계</span>
+      ① <b>부호부터</b> — 마이너스 기여 항목이 누구인지 먼저 찾는다. 성장을 깎은 범인이 스토리의 시작이다.
+      ② <b>내수 vs 대외</b> — (C+I+G)와 NX로 묶는다. 내수 주도 성장은 지속력이 높고, 대외 주도는 글로벌 사이클에 목이 매인다.
+      ③ <b>재고 분리</b> — 재고를 뺀 최종수요가 진짜 실력이다. 재고를 빼면 성장률이 반토막 나는 분기가 실제로 자주 나온다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 07 · 같은 총점 다른 미래 ============ -->
+<article class="unit">
+  <section class="slide dark">
+    <div class="chrome"><span class="lane">1부 · 성장</span><span>07 / 성장기여도</span></div>
+
+    <h2 class="claim">헤드라인은 같은데<br><mark>속은 정반대</mark>인 두 분기</h2>
+    <p class="sub">둘 다 전기비 +0.6%다. 그런데 한쪽은 호재로, 다른 쪽은 악재로 읽힌다. 차이는 전부 아래 막대 안에 있다.</p>
+
+    <div class="stage">
+      <svg viewBox="0 0 900 300" role="img" aria-label="같은 0.6퍼센트 성장의 두 가지 기여도 구성 비교">
+        <g font-family="'Noto Sans KR', sans-serif">
+          <line x1="170" y1="18" x2="170" y2="292" stroke="rgba(220,231,223,.32)" stroke-dasharray="4 4"/>
+          <text x="170" y="14" text-anchor="middle" font-family="Consolas, monospace" font-size="11" fill="rgba(220,231,223,.45)">0</text>
+
+          <!-- CASE A -->
+          <text x="0" y="34" font-size="15" font-weight="700" fill="#3E8A6E">CASE A — 건강한 0.6%</text>
+          <g font-size="13">
+            <text x="0" y="60" fill="rgba(220,231,223,.8)">민간소비</text>
+            <rect x="170" y="46" width="160" height="17" fill="#3E8A6E"/>
+            <text x="340" y="60" fill="#8FB3A2">+0.4%p</text>
+
+            <text x="0" y="86" fill="rgba(220,231,223,.8)">설비투자</text>
+            <rect x="170" y="72" width="80" height="17" fill="#3E8A6E"/>
+            <text x="260" y="86" fill="#8FB3A2">+0.2%p</text>
+
+            <text x="0" y="112" fill="rgba(220,231,223,.8)">순수출</text>
+            <rect x="170" y="98" width="40" height="17" fill="#3E8A6E"/>
+            <text x="220" y="112" fill="#8FB3A2">+0.1%p</text>
+
+            <text x="0" y="138" fill="rgba(220,231,223,.8)">재고</text>
+            <rect x="130" y="124" width="40" height="17" fill="#8E2A2A" opacity=".75"/>
+            <text x="120" y="138" text-anchor="end" fill="#E0736C">−0.1%p</text>
+          </g>
+          <text x="470" y="86" font-size="13.5" fill="#8FB3A2">내수가 끌었고 재고는 오히려 줄었다</text>
+          <text x="470" y="110" font-size="13.5" fill="#8FB3A2">= 팔려서 창고가 비었다 → 다음 분기 생산 유인</text>
+
+          <line x1="0" y1="160" x2="900" y2="160" stroke="rgba(220,231,223,.18)"/>
+
+          <!-- CASE B -->
+          <text x="0" y="190" font-size="15" font-weight="700" fill="#E0736C">CASE B — 취약한 0.6%</text>
+          <g font-size="13">
+            <text x="0" y="216" fill="rgba(220,231,223,.8)">순수출</text>
+            <rect x="170" y="202" width="120" height="17" fill="#A8802A"/>
+            <text x="300" y="216" fill="#D9BE72">+0.3%p</text>
+
+            <text x="0" y="242" fill="rgba(220,231,223,.8)">재고</text>
+            <rect x="170" y="228" width="120" height="17" fill="#A8802A" opacity=".62"/>
+            <text x="300" y="242" fill="#D9BE72">+0.3%p</text>
+
+            <text x="0" y="268" fill="rgba(220,231,223,.8)">민간소비</text>
+            <rect x="170" y="254" width="80" height="17" fill="#3E8A6E" opacity=".7"/>
+            <text x="260" y="268" fill="#8FB3A2">+0.2%p</text>
+
+            <text x="0" y="294" fill="rgba(220,231,223,.8)">설비투자</text>
+            <rect x="90" y="280" width="80" height="17" fill="#8E2A2A"/>
+            <text x="182" y="294" fill="#E0736C">−0.2%p</text>
+          </g>
+          <text x="470" y="230" font-size="13.5" fill="#D9BE72">성장의 대부분이 대외(순수출) + 재고</text>
+          <text x="470" y="254" font-size="13.5" fill="#E0736C">내수 투자는 마이너스 → 다음 분기 되돌림 위험</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="verdict warn">
+      <span class="tag">판정</span>
+      <span class="txt">Case B는 <em>대외 의존 + 재고 착시 + 투자 위축</em>이 겹쳤다. 재고를 빼면 실력은 0.3%p다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 07<br>같은 총점, 다른 미래</div>
+    <div class="nbody">
+      <p><span class="q">Case B가 왜 나쁜 신호인가</span>
+      설비투자가 마이너스라는 건 <b>기업이 미래를 어둡게 본다</b>는 뜻이다. 설비투자는 다음 분기 생산능력의 선행지표라
+      지금 줄이면 내년 성장의 천장이 낮아진다. 여기에 재고 +0.3%p는 <b>안 팔린 물건이 창고에 쌓였다</b>는 뜻이고,
+      재고는 다음 분기에 되돌아온다. 즉 <b>같은 0.6%인데 다음 분기 전망이 정반대</b>다.</p>
+      <p><span class="q">순수출 개선도 두 갈래다</span>
+      NX 기여도가 좋아지는 경로는 ①수출이 늘어서 ②수입이 줄어서 — 둘이다.
+      두 번째는 <b>내수가 죽어 수입 수요가 사라진 경우</b>로 불황형 흑자라고 부른다.
+      그래서 순수출 기여도를 볼 땐 반드시 <b>수출과 수입을 분리</b>해서 확인해야 한다. 표만 보면 둘이 똑같이 생겼다.</p>
+      <p><span class="q">한 줄로 정리하면</span>
+      <b>헤드라인 성장률은 결과고, 기여도는 원인이다.</b> 리서치는 원인을 파는 직업이므로 기여도 표가 본문이다.
+      질문을 "성장률이 몇이었나"에서 <b>"누가 끌고 누가 깎았나"</b>로 바꾸는 순간 같은 리포트가 다르게 보인다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 08 · 잠재성장률 (다크) ============ -->
+<article class="unit">
+  <section class="slide dark">
+    <div class="chrome"><span class="lane">1부 · 성장</span><span>08 / 잠재성장률</span></div>
+
+    <h2 class="claim">잠재성장률은 <em>경제의 평소 페이스</em>다</h2>
+    <p class="sub">경제가 성장했는데 왜 중앙은행이 금리를 올리려 할까. 중앙은행은 성장 그 자체가 아니라
+    <b>물가를 자극하지 않고 감당 가능한 성장인가</b>를 본다. 그 감당 가능 선이 잠재성장률이다.</p>
+
+    <div class="stage">
+      <svg viewBox="0 0 900 250" role="img" aria-label="마라토너의 지속가능 페이스와 과속 저속을 비교한 도해">
+        <g font-family="'Noto Sans KR', sans-serif">
+          <text x="0" y="20" font-family="Consolas, monospace" font-size="12" letter-spacing="2" fill="#D9BE72">마라토너의 페이스로 이해하기</text>
+
+          <rect x="0" y="40" width="900" height="58" fill="rgba(142,42,42,.22)" stroke="#E0736C" stroke-width="1.2"/>
+          <text x="26" y="66" font-size="16" font-weight="700" fill="#fff">km당 3분 30초로 달린다</text>
+          <text x="26" y="88" font-size="13.5" fill="rgba(220,231,223,.8)">당장은 앞서 나가지만 심박수가 치솟는다 = 임금·원자재가 뛰고 물가가 오른다</text>
+          <text x="700" y="76" font-size="15" font-weight="700" fill="#E0736C">과열 · GDP갭 &gt; 0</text>
+
+          <rect x="0" y="110" width="900" height="58" fill="rgba(62,138,110,.2)" stroke="#3E8A6E" stroke-width="1.5"/>
+          <text x="26" y="136" font-size="16" font-weight="700" fill="#fff">km당 4분 — 지속가능 페이스</text>
+          <text x="26" y="158" font-size="13.5" fill="rgba(220,231,223,.8)">무리 없이 낼 수 있는 속도. 노동 · 자본 · 생산성이 정하는 이 나라의 실력</text>
+          <text x="700" y="146" font-size="15" font-weight="700" fill="#3E8A6E">잠재성장률</text>
+
+          <rect x="0" y="180" width="900" height="58" fill="rgba(220,231,223,.07)" stroke="rgba(220,231,223,.3)" stroke-width="1.2"/>
+          <text x="26" y="206" font-size="16" font-weight="700" fill="#fff">km당 4분 30초로 달린다</text>
+          <text x="26" y="228" font-size="13.5" fill="rgba(220,231,223,.8)">몸은 편한데 기록이 안 나온다 = 유휴 설비와 실업이 생긴다</text>
+          <text x="700" y="216" font-size="15" font-weight="700" fill="rgba(220,231,223,.75)">유휴 · GDP갭 &lt; 0</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="verdict">
+      <span class="tag">정의</span>
+      <span class="txt"><em>물가 불안 없이</em> 생산요소를 정상 가동해 달성 가능한 지속가능 성장률.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 08<br>잠재성장률</div>
+    <div class="nbody">
+      <p><span class="q">"물가 불안 없이"가 정의의 핵심</span>
+      공장을 24시간 3교대로 돌리고 잔업을 쥐어짜면 생산량은 더 낼 수 있다.
+      하지만 그러면 야근수당이 오르고, 원자재를 급하게 사오느라 단가가 오르고, <b>결국 물가가 뛴다.</b>
+      잠재성장률은 그런 무리 없이 낼 수 있는 속도다. 그래서 "성장률이 높다"가 항상 좋은 소식이 아니게 된다.</p>
+      <p><span class="q">이 개념이 1회차에서 가장 중요한 이유</span>
+      실물(성장)과 정책(금리)을 잇는 <b>유일한 다리</b>이기 때문이다.
+      성장률 숫자 자체로는 금리 방향을 말할 수 없다. <b>잠재 대비 위치</b>가 정해져야 비로소
+      "지금은 식혀야 할 때인가, 데워야 할 때인가"가 나온다. 2회차 정책 파트 전체가 이 다리 위에서 시작된다.</p>
+      <p><span class="q">한 가지 주의</span>
+      잠재 GDP는 <b>측정되는 값이 아니라 모형으로 추정하는 값</b>이다. 통계청이 발표하는 숫자가 아니다.
+      그래서 한은·IMF·OECD·KDI가 각각 다른 값을 낸다. 리포트에서 GDP갭을 인용할 때
+      <b>누구의 추정치인지</b>를 확인하는 게 기본이고, 그것만 물어봐도 발표 준비가 됐다는 인상을 준다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 09 · GDP갭 4국면 ============ -->
+<article class="unit">
+  <section class="slide">
+    <div class="chrome"><span class="lane">1부 · 성장</span><span>09 / GDP갭</span></div>
+
+    <h2 class="claim">GDP갭의 <em>부호</em>가 곧<br>통화정책의 방향이다</h2>
+    <p class="sub">실제 GDP가 잠재 GDP 선을 오르내리며 파동을 만든다. 그 위아래가 각각 무엇을 뜻하는지가 이 장의 전부다.</p>
+
+    <div class="termline">
+      <span><b>GDP갭</b> = (실제 GDP − 잠재 GDP) ÷ 잠재 GDP × 100 — 단위는 %</span>
+      <span><b>+ 이면</b> 인플레이션 갭(과열) 　<b>− 이면</b> 디플레이션 갭(유휴)</span>
+    </div>
+
+    <div class="stage">
+      <svg viewBox="0 0 900 236" role="img" aria-label="실제 GDP가 잠재 GDP 추세선 위아래로 파동을 그리며 만드는 과열과 유휴 국면">
+        <g font-family="'Noto Sans KR', sans-serif">
+          <line x1="40" y1="128" x2="880" y2="88" stroke="#1D5B45" stroke-width="2.5" stroke-dasharray="7 5"/>
+          <text x="430" y="96" font-size="13.5" font-weight="700" fill="#1D5B45">잠재 GDP — 평소 실력</text>
+
+          <path d="M40,142 C130,96 200,84 268,104 C336,124 372,168 440,166 C508,164 548,120 616,100
+                   C684,80 720,60 792,66 C840,70 862,80 880,86"
+                fill="none" stroke="#8E2A2A" stroke-width="2.5"/>
+          <text x="120" y="182" font-size="13.5" font-weight="700" fill="#8E2A2A">실제 GDP</text>
+
+          <g>
+            <path d="M180,92 L180,120" stroke="#A8802A" stroke-width="1.5"/>
+            <text x="180" y="84" text-anchor="middle" font-size="12.5" fill="#A8802A" font-weight="700">갭 +</text>
+            <path d="M440,166 L440,133" stroke="#A8802A" stroke-width="1.5"/>
+            <text x="440" y="188" text-anchor="middle" font-size="12.5" fill="#A8802A" font-weight="700">갭 −</text>
+            <path d="M760,68 L760,96" stroke="#A8802A" stroke-width="1.5"/>
+            <text x="760" y="58" text-anchor="middle" font-size="12.5" fill="#A8802A" font-weight="700">갭 +</text>
+          </g>
+
+          <g font-size="13">
+            <rect x="40" y="204" width="270" height="26" fill="#FAF0EF"/>
+            <text x="54" y="222" fill="#8E2A2A" font-weight="700">과열</text>
+            <text x="100" y="222" fill="#4E5A53">구인난 · 납기 지연 → 긴축(금리 인상)</text>
+
+            <rect x="322" y="204" width="212" height="26" fill="#EFEDE6"/>
+            <text x="336" y="222" fill="#4E5A53" font-weight="700">중립</text>
+            <text x="382" y="222" fill="#4E5A53">물가 안정 + 완전고용</text>
+
+            <rect x="546" y="204" width="334" height="26" fill="#EFF4F0"/>
+            <text x="560" y="222" fill="#1D5B45" font-weight="700">유휴</text>
+            <text x="606" y="222" fill="#4E5A53">가동률 하락 · 실업 증가 → 완화</text>
+          </g>
+        </g>
+      </svg>
+    </div>
+
+    <div class="verdict">
+      <span class="tag">이 그림의 위치</span>
+      <span class="txt">1회차(실물)와 2회차(정책·자산)를 잇는 <em>다리</em>가 이 한 장이다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 09<br>GDP갭</div>
+    <div class="nbody">
+      <p><span class="q">부호를 정책으로 번역하는 법</span>
+      갭이 <b>플러스</b>면 실제 생산이 감당 가능한 수준을 넘었다는 뜻이다. 수요 과잉이 임금과 물가를 밀어올리기 전에
+      금리를 올려 식힌다. 갭이 <b>마이너스</b>면 유휴 설비와 실업이 있으니 물가 압력이 낮고, 금리 인하 명분이 생긴다.
+      뉴스에서 "인플레 압력이 제한적"이라는 표현이 나오면 대개 <b>이 갭이 마이너스</b>라는 말을 돌려 쓴 것이다.</p>
+      <p><span class="q">투자자에게는 부호가 뒤집혀 보인다</span>
+      갭이 마이너스라는 건 경제에는 나쁜 소식이지만, 투자자에게는 <b>금리 인하 기대</b>를 뜻해 채권과 성장주에 호재가 될 수 있다.
+      <b>"경제가 나쁘다 = 시장이 나쁘다"가 아니다.</b> 이 비틀림이 매크로를 처음 배울 때 가장 헷갈리는 지점이고,
+      4부에서 국면 매트릭스로 정리한다.</p>
+      <p><span class="q">그림을 그릴 수 있어야 한다</span>
+      백지에 <b>우상향 점선(잠재) 하나와 그 위아래로 출렁이는 실선(실제) 하나</b>만 그리면 이 장은 끝난다.
+      선이 위에 있으면 긴축, 아래에 있으면 완화. 실제로 발표에서 이 그림을 그려 놓고 설명하면
+      청중이 "지금 우리가 어디 있는지"를 한눈에 이해한다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 10 · 경기적 vs 구조적 ============ -->
+<article class="unit">
+  <section class="slide">
+    <div class="chrome"><span class="lane">1부 · 성장</span><span>10 / 함정</span></div>
+
+    <h2 class="claim">"성장률이 예전보다 낮다"는<br>문장에는 <mark>정보가 없다</mark></h2>
+    <p class="sub">기준선이 같이 내려왔는지를 확인하지 않았기 때문이다. 한국 잠재성장률은 2000년대 초 4%대에서
+    최근 2% 내외로 낮아진 것으로 추정된다.</p>
+
+    <div class="split">
+      <div class="pane bad">
+        <span class="ptag">경기적 둔화</span>
+        <h4>사이클상 일시 부진<br>— 갭이 마이너스로 벌어진 것</h4>
+        <p>잠재는 그대로인데 실제가 밑으로 처졌다. 수요가 일시적으로 식은 상태.</p>
+        <p><b>처방</b> — 금리 인하·재정 확대로 수요를 데우면 되돌아온다.</p>
+        <p><b>관찰되는 것</b> — 가동률 하락, 재고 증가, 신규 수주 감소. 그러나 <b>생산능력 자체는 그대로</b>다.</p>
+      </div>
+      <div class="pane good">
+        <span class="ptag">구조적 둔화</span>
+        <h4>잠재 자체가 내려앉은 것<br>— 기준선이 낮아졌다</h4>
+        <p>생산가능인구 감소, 투자 부진, 생산성 증가율 둔화가 원인이다.</p>
+        <p><b>처방</b> — 금리로는 못 고친다. 여기에 금리 인하로 대응하면 <b>물가만 오른다.</b></p>
+        <p><b>판정법</b> — 잠재가 4%일 때의 2% 성장은 심각한 부진(갭 −2%)이지만, 잠재가 2%일 때의 2% 성장은 <b>정확히 정상 속도</b>(갭 0)다.</p>
+      </div>
+    </div>
+
+    <div class="verdict warn" style="margin-top:auto;padding-top:22px">
+      <span class="tag">판단 원칙</span>
+      <span class="txt">성장률의 <em>절대 수준</em>이 아니라 <em>잠재 대비 위치</em>로 판단한다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 10<br>둔화의 두 종류</div>
+    <div class="nbody">
+      <p><span class="q">왜 이 구분이 실무에서 돈이 되나</span>
+      둘을 헷갈리면 <b>정책 예측이 통째로 빗나간다.</b> 경기적 둔화라고 보면 "곧 금리를 내리겠네 → 채권 매수"가 되지만,
+      구조적 둔화라면 중앙은행은 금리를 크게 내리지 않는다. 내려봐야 물가만 자극하기 때문이다.
+      실제로 "왜 이렇게 성장이 약한데 금리를 안 내리지?"라는 의문의 답이 대개 여기 있다.</p>
+      <p><span class="q">구분하는 실마리</span>
+      ① <b>물가가 같이 죽었는가</b> — 경기적 둔화면 수요가 식어 물가도 함께 내려온다. 성장은 약한데 물가가 안 내려오면 구조 쪽을 의심한다.
+      ② <b>고용은 어떤가</b> — 성장은 낮은데 실업률도 낮다면, 그 경제의 실력 자체가 낮아진 것일 가능성이 크다.
+      ③ <b>얼마나 오래됐는가</b> — 몇 분기짜리면 사이클, 몇 년째면 구조다.</p>
+      <p><span class="q">한국 이야기로 옮기면</span>
+      "한국 성장률이 2%대로 낮아졌다"는 뉴스만으로는 아무 판단도 할 수 없다.
+      <b>잠재도 2% 내외로 내려왔다면 지금은 정상 속도</b>이고, 그렇다면 금리 인하를 크게 기대하는 포지션은 위험하다.
+      기사 하나를 볼 때마다 <b>"기준선은 어디인가"</b>를 붙이는 습관이 1부의 최종 목표다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 11 · 컨센서스 (다크) ============ -->
+<article class="unit">
+  <section class="slide dark">
+    <div class="chrome"><span class="lane">1부 · 성장</span><span>11 / 컨센서스 게임</span></div>
+
+    <h2 class="claim">시장은 <em>절대값</em>을 보지 않는다</h2>
+    <p class="sub">"GDP 좋게 나왔는데 왜 주가가 빠지죠?"의 답은 여기 있다.
+    가격을 움직이는 것은 좋은 뉴스가 아니라 <b>예상과 다른 뉴스</b>다.</p>
+
+    <div class="stage">
+      <svg viewBox="0 0 900 236" role="img" aria-label="발표치와 컨센서스의 격차가 시장 반응을 결정하는 구조">
+        <g font-family="'Noto Sans KR', sans-serif">
+          <line x1="60" y1="150" x2="840" y2="150" stroke="rgba(220,231,223,.35)"/>
+
+          <g>
+            <circle cx="300" cy="150" r="7" fill="#D9BE72"/>
+            <text x="300" y="128" text-anchor="middle" font-size="14" font-weight="700" fill="#D9BE72">컨센서스 +0.5%</text>
+            <text x="300" y="106" text-anchor="middle" font-size="12.5" fill="rgba(220,231,223,.6)">이미 가격에 들어가 있는 값</text>
+
+            <circle cx="180" cy="150" r="8" fill="#E0736C"/>
+            <text x="180" y="188" text-anchor="middle" font-size="14" font-weight="700" fill="#E0736C">발표 +0.3%</text>
+            <text x="180" y="210" text-anchor="middle" font-size="12.5" fill="rgba(220,231,223,.6)">절대값은 플러스 성장</text>
+
+            <path d="M292,166 L188,166" stroke="#E0736C" stroke-width="2"/>
+            <text x="240" y="182" text-anchor="middle" font-size="12.5" fill="#E0736C" font-weight="700">−0.2%p</text>
+          </g>
+
+          <rect x="470" y="96" width="370" height="108" fill="rgba(142,42,42,.2)" stroke="#E0736C" stroke-width="1.2"/>
+          <text x="494" y="128" font-size="15.5" font-weight="700" fill="#fff">시장이 실제로 계산하는 값</text>
+          <text x="494" y="158" font-family="Consolas, monospace" font-size="17" font-weight="700" fill="#E0736C">서프라이즈 = 발표치 − 컨센서스</text>
+          <text x="494" y="186" font-size="13.5" fill="rgba(220,231,223,.8)">성장인데도 주가가 빠지는 이유가 이 한 줄이다</text>
+
+          <text x="0" y="30" font-family="Consolas, monospace" font-size="12" letter-spacing="2" fill="rgba(220,231,223,.45)">수능 등급으로 바꾸면</text>
+          <text x="0" y="56" font-size="14" fill="rgba(220,231,223,.8)">원점수 90점은 훌륭하다. 그런데 시험이 쉬워 평균이 92점이었다면 등급은 처참하다.</text>
+          <text x="0" y="78" font-size="14" fill="#D9BE72">시장이 보는 건 원점수가 아니라 표준점수다. 컨센서스가 평균 역할을 한다.</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="verdict warn">
+      <span class="tag">함정</span>
+      <span class="txt">서프라이즈의 방향과 자산의 방향은 <em>1:1이 아니다.</em> 긴축 국면에선 성장 서프라이즈가 악재가 된다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 11<br>컨센서스</div>
+    <div class="nbody">
+      <p><span class="q">"이미 반영됐다(price in)"의 정확한 뜻</span>
+      시장 참가자들은 GDP 발표 전에도 월별 산업생산·수출·소매판매·PMI를 보며 GDP를 추정하고 있다.
+      그 추정치가 <b>미리 가격에 들어가 있다.</b> 그래서 실제 발표가 추정치와 같으면 가격이 움직일 이유가 없다.
+      컨센서스는 블룸버그·로이터가 이코노미스트 예상치를 모아 발표 전에 공표한다.</p>
+      <p><span class="q">움직이지 않은 것도 정보다</span>
+      <b>"좋은 지표가 나왔는데 시장이 안 움직였다"</b>는 건 시장이 이미 그 정도를 예상했다는 뜻이다.
+      반대로 <b>"평범한 지표에 시장이 크게 움직였다"</b>면 포지션이 한쪽으로 심하게 쏠려 있었다는 뜻이다.
+      가격 반응의 크기는 지표의 좋고 나쁨이 아니라 <b>기대와의 거리 × 쏠림 정도</b>로 결정된다.</p>
+      <p><span class="q">공식 컨센서스가 최신이 아닐 때</span>
+      발표 직전 며칠 사이 다른 지표가 나쁘게 나오면, 공식 컨센서스는 그대로여도 <b>시장의 실제 기대(whisper number)</b>는 이미 내려가 있다.
+      "공식 컨센서스를 하회했는데 주가가 오르는 날"은 대개 이 경우다.
+      그래서 발표 당일 리포트를 쓸 때는 <b>발표치 · 컨센서스 · 직전치</b>를 세트로 적고, 최근 며칠 관련 지표까지 훑어야 한다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 12 · 데이터 수정 ============ -->
+<article class="unit">
+  <section class="slide">
+    <div class="chrome"><span class="lane">1부 · 성장</span><span>12 / 데이터는 수정된다</span></div>
+
+    <h2 class="claim">GDP는 <em>세 번</em> 발표된다</h2>
+    <p class="sub">분기가 끝난 직후에 모든 기업의 매출·재고 자료가 모일 리 없다. 통계기관은 "부정확해도 빨리"와 "정확하지만 늦게" 중
+    <b>둘 다 하는 쪽</b>을 택했다.</p>
+
+    <div class="stage">
+      <svg viewBox="0 0 900 244" role="img" aria-label="속보치 잠정치 확정치로 이어지는 GDP 3단계 발표 구조와 정확도 변화">
+        <g font-family="'Noto Sans KR', sans-serif">
+          <line x1="60" y1="118" x2="860" y2="118" stroke="#B9C4BC" stroke-width="2"/>
+
+          <g>
+            <circle cx="150" cy="118" r="10" fill="#8E2A2A"/>
+            <text x="150" y="88" text-anchor="middle" font-size="17" font-weight="700" fill="#1A241F">속보치</text>
+            <text x="150" y="66" text-anchor="middle" font-size="12.5" fill="#8A948D">분기 종료 +1개월</text>
+            <text x="150" y="150" text-anchor="middle" font-size="13" fill="#8E2A2A" font-weight="700">시장 반응 최대</text>
+            <text x="150" y="172" text-anchor="middle" font-size="12.5" fill="#4E5A53">정보는 가장 적은데</text>
+            <text x="150" y="192" text-anchor="middle" font-size="12.5" fill="#4E5A53">반응은 가장 크다</text>
+
+            <circle cx="450" cy="118" r="9" fill="#A8802A"/>
+            <text x="450" y="88" text-anchor="middle" font-size="17" font-weight="700" fill="#1A241F">잠정치</text>
+            <text x="450" y="66" text-anchor="middle" font-size="12.5" fill="#8A948D">+2개월</text>
+            <text x="450" y="150" text-anchor="middle" font-size="13" fill="#A8802A" font-weight="700">조용한 방향 전환</text>
+            <text x="450" y="172" text-anchor="middle" font-size="12.5" fill="#4E5A53">여기서 큰 수정이 나와도</text>
+            <text x="450" y="192" text-anchor="middle" font-size="12.5" fill="#4E5A53">뉴스가 잘 안 다룬다</text>
+
+            <circle cx="760" cy="118" r="9" fill="#1D5B45"/>
+            <text x="760" y="88" text-anchor="middle" font-size="17" font-weight="700" fill="#1A241F">확정치</text>
+            <text x="760" y="66" text-anchor="middle" font-size="12.5" fill="#8A948D">+3개월</text>
+            <text x="760" y="150" text-anchor="middle" font-size="13" fill="#1D5B45" font-weight="700">교과서에 실리는 값</text>
+            <text x="760" y="172" text-anchor="middle" font-size="12.5" fill="#4E5A53">그런데 당시 시장은</text>
+            <text x="760" y="192" text-anchor="middle" font-size="12.5" fill="#4E5A53">이 값을 본 적이 없다</text>
+          </g>
+
+          <rect x="0" y="212" width="900" height="32" fill="#F2E2E0"/>
+          <text x="18" y="233" font-size="14" fill="#8E2A2A"><tspan font-weight="700">look-ahead bias</tspan> — 과거를 분석할 땐 그 시점에 실제로 존재했던 데이터(vintage data)를 써야 한다</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="verdict warn">
+      <span class="tag">백테스트 원칙</span>
+      <span class="txt">"2020년 3월에 GDP가 −5%였으니 그때 팔았어야지"는 <em>그때 없던 숫자</em>로 만든 전략이다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 12<br>데이터 수정</div>
+    <div class="nbody">
+      <p><span class="q">숫자가 바뀌는 건 오류가 아니다</span>
+      "작년 3분기가 분명히 0.6%였는데 지금 보니 0.4%다" — 잘못 본 게 아니라 <b>수정된 것</b>이고, 통계 시스템의 정상 작동이다.
+      분기별 3단계 수정과 별개로 매년 <b>연간 개정(annual revision)</b>이 있고, 5년마다 기준연도 개편이 있다.
+      이때 과거 몇 년치가 통째로 바뀐다. 장기 시계열을 인용할 땐 <b>다운로드 시점을 기록</b>해두는 습관이 필요하다.</p>
+      <p><span class="q">수정 '폭'보다 '방향'</span>
+      수정폭 0.1%p는 작아 보인다. 그런데 <b>연속 3분기 하향 수정</b>이라면 얘기가 다르다.
+      통계 시스템이 경기를 계속 과대평가하고 있었다는 뜻이고, 이건 <b>경기 전환기에 자주 나타나는 패턴</b>이다.
+      개별 수정치는 뉴스가 안 되지만, 수정의 방향이 한쪽으로 쌓이면 그 자체가 신호다.</p>
+      <p><span class="q">그래서 시장이 속보치에 크게 반응하는 게 합리적인가</span>
+      역설적이지만 그렇다. 투자 판단은 <b>남보다 먼저</b> 해야 하므로, 부정확해도 가장 빠른 정보에 가격이 붙는다.
+      대신 그 대가로 <b>수정치가 나오는 날 조용히 큰 방향 전환</b>이 일어나기도 한다.
+      "아무 뉴스도 없었는데 시장이 움직였다"는 날, 그날 무슨 수정치가 나왔는지 확인해보면 답이 나오는 경우가 있다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 13 · 나우캐스팅 ============ -->
+<article class="unit">
+  <section class="slide">
+    <div class="chrome"><span class="lane">1부 · 성장</span><span>13 / 나우캐스팅</span></div>
+
+    <h2 class="claim">발표를 기다리지 않고<br><em>지금</em>을 추정한다</h2>
+    <p class="sub">공식 발표를 30일 기다리는 건 실무에서 너무 느리다. 이미 나온 월별·주별 지표를 모형에 넣어
+    "지금 이 분기 GDP가 얼마쯤 되고 있는가"를 실시간으로 추정한 것이 나우캐스팅이다.</p>
+
+    <div class="stage">
+      <svg viewBox="0 0 900 240" role="img" aria-label="분기 중 나우캐스팅 추정치가 지표 발표에 따라 계속 하향되는 경로">
+        <g font-family="'Noto Sans KR', sans-serif">
+          <line x1="60" y1="30" x2="60" y2="180" stroke="#B9C4BC" stroke-width="1.5"/>
+          <line x1="60" y1="180" x2="850" y2="180" stroke="#B9C4BC" stroke-width="1.5"/>
+          <g font-family="Consolas, monospace" font-size="11.5" fill="#8A948D">
+            <text x="24" y="46">3.0%</text>
+            <text x="24" y="112">2.0%</text>
+            <text x="24" y="184">1.0%</text>
+            <text x="76" y="200">분기 초</text>
+            <text x="700" y="200">분기 말</text>
+          </g>
+
+          <path d="M90,72 L210,78 L330,104 L450,112 L570,134 L690,142 L810,148"
+                fill="none" stroke="#8E2A2A" stroke-width="2.5"/>
+          <g fill="#8E2A2A">
+            <circle cx="90" cy="72" r="4"/><circle cx="210" cy="78" r="4"/><circle cx="330" cy="104" r="4"/>
+            <circle cx="450" cy="112" r="4"/><circle cx="570" cy="134" r="4"/><circle cx="690" cy="142" r="4"/>
+            <circle cx="810" cy="148" r="5"/>
+          </g>
+          <text x="96" y="60" font-size="13" fill="#8E2A2A" font-weight="700">2.5%에서 시작</text>
+          <text x="700" y="132" font-size="13" fill="#8E2A2A" font-weight="700">1.5%까지 계속 깎임</text>
+
+          <g font-size="12.5" fill="#4E5A53">
+            <text x="210" y="222">소매판매</text>
+            <text x="330" y="222">산업생산</text>
+            <text x="450" y="222">무역수지</text>
+            <text x="570" y="222">고용</text>
+            <text x="690" y="222">주택착공</text>
+          </g>
+          <text x="60" y="222" font-size="12.5" fill="#8A948D">지표가 나올 때마다 갱신 →</text>
+
+          <rect x="596" y="34" width="254" height="62" fill="#EFF4F0" stroke="#1D5B45" stroke-width="1.2"/>
+          <text x="612" y="58" font-size="14" font-weight="700" fill="#1D5B45">절대 수치보다 경로</text>
+          <text x="612" y="82" font-size="12.5" fill="#4E5A53">하향 궤적 자체가 둔화 신호다</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="verdict">
+      <span class="tag">대표 도구</span>
+      <span class="txt"><em>GDPNow</em>(애틀랜타 연은) — 매주 갱신. 뉴욕 연은 Nowcast와 차이가 나면 그 차이 자체가 논쟁거리가 된다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 13<br>나우캐스팅</div>
+    <div class="nbody">
+      <p><span class="q">이름 그대로 "지금 예보"</span>
+      날씨 예보가 내일을 맞히는 일이라면, 나우캐스팅은 <b>지금 밖에 비가 오는지</b>를 맞히는 일이다.
+      우습게 들리지만 GDP는 실제로 그렇다. 분기가 끝나고도 한 달을 기다려야 하니,
+      <b>지금 이 순간의 경제 상태조차 공식적으로는 모르는 상태</b>다. 그 공백을 메우는 게 나우캐스팅이다.</p>
+      <p><span class="q">쓰는 법은 딱 하나</span>
+      <b>수치가 아니라 방향을 본다.</b> 분기 초 2.5%에서 시작해 지표가 나올 때마다 1.5%로 계속 깎이고 있다면,
+      최종 발표가 얼마로 나오든 <b>그 하향 궤적 자체가 경기 둔화 신호</b>다.
+      반대로 계속 상향되고 있다면 시장 컨센서스가 뒤늦게 따라 올라올 가능성이 높다.</p>
+      <p><span class="q">주의할 점</span>
+      GDPNow는 <b>모형이 기계적으로 계산한 값</b>이라 사람의 판단이 들어가 있지 않다.
+      분기 초에는 반영된 지표가 적어 값이 크게 튀고, 분기 말로 갈수록 안정된다.
+      그래서 <b>분기 초의 GDPNow 수치를 헤드라인으로 인용하는 건 위험</b>하다. 경로가 안정된 뒤에 쓰는 게 맞다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 14 · 실전 독해 ============ -->
+<article class="unit">
+  <section class="slide">
+    <div class="chrome"><span class="lane">1부 · 성장</span><span>14 / 실전 독해</span></div>
+
+    <h2 class="claim">배운 도구 <em>여섯 개</em>를<br>한 문단에 동시에 적용한다</h2>
+    <p class="sub">"3분기 실질 GDP는 전기비 +0.6%(속보치)로 컨센서스(+0.5%)를 상회했다. 다만 순수출이 +0.3%p 기여한 반면
+    설비투자는 −0.2%p로 성장을 깎았으며, 재고 증가가 +0.2%p를 보탰다. 잠재성장률(2.0% 내외) 대비 GDP갭은 여전히 소폭 마이너스로 추정된다."</p>
+
+    <table class="tbl">
+      <thead>
+        <tr><th style="width:22%">문장 조각</th><th style="width:16%">쓰는 도구</th><th>읽어내는 것</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>"실질 · 전기비"</td><td class="mat">04장 자</td><td>한국식 QoQ. 연율 환산 시 약 2.4% — 미국과 비교하려면 이 값을 쓴다</td></tr>
+        <tr><td>"컨센서스 상회"</td><td class="mat">11장 컨센</td><td>+0.1%p 서프라이즈. 방향은 긍정이나 <b>폭이 작아 시장을 흔들 재료는 아니다</b></td></tr>
+        <tr class="hot"><td>"순수출 +0.3%p"</td><td class="mat">06장 기여도</td><td>성장의 절반이 대외 부문. 글로벌 수요가 꺾이면 사라지는 몫. <b>수출↑인지 수입↓인지 확인 필요</b></td></tr>
+        <tr class="hot"><td>"설비투자 −0.2%p"</td><td class="mat">07장 구성</td><td>가장 나쁜 신호. 기업이 미래를 어둡게 본다는 뜻이고 <b>다음 분기 생산능력의 선행지표</b>다</td></tr>
+        <tr class="hot"><td>"재고 +0.2%p"</td><td class="mat">03장 함정</td><td>성장률의 3분의 1이 재고. 쌓여서 늘었다면 <b>다음 분기 되돌림 위험</b></td></tr>
+        <tr><td>"속보치"</td><td class="mat">12장 수정</td><td>아직 바뀔 숫자. 특히 <b>재고와 순수출이 수정폭이 큰 대표 항목</b>이다</td></tr>
+        <tr><td>"GDP갭 소폭 −"</td><td class="mat">09장 갭</td><td>과열이 아니다 → <b>금리 인상 명분이 약하다</b> → 채권에 우호적 해석 가능</td></tr>
+      </tbody>
+    </table>
+
+    <div class="verdict warn" style="margin-top:auto;padding-top:22px">
+      <span class="tag">한 줄 결론</span>
+      <span class="txt">헤드라인은 서프라이즈지만 <em>내용은 취약한 성장</em>. 재고 제외 실력은 0.4% 수준이다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 14<br>실전 독해</div>
+    <div class="nbody">
+      <p><span class="q">이 표가 이 자료의 최종 산출물이다</span>
+      1부에서 배운 여섯 도구(실질 / 자 / 기여도 / 갭 / 컨센서스 / 수정)는 각각 따로 쓰라고 배운 게 아니다.
+      <b>실제 리포트 한 문단에는 이 여섯이 전부 한꺼번에 들어 있다.</b>
+      그래서 마지막 훈련은 문장을 조각으로 자르고 <b>각 조각에 도구를 하나씩 붙이는</b> 연습이다.</p>
+      <p><span class="q">종합 판단은 이렇게 쓴다</span>
+      성장의 질을 보면 ①대외 의존(순수출) ②재고 착시 ③내수 투자 위축이 겹쳐 있다.
+      <b>최종수요 기준(재고 제외)으로 보면 실제 실력은 0.6%가 아니라 0.4% 수준</b>이며, GDP갭이 마이너스이므로 물가 압력은 제한적이다.
+      투자 시사점으로는 "성장 서프라이즈에 따른 단기 위험자산 강세는 가능하나 <b>추격 매수의 근거로는 약하다</b>"까지 쓸 수 있다.</p>
+      <p><span class="q">차트를 인용할 때의 마지막 습관</span>
+      발표에서 첫 질문은 대개 <b>"그 차트 축이 뭐예요?"</b>다.
+      같은 데이터도 QoQ냐 SAAR이냐에 따라 그림 모양이 완전히 달라진다(2020년 막대가 극단적으로 길어 보이는 이유가 그것이다).
+      <b>차트를 쓰기 전에 축 단위·기준·기간을 말로 설명할 수 있는지</b> 스스로 점검하면 그 질문에 막히지 않는다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 15 · 셀프체크 (다크) ============ -->
+<article class="unit">
+  <section class="slide dark">
+    <div class="chrome"><span class="lane">1부 · 성장</span><span>15 / 셀프체크</span></div>
+
+    <h2 class="claim">1부를 덮기 전에<br><em>답할 수 있어야 하는 것</em></h2>
+    <p class="sub">먼저 답을 떠올린 다음 괄호 안 슬라이드로 돌아가 맞춰본다. 남에게 설명할 수 있으면 통과다.</p>
+
+    <ol class="checks">
+      <li>민간소비 비중이 가장 큰데 왜 설비투자·순수출을 더 자주 보나? (02)</li>
+      <li>수입이 늘어 성장률이 깎였다. 이게 <b>항상</b> 나쁜 소식인가? (03)</li>
+      <li>한국 0.6%와 미국 2.4%를 보고 "미국이 4배"라 하면 왜 틀렸나? (04·05)</li>
+      <li>전기비를 연율로 바꾸는 방법과 <b>대략적인 암산법</b>은? (04)</li>
+      <li>"설비투자 −0.2%p 기여"와 "설비투자 0.2% 감소"는 같은 말인가? (06)</li>
+      <li>기여도를 읽는 <b>3단계 루틴</b>을 말해보라. (06)</li>
+      <li>같은 +0.6%인데 한쪽만 악재로 읽히는 이유는? (07)</li>
+      <li>순수출 기여도 개선을 무조건 호재로 읽으면 안 되는 이유는? (07)</li>
+      <li>GDP갭이 플러스일 때 중앙은행이 금리를 올리려는 이유는? (08·09)</li>
+      <li>잠재가 4%→2%로 내려온 나라에서 "성장 2%"는 부진인가? (10)</li>
+      <li>+0.3% 성장이 시장에 <b>악재</b>가 될 수 있는가? (11)</li>
+      <li>"2020년 3월 GDP −5%였으니 그때 팔았어야"의 결함은? (12)</li>
+    </ol>
+
+    <div class="verdict" style="margin-top:auto;padding-top:20px">
+      <span class="tag">다음</span>
+      <span class="txt">GDP는 분기 지표라 <em>너무 늦다.</em> 2부에서 매달·매주 나오는 경기 지표로 사이클을 읽는다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 15<br>셀프체크</div>
+    <div class="nbody">
+      <p><span class="q">채점 기준</span>
+      정답을 맞히는 게 아니라 <b>설명이 이어지는지</b>를 본다. 예를 들어 9번은 "물가가 오르니까"로 끝나면 실패다.
+      "실제 생산이 물가 불안 없이 감당 가능한 수준을 넘어섰다는 뜻이므로, 수요 과잉이 임금과 물가를 밀어올리기 전에
+      금리를 올려 수요를 식히려는 것"까지 나와야 통과다.</p>
+      <p><span class="q">특히 중요한 세 문항</span>
+      <b>3번, 5번, 9번.</b> 각각 "자를 통일한다", "%와 %p를 구분한다", "실물과 정책을 잇는다"라는
+      1부의 독립적인 축을 하나씩 담고 있다. 나머지를 다 틀려도 이 셋을 설명할 수 있으면 2부로 넘어가도 된다.</p>
+      <p><span class="q">공부 방법</span>
+      슬라이드를 다시 읽지 말고 <b>백지에 그림부터 그려보라.</b>
+      4단계 사슬(01), 비중 vs 변동성 막대(02), Case A/B 기여도(07), 잠재선과 실제선(09) — 이 넷은 손으로 다시 그릴 수 있어야 한다.
+      그림이 나오면 문장은 따라 나온다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 부록 A · 용어집 ============ -->
+<article class="unit">
+  <section class="slide dark">
+    <div class="chrome"><span class="lane">1부 · 성장</span><span>부록 A / 용어집</span></div>
+
+    <h2 class="claim">성장 파트에서 <em>반복해서</em> 만나는 말</h2>
+    <p class="sub">여기 있는 열 개는 앞으로 모든 리포트에서 다시 만난다. 정의를 한 줄로 붙여두면 리포트가 읽힌다.</p>
+
+    <div class="gloss">
+      <div class="gl"><span class="t">실질 GDP</span><span class="e">REAL GDP</span><div class="d">물가 상승분을 제거해 <b>생산량의 실질 변화만</b> 측정. 매크로에서 "성장률"의 기본값. 명목과 실질의 차이가 곧 GDP 디플레이터.</div></div>
+      <div class="gl"><span class="t">성장기여도</span><span class="e">CONTRIBUTION</span><div class="d"><b>항목 비중 × 항목 성장률</b>, 단위 %p. 모든 항목 기여도의 합이 전체 성장률과 일치한다.</div></div>
+      <div class="gl"><span class="t">SAAR</span><span class="e">ANNUAL RATE</span><div class="d">계절조정 <b>연율</b>. 전기비를 네 번 복리로 환산해 진폭이 약 4배 증폭. 미국 표준 표기.</div></div>
+      <div class="gl"><span class="t">잠재성장률</span><span class="e">POTENTIAL GROWTH</span><div class="d">물가 불안 없이 달성 가능한 지속가능 성장률. <b>관측값이 아니라 모형 추정값</b>이라 기관마다 다르다.</div></div>
+      <div class="gl"><span class="t">GDP갭</span><span class="e">OUTPUT GAP</span><div class="d">(실제 − 잠재) ÷ 잠재. <b>양수면 과열</b>(금리 인상 명분), <b>음수면 유휴</b>(인하 명분). 실물과 정책을 잇는 다리.</div></div>
+      <div class="gl"><span class="t">최종수요</span><span class="e">FINAL SALES</span><div class="d">GDP에서 <b>재고 변동을 뺀</b> 값. 실제로 팔린 것만 센 진짜 실력.</div></div>
+      <div class="gl"><span class="t">컨센서스</span><span class="e">CONSENSUS</span><div class="d">시장 참가자 예상치의 중앙값. 가격은 발표치가 아니라 <b>컨센서스와의 격차</b>에 반응한다.</div></div>
+      <div class="gl"><span class="t">서프라이즈</span><span class="e">SURPRISE</span><div class="d">발표치 − 컨센서스. 부호와 크기가 <b>그날의 가격 반응</b>을 만든다.</div></div>
+      <div class="gl"><span class="t">나우캐스팅</span><span class="e">NOWCASTING</span><div class="d">월별 고빈도 지표로 <b>진행 중인 분기</b> GDP를 실시간 추정. GDPNow(애틀랜타 연은)가 대표.</div></div>
+      <div class="gl"><span class="t">빈티지 데이터</span><span class="e">VINTAGE DATA</span><div class="d"><b>발표 시점 기준의 원본 수치.</b> 백테스트에 확정치를 쓰면 look-ahead bias가 된다.</div></div>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">부록 A<br>성장 용어</div>
+    <div class="nbody">
+      <p><span class="q">외우는 순서</span>
+      정의를 하나씩 외우는 것보다 <b>한 문장으로 꿰는</b> 게 빠르다.
+      "<b>실질</b> GDP를 <b>SAAR</b>이라는 자로 재서, <b>기여도</b>로 쪼개 원인을 찾고, <b>잠재</b> 대비 위치(<b>GDP갭</b>)로 정책 방향을 읽고,
+      그 결과를 <b>컨센서스</b>와 비교해 가격 반응을 설명한다. 단 그 숫자는 나중에 수정되므로 <b>빈티지</b>를 기록한다."
+      — 이 한 문장 안에 1부 전체가 들어 있다.</p>
+      <p><span class="q">%와 %p를 마지막으로 한 번 더</span>
+      성장률은 <b>%</b>, 기여도는 <b>%p</b>, 갭도 <b>%</b>다. 발표에서 이걸 섞어 쓰면 바로 지적이 들어온다.
+      "설비투자가 마이너스 0.2퍼센트 기여했다"고 말하는 순간 <b>개념을 모른다는 신호</b>가 되므로,
+      말버릇으로 "퍼센트포인트"를 붙이는 연습을 해두면 좋다.</p>
+      <p><span class="q">여기서 2부로 넘어가는 이유</span>
+      1부의 도구는 전부 <b>분기 지표</b>를 다룬다. 그런데 분기 GDP는 분기가 끝나고 한 달 뒤에 나온다.
+      의사결정에는 너무 느리다. 그래서 2부는 <b>매달·매주 나오는 지표로 사이클의 현재 위치를 판정</b>하는 법을 다룬다.
+      나우캐스팅(13장)이 그 세계로 들어가는 입구였던 셈이다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 부록 B · 데이터 소스 ============ -->
+<article class="unit">
+  <section class="slide">
+    <div class="chrome"><span class="lane">1부 · 성장</span><span>부록 B / 데이터 소스</span></div>
+
+    <h2 class="claim">코드만 알면 <em>즉시</em> 시계열이 나온다</h2>
+    <p class="sub">FRED(세인트루이스 연은)는 무료다. <b>fred.stlouisfed.org/series/[코드]</b> 형식으로 바로 접근된다.
+    아래 여섯 개면 1부 내용을 전부 직접 그려볼 수 있다.</p>
+
+    <table class="tbl">
+      <thead>
+        <tr><th style="width:26%">지표</th><th style="width:22%">FRED 코드</th><th style="width:10%">빈도</th><th>무엇에 쓰나</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>실질 GDP 성장률</td><td class="mat">A191RL1Q225SBEA</td><td class="mat">분기</td><td>미국 헤드라인 성장률. QoQ <b>SAAR</b> 기준이라는 점에 주의</td></tr>
+        <tr><td>실질 GDP 수준</td><td class="mat">GDPC1</td><td class="mat">분기</td><td>레벨 값. 추세선을 그릴 때 쓴다</td></tr>
+        <tr><td>명목 GDP</td><td class="mat">GDP</td><td class="mat">분기</td><td>부채비율 등 <b>금액 기준</b> 분석용</td></tr>
+        <tr class="hot"><td>실질 잠재 GDP</td><td class="mat">GDPPOT</td><td class="mat">분기</td><td>CBO 추정치. <b>GDPC1과 겹쳐 그리면 그게 GDP갭 그림</b>(09장)</td></tr>
+        <tr><td>산업생산지수</td><td class="mat">INDPRO</td><td class="mat">월</td><td>GDP의 월별 대용 지표</td></tr>
+        <tr><td>실질 개인소비지출</td><td class="mat">PCEC96</td><td class="mat">월</td><td>C 항목의 월별 흐름</td></tr>
+      </tbody>
+    </table>
+
+    <div class="cards c3" style="flex:0 0 auto;margin-top:22px">
+      <div class="card">
+        <span class="ctag">한국 · 원자료</span>
+        <h4>한국은행 ECOS</h4>
+        <p>GDP·기여도·국제수지 원자료. <b>API 제공</b>이라 자동 수집도 가능하다.</p>
+        <p>ecos.bok.or.kr</p>
+      </div>
+      <div class="card">
+        <span class="ctag">한국 · 정책</span>
+        <h4>통화정책방향 의결문</h4>
+        <p>한 페이지로 압축된 <b>최고의 매크로 교재.</b> 매 회의 문장이 어떻게 바뀌는지 비교하면 스탠스가 보인다.</p>
+      </div>
+      <div class="card">
+        <span class="ctag">한국 · 실물</span>
+        <h4>그린북 · KOSIS</h4>
+        <p>기재부 최근경제동향(매월), 산업활동동향·소비자동향조사.</p>
+      </div>
+    </div>
+
+    <div class="verdict" style="margin-top:auto;padding-top:22px">
+      <span class="tag">권장 습관</span>
+      <span class="txt">매달 <em>한은 의결문 한 편 + 그린북 요약 한 장.</em> 6개월이면 독해력이 달라진다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">부록 B<br>데이터 소스</div>
+    <div class="nbody">
+      <p><span class="q">왜 직접 그려봐야 하나</span>
+      리포트에 실린 차트는 <b>이미 누군가의 해석이 들어간 결과물</b>이다. 축을 어떻게 잡고 어느 구간을 보여줄지에 이미 주장이 담긴다.
+      GDPC1과 GDPPOT 두 개만 받아 겹쳐 그려보면 <b>09장의 갭 그림이 내 손에서 나온다.</b>
+      한 번 직접 그려본 그림은 남의 차트를 볼 때도 축을 먼저 보게 만든다.</p>
+      <p><span class="q">의결문을 교재로 쓰는 법</span>
+      분량이 적어 부담이 없고, <b>같은 문서의 문장이 매달 어떻게 바뀌는지</b>를 추적하는 훈련이 된다.
+      "성장세가 완만하다" → "성장세가 다소 개선되었다"처럼 형용사 하나가 바뀌는 것이 정책 스탠스의 이동이다.
+      2회차에서 배울 성명서 diff 해독이 정확히 이 훈련의 확장판이다.</p>
+      <p><span class="q">데이터를 받을 때의 기록 습관</span>
+      12장에서 봤듯 과거 수치는 <b>수정된다.</b> 그래서 분석에 쓴 시계열은 다운로드한 <b>날짜와 출처 코드를 파일명에 남겨두는</b> 게 좋다.
+      나중에 숫자가 안 맞을 때 "내가 틀렸나"를 고민하는 시간이 사라진다.</p>
+    </div>
+  </aside>
+</article>
+
+</body>
+</html>
