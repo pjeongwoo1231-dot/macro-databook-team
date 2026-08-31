@@ -151,3 +151,5 @@ read:
     note: "국채 베이시스 트레이드는 헤지펀드 레포에 얹혀 있다"
   - file: "IMF-Global-Financial-Stability-Report-April-2026"
     skip: "IMF-GFSR-Apr-2026-Ch1/Ch2와 같은 보고서의 통합본 — 중복"
+  - file: "US-Treasury-TBAC-Quarterly-Refunding-Presentation-August-2026"
+    note: "바이백으로는 장기금리를 못 누른다 — 한도가 응찰의 10분의 1이다"
