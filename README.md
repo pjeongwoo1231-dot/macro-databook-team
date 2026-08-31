@@ -278,6 +278,11 @@ Obsidian Sync가 본선이고 이건 사본이지만, **원문까지 있어 이�
 
 먼저 읽을 것: `docs/vault/03_MOC/시황 분석 진입점.md` · `좋은 시황의 규칙.md`
 
-⚠ PDF 때문에 저장소가 약 290MB다. 노트만 받으려면 sparse checkout —
-자세한 것은 `docs/vault/README.md`.
+`docs/library/` — **아직 정리되지 않은 원문 더미** 약 400편.
+Fed FEDS 워킹페이퍼 2020–2023 약 300편(볼트 `Institutional-Macro-Analysis` 리포트가
+분석한 그 코퍼스), 개별 논문 약 90편, 학회 1회차 교재.
+읽고 제텔로 분해할 대상이지 이미 판정에 쓰이는 자료가 아니다.
+
+⚠ 원문 PDF 때문에 저장소가 약 860MB다. 노트만 받으려면 sparse checkout —
+자세한 것은 `docs/vault/README.md` · `docs/library/README.md`.
 

@@ -1,0 +1,48 @@
+# 원문 라이브러리 — 코퍼스와 교재
+
+`docs/vault/`가 **정리된 노트와 그에 딸린 원문**이라면, 여기는 **아직 정리되지 않은 원문 더미**다.
+읽고 제텔로 분해할 대상이지, 이미 판정에 쓰이는 자료가 아니다.
+
+## 들어 있는 것
+
+| | 편수 | 무엇 |
+|---|---|---|
+| `corpus/Institutional-Macro-Corpus/` | 약 300 | **Fed FEDS 워킹페이퍼 2020–2023** |
+| (최상위) | 약 90 | 개별 논문 — Kilian 유가·재고, Deaton 원자재, Bohl 통화정책×원자재, Bernanke 주식시장 반응 등 |
+| `매크로_경제_읽기_1회차_독학판/` | 4 + html | **학회 1회차 교재** (성장·경기순환·물가·고용) |
+| `매크로_논문활용안/` | 1 | 논문 11편의 Data Book 활용안 |
+
+## Fed FEDS 코퍼스를 왜 두나
+
+볼트의 `Institutional-Macro-Analysis/Pilot-Quality-Report.md`가 분석한 **바로 그 코퍼스**다.
+그 노트가 이렇게 적고 있다:
+
+> 기관 균형 파일럿(Fed·BIS·ECB·BOJ·World Bank·IMF/OECD)은 이 코퍼스로 실행할 수 없다.
+> 원문이 내려받아진 문서는 **294건 전부 Fed FEDS 워킹페이퍼 하나**뿐이다.
+
+**노트만 있고 원문이 없으면 그 판정을 검증할 수 없다.** 그래서 함께 둔다.
+동시에 이 코퍼스의 한계(기관 편중)도 그 노트에 적혀 있으니 같이 읽는다.
+
+## 뺀 것
+
+- **개인 자료** — 수능 국어 문제 2편. 연구와 무관하다.
+- **중복 18건** — 볼트에 이미 있는 것 8건(`macro_classics` 7편 등)과
+  파일명에 `(1)`·`(2)`가 붙은 같은 파일 10건. 해시로 걸러냈다.
+
+## 정리되면 옮긴다
+
+여기 있는 원문을 읽고 노트로 만들면 그 노트는 `docs/vault/02_Papers/`나
+`04_Zettel/`로 가고, 원문은 볼트의 `06_SourceArchive/`·`Attachments/`로 간다.
+**이 폴더가 줄어드는 것이 정상이다.**
+
+분해 절차는 `docs/vault/CLAUDE.md` §14-3(제텔카스텐 파이프라인)에 있다 —
+실증 논문과 이론 논문의 프롬프트가 다르다.
+
+## clone 이 무겁다
+
+이 폴더 때문에 저장소가 약 860MB다. 노트만 필요하면:
+
+```bash
+git clone --filter=blob:none --sparse https://github.com/pjeongwoo1231-dot/macro-databook-team
+cd macro-databook-team && git sparse-checkout set docs/vault databook docs/prompts
+```
