@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>3회차 장기금리와 재정 — 1부 해부 (슬라이드 독학판)</title>
+<style>
+/* ==========================================================
+   3회차 「장기금리와 재정」 1부 해부 슬라이드 독학판 (완성본)
+   디자인 시스템 : ENGRAVED SECURITY
+   국채 증서의 인그레이빙 그린 · 원장의 붉은 선 · 각인 황동
+   ========================================================== */
+
+:root{
+  --ink:#101A16;          /* 잉크 그린블랙 : 다크 슬라이드 */
+  --ink-2:#18271F;
+  --engrave:#1D5B45;      /* 지폐 인그레이빙 그린 : 구조색 */
+  --engrave-lt:#3E8A6E;
+  --engrave-pale:#DCE7DF;
+  --paper:#F0EEE7;        /* 증서 종이 */
+  --paper-2:#E6E3D9;
+  --oxblood:#8E2A2A;      /* 원장 붉은 선 */
+  --oxblood-pale:#F2E2E0;
+  --brass:#A8802A;        /* 각인 인장 */
+  --brass-lt:#D9BE72;
+  --tx:#1A241F;
+  --tx-mid:#4E5A53;
+  --tx-faint:#8A948D;
+
+  --display:"Noto Serif KR","HANBatang",Batang,serif;
+  --body:"Noto Sans KR","Malgun Gothic",sans-serif;
+  --mono:"Consolas","D2Coding",monospace;
+
+  --slide-w:1040px;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--paper-2);color:var(--tx);
+  font-family:var(--body);font-weight:400;line-height:1.8;
+  letter-spacing:-0.01em;word-break:keep-all;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ---------- 슬라이드 단위 ---------- */
+.unit{max-width:var(--slide-w);margin:0 auto 64px}
+.unit:first-child{margin-top:64px}
+
+/* ---------- 표지 ---------- */
+.cover{justify-content:center}
+.covertitle{
+  font-family:var(--display);font-weight:800;font-size:62px;line-height:1.26;
+  letter-spacing:-0.04em;margin:0 0 28px;color:#fff;
+}
+.covertitle em{font-style:normal;color:var(--engrave-lt)}
+.coversub{
+  font-size:18px;line-height:1.8;color:rgba(220,231,223,.7);
+  max-width:52ch;margin:0 0 44px;
+}
+.coverparts{display:flex;flex-direction:column;gap:0;border-top:1px solid rgba(220,231,223,.2)}
+.coverparts div{
+  display:flex;gap:26px;align-items:baseline;padding:15px 0;
+  border-bottom:1px solid rgba(220,231,223,.2);
+}
+.coverparts .pn{
+  font-family:var(--mono);font-size:13px;letter-spacing:.14em;
+  color:var(--brass-lt);width:44px;flex-shrink:0;
+}
+.coverparts .pt{font-size:17px;color:#EAF0EC;font-weight:500}
+.coverparts .pd{font-size:14px;color:rgba(220,231,223,.5);margin-left:auto;font-family:var(--mono)}
+
+.slide{
+  position:relative;min-height:586px;padding:52px 56px 60px;
+  display:flex;flex-direction:column;
+  background:var(--paper);
+  box-shadow:0 1px 0 rgba(16,26,22,.10), 0 18px 40px -28px rgba(16,26,22,.55);
+}
+.slide.dark{background:var(--ink);color:#EAF0EC}
+
+/* 슬라이드 크롬 */
+.chrome{
+  display:flex;justify-content:space-between;align-items:baseline;
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;
+  color:var(--tx-faint);margin-bottom:34px;flex-shrink:0;
+}
+.dark .chrome{color:rgba(220,231,223,.42)}
+.chrome .lane{color:var(--engrave);font-weight:700}
+.dark .chrome .lane{color:var(--engrave-lt)}
+
+/* 슬라이드 제목 */
+.claim{
+  font-family:var(--display);font-weight:800;
+  font-size:40px;line-height:1.34;letter-spacing:-0.035em;
+  margin:0 0 16px;color:var(--ink);max-width:26ch;
+}
+.dark .claim{color:#fff}
+.claim.big{font-size:56px;line-height:1.28;max-width:20ch}
+.claim em{font-style:normal;color:var(--engrave)}
+.dark .claim em{color:var(--engrave-lt)}
+.claim mark{background:none;color:var(--oxblood)}
+.dark .claim mark{color:#E0736C}
+
+.sub{
+  font-size:17px;color:var(--tx-mid);margin:0 0 30px;max-width:60ch;line-height:1.75;
+}
+.dark .sub{color:rgba(220,231,223,.72)}
+
+/* 결론 바 — 슬라이드의 결정타. 캡션이 아니라 본체다 */
+.verdict{
+  margin-top:auto;display:flex;align-items:stretch;gap:0;flex-shrink:0;
+}
+.verdict .tag{
+  background:var(--engrave);color:#fff;font-family:var(--mono);
+  font-size:11.5px;letter-spacing:.16em;padding:16px 15px;
+  display:flex;align-items:center;flex-shrink:0;
+}
+.verdict .txt{
+  background:var(--engrave-pale);color:var(--ink);
+  padding:15px 22px;font-size:18px;font-weight:700;line-height:1.55;flex:1;
+  display:block;   /* flex 금지 — em/b 가 별도 아이템이 되어 줄이 쪼개진다 */
+}
+.dark .verdict .txt{background:rgba(62,138,110,.17);color:#EAF0EC}
+.verdict.warn .tag{background:var(--oxblood)}
+.verdict.warn .txt{background:var(--oxblood-pale);color:#4A1616}
+.verdict em{font-style:normal;color:var(--engrave)}
+.verdict.warn em{color:var(--oxblood)}
+.dark .verdict.warn em{color:#E0736C}
+.dark .verdict em{color:var(--engrave-lt)}
+
+/* 도형 영역 */
+.stage{flex:1;display:flex;align-items:center;justify-content:center;margin:6px 0 30px}
+.stage svg{width:100%;height:auto;display:block}
+
+/* ---------- 대형 수치 ---------- */
+.figures{display:flex;align-items:flex-end;gap:44px;flex-wrap:wrap}
+.fig{display:flex;flex-direction:column}
+.fig .lbl{
+  font-family:var(--mono);font-size:12px;letter-spacing:.14em;
+  color:var(--tx-faint);margin-bottom:6px;
+}
+.dark .fig .lbl{color:rgba(220,231,223,.5)}
+.fig .val{
+  font-family:var(--mono);font-weight:700;font-size:82px;line-height:1;
+  letter-spacing:-0.04em;color:var(--ink);
+}
+.dark .fig .val{color:#fff}
+.fig .val.dim{color:var(--tx-faint)}
+.dark .fig .val.dim{color:rgba(220,231,223,.4)}
+.fig .val.hot{color:var(--oxblood)}
+.dark .fig .val.hot{color:#E0736C}
+.fig .unit-s{font-size:30px;letter-spacing:0;margin-left:4px}
+.arrowbig{
+  font-family:var(--mono);font-size:52px;color:var(--brass);
+  line-height:1;padding-bottom:8px;
+}
+
+/* ---------- 2단 대조 ---------- */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--paper-2);flex:1}
+.pane{background:var(--paper);padding:28px 30px;display:flex;flex-direction:column}
+.pane.bad{background:#FAF0EF}
+.pane.good{background:#EFF4F0}
+.pane .ptag{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;
+  padding:5px 10px;align-self:flex-start;margin-bottom:18px;color:#fff;
+}
+.pane.bad .ptag{background:var(--oxblood)}
+.pane.good .ptag{background:var(--engrave)}
+.pane h4{
+  font-family:var(--display);font-weight:700;font-size:23px;line-height:1.45;
+  margin:0 0 14px;letter-spacing:-0.03em;
+}
+.pane.bad h4{color:var(--oxblood)}
+.pane.good h4{color:var(--engrave)}
+.pane p{margin:0 0 10px;font-size:15.5px;line-height:1.75;color:var(--tx-mid)}
+.pane p:last-child{margin-bottom:0}
+.pane b{color:var(--tx);font-weight:700}
+.pane .strike{text-decoration:line-through;text-decoration-color:var(--oxblood);
+  text-decoration-thickness:2px;color:var(--tx-faint)}
+
+/* ---------- 카드 그리드 ---------- */
+.cards{display:grid;gap:2px;background:var(--paper-2);flex:1;
+  grid-template-columns:repeat(2,1fr)}
+.cards.c3{grid-template-columns:repeat(3,1fr)}
+.cards.c4{grid-template-columns:repeat(4,1fr)}
+.card{background:var(--paper);padding:22px 22px;display:flex;flex-direction:column}
+.dark .cards{background:rgba(220,231,223,.14)}
+.dark .card{background:var(--ink)}
+.card .ctag{
+  font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--brass);
+  margin-bottom:10px;
+}
+.card h4{
+  font-family:var(--display);font-weight:700;font-size:20px;line-height:1.4;
+  margin:0 0 10px;letter-spacing:-0.03em;color:var(--ink);
+}
+.dark .card h4{color:#fff}
+.card p{margin:0 0 8px;font-size:14.5px;line-height:1.7;color:var(--tx-mid)}
+.dark .card p{color:rgba(220,231,223,.7)}
+.card p:last-child{margin-bottom:0}
+.card b{color:var(--tx);font-weight:700}
+.dark .card b{color:#EAF0EC}
+.card .out{
+  margin-top:auto;padding-top:12px;font-size:13.5px;color:var(--oxblood);font-weight:700;
+  border-top:1px solid var(--paper-2);
+}
+.dark .card .out{color:#E0736C;border-top-color:rgba(220,231,223,.18)}
+
+/* ---------- 표 ---------- */
+.tbl{width:100%;border-collapse:collapse;font-size:15px;flex-shrink:0}
+.tbl th{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.13em;font-weight:400;
+  text-align:left;padding:11px 14px;background:var(--ink);color:#EAF0EC;
+}
+.tbl td{padding:11px 14px;border-bottom:1px solid var(--paper-2);color:var(--tx-mid);
+  line-height:1.6;vertical-align:top}
+.tbl tr:nth-child(even) td{background:rgba(255,255,255,.45)}
+.tbl td:first-child{font-weight:700;color:var(--tx);white-space:nowrap}
+.tbl .mat{font-family:var(--mono);font-size:13.5px;color:var(--engrave);white-space:nowrap}
+.tbl .hot td:first-child{color:var(--oxblood)}
+
+/* 다크 슬라이드 위의 표 */
+.dark .tbl th{background:var(--engrave);color:#EAF0EC}
+.dark .tbl td{color:rgba(220,231,223,.78);border-bottom-color:rgba(220,231,223,.16)}
+.dark .tbl tr:nth-child(even) td{background:rgba(220,231,223,.05)}
+.dark .tbl td:first-child{color:#fff}
+.dark .tbl b{color:#fff}
+.dark .tbl .mat{color:#8FB3A2}
+.dark .tbl .hot td:first-child{color:#E0736C}
+
+/* ---------- 셀프체크 ---------- */
+.checks{display:grid;grid-template-columns:1fr 1fr;gap:0 34px;margin:0;padding:0;
+  list-style:none;counter-reset:ck;flex:1;align-content:start}
+.checks li{
+  counter-increment:ck;position:relative;padding:13px 0 13px 40px;
+  border-bottom:1px solid rgba(220,231,223,.16);font-size:15.5px;line-height:1.65;
+  color:rgba(234,240,236,.88);
+}
+.checks li::before{
+  content:counter(ck,decimal-leading-zero);position:absolute;left:0;top:14px;
+  font-family:var(--mono);font-size:12.5px;color:var(--brass-lt);letter-spacing:.06em;
+}
+.checks li b{color:#fff;font-weight:700}
+
+/* ---------- 판단 기록 양식 ---------- */
+.record{
+  border:1px solid rgba(220,231,223,.3);border-left:4px solid var(--brass);
+  padding:24px 28px;margin-bottom:20px;background:rgba(220,231,223,.05);
+}
+.record .rl{font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  color:var(--brass-lt);margin-bottom:12px}
+.record p{margin:0 0 10px;font-size:17px;line-height:1.75;color:#EAF0EC}
+.record p:last-child{margin-bottom:0}
+.record .cond{color:var(--brass-lt);font-weight:700}
+
+
+/* ---------- 용어집 ---------- */
+.gloss{display:grid;grid-template-columns:1fr 1fr;gap:0 40px;flex:1;align-content:start}
+.gl{padding:11px 0;border-bottom:1px solid var(--paper-2)}
+.dark .gl{border-bottom-color:rgba(220,231,223,.16)}
+.gl .t{font-family:var(--display);font-weight:700;font-size:17px;letter-spacing:-0.02em;color:var(--ink)}
+.dark .gl .t{color:#fff}
+.gl .e{font-family:var(--mono);font-size:11px;color:var(--brass);margin-left:9px;letter-spacing:.08em}
+.dark .gl .e{color:var(--brass-lt)}
+.gl .d{font-size:13.5px;line-height:1.62;color:var(--tx-mid);margin-top:3px}
+.dark .gl .d{color:rgba(220,231,223,.72)}
+.gl .d b{color:var(--tx);font-weight:700}
+.dark .gl .d b{color:#EAF0EC}
+
+/* ---------- 슬라이드 안 용어 정의줄 ---------- */
+.termline{
+  display:flex;flex-wrap:wrap;gap:0 26px;margin:0 0 20px;padding:11px 0;
+  border-top:1px solid var(--paper-2);border-bottom:1px solid var(--paper-2);flex-shrink:0;
+}
+.dark .termline{border-color:rgba(220,231,223,.18)}
+.termline span{font-size:13.5px;color:var(--tx-mid);line-height:1.6}
+.dark .termline span{color:rgba(220,231,223,.7)}
+.termline b{font-family:var(--mono);font-size:12.5px;color:var(--engrave);font-weight:700;letter-spacing:.02em}
+.dark .termline b{color:var(--engrave-lt)}
+
+/* ---------- 노트 스트립 : 독학용 해설 ---------- */
+.note{
+  display:grid;grid-template-columns:132px 1fr;gap:0;
+  background:#E9E6DC;border-left:4px solid var(--brass);
+}
+.note .nlbl{
+  font-family:var(--mono);font-size:11px;letter-spacing:.16em;
+  color:var(--brass);padding:24px 0 24px 22px;line-height:1.7;
+}
+.note .nbody{padding:24px 30px 26px 8px}
+.note p{margin:0 0 12px;font-size:15.5px;line-height:1.85;color:#3B443E}
+.note p:last-child{margin-bottom:0}
+.note b{color:var(--ink);font-weight:700}
+.note .q{
+  font-family:var(--display);font-weight:700;font-size:17px;color:var(--engrave);
+  display:block;margin-bottom:6px;letter-spacing:-0.02em;
+}
+
+/* ---------- 반응형 ---------- */
+@media screen and (max-width:1100px){
+  .unit{max-width:100%;padding-left:16px;padding-right:16px}
+  .slide{padding:36px 28px 42px;min-height:0}
+  .claim{font-size:30px}
+  .claim.big{font-size:36px}
+  .fig .val{font-size:54px}
+  .split{grid-template-columns:1fr}
+  .cards,.cards.c3,.cards.c4{grid-template-columns:1fr}
+  .checks{grid-template-columns:1fr}
+  .gloss{grid-template-columns:1fr}
+  .tbl{font-size:13.5px}
+  .tbl th,.tbl td{padding:9px 10px}
+  .note{grid-template-columns:1fr}
+  .note .nlbl{padding:18px 22px 0}
+  .note .nbody{padding:10px 22px 22px}
+}
+/* ---------- PDF / 인쇄 : 1장 = 1페이지 (A4 가로) ---------- */
+@page{ size:297mm 210mm; margin:6mm; }
+@media print{
+  html,body{background:#fff;margin:0}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+
+  .unit{
+    max-width:none;margin:0;page-break-after:always;break-after:page;
+    page-break-inside:avoid;break-inside:avoid;
+    height:748px;display:flex;flex-direction:column;overflow:hidden;
+  }
+  .unit > .slide{flex:1 1 auto}
+  .unit > .note{flex:0 0 auto}
+  .unit:last-child{page-break-after:auto;break-after:auto}
+  .unit:first-child{margin-top:0}
+
+  .slide{min-height:0;box-shadow:none;padding:20px 30px 18px}
+  .chrome{margin-bottom:14px;font-size:9.5px}
+
+  .claim{font-size:26px;line-height:1.3;margin-bottom:7px;max-width:36ch}
+  .claim.big{font-size:33px;max-width:25ch}
+  .sub{font-size:12.5px;line-height:1.65;margin-bottom:11px;max-width:84ch}
+
+  .stage{margin:0 0 11px}
+  .stage svg{width:auto;max-width:100%;max-height:238px;margin:0 auto}
+
+  .verdict .tag{font-size:9.5px;padding:8px 10px}
+  .verdict .txt{font-size:13.5px;padding:8px 14px}
+
+  .figures{gap:26px;margin-bottom:11px!important}
+  .fig .val{font-size:44px}
+  .fig .unit-s{font-size:17px}
+  .fig .lbl{font-size:9.5px;margin-bottom:2px}
+  .arrowbig{font-size:30px}
+
+  .split{flex:0 0 auto}
+  .pane{padding:13px 16px}
+  .pane .ptag{font-size:9.5px;padding:3px 8px;margin-bottom:9px}
+  .pane h4{font-size:15.5px;margin-bottom:8px;line-height:1.4}
+  .pane p{font-size:11.4px;line-height:1.58;margin-bottom:6px}
+
+  .cards{flex:0 0 auto}
+  .card{padding:12px 14px}
+  .card .ctag{font-size:9px;margin-bottom:5px}
+  .card h4{font-size:14.5px;margin-bottom:6px;line-height:1.35}
+  .card p{font-size:11px;line-height:1.48;margin-bottom:4px}
+  .card .out{font-size:10.5px;padding-top:7px}
+
+  .tbl{font-size:11.4px}
+  .tbl th{font-size:9.5px;padding:6px 9px}
+  .tbl td{padding:6px 9px;line-height:1.45}
+  .tbl .mat{font-size:10.5px}
+
+  .checks li{font-size:11.4px;padding:7px 0 7px 30px;line-height:1.5}
+  .checks li::before{font-size:10px;top:8px}
+
+  .gloss{gap:0 24px}
+  .gl{padding:6px 0}
+  .gl .t{font-size:12.5px}
+  .gl .e{font-size:9px;margin-left:6px}
+  .gl .d{font-size:10.4px;line-height:1.42;margin-top:1px}
+  .termline{margin-bottom:10px;padding:7px 0;gap:0 18px}
+  .termline span{font-size:10.4px;line-height:1.5}
+  .termline b{font-size:9.8px}
+
+  .record{padding:14px 18px;margin-bottom:12px}
+  .record .rl{font-size:9px;margin-bottom:7px}
+  .record p{font-size:12px;line-height:1.5;margin-bottom:5px}
+
+  .note{border-left-width:3px}
+  .note .nlbl{padding:13px 0 13px 15px;font-size:9px;line-height:1.55}
+  .note .nbody{padding:13px 20px 13px 4px}
+  .note p{font-size:10.6px;line-height:1.5;margin-bottom:4px}
+  .note .q{font-size:12.2px;margin-bottom:2px}
+
+  /* 표지 */
+  .covertitle{font-size:46px;margin-bottom:20px}
+  .coversub{font-size:15px;margin-bottom:26px}
+  .coverparts div{padding:11px 0}
+  .coverparts .pt{font-size:14.5px}
+  .coverparts .pd{font-size:11.5px}
+}
+</style>
+</head>
+<body>
+<!-- ============ 표지 ============ -->
+<article class="unit">
+  <section class="slide dark cover">
+    <div class="chrome"><span class="lane">상경대학 경제학회 SCOPE</span><span>매크로 경제 읽기 · 3회차 · 1부</span></div>
+    <h1 class="covertitle">기준금리를 내렸는데<br><em>장기금리가 올랐다</em></h1>
+    <p class="coversub">3회차 「장기금리와 재정」 1부 · 해부.
+    2024년 9월과 2025년 9월, 연준은 두 번의 인하 국면을 지나며 정책금리를 1.75%p 내렸다.
+    그런데 10년물은 3.6%에서 <b>4.7%</b>가 됐고 30년물은 <b>5.2%</b>로 2007년 이후 최고다.
+    2년 내내 반복된 이 어긋남이 무엇으로 설명되는지를 세운다. 2~5부는 전부 이 뼈대 위에 올라간다.</p>
+    <div class="coverparts">
+      <div><span class="pn">1-1</span><span class="pt">현상 — 인하 시작 뒤에 벌어진 일</span><span class="pd">01 – 02</span></div>
+      <div><span class="pn">1-2</span><span class="pt">채권의 기본 — 가격과 금리는 시소</span><span class="pd">03</span></div>
+      <div><span class="pn">1-3</span><span class="pt">해부 — 기대 단기금리 + 텀 프리미엄</span><span class="pd">04 – 07</span></div>
+      <div><span class="pn">1-4</span><span class="pt">명목 = 실질 + 기대인플레</span><span class="pd">08 – 09</span></div>
+      <div><span class="pn">1-5</span><span class="pt">커브의 모양과 4.5%라는 선</span><span class="pd">10 – 11</span></div>
+      <div><span class="pn">1-6</span><span class="pt">셀프체크</span><span class="pd">12</span></div>
+      <div><span class="pn">부록</span><span class="pt">용어집 · 데이터 소스</span><span class="pd">A</span></div>
+    </div>
+  </section>
+</article>
+
+
+<!-- ============ 01 · 현상 (다크) ============ -->
+<article class="unit">
+  <section class="slide dark">
+    <div class="chrome"><span class="lane">1부 · 해부</span><span>01 / 현상</span></div>
+
+    <h2 class="claim big">두 번 내렸는데<br><em>두 번 다 올랐다</em></h2>
+    <p class="sub">2024년 9월 첫 인하, 2025년 9월 재개된 세 번의 인하. 정책금리는 <b>5.375% → 3.625%</b>로 내려왔다.
+    그동안 10년물은 <b>3.6% → 4.7%</b>가 됐고, 2026년 지금 30년물은 <b>5.2%</b> — 2007년 이후 최고다.</p>
+
+    <div class="stage">
+      <svg viewBox="0 0 900 266" role="img" aria-label="2024년 7월부터 2026년 8월까지 정책금리는 계단식으로 내려가는데 10년물 금리는 오히려 올라간 경로">
+        <g font-family="'Noto Sans KR', sans-serif">
+          <line x1="60" y1="24" x2="60" y2="210" stroke="rgba(220,231,223,.3)"/>
+          <line x1="60" y1="210" x2="866" y2="210" stroke="rgba(220,231,223,.3)"/>
+          <g font-family="Consolas, monospace" font-size="11" fill="rgba(220,231,223,.5)">
+            <text x="16" y="43">5.5%</text>
+            <text x="16" y="115">4.5%</text>
+            <text x="16" y="187">3.5%</text>
+            <text x="66" y="228">2024.7</text>
+            <text x="236" y="228">2025.1</text>
+            <text x="486" y="228">2025.9</text>
+            <text x="806" y="228">2026.8</text>
+          </g>
+
+          <!-- 정책금리 : 계단 하강 -->
+          <path d="M60,39 L124,39 L124,75 L188,75 L188,93 L220,93 L220,111 L508,111 L508,129
+                   L540,129 L540,147 L604,147 L604,165 L860,165"
+                fill="none" stroke="#3E8A6E" stroke-width="2.5"/>
+          <text x="196" y="182" font-size="13" fill="#8FB3A2" font-weight="700">정책금리 — 계단식으로 내려간다</text>
+          <text x="620" y="152" font-size="12.5" fill="#8FB3A2">3.50~3.75% · 2026년 다섯 번 연속 동결</text>
+
+          <!-- 10년물 -->
+          <path d="M60,140 L124,167 L188,106 L252,116 L300,95 L348,130 L380,101 L440,120
+                   L508,116 L604,109 L700,95 L800,80 L860,88"
+                fill="none" stroke="#E0736C" stroke-width="2.5"/>
+          <circle cx="124" cy="167" r="5" fill="#E0736C"/>
+          <circle cx="860" cy="88" r="5.5" fill="#E0736C"/>
+          <text x="96" y="186" font-size="12.5" fill="#E0736C" font-weight="700">3.6%</text>
+          <text x="806" y="72" font-size="14" fill="#E0736C" font-weight="700">4.70%</text>
+          <text x="196" y="202" font-size="13" fill="#E0736C" font-weight="700">10년물 — 두 번의 인하 국면 내내 올라갔다</text>
+
+          <!-- 인하 시점 -->
+          <line x1="124" y1="24" x2="124" y2="210" stroke="#D9BE72" stroke-width="1.3" stroke-dasharray="5 4"/>
+          <text x="132" y="36" font-size="12" fill="#D9BE72" font-weight="700">2024.9 첫 인하</text>
+          <line x1="508" y1="24" x2="508" y2="210" stroke="#D9BE72" stroke-width="1.3" stroke-dasharray="5 4"/>
+          <text x="516" y="36" font-size="12" fill="#D9BE72" font-weight="700">2025.9 인하 재개 (연 3회)</text>
+          <line x1="380" y1="60" x2="380" y2="210" stroke="rgba(220,231,223,.35)" stroke-width="1.2" stroke-dasharray="4 4"/>
+          <text x="330" y="56" font-size="12" fill="rgba(220,231,223,.7)">2025.5 무디스 강등 · 30년물 5.03%</text>
+
+          <rect x="0" y="238" width="900" height="28" fill="rgba(142,42,42,.22)"/>
+          <text x="14" y="257" font-size="13" fill="#E0736C">정책금리 <tspan font-weight="700">−1.75%p</tspan> 　vs　 10년물 <tspan font-weight="700">+1.1%p</tspan> · 30년물 <tspan font-weight="700">5.2%(2007년 이후 최고)</tspan> 　— 2년 내내 반대로 움직였다</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="verdict warn">
+      <span class="tag">1부의 질문</span>
+      <span class="txt">한 번이면 우연이지만 <em>2년 내내 같은 방향</em>이면 구조다. 그럼 그 구조는 무엇인가.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 01<br>현상</div>
+    <div class="nbody">
+      <p><span class="q">먼저 오해부터 걷어내자</span>
+      "연준이 금리를 내린다"고 할 때 그 금리는 <b>하룻밤짜리 정책금리(FF금리)</b> 하나뿐이다.
+      연준은 10년물이나 30년물 금리를 직접 정하지 못한다. 그건 <b>시장에서 채권을 사고팔며 결정</b>된다.
+      즉 "금리를 내렸다"와 "금리가 내렸다"는 서로 다른 사건이고, 이 둘이 어긋날 때가 오늘의 주제다.</p>
+      <p><span class="q">이게 왜 큰 문제인가</span>
+      우리 생활에 붙는 금리는 대부분 <b>정책금리가 아니라 장기금리</b>에 연동된다.
+      미국 30년 모기지, 기업 회사채, 주식 밸류에이션의 할인율이 전부 10년물을 기준으로 움직인다.
+      연준이 아무리 내려도 10년물이 안 내려오면 <b>실물에는 완화가 도착하지 않는다.</b> 4부에서 이 파급을 하나씩 본다.</p>
+      <p><span class="q">이 그림에서 기억할 세 지점</span>
+      ① 인하가 시작된 <b>2024년 9월이 오히려 10년물의 저점</b>이었다. ② 2025년 9월 인하가 재개된 뒤에도
+      2년물부터 30년물까지 오히려 올라 <b>커브가 가팔라졌다.</b> ③ 2026년 들어 연준은 인하를 멈췄고
+      점도표는 인하 시점을 <b>2027년 이후로</b> 미뤘다. 일부 위원은 인상을 주장하며 반대표를 던졌다.
+      <b>한 번의 예외가 아니라 두 사이클 연속으로 같은 일이 벌어졌다는 게 이 자료의 출발점이다.</b></p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 02 · 커브 비교 ============ -->
+<article class="unit">
+  <section class="slide">
+    <div class="chrome"><span class="lane">1부 · 해부</span><span>02 / 현상</span></div>
+
+    <h2 class="claim">커브가 <em>한쪽만</em> 내려갔다</h2>
+    <p class="sub">같은 나라 국채인데 만기별로 방향이 달랐다. 단기는 인하를 따라 내려왔고, 장기는 오히려 올라갔다.
+    2024년 가을에 처음 나타난 이 모양은 2025년 인하 재개 뒤 <b>더 뚜렷해졌고</b>, 2026년에는 30년물이 5%대에 눌러앉으며 굳어졌다.</p>
+
+    <div class="termline">
+      <span><b>수익률 곡선</b> 가로축은 만기, 세로축은 그 만기 국채의 금리 — 한 시점의 금리 지도</span>
+      <span><b>스티프닝</b> 장단기 금리차가 벌어지는 것 　<b>플래트닝</b> 좁아지는 것</span>
+    </div>
+
+    <div class="stage">
+      <svg viewBox="0 0 900 250" role="img" aria-label="2024년 9월과 11월의 미국 국채 수익률 곡선 비교">
+        <g font-family="'Noto Sans KR', sans-serif">
+          <line x1="60" y1="20" x2="60" y2="190" stroke="#B9C4BC"/>
+          <line x1="60" y1="190" x2="860" y2="190" stroke="#B9C4BC"/>
+          <g font-family="Consolas, monospace" font-size="11.5" fill="#8A948D">
+            <text x="20" y="34">5.5%</text>
+            <text x="20" y="112">4.5%</text>
+            <text x="20" y="194">3.4%</text>
+            <text x="70" y="210">1M</text><text x="200" y="210">6M</text><text x="330" y="210">2Y</text>
+            <text x="460" y="210">5Y</text><text x="590" y="210">10Y</text><text x="780" y="210">30Y</text>
+          </g>
+
+          <!-- 9월 16일 -->
+          <path d="M76,34 L140,44 L200,62 L270,120 L340,168 L420,176 L500,170 L590,150 L700,128 L800,124"
+                fill="none" stroke="#8A948D" stroke-width="2.5"/>
+          <text x="186" y="28" font-size="13.5" font-weight="700" fill="#8A948D">9월 16일 — 인하 직전</text>
+
+          <!-- 11월 15일 -->
+          <path d="M76,88 L140,86 L200,96 L270,116 L340,132 L420,128 L500,120 L590,112 L700,100 L800,96"
+                fill="none" stroke="#8E2A2A" stroke-width="2.5"/>
+          <text x="470" y="88" font-size="13.5" font-weight="700" fill="#8E2A2A">11월 15일 — 인하 두 번 뒤</text>
+
+          <!-- 화살표 -->
+          <path d="M110,120 L110,96" stroke="#1D5B45" stroke-width="2"/>
+          <path d="M104,102 L110,88 L116,102 Z" fill="#1D5B45"/>
+          <text x="86" y="140" font-size="13" fill="#1D5B45" font-weight="700">단기 : 인하만큼 내려옴</text>
+
+          <path d="M700,124 L700,106" stroke="#8E2A2A" stroke-width="2"/>
+          <path d="M694,112 L700,98 L706,112 Z" fill="#8E2A2A"/>
+          <text x="626" y="172" font-size="13" fill="#8E2A2A" font-weight="700">장기 : 오히려 올라감</text>
+
+          <rect x="0" y="222" width="900" height="28" fill="#F2E2E0"/>
+          <text x="14" y="241" font-size="13.5" fill="#8E2A2A">이 모양을 <tspan font-weight="700">베어 스티프닝</tspan>이라 한다 — 인하기에 나오면 경고 신호이고, 2025~2026년 내내 이 상태가 이어졌다.</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="verdict warn">
+      <span class="tag">읽는 법</span>
+      <span class="txt">커브는 <em>수준</em>이 아니라 <em>모양의 변화</em>로 읽는다. 어느 구간이 움직였는지가 원인을 말해준다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 02<br>수익률 곡선</div>
+    <div class="nbody">
+      <p><span class="q">커브를 처음 보는 사람을 위한 설명</span>
+      가로축은 만기(1개월 → 30년), 세로축은 그 만기 국채의 금리다. 즉 <b>"돈을 얼마나 오래 빌려주느냐에 따라 이자가 어떻게 달라지는가"</b>를 그린 지도다.
+      보통은 오래 빌려줄수록 위험하니 우상향한다. 2022~2023년처럼 <b>단기가 장기보다 높은</b> 뒤집힌 모양(역전)은 침체 신호로 유명하다.</p>
+      <p><span class="q">네 가지 움직임의 이름</span>
+      금리가 <b>내리면서</b> 커브가 가팔라지면 <b>불 스티프닝</b>(경기 둔화 → 인하 기대), <b>오르면서</b> 가팔라지면 <b>베어 스티프닝</b>(인플레·수급·재정 우려).
+      반대로 좁아지는 건 플래트닝이다. 우리가 본 9월→11월 변화는 <b>단기는 내리고 장기는 오른</b> 형태라 스티프닝 중에서도 성격이 섞여 있는데,
+      <b>장기가 오른 쪽이 훨씬 컸다</b>는 게 핵심이다.</p>
+      <p><span class="q">왜 모양으로 읽나</span>
+      금리 수준 자체는 여러 요인이 섞여 있어 원인을 못 짚는다. 그런데 <b>어느 구간이 움직였는지</b>는 원인을 좁혀준다.
+      단기 구간은 <b>연준 경로</b>가 지배하고, 장기 구간은 <b>인플레 기대와 텀 프리미엄</b>이 지배하기 때문이다.
+      그래서 다음 장부터 장기금리를 두 조각으로 쪼갠다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 03 · 채권 기본 ============ -->
+<article class="unit">
+  <section class="slide">
+    <div class="chrome"><span class="lane">1부 · 해부</span><span>03 / 채권의 기본</span></div>
+
+    <h2 class="claim">채권은 <em>가격</em>이 먼저다.<br>금리는 그 결과다</h2>
+    <p class="sub">"금리가 올랐다"는 표현 때문에 채권을 이자율 상품으로 오해한다. 실제로 시장에서 움직이는 건 <b>가격</b>이고,
+    금리는 그 가격에서 거꾸로 계산되어 나온다.</p>
+
+    <div class="stage">
+      <svg viewBox="0 0 900 250" role="img" aria-label="액면 100만원 이자 3만원 채권의 가격이 떨어지면 수익률이 올라가는 구조">
+        <g font-family="'Noto Sans KR', sans-serif">
+          <rect x="0" y="0" width="900" height="64" fill="#101A16"/>
+          <text x="26" y="30" font-size="15" fill="#8FB3A2">채권 하나 — 1년 뒤 <tspan fill="#fff" font-weight="700">103만 원</tspan>을 준다고 약속된 종이</text>
+          <text x="26" y="54" font-size="14" fill="rgba(220,231,223,.7)">이 약속 금액은 <tspan font-weight="700" fill="#D9BE72">고정</tspan>이다. 바뀌는 건 이 종이를 얼마에 사느냐뿐이다.</text>
+
+          <g font-size="14">
+            <rect x="0" y="88" width="290" height="140" fill="#EFF4F0"/>
+            <text x="145" y="118" text-anchor="middle" font-size="15" font-weight="700" fill="#1D5B45">100만 원에 산다</text>
+            <text x="145" y="152" text-anchor="middle" font-family="Consolas, monospace" font-size="30" font-weight="700" fill="#1D5B45">3.0%</text>
+            <text x="145" y="182" text-anchor="middle" font-size="13" fill="#4E5A53">103 ÷ 100 − 1</text>
+            <text x="145" y="208" text-anchor="middle" font-size="13" fill="#4E5A53">기준 상태</text>
+
+            <rect x="305" y="88" width="290" height="140" fill="#FAF0EF"/>
+            <text x="450" y="118" text-anchor="middle" font-size="15" font-weight="700" fill="#8E2A2A">98만 원으로 <tspan font-weight="700">가격 하락</tspan></text>
+            <text x="450" y="152" text-anchor="middle" font-family="Consolas, monospace" font-size="30" font-weight="700" fill="#8E2A2A">5.1%</text>
+            <text x="450" y="182" text-anchor="middle" font-size="13" fill="#8E2A2A">103 ÷ 98 − 1</text>
+            <text x="450" y="208" text-anchor="middle" font-size="13" fill="#8E2A2A">"금리가 올랐다"의 실체</text>
+
+            <rect x="610" y="88" width="290" height="140" fill="#F7EFD9"/>
+            <text x="755" y="118" text-anchor="middle" font-size="15" font-weight="700" fill="#7A5C16">102만 원으로 가격 상승</text>
+            <text x="755" y="152" text-anchor="middle" font-family="Consolas, monospace" font-size="30" font-weight="700" fill="#A8802A">1.0%</text>
+            <text x="755" y="182" text-anchor="middle" font-size="13" fill="#7A5C16">103 ÷ 102 − 1</text>
+            <text x="755" y="208" text-anchor="middle" font-size="13" fill="#7A5C16">"금리가 내렸다"의 실체</text>
+          </g>
+        </g>
+      </svg>
+    </div>
+
+    <div class="verdict">
+      <span class="tag">한 문장</span>
+      <span class="txt">국채 금리가 올랐다 = <em>국채가 안 팔려서 값을 깎았다.</em> 2부 전체가 이 문장의 확장이다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 03<br>가격과 금리</div>
+    <div class="nbody">
+      <p><span class="q">왜 이걸 먼저 짚나</span>
+      "금리 상승"을 <b>중앙은행이 올려서</b>라고만 이해하면 장기금리를 영원히 못 읽는다.
+      시장금리는 <b>수요와 공급이 만든 가격의 뒷면</b>이다. 사겠다는 사람이 줄면 가격이 내려가고, 그 순간 수익률(금리)은 자동으로 올라간다.
+      그래서 2부에서 "누가 사는가"를 그렇게 오래 파는 것이다.</p>
+      <p><span class="q">듀레이션 — 만기가 길수록 더 아프다</span>
+      같은 1%p 금리 상승이라도 <b>10년물은 대략 8~9%, 30년물은 20% 안팎</b>의 가격 하락으로 이어진다.
+      멀리 있는 현금흐름일수록 할인의 영향을 크게 받기 때문이다. 이 민감도를 <b>듀레이션</b>이라 부른다.
+      "국채는 안전자산"이라는 말은 <b>떼일 위험이 없다</b>는 뜻이지 <b>값이 안 움직인다</b>는 뜻이 아니다 — 3부에서 볼 은행 손실이 정확히 여기서 나온다.</p>
+      <p><span class="q">여기서 얻는 감각 하나</span>
+      뉴스에서 "국채 금리 급등"이라고 하면 머릿속에서 <b>"국채 값이 급락했다"</b>로 번역해보라.
+      그러면 자연스럽게 <b>"누가 팔았지? 왜 안 사지?"</b>라는 질문이 따라 나온다.
+      이 번역 습관 하나가 2부·5부를 읽는 힘이 된다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 04 · 분해 공식 (다크) ============ -->
+<article class="unit">
+  <section class="slide dark">
+    <div class="chrome"><span class="lane">1부 · 해부</span><span>04 / 핵심 공식</span></div>
+
+    <h2 class="claim">장기금리는 <em>두 조각</em>으로 쪼갠다</h2>
+    <p class="sub">이 자료 전체에서 가장 중요한 한 줄이다. 2부와 3부는 각각 오른쪽 항을 밀어올리는 힘을 하나씩 판다.</p>
+
+    <div class="stage">
+      <svg viewBox="0 0 900 268" role="img" aria-label="장기금리를 기대 단기금리 평균과 텀 프리미엄으로 분해한 구조">
+        <g font-family="'Noto Sans KR', sans-serif">
+          <rect x="0" y="0" width="900" height="72" fill="#1D5B45"/>
+          <text x="450" y="44" text-anchor="middle" font-size="23" font-weight="700" fill="#fff">10년물 금리 = 앞으로 10년간 기대 단기금리의 평균 + 텀 프리미엄</text>
+
+          <!-- 좌 -->
+          <rect x="0" y="100" width="430" height="168" fill="rgba(220,231,223,.07)" stroke="rgba(220,231,223,.28)"/>
+          <text x="26" y="132" font-family="Consolas, monospace" font-size="11.5" letter-spacing="1.6" fill="#8FB3A2">PART 1</text>
+          <text x="26" y="162" font-size="19" font-weight="700" fill="#fff">기대 단기금리의 평균</text>
+          <text x="26" y="192" font-size="14" fill="rgba(220,231,223,.8)">시장이 그리는 <tspan font-weight="700">연준의 향후 경로</tspan></text>
+          <text x="26" y="216" font-size="14" fill="rgba(220,231,223,.8)">"앞으로 10년간 하룻밤 금리가</text>
+          <text x="26" y="238" font-size="14" fill="rgba(220,231,223,.8)">평균 몇 %일까"에 대한 답</text>
+          <text x="26" y="262" font-size="13.5" fill="#D9BE72">→ 연준이 좌우한다</text>
+
+          <!-- 우 -->
+          <rect x="470" y="100" width="430" height="168" fill="rgba(142,42,42,.22)" stroke="#E0736C"/>
+          <text x="496" y="132" font-family="Consolas, monospace" font-size="11.5" letter-spacing="1.6" fill="#E0736C">PART 2</text>
+          <text x="496" y="162" font-size="19" font-weight="700" fill="#fff">텀 프리미엄</text>
+          <text x="496" y="192" font-size="14" fill="rgba(220,231,223,.85)">10년을 <tspan font-weight="700">들고 있어주는 대가</tspan></text>
+          <text x="496" y="216" font-size="14" fill="rgba(220,231,223,.85)">"그동안 무슨 일이 생길지 모르니</text>
+          <text x="496" y="238" font-size="14" fill="rgba(220,231,223,.85)">그 위험값을 더 달라"</text>
+          <text x="496" y="262" font-size="13.5" fill="#E0736C">→ 연준이 통제하지 못한다</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="verdict">
+      <span class="tag">그래서</span>
+      <span class="txt">앞항이 내려가도 <em>뒷항이 더 크게 오르면</em> 장기금리는 오른다. 2024년 가을이 정확히 그랬다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 04<br>분해 공식</div>
+    <div class="nbody">
+      <p><span class="q">왜 "평균"인가</span>
+      10년물을 사는 대신 <b>1년짜리를 열 번 굴리는</b> 선택지가 있다. 두 방법의 기대수익이 비슷해야 시장이 균형을 이루므로,
+      10년물 금리는 대략 <b>앞으로 10년간의 단기금리 예상 경로의 평균</b>이 된다. 이걸 기대가설이라 부른다.
+      다만 현실에서는 이것만으로 설명이 안 되고, 그 차이를 메우는 항이 텀 프리미엄이다.</p>
+      <p><span class="q">텀 프리미엄을 직관으로</span>
+      친구에게 돈을 빌려줄 때 <b>1개월 뒤에 갚는 조건</b>과 <b>10년 뒤에 갚는 조건</b> 중 어느 쪽에 이자를 더 요구할까.
+      10년 동안은 물가가 어떻게 될지, 그 사이 돈이 급히 필요해질지, 친구 사정이 어떻게 변할지 알 수 없다.
+      <b>그 "모름"의 값</b>이 텀 프리미엄이다. 세 가지가 섞여 있다 — <b>인플레 불확실성 · 수급 · 유동성</b>.</p>
+      <p><span class="q">이 공식이 자료 전체의 설계도다</span>
+      <b>2부(수급)</b>는 "지금 채권이 남아도는가"로 텀 프리미엄을 밀어올리는 힘을 보고,
+      <b>3부(재정)</b>는 "앞으로도 계속 남아돌 수밖에 없는가"로 같은 항을 본다.
+      <b>4부</b>는 그렇게 올라간 금리가 무엇을 부수는지, <b>5부</b>는 이 구조가 실제로 터진 날을 본다.
+      이 장을 못 외우면 뒤가 전부 흩어진다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 05 · 기대 경로 ============ -->
+<article class="unit">
+  <section class="slide">
+    <div class="chrome"><span class="lane">1부 · 해부</span><span>05 / 앞항</span></div>
+
+    <h2 class="claim">한 번 내리는 것과<br><em>경로가 내려가는 것</em>은 다르다</h2>
+    <p class="sub">앞항은 "이번에 얼마나 내렸나"가 아니라 <b>"앞으로 10년 평균 몇 %일까"</b>에 대한 답이다.
+    그래서 인하를 해도 <b>앞으로 덜 내릴 것 같다</b>는 인식이 생기면 앞항은 오히려 올라간다.</p>
+
+    <div class="split">
+      <div class="pane bad">
+        <span class="ptag">직관 — 그런데 틀린다</span>
+        <h4>기준금리를 0.5%p 내렸으니<br>10년물도 그만큼 내려갈 것</h4>
+        <p class="strike">연준이 인하 사이클에 들어갔으니 장기금리는 계속 내려간다.</p>
+        <p><b>무엇을 놓쳤나</b> — 시장은 <b>이미 인하를 예상해</b> 가격에 넣어두고 있었다. 실제 인하는 새 정보가 아니다.</p>
+        <p>1회차에서 배운 그대로다. 가격을 움직이는 건 <b>예상과 다른 뉴스</b>뿐이다.</p>
+      </div>
+      <div class="pane good">
+        <span class="ptag">실제로 벌어진 일</span>
+        <h4>"이번에 내렸다"보다<br>"어디까지 내릴까"가 바뀌었다</h4>
+        <p>물가가 목표로 돌아오지 못하면서 <b>인하 폭과 속도의 기대가 계속 축소</b>됐다. 2026년에는 아예 <b>인하 시점이 2027년 이후로</b> 밀렸다.</p>
+        <p>동시에 <b>최종 착지 금리(terminal rate)</b> 인식이 올라갔다. "예전처럼 2%대로 돌아가진 않겠다"는 쪽으로 — 실제로 3.5%대에서 멈춰 섰다.</p>
+        <p><b>10년 평균</b>을 보는 앞항 입장에서는, 당장의 −0.5%p보다 <b>남은 9년의 눈높이</b>가 훨씬 중요하다.</p>
+      </div>
+    </div>
+
+    <div class="verdict" style="margin-top:auto;padding-top:22px">
+      <span class="tag">확인 지표</span>
+      <span class="txt">점도표 · 금리선물(FF선물)이 그리는 <em>경로</em>를 본다. 한 번의 결정이 아니라 곡선 전체를 본다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 05<br>기대 경로</div>
+    <div class="nbody">
+      <p><span class="q">점도표와 금리선물</span>
+      <b>점도표</b>는 FOMC 위원들이 각자 생각하는 향후 금리 수준을 점으로 찍은 것이고,
+      <b>FF선물</b>은 시장 참가자들이 실제 돈을 걸어 만든 예상 경로다. 둘이 어긋날 때가 있는데,
+      <b>가격을 움직이는 건 시장 쪽</b>이다. "연준은 두 번 더 내린다는데 시장은 한 번만 본다"는 식의 기사가 바로 이 격차 이야기다.</p>
+      <p><span class="q">최종 착지 금리라는 개념</span>
+      인하 사이클의 <b>도착점</b>을 말한다. 2010년대에는 그 도착점이 0%에 가까웠지만,
+      지금은 3% 안팎으로 인식된다. 도착점이 1%p 높아지면 <b>앞으로 10년 평균</b>도 그만큼 올라가므로 장기금리의 바닥이 올라간다.
+      이건 인하 몇 번으로 뒤집히지 않는다.</p>
+      <p><span class="q">그럼 앞항만으로 설명이 되나</span>
+      안 된다. 정책금리가 <b>1.75%p나 내려온</b> 2년 동안 10년물은 <b>1.1%p 올랐다.</b>
+      앞항이 아무리 덜 내려왔다 해도, 두 방향이 이렇게 오래 어긋나는 건 앞항만으로 설명되지 않는다.
+      설명되지 않는 나머지 — 그게 다음 장의 텀 프리미엄이다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 06 · 텀 프리미엄 ============ -->
+<article class="unit">
+  <section class="slide">
+    <div class="chrome"><span class="lane">1부 · 해부</span><span>06 / 뒷항</span></div>
+
+    <h2 class="claim">텀 프리미엄은 <em>불확실성의 값</em>이다</h2>
+    <p class="sub">연준이 통제하지 못하는 쪽. 세 가지가 섞여 있고, 2024~2026년에 셋 다 동시에 커졌다.</p>
+
+    <div class="cards c3">
+      <div class="card">
+        <span class="ctag">구성 01</span>
+        <h4>인플레 불확실성</h4>
+        <p>10년 뒤 물가를 아무도 모른다. <b>물가가 튈 가능성</b>이 커질수록 장기채를 들고 있기가 무섭다.</p>
+        <p>관세·재정 확대처럼 <b>물가를 올릴 정책</b>이 예고되면 이 항이 즉시 커진다.</p>
+        <p class="out">4부 · 관세와 물가로 연결</p>
+      </div>
+      <div class="card">
+        <span class="ctag">구성 02</span>
+        <h4>수급</h4>
+        <p>발행이 늘고 사줄 곳이 줄면, 남는 물량을 소화시키려 <b>가격을 깎아야</b> 한다.</p>
+        <p>깎인 가격 = 올라간 금리. 이 부분이 텀 프리미엄으로 잡힌다.</p>
+        <p class="out">2부 전체가 이 칸의 확장</p>
+      </div>
+      <div class="card">
+        <span class="ctag">구성 03</span>
+        <h4>유동성 · 재정 신뢰</h4>
+        <p>필요할 때 제값에 팔 수 있는가. 시장이 얇아지면 <b>보상을 더 요구</b>한다.</p>
+        <p>재정 경로가 나빠 보이면 <b>재정 프리미엄</b>이 여기 한 겹 얹힌다.</p>
+        <p class="out">3부 · 무디스 강등으로 연결</p>
+      </div>
+    </div>
+
+    <div class="verdict warn" style="margin-top:auto;padding-top:22px">
+      <span class="tag">성격</span>
+      <span class="txt">텀 프리미엄은 <em>기준금리를 내려도 내려오지 않는다.</em> 이게 이번 사이클의 특징이다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 06<br>텀 프리미엄</div>
+    <div class="nbody">
+      <p><span class="q">보험료로 이해하기</span>
+      장기채 투자자는 10년 동안 <b>물가·정책·시장의 변덕</b>을 전부 떠안는다.
+      텀 프리미엄은 그 위험을 떠안아주는 대가로 받는 <b>보험료</b>다.
+      보험료는 사고 확률이 높아 보이면 오른다. 즉 <b>실제로 나쁜 일이 벌어지지 않아도, 벌어질 것 같으면</b> 금리가 오른다.</p>
+      <p><span class="q">2010년대에는 왜 이 항이 거의 0이었나</span>
+      물가가 10년 넘게 2%를 밑돌았고, 연준이 QE로 장기채를 계속 사줬고, 위기 때마다 국채로 돈이 몰렸다.
+      <b>위험을 떠안을 이유가 없으니 보험료도 필요 없었다.</b> 심지어 마이너스 추정치도 나왔다.
+      지금은 그 조건이 셋 다 반대로 뒤집혔다 — 인플레는 살아났고, 연준은 팔고 있고(QT), 재정은 계속 발행한다.</p>
+      <p><span class="q">가장 중요한 성질</span>
+      앞항은 연준이 회의 한 번으로 움직일 수 있지만, <b>뒷항은 회의로 안 움직인다.</b>
+      그래서 "연준이 인하하면 대출금리도 내려가겠지"라는 기대가 자꾸 빗나간다.
+      <b>장기금리를 내리려면 텀 프리미엄을 내려야 하고, 그건 수급과 재정을 손봐야 한다는 뜻</b>이다 — 2부와 3부가 그 이야기다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 07 · 분해 적용 (다크) ============ -->
+<article class="unit">
+  <section class="slide dark">
+    <div class="chrome"><span class="lane">1부 · 해부</span><span>07 / 분해 적용</span></div>
+
+    <h2 class="claim">그래서 그 <mark>0.8%p</mark>는<br>어디서 왔나</h2>
+    <p class="sub">공식을 실제 사건에 대본다. 앞항은 조금 움직였고, 나머지는 전부 뒷항이다.
+    이 분해가 되면 1부는 끝난 것이다.</p>
+
+    <div class="stage">
+      <svg viewBox="0 0 900 250" role="img" aria-label="10년물 금리 상승분을 기대 단기금리와 텀 프리미엄으로 나눈 누적 막대">
+        <g font-family="'Noto Sans KR', sans-serif">
+          <text x="0" y="22" font-family="Consolas, monospace" font-size="12" letter-spacing="2" fill="rgba(220,231,223,.45)">2024년 9월 → 11월 · 10년물 상승분의 분해</text>
+
+          <!-- 시작 -->
+          <text x="0" y="72" font-size="14.5" fill="rgba(220,231,223,.8)">9월 중순</text>
+          <rect x="150" y="56" width="330" height="26" fill="#3E8A6E" opacity=".55"/>
+          <text x="164" y="74" font-size="13" fill="#fff">기대 단기금리 평균</text>
+          <rect x="480" y="56" width="30" height="26" fill="#8E2A2A" opacity=".6"/>
+          <text x="524" y="74" font-family="Consolas, monospace" font-size="15" font-weight="700" fill="#8FB3A2">3.6%</text>
+          <text x="600" y="74" font-size="13" fill="rgba(220,231,223,.6)">텀 프리미엄은 거의 0에 가까웠다</text>
+
+          <!-- 도착 -->
+          <text x="0" y="140" font-size="14.5" fill="rgba(220,231,223,.8)">11월 중순</text>
+          <rect x="150" y="124" width="352" height="26" fill="#3E8A6E" opacity=".55"/>
+          <text x="164" y="142" font-size="13" fill="#fff">기대 단기금리 평균</text>
+          <rect x="502" y="124" width="128" height="26" fill="#8E2A2A"/>
+          <text x="516" y="142" font-size="13" fill="#fff" font-weight="700">텀 프리미엄</text>
+          <text x="644" y="142" font-family="Consolas, monospace" font-size="15" font-weight="700" fill="#E0736C">4.44%</text>
+
+          <!-- 화살표 -->
+          <path d="M480,96 L502,96" stroke="#D9BE72" stroke-width="2"/>
+          <text x="150" y="104" font-size="12.5" fill="#D9BE72">앞항 : 인하했는데도 소폭 상승 — 인하 폭 기대가 줄었기 때문</text>
+          <text x="516" y="176" font-size="12.5" fill="#E0736C">뒷항 : 상승분의 대부분 — 재정 확대 · 관세 · 발행 부담</text>
+
+          <line x1="0" y1="196" x2="900" y2="196" stroke="rgba(220,231,223,.18)"/>
+
+          <text x="0" y="224" font-size="15" font-weight="700" fill="#fff">판정 : 이번 상승은 <tspan fill="#E0736C">경기가 좋아서</tspan>가 아니라 <tspan fill="#E0736C">위험값이 커져서</tspan> 생긴 것이다</text>
+          <text x="0" y="246" font-size="12.5" fill="rgba(220,231,223,.5)">※ 분해 비율은 개념 이해용 도해. 실제 수치는 뉴욕 연은 ACM 텀 프리미엄 추정치로 확인할 것(09장)</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="verdict warn">
+      <span class="tag">왜 이 구분이 중요한가</span>
+      <span class="txt">앞항이 올라서 오른 금리는 <em>호재</em>일 수 있지만, 뒷항이 올라서 오른 금리는 <em>비용</em>이다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 07<br>분해 적용</div>
+    <div class="nbody">
+      <p><span class="q">같은 금리 상승도 성격이 다르다</span>
+      <b>앞항이 올라서</b> 금리가 오른 경우 — 경제가 좋아 연준이 덜 내릴 것 같다는 뜻이다. 주식에는 나쁘지 않다.
+      <b>뒷항이 올라서</b> 오른 경우 — 경제가 좋아진 게 아니라 <b>위험 보상 요구가 커진 것</b>이다.
+      이때는 금리가 오르면서 주식도 같이 빠진다. 2022년과 2024년 가을, 그리고 5부에서 볼 2025년 4월이 전부 후자였다.</p>
+      <p><span class="q">"채권 자경단"이라는 표현</span>
+      재정이 방만해 보이면 채권 투자자들이 <b>더 높은 금리를 요구해</b> 정부 정책에 제동을 거는 현상을 그렇게 부른다.
+      1990년대에 만들어진 말인데 2022년 영국(트러스 감세안 → 길트 폭락)과 2024~2025년 미국에서 다시 등장했다.
+      <b>텀 프리미엄 상승은 시장이 정부에 보내는 청구서</b>라고 이해하면 된다.</p>
+      <p><span class="q">이 장에서 얻는 실전 질문</span>
+      금리가 올랐다는 뉴스를 보면 이제 <b>"앞항이야 뒷항이야?"</b>를 먼저 묻는다.
+      확인 방법은 세 가지다 — ① FF선물 경로가 위로 갔는가(앞항) ② 텀 프리미엄 추정치가 올랐는가(뒷항)
+      ③ <b>주식이 같이 빠졌는가</b>(대개 뒷항). 세 번째는 데이터 없이도 그날 바로 알 수 있다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 08 · 명목과 실질 ============ -->
+<article class="unit">
+  <section class="slide">
+    <div class="chrome"><span class="lane">1부 · 해부</span><span>08 / 또 하나의 분해</span></div>
+
+    <h2 class="claim">같은 4.4%도<br><em>속이 다를 수</em> 있다</h2>
+    <p class="sub">앞의 분해가 "누가 요구하는 값인가"를 갈랐다면, 이번 분해는 "물가 때문인가 실물 때문인가"를 가른다.
+    둘을 같이 쓰면 금리 상승의 원인이 거의 특정된다.</p>
+
+    <div class="termline">
+      <span><b>피셔 관계</b> 명목금리 ≒ 실질금리 + 기대인플레이션</span>
+      <span><b>BEI</b> = 명목국채 금리 − TIPS 금리 = 시장이 보는 기대인플레</span>
+    </div>
+
+    <div class="stage">
+      <svg viewBox="0 0 900 236" role="img" aria-label="명목금리 상승이 실질금리 상승인지 기대인플레 상승인지에 따라 해석이 달라지는 구조">
+        <g font-family="'Noto Sans KR', sans-serif">
+          <rect x="0" y="0" width="900" height="52" fill="#101A16"/>
+          <text x="450" y="33" text-anchor="middle" font-size="18" font-weight="700" fill="#fff">명목 4.4% = 실질 2.1% + 기대인플레 2.3%</text>
+
+          <rect x="0" y="76" width="440" height="160" fill="#FAF0EF" stroke="#8E2A2A" stroke-width="1.2"/>
+          <text x="24" y="108" font-family="Consolas, monospace" font-size="11.5" letter-spacing="1.5" fill="#8E2A2A">CASE 1</text>
+          <text x="24" y="138" font-size="18" font-weight="700" fill="#1A241F">실질금리가 올라서</text>
+          <text x="24" y="168" font-size="14" fill="#4E5A53">성장 기대 상승 또는 <tspan font-weight="700">수급·재정 부담</tspan></text>
+          <text x="24" y="192" font-size="14" fill="#4E5A53">돈 빌리는 실제 비용이 오른 것</text>
+          <text x="24" y="220" font-size="14" fill="#8E2A2A" font-weight="700">→ 주식·부동산에 직접 타격</text>
+
+          <rect x="460" y="76" width="440" height="160" fill="#F7EFD9" stroke="#A8802A" stroke-width="1.2"/>
+          <text x="484" y="108" font-family="Consolas, monospace" font-size="11.5" letter-spacing="1.5" fill="#A8802A">CASE 2</text>
+          <text x="484" y="138" font-size="18" font-weight="700" fill="#1A241F">기대인플레가 올라서</text>
+          <text x="484" y="168" font-size="14" fill="#7A5C16">관세·유가·임금 등 <tspan font-weight="700">물가 재점화</tspan></text>
+          <text x="484" y="192" font-size="14" fill="#7A5C16">연준이 다시 긴축할 명분이 생긴다</text>
+          <text x="484" y="220" font-size="14" fill="#8E2A2A" font-weight="700">→ 인하 기대 자체가 무너진다</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="verdict">
+      <span class="tag">확인 방법</span>
+      <span class="txt">10년물과 <em>10년 TIPS</em>를 같이 띄운다. 둘의 차이(BEI)가 벌어졌으면 물가, 아니면 실질 쪽이다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 08<br>명목과 실질</div>
+    <div class="nbody">
+      <p><span class="q">TIPS가 뭔지부터</span>
+      <b>물가연동국채</b>다. 원금이 소비자물가에 따라 조정되므로, 여기서 나오는 금리는 <b>물가를 뺀 실질금리</b>가 된다.
+      그래서 <b>일반 국채 금리 − TIPS 금리</b>를 하면 시장이 생각하는 기대인플레가 튀어나온다.
+      이걸 <b>BEI(브레이크이븐)</b>라 부르고, FRED에서 <b>T10YIE</b> 코드로 바로 볼 수 있다.</p>
+      <p><span class="q">왜 두 분해를 같이 쓰나</span>
+      04장의 분해는 <b>세로로</b>(앞항/뒷항), 이번 분해는 <b>가로로</b>(실질/기대인플레) 자른다.
+      둘을 겹치면 원인이 거의 좁혀진다. 예를 들어 <b>실질금리가 오르면서 텀 프리미엄도 올랐다</b>면
+      성장 때문이 아니라 <b>국채를 소화하는 비용이 올랐다</b>는 뜻이 된다 — 2024~2025년의 진단이 대체로 이쪽이었다.</p>
+      <p><span class="q">한국 투자자에게 특히 중요한 이유</span>
+      <b>실질금리</b>는 달러와 금 가격을 움직이는 핵심 변수다. 실질금리가 오르면 이자를 안 주는 금은 불리해지고 달러는 강해지는 게 교과서다.
+      그런데 <b>재정 불신 때문에</b> 실질금리가 오르는 경우에는 달러가 오히려 약해지기도 한다.
+      이 예외가 실제로 벌어진 날이 5부에서 볼 <b>2025년 4월</b>이다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 09 · 텀 프리미엄 측정 ============ -->
+<article class="unit">
+  <section class="slide">
+    <div class="chrome"><span class="lane">1부 · 해부</span><span>09 / 측정</span></div>
+
+    <h2 class="claim">텀 프리미엄은 <mark>관측되지 않는다</mark></h2>
+    <p class="sub">시장에 "텀 프리미엄 4.4% 중 1.2%"라고 찍혀 나오는 숫자는 없다.
+    <b>모형으로 추정</b>하는 값이고, 그래서 인용할 때 반드시 출처를 붙여야 한다.</p>
+
+    <div class="cards">
+      <div class="card">
+        <span class="ctag">추정 방법</span>
+        <h4>ACM 모형<br>(뉴욕 연은)</h4>
+        <p>Adrian–Crump–Moench. 국채 금리 곡선 전체를 모형에 넣어 <b>기대 경로와 프리미엄으로 분해</b>한다.</p>
+        <p>뉴욕 연은이 <b>매일 갱신해 공개</b>하므로 실무에서 가장 널리 쓰인다.</p>
+        <p class="out">검색어 : ACM Term Premia</p>
+      </div>
+      <div class="card">
+        <span class="ctag">한계 01</span>
+        <h4>모형마다<br>숫자가 다르다</h4>
+        <p>ACM 외에 Kim–Wright(연준 이사회) 등이 있고, 같은 날짜에도 <b>추정치가 0.3~0.5%p씩 차이</b>난다.</p>
+        <p>절대 수준을 인용하면 반박당한다.</p>
+        <p class="out">→ 수준이 아니라 방향을 쓴다</p>
+      </div>
+      <div class="card">
+        <span class="ctag">한계 02</span>
+        <h4>과거가<br>바뀐다</h4>
+        <p>모형이 재추정되면 <b>몇 달 전 값도 함께 수정</b>된다. 1회차에서 배운 데이터 수정 문제와 같은 구조다.</p>
+        <p class="out">→ 인용 시 조회 날짜를 기록</p>
+      </div>
+      <div class="card">
+        <span class="ctag">그래서 쓰는 법</span>
+        <h4>"3개월 연속<br>상승했는가"</h4>
+        <p>3부에서 쓴 무효화 조건도 <b>"3개월 연속 하락"</b>처럼 방향과 기간으로 썼다.</p>
+        <p>추정치의 한계를 아는 사람이 쓰는 방식이다.</p>
+        <p class="out">3부 · 판단 기록 양식과 연결</p>
+      </div>
+    </div>
+
+    <div class="verdict warn" style="margin-top:auto;padding-top:22px">
+      <span class="tag">원칙</span>
+      <span class="txt">추정값은 <em>수준으로 주장하지 말고 방향으로 주장한다.</em></span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 09<br>측정의 한계</div>
+    <div class="nbody">
+      <p><span class="q">왜 관측이 안 되나</span>
+      시장에서 관측되는 건 <b>10년물 금리 하나</b>뿐이다. 그 안에 기대 경로와 프리미엄이 섞여 있는데,
+      둘을 가르려면 <b>"시장이 미래 금리를 어떻게 보는가"</b>를 알아야 한다. 그건 직접 물어볼 수 없으니 모형으로 추정한다.
+      1회차에서 배운 <b>잠재성장률과 정확히 같은 성격</b>이다 — 중요한데 관측이 안 되는 값.</p>
+      <p><span class="q">발표에서 이렇게 말하면 안 된다</span>
+      "텀 프리미엄이 1.2%다"라고 단정하면 <b>"어느 모형이요?"</b> 한마디에 무너진다.
+      대신 <b>"뉴욕 연은 ACM 기준 10년물 텀 프리미엄 추정치가 X월 이후 상승 전환했다"</b>처럼
+      <b>출처 · 기간 · 방향</b>을 붙이면 같은 내용이 반박하기 어려운 문장이 된다.</p>
+      <p><span class="q">추정치를 못 믿겠다면 대체 지표</span>
+      ① <b>30년물 − 5년물 스프레드</b>(커브 기울기) ② <b>국채 입찰의 응찰배수·테일</b>(2부 03장)
+      ③ <b>MOVE 지수</b>(채권 변동성). 셋 다 직접 관측되는 값이라 모형 논쟁이 필요 없고,
+      텀 프리미엄이 오를 때 대체로 같이 움직인다. <b>관측 가능한 것으로 대신 말하는 것</b>도 실력이다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 10 · 커브의 모양 (다크) ============ -->
+<article class="unit">
+  <section class="slide dark">
+    <div class="chrome"><span class="lane">1부 · 해부</span><span>10 / 커브 판독</span></div>
+
+    <h2 class="claim">커브의 <em>네 가지 움직임</em></h2>
+    <p class="sub">방향(금리가 오르나 내리나) × 기울기(벌어지나 좁아지나) = 네 조합.
+    각 조합에 이름과 해석이 붙어 있다. 뉴스에 그대로 나오는 용어다.</p>
+
+    <table class="tbl">
+      <thead>
+        <tr><th style="width:20%">이름</th><th style="width:22%">무슨 일이 일어났나</th><th style="width:26%">시장이 읽는 것</th><th>대표 사례</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>불 스티프닝</td><td class="mat">단기 ↓↓ 장기 ↓</td><td>경기 둔화 → 인하 기대 확산</td><td>침체 진입 국면. 채권에 가장 우호적</td></tr>
+        <tr class="hot"><td>베어 스티프닝</td><td class="mat">장기 ↑↑</td><td><b>인플레·수급·재정 우려</b></td><td>2024년 가을, <b>2025년 4월</b>(5부) — 주식에 악재</td></tr>
+        <tr><td>불 플래트닝</td><td class="mat">장기 ↓↓</td><td>장기 성장·물가 기대 하락</td><td>장기 침체 우려. 커브 역전으로 가는 길</td></tr>
+        <tr><td>베어 플래트닝</td><td class="mat">단기 ↑↑</td><td>연준 긴축 가속</td><td>2022년 금리 인상기</td></tr>
+      </tbody>
+    </table>
+
+    <div class="record" style="margin-top:22px">
+      <div class="rl">한 문장으로 외우는 법</div>
+      <p><b>불/베어</b>는 채권 가격 기준이다 — 금리가 <b>내리면 불</b>(채권 강세), <b>오르면 베어</b>(채권 약세).</p>
+      <p class="cond"><b>스티프닝/플래트닝</b>은 장단기 <b>금리차</b>가 벌어지는가 좁아지는가. 두 단어를 조합하면 네 국면이 전부 나온다.</p>
+    </div>
+
+    <div class="verdict" style="margin-top:auto;padding-top:20px">
+      <span class="tag">이번 사이클</span>
+      <span class="txt">우리가 다루는 건 <em>베어 스티프닝</em>이다. 인하기에 이 모양이 나오면 원인은 앞항이 아니라 뒷항이다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 10<br>커브 판독</div>
+    <div class="nbody">
+      <p><span class="q">왜 네 칸으로 외우나</span>
+      금리 뉴스는 대부분 <b>"금리가 올랐다/내렸다"</b>로만 전달된다. 그런데 같은 상승도 <b>단기가 올랐는지 장기가 올랐는지</b>에 따라
+      의미가 정반대다. 단기가 오르면 연준 이야기고, 장기가 오르면 시장의 불안 이야기다.
+      이 표는 <b>한 줄짜리 뉴스를 두 축으로 펼치는 도구</b>다.</p>
+      <p><span class="q">커브 역전과 스티프닝의 순서</span>
+      역사적으로 반복되는 패턴이 있다. 긴축 후반에 <b>커브가 역전</b>되고(침체 신호),
+      실제 침체가 가까워지면 연준 인하 기대로 <b>단기가 급락하며 역전이 풀린다</b>(불 스티프닝).
+      즉 <b>"역전이 풀릴 때"가 오히려 위험 구간</b>이라는 말이 여기서 나온다.
+      그런데 이번 사이클의 정상화는 단기 하락이 아니라 <b>장기 상승</b>으로 이뤄졌다는 게 특이점이다.</p>
+      <p><span class="q">실무에서 보는 두 스프레드</span>
+      <b>10년−2년</b>(경기 신호로 가장 많이 인용)과 <b>30년−5년</b>(텀 프리미엄에 더 민감).
+      FRED 코드는 각각 <b>T10Y2Y</b>, 그리고 30년·5년 시계열(DGS30, DGS5)을 빼서 만든다.
+      매일 볼 필요는 없고, <b>월 단위로 방향이 바뀌었는지</b>만 확인하면 충분하다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 11 · 4.5% 임계선 ============ -->
+<article class="unit">
+  <section class="slide">
+    <div class="chrome"><span class="lane">1부 · 해부</span><span>11 / 임계선</span></div>
+
+    <h2 class="claim">왜 하필 <em>4.5~5%</em>가<br>말썽인가</h2>
+    <p class="sub">특정 숫자에 마법이 있는 건 아니다. 다만 이 구간에서 <b>여러 임계값이 한꺼번에 걸린다.</b>
+    2026년에는 10년물 4.7%, 30년물 5.2%로 그 구간을 <b>이미 넘어와 있다.</b> 4부에서 하나씩 뜯을 목록을 여기서 세운다.</p>
+
+    <div class="stage">
+      <svg viewBox="0 0 900 262" role="img" aria-label="10년물 금리가 4.5% 부근일 때 동시에 걸리는 네 가지 임계값">
+        <g font-family="'Noto Sans KR', sans-serif">
+          <line x1="150" y1="20" x2="150" y2="240" stroke="#8E2A2A" stroke-width="3"/>
+          <text x="150" y="256" text-anchor="middle" font-size="15" font-weight="700" fill="#8E2A2A">10년물 4.5% 선</text>
+
+          <g font-size="14.5">
+            <rect x="180" y="20" width="720" height="46" fill="#FAF0EF"/>
+            <text x="200" y="42" font-weight="700" fill="#1A241F">주식 — 어닝일드를 넘어선다</text>
+            <text x="200" y="60" font-size="13" fill="#4E5A53">2026년 주식 위험 프리미엄(ERP)은 −1.2%p — 위험을 지고 주식을 살 초과 보상이 사라졌다</text>
+
+            <rect x="180" y="74" width="720" height="46" fill="#F7EFD9"/>
+            <text x="200" y="96" font-weight="700" fill="#1A241F">부동산 — 30년 모기지가 7%대로</text>
+            <text x="200" y="114" font-size="13" fill="#7A5C16">모기지는 10년물 + 스프레드로 붙는다. 거래가 얼어붙고, 상업용 부동산은 만기 도래분의 재대출이 막힌다</text>
+
+            <rect x="180" y="128" width="720" height="46" fill="#EFEDE6"/>
+            <text x="200" y="150" font-weight="700" fill="#1A241F">기업 — 저금리 때 빌린 돈의 만기가 온다</text>
+            <text x="200" y="168" font-size="13" fill="#4E5A53">0~2%로 조달한 회사채가 5~6%로 갈아탄다. 이익보다 이자가 먼저 늘어난다</text>
+
+            <rect x="180" y="182" width="720" height="46" fill="#EFF4F0"/>
+            <text x="200" y="204" font-weight="700" fill="#1A241F">정부 — 이자비용이 예산을 잠식한다</text>
+            <text x="200" y="222" font-size="13" fill="#4E5A53">3부의 되먹임 루프. 2026년 7월 30년물 입찰은 2007년 이후 가장 높은 낙찰금리로 마감됐다</text>
+          </g>
+        </g>
+      </svg>
+    </div>
+
+    <div class="verdict warn">
+      <span class="tag">4부 예고</span>
+      <span class="txt">넷은 따로 노는 사건이 아니다. <em>같은 하나의 금리</em>가 네 곳에서 동시에 청구서를 내미는 것이다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 11<br>임계선</div>
+    <div class="nbody">
+      <p><span class="q">"임계선"이라는 표현을 조심해서 쓰기</span>
+      4.5%를 넘는 순간 무언가 자동으로 터지는 건 아니다. 정확히는 <b>그 부근에서 여러 계약과 의사결정의 손익이 뒤집힌다.</b>
+      모기지 대출 심사, 부동산 재대출 조건, 기업 투자 결정, 연기금 자산 배분이 각자 다른 기준선을 갖고 있는데
+      <b>그 기준선들이 4~5% 구간에 몰려 있다.</b> 그래서 이 구간에서 시장이 예민해진다.</p>
+      <p><span class="q">어닝일드 비교의 정확한 의미</span>
+      어닝일드는 <b>주가수익비율(PER)의 역수</b>다. PER 28배면 어닝일드는 약 3.6%.
+      즉 "주식을 사면 기업 이익 기준으로 연 3.6%를 번다"는 뜻이다.
+      그런데 국채가 4.4%를 준다면 <b>위험을 지고 주식을 살 초과 보상이 사라진다.</b>
+      이 차이를 <b>주식 위험 프리미엄(ERP)</b>이라 하고, 마이너스가 되면 밸류에이션 부담 이야기가 나온다.</p>
+      <p><span class="q">1부에서 4부로 넘어가는 다리</span>
+      1부는 <b>"장기금리가 왜 이렇게 됐나"</b>를 물었다. 4부는 <b>"그래서 무엇이 부서지나"</b>를 묻는다.
+      그 사이에 2부(수급)와 3부(재정)가 <b>"왜 안 내려오나"</b>를 채운다.
+      네 개 부가 하나의 문장으로 이어진다 — <b>구조적으로 안 내려오는 금리가, 예상보다 오래 유지되면서, 만기가 돌아오는 순서대로 청구서를 낸다.</b></p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 12 · 셀프체크 (다크) ============ -->
+<article class="unit">
+  <section class="slide dark">
+    <div class="chrome"><span class="lane">1부 · 해부</span><span>12 / 셀프체크</span></div>
+
+    <h2 class="claim">1부를 덮기 전에<br><em>답할 수 있어야 하는 것</em></h2>
+    <p class="sub">1부는 뼈대다. 여기가 흔들리면 2~5부가 전부 흩어진다. 특히 3·4·5번은 반드시 통과해야 한다.</p>
+
+    <ol class="checks">
+      <li>두 번의 인하 국면에서 <b>모두</b> 장기금리가 오른 게 왜 모순이 아닌가? (01)</li>
+      <li>수익률 곡선에서 <b>단기와 장기를 각각 지배</b>하는 요인은? (02)</li>
+      <li>"국채 금리가 올랐다"를 <b>가격 문장</b>으로 바꿔보라. (03)</li>
+      <li>장기금리를 <b>두 조각</b>으로 쪼개고 각각의 뜻을 설명하라. (04)</li>
+      <li>기준금리를 내렸는데 <b>앞항이 오히려 오를 수</b> 있는 이유는? (05)</li>
+      <li>텀 프리미엄을 구성하는 <b>세 가지</b>는? (06)</li>
+      <li>2010년대에 텀 프리미엄이 0에 가까웠던 <b>세 조건</b>은? (06)</li>
+      <li>앞항이 올라 오른 금리와 뒷항이 올라 오른 금리는 <b>무엇이 다른가</b>? (07)</li>
+      <li>명목 4.4%가 <b>실질 상승</b>인지 <b>기대인플레 상승</b>인지 어떻게 확인하나? (08)</li>
+      <li>텀 프리미엄 수치를 인용할 때 <b>반드시 붙여야 할 세 가지</b>는? (09)</li>
+      <li><b>베어 스티프닝</b>이 인하기에 나오면 무슨 뜻인가? (10)</li>
+      <li>4.5~5% 구간에서 동시에 걸리는 <b>네 개의 임계값</b>을 말해보라. (11)</li>
+    </ol>
+
+    <div class="verdict" style="margin-top:auto;padding-top:20px">
+      <span class="tag">다음</span>
+      <span class="txt">2부 — <em>수급.</em> 텀 프리미엄을 밀어올린 첫 번째 힘, 파는 사람과 사는 사람을 센다.</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">노트 12<br>셀프체크</div>
+    <div class="nbody">
+      <p><span class="q">채점 기준</span>
+      4번은 공식만 말하면 절반이다. <b>"앞항은 연준이 좌우하고 뒷항은 연준이 통제하지 못한다"</b>까지 나와야 통과다.
+      8번은 <b>"뒷항이 오른 금리는 경제가 좋아진 게 아니라 위험값이 커진 것이라, 주식이 같이 빠진다"</b>가 핵심이다.</p>
+      <p><span class="q">1부 전체를 한 문단으로</span>
+      연준이 정하는 건 하룻밤 금리 하나뿐이다. 10년물은 <b>기대 단기금리 평균 + 텀 프리미엄</b>으로 결정되는데,
+      2024년 가을에는 앞항이 거의 안 내려오고 <b>뒷항이 크게 올라</b> 인하에도 장기금리가 상승했다.
+      뒷항은 <b>인플레 불확실성 · 수급 · 재정 신뢰</b>로 구성되고, 셋 다 회의 한 번으로 못 바꾼다.
+      그래서 이 금리는 <b>쉽게 안 내려오고</b>, 4.5% 부근에서 주식·부동산·기업·정부에 동시에 청구서를 낸다.</p>
+      <p><span class="q">공부 방법</span>
+      백지에 <b>04장의 두 칸 그림</b>과 <b>02장의 커브 두 개</b>를 그릴 수 있으면 1부는 끝났다.
+      그리고 뉴스를 볼 때마다 <b>"이건 앞항 얘기인가 뒷항 얘기인가"</b>를 한 번씩 붙여보라.
+      이 습관이 2~5부를 읽는 속도를 바꾼다.</p>
+    </div>
+  </aside>
+</article>
+
+
+<!-- ============ 부록 A · 용어집 ============ -->
+<article class="unit">
+  <section class="slide dark">
+    <div class="chrome"><span class="lane">1부 · 해부</span><span>부록 A / 용어집 · 데이터</span></div>
+
+    <h2 class="claim">1부의 <em>열 단어</em>와 확인 코드</h2>
+    <p class="sub">여기 있는 말은 2~5부에서 계속 반복된다. 오른쪽 아래 FRED 코드로 직접 그려보면 훨씬 빨리 붙는다.</p>
+
+    <div class="gloss">
+      <div class="gl"><span class="t">수익률 곡선</span><span class="e">YIELD CURVE</span><div class="d">만기별 국채 금리를 이은 선. <b>수준이 아니라 모양의 변화</b>로 읽는다.</div></div>
+      <div class="gl"><span class="t">텀 프리미엄</span><span class="e">TERM PREMIUM</span><div class="d">장기채를 들고 있어주는 대가. <b>인플레 불확실성 · 수급 · 유동성</b>의 합. 관측되지 않고 추정된다.</div></div>
+      <div class="gl"><span class="t">기대가설</span><span class="e">EXPECTATIONS</span><div class="d">장기금리 ≒ 미래 단기금리 경로의 평균이라는 생각. <b>여기서 설명 안 되는 잔여가 텀 프리미엄.</b></div></div>
+      <div class="gl"><span class="t">최종 착지 금리</span><span class="e">TERMINAL RATE</span><div class="d">인하 사이클의 <b>도착점</b>. 이게 올라가면 장기금리의 바닥도 같이 올라간다.</div></div>
+      <div class="gl"><span class="t">듀레이션</span><span class="e">DURATION</span><div class="d">금리 1%p 변화 시 가격이 몇 % 움직이는지. <b>10년물 8~9, 30년물 20 안팎.</b></div></div>
+      <div class="gl"><span class="t">피셔 관계</span><span class="e">FISHER</span><div class="d">명목금리 ≒ <b>실질금리 + 기대인플레이션.</b> 금리 상승의 원인을 가르는 두 번째 칼.</div></div>
+      <div class="gl"><span class="t">BEI</span><span class="e">BREAKEVEN</span><div class="d">명목국채 − TIPS. <b>시장이 보는 기대인플레.</b> FRED <b>T10YIE</b>.</div></div>
+      <div class="gl"><span class="t">베어 스티프닝</span><span class="e">BEAR STEEPENING</span><div class="d">장기금리가 올라 커브가 가팔라지는 것. <b>인하기에 나오면 뒷항이 원인</b>이라는 신호.</div></div>
+      <div class="gl"><span class="t">ACM 추정치</span><span class="e">ACM TERM PREMIA</span><div class="d">뉴욕 연은이 매일 공개하는 텀 프리미엄 추정. <b>출처·기간·방향</b>을 붙여 인용한다.</div></div>
+      <div class="gl"><span class="t">어닝일드</span><span class="e">EARNINGS YIELD</span><div class="d">PER의 역수. <b>국채 금리와 직접 비교</b>해 주식의 상대 매력을 잰다(11장, 4부).</div></div>
+    </div>
+
+    <div class="termline" style="margin:22px 0 0">
+      <span><b>DGS10 / DGS2 / DGS30</b> 미국 10년·2년·30년물 금리</span>
+      <span><b>T10Y2Y</b> 10년−2년 스프레드</span>
+      <span><b>T10YIE</b> 10년 기대인플레(BEI)</span>
+      <span><b>DFII10</b> 10년 실질금리(TIPS)</span>
+    </div>
+  </section>
+
+  <aside class="note">
+    <div class="nlbl">부록 A<br>용어 · 데이터</div>
+    <div class="nbody">
+      <p><span class="q">30분이면 되는 실습</span>
+      FRED에서 <b>DGS10</b>과 <b>DFII10</b>을 겹쳐 그리면 명목과 실질이 한 화면에 나오고, 그 간격이 곧 기대인플레(T10YIE)다.
+      여기에 <b>T10Y2Y</b>를 하나 더 띄우면 <b>08장과 10장을 동시에 확인</b>하게 된다.
+      직접 그려본 그림은 남의 차트를 볼 때 축을 먼저 보게 만든다.</p>
+      <p><span class="q">한국 자료로 같은 걸 해보려면</span>
+      한국은행 ECOS에서 국고채 3년·10년 금리를, 물가연동국채 금리와 함께 받으면 같은 분해가 된다.
+      다만 한국은 <b>물가연동국채 시장이 얇아</b> BEI 신뢰도가 미국만 못하다는 한계가 있다.
+      그래서 국내 리서치는 <b>한미 금리차</b>와 <b>스왑 스프레드</b>를 대신 보는 경우가 많다.</p>
+      <p><span class="q">이 자료 전체의 지도</span>
+      <b>1부</b> 장기금리를 둘로 쪼갠다 → <b>2부</b> 수급이 뒷항을 밀어올린다 →
+      <b>3부</b> 재정이 그걸 구조로 굳힌다 → <b>4부</b> 그 금리가 무엇을 부수는가 →
+      <b>5부</b> 실제로 터진 날(2025년 4월)을 복기한다.
+      각 부의 마지막 장에 다음 부로 넘어가는 다리가 놓여 있다.</p>
+    </div>
+  </aside>
+</article>
+
+</body>
+</html>

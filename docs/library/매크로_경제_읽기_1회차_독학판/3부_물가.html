@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>매크로 경제 읽기 1회차 · 3부 물가(Inflation)</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="cover">
+  <div class="cover-in">
+    <div class="series">SCOPE · 매크로 경제 읽기 1회차 「경기와 물가」</div>
+    <div class="partno">PART 3 OF 4</div>
+    <h1>물가(Inflation)<br>— 정책의 방아쇠</h1>
+    <p class="sub">중앙은행이 금리를 움직이는 가장 직접적인 명분이 물가다.
+    그래서 물가 지표는 발표되는 순간 채권·환율·주식이 동시에 반응한다.</p>
+    <div class="meta">
+      <span>상경대학 경제학회 SCOPE</span>
+      <span>독학용 확장판</span>
+      <span>예상 학습시간 90분</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<div class="goals">
+  <h3>이 권을 덮을 때 할 수 있어야 하는 것</h3>
+  <ol>
+    <li>연준은 왜 <b>PCE</b>를 보고 한국은행은 왜 <b>CPI</b>를 보는지 구조적 이유로 설명할 수 있다.</li>
+    <li>"근원 물가 둔화"라는 문장이 왜 헤드라인보다 중요한지 안다.</li>
+    <li><b>기저효과</b> 때문에 생기는 착시를 스스로 걷어낼 수 있다.</li>
+    <li><b>기대인플레이션</b>이 왜 중앙은행의 최우선 관리 대상인지 메커니즘으로 설명할 수 있다.</li>
+    <li>"인플레이션이 둔화됐는데 왜 물가는 안 내려가냐"는 질문에 <b>레벨과 레이트</b>로 답할 수 있다.</li>
+  </ol>
+</div>
+
+<nav class="toc">
+  <h3>목차</h3>
+  <ol>
+    <li><a href="#ch1">인플레이션이 왜 정책의 중심인가</a></li>
+    <li><a href="#ch2">CPI vs PCE — 두 개의 물가</a></li>
+    <li><a href="#ch3">헤드라인 vs 근원 — 무엇을 걷어내는가</a></li>
+    <li><a href="#ch4">상품과 서비스 — 끈적한 물가와 슈퍼코어</a></li>
+    <li><a href="#ch5">기저효과 — 통계가 만드는 착시</a></li>
+    <li><a href="#ch6">기대인플레이션 — 믿음이 물가를 만든다</a></li>
+    <li><a href="#ch7">레벨과 레이트 — 둔화는 하락이 아니다</a></li>
+    <li><a href="#ch8">실전 독해 — CPI 리포트와 장기 차트</a></li>
+    <li><a href="#appendix">부록 — 물가 용어사전 · FRED 코드</a></li>
+    <li><a href="#check">셀프체크</a></li>
+  </ol>
+</nav>
+
+<!-- ============================= 1장 ============================= -->
+<section class="chapter" id="ch1">
+  <span class="chno">CHAPTER 1</span>
+  <h2>인플레이션이 왜 정책의 중심인가</h2>
+  <p class="lede">1부에서 GDP갭이 통화정책의 명분을 만든다고 했다. 그 명분이 <em>실제 숫자로 확인되는 곳</em>이 물가 지표다.</p>
+
+  <div class="block why">
+    <span class="tag">왜 이걸 보는가</span>
+    <p class="q">중앙은행의 목표는 왜 하필 "물가 상승률 2%"일까? 0%면 더 좋은 것 아닌가?</p>
+    <p>0%는 위험하기 때문이다. 물가가 0% 근처면 조금만 충격이 와도 <em>마이너스(디플레이션)로 떨어지고</em>, 디플레이션은 인플레이션보다 훨씬 고치기 어렵다. 2%는 <em>완충지대</em>다.</p>
+  </div>
+
+  <h3 class="sec">1-1. 인플레이션의 정확한 정의</h3>
+
+  <p><strong>인플레이션</strong>은 "물건값이 비싸다"가 아니라 <em>"물가 수준이 지속적으로 상승하는 현상"</em>이다. 두 단어가 핵심이다.</p>
+
+  <ul>
+    <li><strong>지속적</strong> — 한 달 반짝 오른 건 인플레이션이 아니다. 태풍으로 배춧값이 뛴 건 상대가격 변화지 인플레이션이 아니다.</li>
+    <li><strong>물가 수준(전반)</strong> — 특정 품목이 아니라 <em>전반적인 가격 수준</em>이 올라야 한다.</li>
+  </ul>
+
+  <p>이 구분이 실무에서 중요한 이유는, 중앙은행이 <em>일시적·공급 요인에 의한 가격 상승에는 금리로 대응하지 않으려 하기 때문</em>이다.
+  유가가 지정학적 이유로 급등했다고 금리를 올리면, 물가는 못 잡고 경기만 죽인다. 그래서 다음 장의 '근원 물가' 개념이 나온다.</p>
+
+  <h3 class="sec">1-2. 왜 2%인가</h3>
+
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>물가 수준</th><th>경제에 생기는 일</th><th>중앙은행의 평가</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>과도한 인플레이션<br>(4% 이상)</td>
+        <td>화폐 가치 하락, 실질임금 감소, 저축 의욕 저하, 기대인플레 불안정화</td>
+        <td><b>최우선 진압 대상</b></td>
+      </tr>
+      <tr>
+        <td>목표치<br>(2% 내외)</td>
+        <td>완만한 가격 상승이 소비·투자를 유도. 임금의 하방경직성 문제를 완화</td>
+        <td><b>이상적</b></td>
+      </tr>
+      <tr>
+        <td>디플레이션<br>(마이너스)</td>
+        <td>"더 싸질 테니 나중에 사자" → 소비 연기 → 매출 감소 → 임금 삭감 → 소비 추가 감소</td>
+        <td><b>가장 위험.</b> 금리를 0까지 내려도 못 멈출 수 있음</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="block analogy">
+    <span class="tag">비유</span>
+    <p><strong>2% 목표는 자동차의 최소 주행 속도와 같다.</strong> 완전히 멈춰 서면(0%) 다시 출발하기가 매우 어렵다. 특히 <em>금리는 0 아래로 내리기 어렵다</em>는 제약(제로금리 하한) 때문에, 디플레이션에 빠지면 중앙은행의 무기가 사라진다.
+    2%는 <em>브레이크를 밟을 여유 공간을 확보해두는 속도</em>다. 일본이 30년간 이 문제로 고생한 것이 실증 사례다.</p>
+  </div>
+
+  <div class="block key">
+    <span class="tag">핵심 정리</span>
+    <p>물가는 <b>중앙은행의 반응 함수를 직접 건드리는 유일한 실물 지표</b>다.
+    그래서 CPI 발표일에는 채권금리·달러·주가가 동시에 튄다. 1부의 GDP 발표보다 시장 반응이 훨씬 즉각적이다.</p>
+  </div>
+
+  <div class="connect">그런데 "물가"라는 하나의 숫자는 존재하지 않는다. 최소 두 개가 있고, 둘은 다른 답을 낸다.</div>
+</section>
+
+<!-- ============================= 2장 ============================= -->
+<section class="chapter" id="ch2">
+  <span class="chno">CHAPTER 2</span>
+  <h2>CPI vs PCE — 두 개의 물가</h2>
+  <p class="lede">연준이 "물가 2% 목표"라고 할 때의 그 물가는 <em>CPI가 아니다.</em> 이걸 모르면 뉴스와 연준 발언이 계속 어긋나 보인다.</p>
+
+  <div class="block why">
+    <span class="tag">왜 이걸 보는가</span>
+    <p class="q">CPI는 3.2%인데 연준은 "물가가 2%대로 안정되고 있다"고 한다. 누가 맞는 걸까?</p>
+    <p>둘 다 맞다. <em>서로 다른 지수를 말하고 있을 뿐</em>이다.</p>
+  </div>
+
+  <h3 class="sec">2-1. 구조적 차이</h3>
+
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>구분</th><th>CPI (소비자물가지수)</th><th>PCE (개인소비지출 물가지수)</th></tr></thead>
+    <tbody>
+      <tr><td>작성 기관</td><td>미 노동통계국(BLS) / 한국 통계청</td><td>미 경제분석국(BEA)</td></tr>
+      <tr><td>가중치 방식</td><td><b>고정 가중치</b>(라스파이레스). 몇 년에 한 번 개편</td><td><b>유동 가중치</b>(체인). 소비 패턴 변화를 즉시 반영</td></tr>
+      <tr><td>조사 대상</td><td>가계가 <b>직접 지불</b>한 지출</td><td>가계를 <b>대신해 지불된 것까지</b> 포함(고용주 부담 의료보험 등)</td></tr>
+      <tr><td>주거비 비중</td><td><b>약 33%로 매우 높음</b></td><td>약 15% 수준</td></tr>
+      <tr><td>의료비 비중</td><td>낮음(본인 부담분만)</td><td>높음(보험 지급분 포함)</td></tr>
+      <tr><td>통상적인 수치</td><td><b>상대적으로 높게 나온다</b></td><td>상대적으로 낮게 나온다</td></tr>
+      <tr><td>정책 기준</td><td><b>한국은행 목표(2%)</b>, 국민연금·임금협상 연동</td><td><b>연준 목표(2%)</b> — 특히 근원 PCE</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3 class="sec">2-2. 왜 PCE가 더 낮게 나오는가 — 대체효과</h3>
+
+  <p>핵심은 <strong>대체효과(substitution effect)</strong>다.</p>
+
+  <div class="block analogy">
+    <span class="tag">비유</span>
+    <p><strong>소고기값이 두 배로 올랐다고 하자.</strong><br>
+    <em>CPI의 시선</em> — 장바구니에 소고기가 고정 수량으로 들어 있다. 그러니 물가가 크게 오른 것으로 계산된다.<br>
+    <em>PCE의 시선</em> — 실제로 사람들은 소고기를 덜 사고 돼지고기로 갈아탔다. 그 <em>바뀐 소비 패턴을 반영</em>하므로 물가 상승폭이 작게 나온다.<br>
+    어느 쪽이 옳은가? <strong>목적이 다르다.</strong> "동일한 생활수준을 유지하는 비용"을 재려면 PCE가 낫고, "정해진 장바구니의 가격"을 재려면 CPI가 낫다.</p>
+  </div>
+
+  <p>연준이 PCE를 선호하는 이유가 여기 있다. 연준은 <em>가계가 실제로 겪는 물가 부담</em>을 알고 싶어 하고, 사람들은 실제로 비싼 걸 피해 다니기 때문이다.
+  반면 한국은행이 CPI를 쓰는 것은 <em>국민이 체감하는 대표 물가</em>이자 각종 제도(연금, 임금협상)에 연동된 공식 지표이기 때문이다.</p>
+
+  <figure>
+    <div class="figtitle">같은 시기, 다른 숫자 — CPI와 PCE의 갭</div>
+    <div class="figsub">구조적으로 CPI가 PCE보다 높게 나오는 경향이 있다</div>
+    <svg viewBox="0 0 800 300" role="img" aria-label="CPI와 PCE 물가지수의 구조 차이와 수치 격차를 나타낸 도표">
+      <g font-family="Pretendard, Malgun Gothic, sans-serif">
+        <!-- CPI column -->
+        <rect x="70" y="60" width="290" height="180" rx="3" fill="#EEF3FD" stroke="#CADCFC"/>
+        <text x="215" y="90" text-anchor="middle" fill="#1E2761" font-size="19" font-weight="800">CPI</text>
+        <text x="215" y="112" text-anchor="middle" fill="#7A8095" font-size="12.5">고정 가중치 · 가계 직접 지출</text>
+        <!-- weight bar -->
+        <rect x="100" y="130" width="76" height="30" fill="#1E2761"/>
+        <rect x="176" y="130" width="154" height="30" fill="#CADCFC"/>
+        <text x="138" y="151" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="700">주거 33%</text>
+        <text x="253" y="151" text-anchor="middle" fill="#1E2761" font-size="12.5" font-weight="700">기타 67%</text>
+        <text x="215" y="192" text-anchor="middle" fill="#1F2430" font-size="15">주거비 비중이 커서</text>
+        <text x="215" y="214" text-anchor="middle" fill="#B23A48" font-size="15" font-weight="700">수치가 높게 나오는 경향</text>
+
+        <!-- PCE column -->
+        <rect x="440" y="60" width="290" height="180" rx="3" fill="#FBF3DF" stroke="#D9A93A"/>
+        <text x="585" y="90" text-anchor="middle" fill="#B8860B" font-size="19" font-weight="800">PCE</text>
+        <text x="585" y="112" text-anchor="middle" fill="#7A8095" font-size="12.5">유동 가중치 · 대신 지불분 포함</text>
+        <rect x="470" y="130" width="35" height="30" fill="#B8860B"/>
+        <rect x="505" y="130" width="195" height="30" fill="#FBF3DF" stroke="#D9A93A"/>
+        <text x="487" y="151" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">주거</text>
+        <text x="602" y="151" text-anchor="middle" fill="#B8860B" font-size="12.5" font-weight="700">기타 · 의료비 비중 높음</text>
+        <text x="585" y="192" text-anchor="middle" fill="#1F2430" font-size="15">소비 대체를 반영해</text>
+        <text x="585" y="214" text-anchor="middle" fill="#2E7D5B" font-size="15" font-weight="700">수치가 낮게 나오는 경향</text>
+
+        <!-- policy tags -->
+        <rect x="70" y="256" width="290" height="34" rx="3" fill="#1E2761"/>
+        <text x="215" y="278" text-anchor="middle" fill="#fff" font-size="13.5" font-weight="700">한국은행 물가안정목표 2%</text>
+        <rect x="440" y="256" width="290" height="34" rx="3" fill="#B8860B"/>
+        <text x="585" y="278" text-anchor="middle" fill="#fff" font-size="13.5" font-weight="700">연준 목표 2% — 근원 PCE 기준</text>
+
+        <text x="400" y="150" text-anchor="middle" fill="#7A8095" font-size="13" font-weight="700">vs</text>
+      </g>
+    </svg>
+    <figcaption><b>실무 규칙:</b> 미국 뉴스에서 "인플레이션"이라고 하면 대개 CPI다(발표가 빠르고 언론이 좋아한다). 하지만 <b>연준의 의사결정 기준은 근원 PCE</b>다. 리포트를 쓸 땐 어느 지수인지 반드시 표기하라.</figcaption>
+  </figure>
+
+  <div class="block trap">
+    <span class="tag">신입이 틀리는 지점</span>
+    <p><b>함정 1 — CPI 수치로 연준의 행동을 예측한다.</b><br>
+    CPI 3.2%를 보고 "아직 목표 2%와 멀다"고 결론 내면 안 된다. <b>근원 PCE 기준으로는 2%대 후반일 수 있다.</b> 연준 발언과 시장 반응을 이해하려면 PCE 기준으로 환산해서 봐야 한다.</p>
+    <p><b>함정 2 — 발표 순서를 모른다.</b><br>
+    CPI가 먼저(월 10~15일), PCE가 나중(월말)에 나온다. 그래서 <b>PCE는 대부분 CPI로 미리 추정 가능</b>하며 시장 반응이 상대적으로 작다. CPI 발표일의 변동성이 큰 이유다.</p>
+    <p><b>함정 3 — 한국 CPI와 미국 CPI를 같은 잣대로 본다.</b><br>
+    품목 구성과 가중치가 다르다. 특히 한국은 <b>농축수산물·공공요금</b>의 영향이 크고, 미국은 <b>주거비(임대료)</b>가 압도적이다. 같은 3%여도 원인이 전혀 다를 수 있다.</p>
+  </div>
+
+  <div class="connect">지수의 종류를 정리했다. 이제 같은 지수 안에서 <b>무엇을 빼고 볼 것인가</b>의 문제로 들어간다.</div>
+</section>
+
+<!-- ============================= 3장 ============================= -->
+<section class="chapter" id="ch3">
+  <span class="chno">CHAPTER 3</span>
+  <h2>헤드라인 vs 근원 — 무엇을 걷어내는가</h2>
+  <p class="lede">"근원 물가가 둔화됐다"는 한 문장이 왜 채권시장을 움직이는지 이해하는 장.</p>
+
+  <div class="block why">
+    <span class="tag">왜 이걸 보는가</span>
+    <p class="q">국민은 기름값과 밥값 때문에 힘든데, 왜 중앙은행은 그걸 뺀 물가를 본다고 할까? 현실을 모르는 거 아닌가?</p>
+    <p>중앙은행이 국민 고통을 무시해서가 아니다. <em>금리로 고칠 수 있는 물가와 없는 물가를 구분하기 위해서</em>다.</p>
+  </div>
+
+  <h3 class="sec">3-1. 근원 물가(Core)의 정의와 논리</h3>
+
+  <p><strong>근원 물가</strong>는 헤드라인 물가에서 <em>에너지와 식료품</em>을 제외한 값이다. 이 둘을 빼는 이유는 단순하다. <strong>변동성이 극단적으로 크고, 그 원인이 대부분 공급 측이기 때문</strong>이다.</p>
+
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>구분</th><th>가격이 움직이는 원인</th><th>금리로 통제 가능한가</th></tr></thead>
+    <tbody>
+      <tr><td>에너지(유가)</td><td>OPEC 감산, 전쟁, 지정학, 이상기후</td><td><b>거의 불가능.</b> 금리를 올려도 중동 정세는 안 바뀐다</td></tr>
+      <tr><td>식료품</td><td>작황, 태풍, 가축 질병, 국제 곡물가</td><td><b>거의 불가능</b></td></tr>
+      <tr><td>근원(나머지)</td><td>임금, 임대료, 서비스 요금 등 <b>수요 압력</b>에 반응</td><td><b>가능.</b> 금리가 수요를 조절해 억제 가능</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="block analogy">
+    <span class="tag">비유</span>
+    <p><strong>의사가 열의 원인을 나눠보는 것과 같다.</strong> 사우나에 앉아 있어서 체온이 오른 거라면 해열제를 먹일 필요가 없다(에너지·식품 = 외부 요인).
+    반면 몸속 염증 때문에 오른 거라면 약을 써야 한다(근원 = 수요 압력).
+    <em>근원 물가는 "약을 써야 하는 열"만 골라내는 필터</em>다. 국민의 체감 물가를 무시하는 게 아니라, 처방이 듣는 영역을 특정하는 것이다.</p>
+  </div>
+
+  <h3 class="sec">3-2. 언제 어느 쪽을 보나</h3>
+
+  <ul>
+    <li><strong>추세 판단·정책 예측</strong> → <strong>근원</strong>. 중앙은행의 반응 함수가 여기 걸려 있다.</li>
+    <li><strong>체감 물가·소비 여력·정치적 압력</strong> → <strong>헤드라인</strong>. 실제로 지갑에서 나가는 돈이다.</li>
+    <li><strong>기대인플레이션 형성</strong> → 사실 <strong>헤드라인</strong>이 더 강하게 작용한다. 사람들은 주유소 가격표를 보고 물가를 판단하기 때문이다. 이 지점이 6장과 연결된다.</li>
+  </ul>
+
+  <figure>
+    <div class="figtitle">헤드라인과 근원의 전형적인 움직임</div>
+    <div class="figsub">헤드라인은 크게 출렁이고 근원은 완만하게 움직인다 (YoY, %)</div>
+    <svg viewBox="0 0 800 300" role="img" aria-label="헤드라인 CPI와 근원 CPI의 추이 비교">
+      <g font-family="Pretendard, Malgun Gothic, sans-serif">
+        <!-- grid -->
+        <line x1="70" y1="50" x2="770" y2="50" stroke="#F0F2F8"/>
+        <line x1="70" y1="95" x2="770" y2="95" stroke="#F0F2F8"/>
+        <line x1="70" y1="140" x2="770" y2="140" stroke="#F0F2F8"/>
+        <line x1="70" y1="185" x2="770" y2="185" stroke="#F0F2F8"/>
+        <line x1="70" y1="230" x2="770" y2="230" stroke="#2E7D5B" stroke-width="1.5" stroke-dasharray="6 4"/>
+        <text x="62" y="54" text-anchor="end" fill="#7A8095" font-size="11.5">10%</text>
+        <text x="62" y="99" text-anchor="end" fill="#7A8095" font-size="11.5">8%</text>
+        <text x="62" y="144" text-anchor="end" fill="#7A8095" font-size="11.5">6%</text>
+        <text x="62" y="189" text-anchor="end" fill="#7A8095" font-size="11.5">4%</text>
+        <text x="62" y="234" text-anchor="end" fill="#2E7D5B" font-size="11.5" font-weight="700">2%</text>
+        <text x="778" y="234" fill="#2E7D5B" font-size="11.5" font-weight="700">목표</text>
+
+        <!-- headline (volatile) -->
+        <path d="M80,215 Q140,150 200,72 Q240,48 280,62 Q330,86 380,150 Q430,205 480,222 Q530,232 580,214 Q630,200 680,208 Q720,214 760,206"
+              fill="none" stroke="#B8860B" stroke-width="3.2"/>
+        <!-- core (smooth) -->
+        <path d="M80,222 Q150,190 220,140 Q280,104 340,112 Q400,124 460,158 Q520,186 580,198 Q650,208 760,214"
+              fill="none" stroke="#1E2761" stroke-width="3.2"/>
+
+        <text x="270" y="42" fill="#B8860B" font-size="13" font-weight="700">헤드라인 CPI</text>
+        <text x="345" y="100" fill="#1E2761" font-size="13" font-weight="700">근원 CPI</text>
+
+        <!-- annotations -->
+        <line x1="480" y1="150" x2="480" y2="222" stroke="#B23A48" stroke-width="1.5" stroke-dasharray="3 3"/>
+        <text x="490" y="182" fill="#B23A48" font-size="12.5" font-weight="700">헤드라인은 유가 하락으로</text>
+        <text x="490" y="200" fill="#B23A48" font-size="12.5" font-weight="700">빠르게 내려왔지만</text>
+        <text x="490" y="140" fill="#1E2761" font-size="12.5" font-weight="700">근원은 여전히 높다</text>
+
+        <line x1="70" y1="270" x2="770" y2="270" stroke="#DFE3EF"/>
+        <text x="80" y="288" fill="#7A8095" font-size="11.5">시간 →</text>
+      </g>
+    </svg>
+    <figcaption><b>여기서 배울 것:</b> 이 그림의 오른쪽 구간이 실무에서 가장 자주 만나는 상황이다. <b>헤드라인은 목표에 근접했는데 근원이 안 내려오는 국면</b> — 이때 중앙은행은 금리 인하를 서두르지 않는다. "헤드라인만 보고 인하를 기대했다가 틀리는" 대표 패턴이다.</figcaption>
+  </figure>
+
+  <div class="block trap">
+    <span class="tag">신입이 틀리는 지점</span>
+    <p><b>함정 1 — 헤드라인 하락을 정책 전환 신호로 읽는다.</b><br>
+    유가가 빠져 헤드라인이 급락해도, <b>근원이 안 내려오면 중앙은행은 움직이지 않는다.</b> 리포트에서 "근원 둔화"를 강조한다면 그건 <b>정책 전환 가능성</b>을 말하는 것이다.</p>
+    <p><b>함정 2 — 근원만 보고 체감 물가를 설명한다.</b><br>
+    "근원이 안정적이니 물가 문제없다"고 쓰면 현실과 동떨어진다. 국민이 체감하는 건 헤드라인이고, 그 체감이 <b>기대인플레이션과 임금 요구</b>로 이어져 결국 근원을 밀어올린다.</p>
+    <p><b>함정 3 — 근원의 정의가 나라마다 같다고 가정한다.</b><br>
+    한국은 <b>농산물 및 석유류 제외</b> 지수와 <b>식료품·에너지 제외</b>(OECD 기준) 지수를 따로 발표한다. 어느 계열을 인용하는지 확인해야 한다.</p>
+  </div>
+
+  <div class="connect">에너지·식품을 걷어냈다. 그런데 근원 안에서도 성질이 완전히 다른 두 덩어리가 있다. 상품과 서비스다.</div>
+</section>
+
+<!-- ============================= 4장 ============================= -->
+<section class="chapter" id="ch4">
+  <span class="chno">CHAPTER 4</span>
+  <h2>상품과 서비스 — 끈적한 물가와 슈퍼코어</h2>
+  <p class="lede">2022~2024년 인플레이션 논쟁의 거의 전부가 이 장의 내용이었다.</p>
+
+  <div class="block why">
+    <span class="tag">왜 이걸 보는가</span>
+    <p class="q">중고차값은 폭락했고 가전제품도 싸졌는데, 왜 물가는 안 잡힌다고 할까?</p>
+    <p>물가가 <em>내려가는 부분과 안 내려가는 부분으로 쪼개져 있기 때문</em>이다. 그리고 안 내려가는 쪽이 훨씬 무겁다.</p>
+  </div>
+
+  <h3 class="sec">4-1. 상품 물가와 서비스 물가</h3>
+
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>구분</th><th>상품(Goods)</th><th>서비스(Services)</th></tr></thead>
+    <tbody>
+      <tr><td>예시</td><td>중고차, 가전, 의류, 가구</td><td>임대료, 외식, 미용, 보험, 의료, 교육</td></tr>
+      <tr><td>가격 결정 요인</td><td>공급망, 원자재, 환율, 글로벌 수급</td><td><b>인건비가 절대적</b></td></tr>
+      <tr><td>조정 속도</td><td><b>빠르다.</b> 재고 할인으로 즉시 내릴 수 있다</td><td><b>느리다.</b> 임금은 잘 안 내려간다(하방경직성)</td></tr>
+      <tr><td>팬데믹 이후</td><td>공급망 정상화로 <b>급락</b>(일부는 마이너스)</td><td><b>끈적하게 높은 수준 유지</b></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <figure>
+    <div class="figtitle">항목별 물가 상승률 — 같은 시기에도 이렇게 갈린다</div>
+    <div class="figsub">전년동월비(YoY, %) 기준 예시</div>
+    <svg viewBox="0 0 800 320" role="img" aria-label="중고차 에너지 상품 서비스 주거비의 전년동월비 상승률 비교 막대그래프">
+      <g font-family="Pretendard, Malgun Gothic, sans-serif">
+        <!-- zero line -->
+        <line x1="330" y1="45" x2="330" y2="285" stroke="#1E2761" stroke-width="2"/>
+        <text x="330" y="305" text-anchor="middle" fill="#1E2761" font-size="12" font-weight="700">0%</text>
+        <!-- scale ticks -->
+        <line x1="180" y1="45" x2="180" y2="285" stroke="#F0F2F8"/>
+        <line x1="405" y1="45" x2="405" y2="285" stroke="#F0F2F8"/>
+        <line x1="480" y1="45" x2="480" y2="285" stroke="#F0F2F8"/>
+        <text x="180" y="305" text-anchor="middle" fill="#7A8095" font-size="11.5">−10%</text>
+        <text x="405" y="305" text-anchor="middle" fill="#7A8095" font-size="11.5">+5%</text>
+        <text x="480" y="305" text-anchor="middle" fill="#7A8095" font-size="11.5">+10%</text>
+
+        <!-- bars: scale 15px = 1% -->
+        <rect x="144" y="58" width="186" height="30" fill="#2E7D5B" opacity=".85"/>
+        <text x="130" y="79" text-anchor="end" fill="#1F2430" font-size="14" font-weight="700">중고차</text>
+        <text x="340" y="79" fill="#2E7D5B" font-size="13" font-weight="700">−12.4%</text>
+
+        <rect x="252" y="100" width="78" height="30" fill="#2E7D5B" opacity=".65"/>
+        <text x="130" y="121" text-anchor="end" fill="#1F2430" font-size="14" font-weight="700">에너지</text>
+        <text x="340" y="121" fill="#2E7D5B" font-size="13" font-weight="700">−5.2%</text>
+
+        <rect x="315" y="142" width="15" height="30" fill="#2E7D5B" opacity=".45"/>
+        <text x="130" y="163" text-anchor="end" fill="#1F2430" font-size="14" font-weight="700">근원 상품</text>
+        <text x="340" y="163" fill="#2E7D5B" font-size="13" font-weight="700">−1.0%</text>
+
+        <rect x="330" y="184" width="71" height="30" fill="#B23A48" opacity=".85"/>
+        <text x="130" y="205" text-anchor="end" fill="#1F2430" font-size="14" font-weight="700">근원 서비스</text>
+        <text x="411" y="205" fill="#B23A48" font-size="13" font-weight="700">+4.7%</text>
+
+        <rect x="330" y="226" width="83" height="30" fill="#B23A48"/>
+        <text x="130" y="247" text-anchor="end" fill="#1F2430" font-size="14" font-weight="700">주거비(임대료)</text>
+        <text x="423" y="247" fill="#B23A48" font-size="13" font-weight="700">+5.5%</text>
+
+        <!-- header -->
+        <text x="230" y="35" text-anchor="middle" fill="#2E7D5B" font-size="13.5" font-weight="800">가격이 내려간 영역 (상품)</text>
+        <text x="530" y="35" text-anchor="middle" fill="#B23A48" font-size="13.5" font-weight="800">가격이 안 내려간 영역 (서비스)</text>
+      </g>
+    </svg>
+    <figcaption><b>여기서 배울 것:</b> 상품 가격은 마이너스인데도 전체 물가가 높게 유지되는 이유는, <b>서비스가 차지하는 비중이 훨씬 크기 때문</b>이다. 미국 CPI에서 서비스는 60% 이상을 차지한다. 상품이 아무리 빠져도 서비스가 안 내려오면 전체가 안 내려온다.</figcaption>
+  </figure>
+
+  <h3 class="sec">4-2. 슈퍼코어(Supercore)</h3>
+
+  <p>연준이 2022년 이후 특별히 강조하기 시작한 개념이 <strong>슈퍼코어</strong>다. 정의는 이렇다.</p>
+
+  <div class="formula">
+    <div class="eq">슈퍼코어 = 근원 서비스 − 주거비</div>
+    <div class="note">= 에너지·식품·주거비를 모두 뺀, 순수 인건비 주도 서비스 물가</div>
+  </div>
+
+  <p>왜 주거비까지 빼는가? 두 가지 이유다.</p>
+
+  <ol>
+    <li><strong>주거비는 시차가 극단적으로 길다.</strong> CPI의 주거비는 실제 신규 계약 임대료가 아니라 <em>기존 계약을 포함한 평균</em>으로 계산된다. 시장 임대료가 오늘 꺾여도 지표에 반영되는 데 <em>12~18개월</em>이 걸린다. 즉 <em>지금 보이는 주거비는 1년 전 이야기</em>다.</li>
+    <li><strong>금리 정책과의 관계가 뒤틀려 있다.</strong> 금리를 올리면 주택 구입이 어려워져 오히려 임대 수요가 늘고 임대료가 오를 수 있다.</li>
+  </ol>
+
+  <p>그래서 연준은 <em>"지금 이 순간의 수요 압력"</em>을 가장 잘 보여주는 슈퍼코어에 주목한다. 슈퍼코어는 사실상 <strong>임금 상승률의 거울</strong>이고, 이 지점에서 <em>4부의 고용 파트와 직결</em>된다.</p>
+
+  <div class="block key">
+    <span class="tag">핵심 정리</span>
+    <p>물가 지표는 <b>양파처럼 겹겹이 벗겨진다.</b><br>
+    헤드라인 → (에너지·식품 제거) → 근원 → (상품 제거) → 근원 서비스 → (주거비 제거) → <b>슈퍼코어</b>.<br>
+    벗길수록 <b>통화정책이 실제로 통제할 수 있는 영역</b>에 가까워진다. 리포트가 어느 층을 말하는지 확인하는 것이 독해의 시작이다.</p>
+  </div>
+
+  <div class="block trap">
+    <span class="tag">신입이 틀리는 지점</span>
+    <p><b>함정 1 — 주거비 지표를 실시간 시장 상황으로 읽는다.</b><br>
+    CPI 주거비가 아직 높다고 "임대 시장이 뜨겁다"고 쓰면 틀린다. <b>12~18개월 시차</b>가 있어 이미 식은 시장이 지표에는 늦게 반영된다. 실시간을 보려면 <b>Zillow·Apartment List 같은 신규 계약 임대료 지수</b>를 봐야 한다.</p>
+    <p><b>함정 2 — 상품 디플레를 전체 물가 하락으로 확대 해석한다.</b><br>
+    상품은 CPI의 소수 지분이다. <b>비중을 곱해서 생각하는 습관</b>(1부 기여도 개념)이 여기서도 그대로 적용된다.</p>
+    <p><b>함정 3 — 한국에 슈퍼코어 개념을 그대로 대입한다.</b><br>
+    한국 CPI는 <b>자가주거비를 기본 지수에 포함하지 않는</b> 등 구조가 다르다. 한국에서는 <b>개인서비스 물가</b>, 특히 <b>외식 물가</b>가 임금 압력의 대리 지표로 더 자주 쓰인다.</p>
+  </div>
+
+  <div class="connect">이제 물가 지표를 층별로 볼 수 있게 됐다. 그런데 그 숫자 자체를 왜곡하는 통계적 장치가 하나 더 있다.</div>
+</section>
+
+<!-- ============================= 5장 ============================= -->
+<section class="chapter" id="ch5">
+  <span class="chno">CHAPTER 5</span>
+  <h2>기저효과 — 통계가 만드는 착시</h2>
+  <p class="lede">"물가가 둔화됐다"는 뉴스가 나왔는데 실제로는 물가가 더 빨리 오르고 있는 경우가 있다. 이게 어떻게 가능한가.</p>
+
+  <div class="block why">
+    <span class="tag">왜 이걸 보는가</span>
+    <p class="q">전년동월비(YoY) 물가가 떨어졌다. 물가 압력이 줄어든 게 맞나?</p>
+    <p>확인해야 한다. <em>올해가 좋아진 게 아니라 작년이 나빴던 것</em>일 수 있기 때문이다.</p>
+  </div>
+
+  <h3 class="sec">5-1. 기저효과의 원리</h3>
+
+  <p><strong>기저효과(Base Effect)</strong>는 전년동기비 수치가 <em>비교 대상이 되는 1년 전 값(기저)</em>에 좌우되는 현상이다.
+  YoY는 분수다. 분자(올해)가 그대로여도 분모(작년)가 바뀌면 값이 바뀐다.</p>
+
+  <figure>
+    <div class="figtitle">같은 상승 속도, 정반대의 YoY</div>
+    <div class="figsub">물가 지수(레벨)는 똑같이 오르는데 YoY만 다르게 보이는 구조</div>
+    <svg viewBox="0 0 800 300" role="img" aria-label="기저효과로 인해 같은 물가 상승이 다른 전년비로 나타나는 원리">
+      <g font-family="Pretendard, Malgun Gothic, sans-serif">
+        <!-- left: level -->
+        <text x="40" y="30" fill="#1E2761" font-size="15" font-weight="800">물가 지수 (레벨)</text>
+        <line x1="40" y1="240" x2="360" y2="240" stroke="#DFE3EF"/>
+        <line x1="40" y1="60" x2="40" y2="240" stroke="#DFE3EF"/>
+        <!-- steady rise with a jump last year -->
+        <path d="M50,215 L100,205 L150,150 L200,140 L250,130 L300,120 L350,110" fill="none" stroke="#1E2761" stroke-width="3"/>
+        <circle cx="150" cy="150" r="5" fill="#B23A48"/>
+        <text x="150" y="138" text-anchor="middle" fill="#B23A48" font-size="12" font-weight="700">작년 급등</text>
+        <text x="150" y="122" text-anchor="middle" fill="#7A8095" font-size="11">(높은 기저 형성)</text>
+        <text x="300" y="105" text-anchor="middle" fill="#1E2761" font-size="12">이후 완만하게 계속 상승</text>
+        <text x="50" y="262" fill="#7A8095" font-size="11.5">작년</text>
+        <text x="330" y="262" fill="#7A8095" font-size="11.5">올해</text>
+
+        <!-- divider -->
+        <line x1="400" y1="20" x2="400" y2="280" stroke="#DFE3EF" stroke-dasharray="4 4"/>
+
+        <!-- right: YoY -->
+        <text x="440" y="30" fill="#B8860B" font-size="15" font-weight="800">전년동월비 (YoY)</text>
+        <line x1="440" y1="240" x2="760" y2="240" stroke="#DFE3EF"/>
+        <line x1="440" y1="60" x2="440" y2="240" stroke="#DFE3EF"/>
+        <path d="M450,200 L500,190 L550,80 L600,120 L650,175 L700,195 L750,200" fill="none" stroke="#B8860B" stroke-width="3"/>
+        <circle cx="550" cy="80" r="5" fill="#B23A48"/>
+        <text x="560" y="70" fill="#B23A48" font-size="12" font-weight="700">급등 시점 YoY 정점</text>
+        <circle cx="680" cy="188" r="5" fill="#2E7D5B"/>
+        <text x="690" y="180" fill="#2E7D5B" font-size="12" font-weight="700">YoY 급락</text>
+        <text x="620" y="216" fill="#7A8095" font-size="11.5">← 물가는 계속 오르는 중인데</text>
+        <text x="620" y="234" fill="#7A8095" font-size="11.5">   YoY만 떨어진다 (기저효과)</text>
+      </g>
+    </svg>
+    <figcaption><b>여기서 배울 것:</b> 왼쪽 레벨 그래프는 <b>한 번도 내려간 적이 없다.</b> 그런데 오른쪽 YoY는 급락한다. "물가 상승률이 둔화됐다"는 뉴스의 상당수가 이 구조에서 나온다.</figcaption>
+  </figure>
+
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>유형</th><th>상황</th><th>지표에 나타나는 모습</th><th>오독 위험</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>높은 기저<br>(역기저효과)</td>
+        <td>1년 전 수치가 비정상적으로 높았음</td>
+        <td>올해 물가가 올랐는데도 <b>YoY는 낮게 표시</b></td>
+        <td>"물가 잡혔다"고 성급히 판단 → 정책 전환 오판</td>
+      </tr>
+      <tr>
+        <td>낮은 기저</td>
+        <td>1년 전 수치가 비정상적으로 낮았음(예: 팬데믹 봉쇄기)</td>
+        <td>올해 별일 없어도 <b>YoY가 급등</b></td>
+        <td>"물가 폭등"이라고 과잉 반응</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3 class="sec">5-2. 기저효과를 걷어내는 실무 방법</h3>
+
+  <ol>
+    <li><strong>MoM(전월비)을 병행해서 본다.</strong> 이게 가장 기본이다. 전월비는 기저와 무관하게 <em>지금 이 달의 압력</em>을 보여준다.</li>
+    <li><strong>MoM 연율화</strong> — 전월비를 12제곱해서 연율로 환산한다. "이 속도가 1년 지속되면 몇 %인가"를 보는 것. 실무에서 가장 널리 쓰인다.</li>
+    <li><strong>3개월 연율(3M annualized)</strong> — 최근 3개월 평균 속도를 연율화. 단월 노이즈를 줄이면서 최신 모멘텀을 본다. <em>연준 인사들이 연설에서 자주 인용하는 방식</em>이다.</li>
+    <li><strong>레벨 차트를 직접 그린다.</strong> 지수 자체를 그리면 착시가 사라진다.</li>
+  </ol>
+
+  <div class="block decode">
+    <span class="tag">리포트 해독</span>
+    <div class="quote">"11월 CPI는 전년비 +2.8%로 전월(+3.2%) 대비 크게 둔화되었다.
+    다만 전월비는 +0.4%(연율 4.9%)로 오히려 가속되었으며, 3개월 연율 기준으로도 3.6% 수준을 유지했다."</div>
+    <div class="dl">
+      <div><b>"전년비 +2.8%로 둔화"</b><span>헤드라인. 언론은 여기까지만 보도한다. <em>기저효과 의심 구간.</em></span></div>
+      <div><b>"전월비 +0.4%"</b><span>진짜 신호. <em>이번 달 물가 압력은 오히려 강해졌다.</em></span></div>
+      <div><b>"연율 4.9%"</b><span>이 속도가 유지되면 목표 2%의 두 배가 넘는다. <em>중앙은행이 안심할 수 없는 수치.</em></span></div>
+      <div><b>"3개월 연율 3.6%"</b><span>단월 노이즈를 걷어내도 여전히 높다. <em>추세적으로도 목표 미달.</em></span></div>
+      <div><b>종합</b><span>"YoY 둔화는 <em>기저효과에 의한 착시</em>이며, 실질 물가 모멘텀은 재가속 중" — 채권 매도 재료.</span></div>
+    </div>
+  </div>
+
+  <div class="block trap">
+    <span class="tag">신입이 틀리는 지점</span>
+    <p><b>YoY 하나만 인용하는 습관.</b> 물가 리포트를 쓸 땐 최소한 <b>YoY / MoM / MoM 연율</b> 세 개를 함께 적어라.
+    이것만 지켜도 기저효과 오독의 90%는 사라진다. 특히 <b>전년 같은 달에 큰 사건이 있었는지</b>를 항상 확인하는 것이 습관이 되어야 한다.</p>
+  </div>
+
+  <div class="connect">지금까지는 이미 나온 물가를 읽는 법이었다. 이제 <b>앞으로 나올 물가</b>를 결정하는 가장 강력한 변수로 간다.</div>
+</section>
+
+<!-- ============================= 6장 ============================= -->
+<section class="chapter" id="ch6">
+  <span class="chno">CHAPTER 6</span>
+  <h2>기대인플레이션 — 믿음이 물가를 만든다</h2>
+  <p class="lede">중앙은행 총재가 인플레이션 수치보다 더 자주 언급하는 단어가 "앵커링(anchoring)"이다. 왜 그런지 이해하면 통화정책의 절반을 이해한 것이다.</p>
+
+  <div class="block why">
+    <span class="tag">왜 이걸 보는가</span>
+    <p class="q">중앙은행은 왜 "물가가 오를 거라는 <em>믿음</em>"을 그렇게 무서워할까?</p>
+    <p>믿음이 <em>실제로 물가를 올리기 때문</em>이다. 이건 비유가 아니라 메커니즘이다.</p>
+  </div>
+
+  <h3 class="sec">6-1. 자기실현적 예언의 메커니즘</h3>
+
+  <figure>
+    <div class="figtitle">기대인플레이션의 자기실현 루프</div>
+    <div class="figsub">믿음 → 행동 → 실제 물가 → 믿음 강화</div>
+    <svg viewBox="0 0 800 330" role="img" aria-label="기대인플레이션이 임금과 가격 인상을 통해 실제 물가로 이어지는 순환 구조">
+      <g font-family="Pretendard, Malgun Gothic, sans-serif">
+        <defs>
+          <marker id="ar2" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+            <path d="M0,0 L10,4 L0,8 Z" fill="#B8860B"/>
+          </marker>
+        </defs>
+
+        <!-- 4 nodes in a circle -->
+        <rect x="290" y="25" width="220" height="62" rx="3" fill="#1E2761"/>
+        <text x="400" y="50" text-anchor="middle" fill="#fff" font-size="15" font-weight="700">① 물가 상승 기대 형성</text>
+        <text x="400" y="72" text-anchor="middle" fill="#CADCFC" font-size="12.5">"내년엔 더 오를 것이다"</text>
+
+        <rect x="560" y="130" width="220" height="80" rx="3" fill="#2E3A7A"/>
+        <text x="670" y="155" text-anchor="middle" fill="#fff" font-size="15" font-weight="700">② 경제 주체의 행동 변화</text>
+        <text x="670" y="177" text-anchor="middle" fill="#CADCFC" font-size="12.5">노동자 : 임금 인상 요구</text>
+        <text x="670" y="196" text-anchor="middle" fill="#CADCFC" font-size="12.5">기업 : 선제적 가격 인상</text>
+
+        <rect x="290" y="250" width="220" height="62" rx="3" fill="#B23A48"/>
+        <text x="400" y="275" text-anchor="middle" fill="#fff" font-size="15" font-weight="700">③ 실제 물가 상승</text>
+        <text x="400" y="297" text-anchor="middle" fill="#FBEEF0" font-size="12.5">인건비·판매가가 실제로 오름</text>
+
+        <rect x="20" y="130" width="220" height="80" rx="3" fill="#B8860B"/>
+        <text x="130" y="162" text-anchor="middle" fill="#fff" font-size="15" font-weight="700">④ 기대 강화</text>
+        <text x="130" y="184" text-anchor="middle" fill="#FBF3DF" font-size="12.5">"역시 오를 줄 알았다"</text>
+
+        <!-- arrows (circular) -->
+        <path d="M515,60 Q580,70 640,125" fill="none" stroke="#B8860B" stroke-width="2.5" marker-end="url(#ar2)"/>
+        <path d="M660,215 Q600,255 518,275" fill="none" stroke="#B8860B" stroke-width="2.5" marker-end="url(#ar2)"/>
+        <path d="M285,278 Q195,258 140,215" fill="none" stroke="#B8860B" stroke-width="2.5" marker-end="url(#ar2)"/>
+        <path d="M145,125 Q200,70 285,58" fill="none" stroke="#B8860B" stroke-width="2.5" marker-end="url(#ar2)"/>
+
+        <!-- center -->
+        <text x="400" y="163" text-anchor="middle" fill="#B23A48" font-size="16" font-weight="800">자기실현적 예언</text>
+        <text x="400" y="186" text-anchor="middle" fill="#7A8095" font-size="12.5">Self-fulfilling Prophecy</text>
+      </g>
+    </svg>
+    <figcaption><b>왜 무서운가:</b> 이 루프가 돌기 시작하면 <b>실제 수요와 무관하게</b> 물가가 오른다. 금리로 수요를 눌러도 기대가 안 꺾이면 물가가 안 잡힌다. 1970년대 미국이 겪은 것이 정확히 이것이며, 결국 폴 볼커가 <b>극단적 금리 인상으로 경기를 부숴서</b> 기대를 꺾어야 했다.</figcaption>
+  </figure>
+
+  <p>그래서 중앙은행의 목표는 <em>기대인플레이션을 2% 부근에 '고정(anchored)'시키는 것</em>이다.
+  기대가 고정되어 있으면 일시적 유가 급등이 와도 사람들이 "곧 정상화되겠지"라고 생각해 임금·가격 인상으로 번지지 않는다.
+  반대로 기대가 <strong>풀리면(unanchored)</strong> 작은 충격도 물가 스파이럴로 번진다.</p>
+
+  <h3 class="sec">6-2. 기대인플레이션은 어떻게 측정하나</h3>
+
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>구분</th><th>지표</th><th>특징</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>설문 기반</td>
+        <td>미시간대 소비자심리조사 기대인플레(1년·5~10년)<br>뉴욕 연은 소비자기대조사<br>한국은행 기대인플레이션율</td>
+        <td>일반 대중의 <b>체감</b>. 헤드라인 물가(특히 <b>유가</b>)에 민감하게 반응</td>
+      </tr>
+      <tr>
+        <td>시장 기반</td>
+        <td><b>BEI(Break-Even Inflation)</b> = 명목국채 금리 − 물가연동국채(TIPS) 금리<br><b>5y5y forward</b>(5년 후 5년 기대)</td>
+        <td>실제 <b>돈을 건</b> 투자자들의 기대. 실시간 관측 가능. 유동성 왜곡 가능성 존재</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p>실무에서 가장 중요하게 보는 건 <strong>5y5y forward</strong>다. 단기 유가 변동의 영향을 걷어낸 <em>장기 기대</em>이기 때문에, 이 수치가 흔들리면 "기대가 풀리기 시작했다"는 심각한 경고가 된다.</p>
+
+  <div class="block analogy">
+    <span class="tag">비유</span>
+    <p><strong>배의 닻(anchor)과 같다.</strong> 파도(유가 급등, 일시적 충격)가 쳐도 닻이 박혀 있으면 배는 제자리로 돌아온다.
+    닻이 뽑히면 파도 한 번에 배가 통째로 떠내려간다. <em>중앙은행이 지키려는 건 물가 수치가 아니라 이 닻</em>이다.
+    그래서 총재들은 물가가 좀 높아도 "기대는 여전히 잘 고정되어 있다"는 말을 반복해서 강조한다. 그 말 자체가 정책 수단이기도 하다.</p>
+  </div>
+
+  <div class="block trap">
+    <span class="tag">신입이 틀리는 지점</span>
+    <p><b>함정 1 — 설문 기대인플레의 단기 변동에 과잉 반응한다.</b><br>
+    소비자 설문 기대는 <b>주유소 가격표에 거의 그대로 연동</b>된다. 유가가 오르면 1년 기대가 뛰는 건 정상이다. 중요한 건 <b>장기(5~10년) 기대가 움직였는가</b>다.</p>
+    <p><b>함정 2 — BEI를 순수한 기대치로 믿는다.</b><br>
+    BEI에는 기대인플레이션 외에 <b>인플레이션 위험 프리미엄</b>과 <b>TIPS 유동성 프리미엄</b>이 섞여 있다. 위기 국면에는 유동성 문제로 BEI가 왜곡되어 급락할 수 있다.</p>
+    <p><b>함정 3 — "기대가 잘 고정되어 있다"는 총재 발언을 사실 보고로만 읽는다.</b><br>
+    그 발언은 관측 결과인 동시에 <b>기대를 고정시키려는 정책 행위</b>다. 중앙은행 커뮤니케이션은 정보이자 수단이라는 이중성을 갖는다. (2회차 포워드 가이던스와 연결)</p>
+  </div>
+
+  <div class="connect">마지막으로, 물가 파트에서 일반인과 전문가의 대화가 가장 자주 어긋나는 지점을 정리한다.</div>
+</section>
+
+<!-- ============================= 7장 ============================= -->
+<section class="chapter" id="ch7">
+  <span class="chno">CHAPTER 7</span>
+  <h2>레벨과 레이트 — 둔화는 하락이 아니다</h2>
+  <p class="lede">"인플레이션이 잡혔다는데 왜 장 보러 가면 여전히 비싸죠?" — 이 질문에 정확히 답할 수 있으면 물가 파트는 끝난 것이다.</p>
+
+  <div class="block why">
+    <span class="tag">왜 이걸 보는가</span>
+    <p class="q">물가 상승률이 8%에서 2%로 떨어졌다. 그럼 물가가 내려간 건가?</p>
+    <p><em>아니다.</em> 여전히 오르고 있다. 다만 오르는 <em>속도</em>가 느려졌을 뿐이다.</p>
+  </div>
+
+  <h3 class="sec">7-1. 세 단어를 정확히 구분하기</h3>
+
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>용어</th><th>의미</th><th>물가 지수(레벨)는</th><th>체감</th></tr></thead>
+    <tbody>
+      <tr><td>인플레이션<br>Inflation</td><td>물가가 <b>빠르게</b> 오름 (상승률 高)</td><td>가파르게 상승</td><td>"매달 비싸진다"</td></tr>
+      <tr><td>디스인플레이션<br>Disinflation</td><td>물가가 <b>느리게</b> 오름 (상승률 低, 여전히 +)</td><td><b>계속 상승</b>(기울기만 완만)</td><td>"여전히 비싸다"</td></tr>
+      <tr><td>디플레이션<br>Deflation</td><td>물가가 <b>내려감</b> (상승률 마이너스)</td><td><b>하락</b></td><td>"싸졌다"</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p>언론과 시장이 "인플레이션이 잡혔다"고 할 때 말하는 건 거의 항상 <strong>디스인플레이션</strong>이다.
+  <em>가격이 내려간 게 아니라 오르는 속도가 느려진 것</em>이다. 그런데 소비자는 <strong>누적된 레벨</strong>로 가격을 체감한다.</p>
+
+  <figure>
+    <div class="figtitle">레벨과 레이트가 만드는 인식의 간극</div>
+    <div class="figsub">같은 데이터를 두 방식으로 그린 것</div>
+    <svg viewBox="0 0 800 330" role="img" aria-label="물가 지수 레벨과 상승률의 관계를 보여주는 이중 그래프">
+      <g font-family="Pretendard, Malgun Gothic, sans-serif">
+        <!-- level curve -->
+        <text x="60" y="30" fill="#1E2761" font-size="14.5" font-weight="800">물가 지수 (Level) — 소비자가 체감하는 것</text>
+        <path d="M60,190 L160,180 L260,160 L340,105 L420,80 L520,68 L620,58 L740,48"
+              fill="none" stroke="#1E2761" stroke-width="3.5"/>
+        <line x1="60" y1="215" x2="740" y2="215" stroke="#DFE3EF"/>
+
+        <!-- shading of phases -->
+        <rect x="260" y="40" width="120" height="175" fill="#B23A48" opacity=".08"/>
+        <rect x="380" y="40" width="200" height="175" fill="#B8860B" opacity=".08"/>
+        <rect x="580" y="40" width="160" height="175" fill="#2E7D5B" opacity=".07"/>
+        <text x="320" y="236" text-anchor="middle" fill="#B23A48" font-size="12.5" font-weight="700">인플레이션기</text>
+        <text x="480" y="236" text-anchor="middle" fill="#B8860B" font-size="12.5" font-weight="700">디스인플레이션기</text>
+        <text x="660" y="236" text-anchor="middle" fill="#2E7D5B" font-size="12.5" font-weight="700">저물가 안정기</text>
+
+        <text x="345" y="98" fill="#B23A48" font-size="12" font-weight="700">가파른 상승</text>
+        <text x="470" y="72" fill="#B8860B" font-size="12" font-weight="700">완만해지지만 여전히 상승</text>
+        <text x="600" y="45" fill="#2E7D5B" font-size="12" font-weight="700">레벨은 내려오지 않는다</text>
+
+        <!-- rate curve -->
+        <text x="60" y="272" fill="#B8860B" font-size="14.5" font-weight="800">전년동월비 상승률 (Rate) — 시장·정책이 보는 것</text>
+        <line x1="60" y1="318" x2="740" y2="318" stroke="#DFE3EF"/>
+        <path d="M60,308 L160,304 L260,296 L340,282 L420,292 L520,304 L620,310 L740,312"
+              fill="none" stroke="#B8860B" stroke-width="3"/>
+        <circle cx="340" cy="282" r="4.5" fill="#B23A48"/>
+        <text x="348" y="292" fill="#B23A48" font-size="11.5" font-weight="700">상승률 정점</text>
+        <circle cx="620" cy="310" r="4.5" fill="#2E7D5B"/>
+        <text x="628" y="306" fill="#2E7D5B" font-size="11.5" font-weight="700">목표 수준 복귀</text>
+      </g>
+    </svg>
+    <figcaption><b>핵심:</b> 아래 그래프(상승률)가 정상으로 돌아와도, <b>위 그래프(레벨)는 절대 원래 자리로 안 돌아간다.</b> 상승률이 목표에 복귀했다는 건 "더 이상 빨리 비싸지지는 않는다"는 뜻이지 "예전 가격으로 돌아간다"는 뜻이 아니다. 정책 성공과 체감 물가가 어긋나는 구조적 이유가 여기 있다.</figcaption>
+  </figure>
+
+  <div class="block analogy">
+    <span class="tag">비유</span>
+    <p><strong>몸무게로 생각해보자.</strong> 매달 3kg씩 찌다가 이제 0.3kg씩 찐다면, <em>증가 속도는 10분의 1로 줄었다</em>(디스인플레이션).
+    하지만 <em>거울에 비친 몸은 여전히 무겁다</em>(레벨). 원래 몸무게로 돌아가려면 실제로 빠져야 하는데(디플레이션), 그건 경제에서 훨씬 나쁜 일이다.
+    <em>"물가가 잡혔는데 왜 안 싸지냐"는 질문의 답이 정확히 이것이다.</em></p>
+  </div>
+
+  <div class="block key">
+    <span class="tag">핵심 정리</span>
+    <p><b>시장은 레이트(변화율)로 움직이고, 국민은 레벨(누적 수준)로 산다.</b><br>
+    이 간극이 정치와 경제 사이의 인식 차이를 만든다. 리포트를 쓸 때 "물가 안정"이라는 표현을 쓴다면, <b>레이트 기준임을 분명히</b> 해야 오해가 없다.</p>
+  </div>
+</section>
+
+<!-- ============================= 8장 ============================= -->
+<section class="chapter" id="ch8">
+  <span class="chno">CHAPTER 8</span>
+  <h2>실전 독해 — CPI 리포트와 장기 차트</h2>
+
+  <figure>
+    <div class="figtitle">미국 CPI 전년동월비 장기 추이 (1948–2025)</div>
+    <div class="figsub">인플레이션은 반복되며, 진압에는 대가가 따랐다</div>
+    <svg viewBox="0 0 800 320" role="img" aria-label="1948년부터 2025년까지 미국 소비자물가 상승률 장기 추이">
+      <g font-family="Pretendard, Malgun Gothic, sans-serif">
+        <line x1="70" y1="55" x2="770" y2="55" stroke="#F0F2F8"/>
+        <line x1="70" y1="105" x2="770" y2="105" stroke="#F0F2F8"/>
+        <line x1="70" y1="155" x2="770" y2="155" stroke="#F0F2F8"/>
+        <line x1="70" y1="205" x2="770" y2="205" stroke="#2E7D5B" stroke-width="1.5" stroke-dasharray="6 4"/>
+        <line x1="70" y1="230" x2="770" y2="230" stroke="#1E2761" stroke-width="1.5"/>
+        <text x="62" y="59" text-anchor="end" fill="#7A8095" font-size="11.5">15%</text>
+        <text x="62" y="109" text-anchor="end" fill="#7A8095" font-size="11.5">10%</text>
+        <text x="62" y="159" text-anchor="end" fill="#7A8095" font-size="11.5">5%</text>
+        <text x="62" y="209" text-anchor="end" fill="#2E7D5B" font-size="11.5" font-weight="700">2%</text>
+        <text x="62" y="234" text-anchor="end" fill="#1E2761" font-size="11.5" font-weight="700">0%</text>
+        <text x="778" y="209" fill="#2E7D5B" font-size="11" font-weight="700">연준 목표</text>
+
+        <path d="M75,215 L110,150 L140,225 L175,205 L210,220 L240,212 L270,200 L300,175
+                 L330,95 L355,140 L380,70 L405,60 L425,120 L450,175 L480,195 L510,200
+                 L545,192 L580,198 L615,205 L645,212 L670,200 L695,110 L715,88 L735,160 L760,196"
+              fill="none" stroke="#B8860B" stroke-width="2.8"/>
+
+        <circle cx="380" cy="70" r="5" fill="#B23A48"/>
+        <text x="380" y="52" text-anchor="middle" fill="#B23A48" font-size="12.5" font-weight="700">70년대 오일쇼크</text>
+        <circle cx="715" cy="88" r="5" fill="#B23A48"/>
+        <text x="700" y="70" text-anchor="middle" fill="#B23A48" font-size="12.5" font-weight="700">팬데믹 정점</text>
+
+        <!-- volcker -->
+        <line x1="425" y1="60" x2="425" y2="240" stroke="#1E2761" stroke-width="1.5" stroke-dasharray="4 3"/>
+        <text x="432" y="255" fill="#1E2761" font-size="12" font-weight="700">볼커의 초긴축 → 침체 동반</text>
+
+        <line x1="70" y1="272" x2="770" y2="272" stroke="#DFE3EF"/>
+        <text x="80" y="290" fill="#7A8095" font-size="11.5">1950</text>
+        <text x="300" y="290" fill="#7A8095" font-size="11.5">1980</text>
+        <text x="520" y="290" fill="#7A8095" font-size="11.5">2005</text>
+        <text x="730" y="290" fill="#7A8095" font-size="11.5">2025</text>
+      </g>
+    </svg>
+    <figcaption><b>이 차트에서 뽑는 문장:</b> ①고인플레는 <b>반복되는 현상</b>이지 예외가 아니다. ②물가 진압을 위한 급격한 금리 인상은 <b>거의 항상 경기 침체를 동반</b>했다. ③최근 국면은 정점을 지나 목표 부근으로 수렴 중이나, <b>목표 상회 구간이 길어지면 긴축 기조가 유지</b>된다.</figcaption>
+  </figure>
+
+  <h3 class="sec">8-1. 물가 리포트 체크리스트</h3>
+
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>순서</th><th>확인 항목</th><th>묻는 질문</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>지수 종류</td><td>CPI인가 PCE인가? 한국인가 미국인가?</td></tr>
+      <tr><td>2</td><td>헤드라인 / 근원</td><td>둘의 방향이 같은가 다른가?</td></tr>
+      <tr><td>3</td><td>YoY / MoM / MoM 연율</td><td>YoY 둔화가 <b>기저효과</b> 때문은 아닌가?</td></tr>
+      <tr><td>4</td><td>상품 / 서비스 / 슈퍼코어</td><td>안 내려오는 게 어느 층인가?</td></tr>
+      <tr><td>5</td><td>주거비</td><td>시차를 감안하면 앞으로 내려올 몫인가?</td></tr>
+      <tr><td>6</td><td>기대인플레이션</td><td>단기만 흔들렸나, <b>장기(5y5y)</b>도 흔들렸나?</td></tr>
+      <tr><td>7</td><td>결론</td><td>중앙은행이 <b>움직일 명분이 생겼는가</b>?</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="block decode">
+    <span class="tag">종합 해독 연습</span>
+    <div class="quote">"CPI는 기저효과로 낮아졌으나 슈퍼코어는 끈적하다."</div>
+    <div class="dl">
+      <div><b>"CPI"</b><span>연준 기준(PCE)이 아니다. 실제 정책 판단은 <em>근원 PCE</em>로 다시 확인해야 한다.</span></div>
+      <div><b>"기저효과로 낮아졌으나"</b><span>YoY 하락이 <em>실질 개선이 아님</em>을 명시. 필자는 MoM을 확인했다는 뜻이다.</span></div>
+      <div><b>"슈퍼코어는 끈적"</b><span>에너지·식품·주거비를 다 뺀 <em>순수 인건비 주도 서비스</em>가 안 내려온다는 것. 곧 <em>임금 압력</em>이 살아 있다는 뜻.</span></div>
+      <div><b>정책 함의</b><span>중앙은행이 <em>금리 인하를 서두를 이유가 없다</em>. 오히려 고금리 장기화(higher for longer) 근거.</span></div>
+      <div><b>다음 확인</b><span>슈퍼코어가 임금과 연동되므로 <em>고용 지표(4부)</em>를 봐야 한다. 여기서 3부와 4부가 이어진다.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================= 부록 ============================= -->
+<section class="chapter" id="appendix">
+  <span class="chno">APPENDIX</span>
+  <h2>부록 — 물가 용어사전 · FRED 코드</h2>
+
+  <h3 class="sec">A. 물가 파트 핵심 용어</h3>
+  <div class="glossary">
+    <div class="gterm">
+      <div class="t">CPI<small>Consumer Price Index</small></div>
+      <div class="d"><b>고정 가중치</b> 가계 장바구니 기준 물가지수. 주거비 비중이 높아 상대적으로 높게 나온다. <b>한국은행의 물가안정목표 기준</b>이며 각종 제도에 연동된다.</div>
+    </div>
+    <div class="gterm">
+      <div class="t">PCE<small>Personal Consumption Expenditures Price Index</small></div>
+      <div class="d"><b>유동 가중치</b>로 소비 대체를 반영하는 지수. 고용주가 대신 낸 의료비 등도 포함한다. <b>연준의 정책 기준(특히 근원 PCE)</b>.</div>
+    </div>
+    <div class="gterm">
+      <div class="t">근원 물가<small>Core Inflation</small></div>
+      <div class="d">에너지·식료품을 제외한 물가. <b>금리로 통제 가능한 수요 측 압력</b>만 남기기 위한 지표. 추세 판단과 정책 예측의 기준.</div>
+    </div>
+    <div class="gterm">
+      <div class="t">슈퍼코어<small>Supercore</small></div>
+      <div class="d">근원 서비스에서 <b>주거비까지 제외</b>한 물가. 사실상 인건비 주도 서비스 물가이며 <b>임금 상승률의 거울</b>. 연준이 2022년 이후 특히 강조.</div>
+    </div>
+    <div class="gterm">
+      <div class="t">기저효과<small>Base Effect</small></div>
+      <div class="d">전년동기 수치(기저) 때문에 YoY가 왜곡되는 현상. 물가가 오르는데도 YoY가 낮게 나올 수 있다. <b>MoM·MoM 연율·3개월 연율 병행</b>이 해독법.</div>
+    </div>
+    <div class="gterm">
+      <div class="t">기대인플레이션<small>Inflation Expectations</small></div>
+      <div class="d">경제 주체가 예상하는 미래 물가. 임금 요구와 가격 인상으로 이어져 <b>실제 물가를 만든다</b>(자기실현적 예언). 중앙은행의 최우선 관리 대상.</div>
+    </div>
+    <div class="gterm">
+      <div class="t">앵커링<small>Anchoring</small></div>
+      <div class="d">기대인플레이션이 목표치(2%) 부근에 고정된 상태. 앵커가 유지되면 일시적 충격이 물가 스파이럴로 번지지 않는다.</div>
+    </div>
+    <div class="gterm">
+      <div class="t">BEI<small>Break-Even Inflation</small></div>
+      <div class="d">명목국채 금리 − 물가연동국채(TIPS) 금리. <b>시장이 가격에 반영한 기대인플레이션</b>. 위험·유동성 프리미엄이 섞여 있음에 유의.</div>
+    </div>
+    <div class="gterm">
+      <div class="t">디스인플레이션<small>Disinflation</small></div>
+      <div class="d">물가 <b>상승률이 낮아지는</b> 것. 물가 자체가 내려가는 디플레이션과 전혀 다르다. 레벨은 계속 올라간다.</div>
+    </div>
+    <div class="gterm">
+      <div class="t">끈적한 물가<small>Sticky Inflation</small></div>
+      <div class="d">가격이 잘 안 내려가는 항목(임대료, 보험, 교육, 의료 등). 임금 하방경직성에 기인하며 <b>물가 하락의 마지막 저항선</b>.</div>
+    </div>
+  </div>
+
+  <h3 class="sec">B. FRED 코드 — 물가 편</h3>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>지표</th><th>FRED 코드</th><th>빈도</th><th>비고</th></tr></thead>
+    <tbody>
+      <tr><td>CPI 헤드라인</td><td>CPIAUCSL</td><td>월</td><td>계절조정 지수. YoY는 직접 계산</td></tr>
+      <tr><td>근원 CPI</td><td>CPILFESL</td><td>월</td><td>식품·에너지 제외</td></tr>
+      <tr><td>PCE 물가</td><td>PCEPI</td><td>월</td><td>연준 기준 지수</td></tr>
+      <tr><td>근원 PCE</td><td>PCEPILFE</td><td>월</td><td><b>연준의 실질적 목표 지표</b></td></tr>
+      <tr><td>CPI 주거비</td><td>CUSR0000SAH1</td><td>월</td><td>시차가 긴 항목</td></tr>
+      <tr><td>기대인플레(5y5y)</td><td>T5YIFR</td><td>일</td><td>장기 기대 앵커 확인용</td></tr>
+      <tr><td>기대인플레(10년 BEI)</td><td>T10YIE</td><td>일</td><td>시장 기반 기대</td></tr>
+      <tr><td>미시간대 1년 기대</td><td>MICH</td><td>월</td><td>설문 기반. 유가 민감</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3 class="sec">C. 한국 물가는 어디서</h3>
+  <ul>
+    <li><strong>통계청 소비자물가동향</strong> — 매월 초 발표. 근원(농산물·석유류 제외 / 식료품·에너지 제외) 계열 함께 제공</li>
+    <li><strong>한국은행 ECOS</strong> — 생산자물가(PPI), 수출입물가, 기대인플레이션율</li>
+    <li><strong>한국은행 물가안정목표 운영상황 점검</strong> — 연 2회. 목표 대비 평가와 향후 전망이 정리된 문서</li>
+  </ul>
+</section>
+
+<!-- ============================= 셀프체크 ============================= -->
+<section class="selfcheck" id="check">
+  <h2>셀프체크 — 3부</h2>
+  <p class="lede">답을 먼저 떠올린 다음 펼쳐서 맞춰보라.</p>
+
+  <details>
+    <summary>중앙은행의 물가 목표가 왜 0%가 아니라 2%인가?</summary>
+    <div class="answer">
+      <p>0% 근처에서는 작은 충격만으로 <b>디플레이션</b>에 빠질 위험이 있고, 디플레이션은 소비 연기 → 매출 감소 → 임금 삭감의 악순환을 낳아 인플레이션보다 고치기 어렵다.
+      게다가 <b>금리는 0 아래로 내리기 어려워</b> 중앙은행의 대응 수단이 사라진다. 2%는 <b>완충지대이자 정책 여력</b>이다. (1장)</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>CPI는 3.2%인데 연준은 "2%대로 안정되고 있다"고 한다. 왜 어긋나나?</summary>
+    <div class="answer">
+      <p><b>서로 다른 지수를 말하고 있다.</b> 연준의 목표 기준은 <b>근원 PCE</b>이고, PCE는 유동 가중치로 소비 대체효과를 반영하며 주거비 비중이 낮아 CPI보다 통상 낮게 나온다.
+      한국은행은 CPI를 기준으로 쓴다. 리포트에서는 반드시 어느 지수인지 표기해야 한다. (2장)</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>중앙은행이 에너지·식품을 뺀 근원 물가를 보는 이유를 한 문장으로 말하면?</summary>
+    <div class="answer">
+      <p><b>금리로 고칠 수 있는 물가만 골라내기 위해서다.</b> 유가와 농산물 가격은 지정학·작황 등 공급 요인이 지배해 금리로 통제할 수 없다.
+      반면 근원은 임금·임대료 등 <b>수요 압력</b>에 반응하므로 통화정책이 작동한다. 국민의 체감을 무시하는 게 아니라 처방이 듣는 영역을 특정하는 것이다. (3장)</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>중고차·가전 가격은 마이너스인데 전체 물가가 안 잡히는 이유는?</summary>
+    <div class="answer">
+      <p><b>비중 때문이다.</b> 선진국 CPI에서 서비스는 60% 이상을 차지하고 상품은 소수 지분이다.
+      상품 가격은 재고 할인으로 빠르게 내려가지만, 서비스는 <b>인건비가 결정 요인이고 임금은 하방경직적</b>이라 잘 안 내려간다.
+      1부의 기여도 개념(비중 × 변화율)이 그대로 적용된다. (4장)</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>슈퍼코어는 무엇이고, 연준이 이걸 강조하는 이유는?</summary>
+    <div class="answer">
+      <p><b>근원 서비스 − 주거비</b>다. 주거비를 빼는 이유는 ①CPI 주거비가 기존 계약을 포함해 계산되어 <b>12~18개월 시차</b>가 있고, ②금리 인상이 오히려 임대 수요를 늘릴 수 있어 정책과의 관계가 뒤틀려 있기 때문이다.
+      남은 슈퍼코어는 사실상 <b>인건비 주도 서비스 물가</b>로, 지금 이 순간의 수요·임금 압력을 가장 잘 보여준다. (4장)</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>CPI 주거비가 아직 높다는 이유로 "임대 시장이 뜨겁다"고 써도 되나?</summary>
+    <div class="answer">
+      <p><b>안 된다.</b> CPI 주거비는 신규 계약뿐 아니라 기존 계약을 포함한 평균이라 <b>12~18개월 시차</b>가 있다. 지금 지표에 보이는 건 약 1년 전 시장이다.
+      실시간 임대 시장을 보려면 Zillow, Apartment List 같은 <b>신규 계약 기준 임대료 지수</b>를 봐야 한다. (4장)</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>"CPI 전년비가 3.2%에서 2.8%로 둔화됐다"는 뉴스를 보고 확인해야 할 것은?</summary>
+    <div class="answer">
+      <p><b>MoM(전월비)과 MoM 연율</b>이다. YoY 하락이 <b>기저효과</b>(1년 전 수치가 비정상적으로 높았음)일 수 있기 때문이다.
+      전월비가 오히려 가속되고 있다면 실질 물가 모멘텀은 강해지고 있는 것이다. 물가 리포트에는 최소 <b>YoY / MoM / MoM 연율</b> 세 개를 함께 적어야 한다. (5장)</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>기대인플레이션이 왜 실제 물가를 만드는지 메커니즘으로 설명하면?</summary>
+    <div class="answer">
+      <p>①물가가 오를 거라는 믿음이 퍼지면 → ②노동자는 구매력 보전을 위해 <b>임금 인상을 요구</b>하고 기업은 마진 방어를 위해 <b>선제적으로 가격을 올린다</b> → ③실제 인건비와 판매가가 올라 <b>물가가 실제로 상승</b> → ④"역시 오를 줄 알았다"며 기대가 강화된다.
+      이 루프가 돌면 실제 수요와 무관하게 물가가 오르므로, 금리로 수요를 눌러도 잘 안 잡힌다. (6장)</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>유가가 급등해 소비자 설문 1년 기대인플레가 뛰었다. 심각한 신호인가?</summary>
+    <div class="answer">
+      <p>그 자체로는 정상적인 반응이다. 소비자 설문 기대는 <b>주유소 가격표에 거의 그대로 연동</b>되기 때문이다.
+      정말 중요한 것은 <b>장기 기대(5y5y forward, 5~10년 설문 기대)</b>가 함께 움직였는지다. 장기 기대가 흔들리면 <b>앵커가 풀리기 시작했다</b>는 심각한 경고다. (6장)</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>"인플레이션이 잡혔다는데 왜 장 보면 여전히 비싸죠?"에 답한다면?</summary>
+    <div class="answer">
+      <p>잡혔다는 건 <b>상승률(레이트)</b>이 낮아졌다는 뜻이지 <b>가격 수준(레벨)</b>이 내려갔다는 뜻이 아니다. 이를 <b>디스인플레이션</b>이라 하며, 물가는 여전히 오르고 있고 속도만 느려졌다.
+      레벨이 실제로 내려가는 것은 <b>디플레이션</b>인데, 그건 경제에 훨씬 나쁜 일이다.
+      시장은 레이트로 움직이고 국민은 레벨로 살기 때문에 인식 차이가 구조적으로 발생한다. (7장)</p>
+    </div>
+  </details>
+</section>
+
+<nav class="footnav">
+  <a class="ghost" href="2부_경기순환.html">← 2부 · 경기순환(Cycle)</a>
+  <a href="4부_고용과종합.html">4부 · 고용과 종합 — 가교와 통합 →</a>
+</nav>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>매크로 경제 읽기 1회차 · 4부 고용과 종합</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="cover">
+  <div class="cover-in">
+    <div class="series">SCOPE · 매크로 경제 읽기 1회차 「경기와 물가」</div>
+    <div class="partno">PART 4 OF 4</div>
+    <h1>고용(Employment)과 종합<br>— 가교와 통합</h1>
+    <p class="sub">고용은 경기와 물가를 잇는 다리다. 이 다리를 건너면 1회차의 지도가 완성되고,
+    2회차(금리와 자산 가격)의 입구가 보인다.</p>
+    <div class="meta">
+      <span>상경대학 경제학회 SCOPE</span>
+      <span>독학용 확장판</span>
+      <span>예상 학습시간 100분</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<div class="goals">
+  <h3>이 권을 덮을 때 할 수 있어야 하는 것</h3>
+  <ol>
+    <li>고용 지표가 왜 <b>경기 지표이면서 동시에 물가 지표</b>인지 설명할 수 있다.</li>
+    <li>실업률과 NFP가 <b>동시에 나빠 보이지 않는 이유</b>를 조사 방식으로 설명할 수 있다.</li>
+    <li>NFP 발표에서 <b>헤드라인보다 먼저 봐야 할 숫자</b>가 무엇인지 안다.</li>
+    <li>같은 고용 호조 뉴스가 <b>국면에 따라 호재가 되기도 악재가 되기도</b> 하는 논리를 그릴 수 있다.</li>
+    <li>성장·경기·물가·고용 4개 영역을 <b>하나의 문장으로 꿰어</b> 리서치 결론을 쓸 수 있다.</li>
+  </ol>
+</div>
+
+<nav class="toc">
+  <h3>목차</h3>
+  <ol>
+    <li><a href="#ch1">고용은 왜 가교인가 — 이중 책무</a></li>
+    <li><a href="#ch2">두 개의 조사 — 가구조사와 사업체조사</a></li>
+    <li><a href="#ch3">NFP 읽는 법 — 헤드라인보다 수정치</a></li>
+    <li><a href="#ch4">실업률의 착시 — 참가율을 봐야 하는 이유</a></li>
+    <li><a href="#ch5">임금-물가 나선 — 필립스 곡선의 실무판</a></li>
+    <li><a href="#ch6">같은 뉴스, 반대 해석 — 국면 매트릭스</a></li>
+    <li><a href="#ch7">종합 프레임워크 — 4개 영역을 하나로</a></li>
+    <li><a href="#ch8">복합 문장 해부 실습</a></li>
+    <li><a href="#ch9">대가들의 렌즈 — 달리오, 소로스, 드러켄밀러</a></li>
+    <li><a href="#ch10">2회차로 가는 다리 · 학습 로드맵</a></li>
+    <li><a href="#appendix">부록 — 고용 용어사전 · FRED 코드</a></li>
+    <li><a href="#check">셀프체크 · 종합 테스트</a></li>
+  </ol>
+</nav>
+
+<!-- ============================= 1장 ============================= -->
+<section class="chapter" id="ch1">
+  <span class="chno">CHAPTER 1</span>
+  <h2>고용은 왜 가교인가 — 이중 책무</h2>
+  <p class="lede">1부(성장)와 3부(물가)를 따로 배웠다. 그 둘이 실제로 만나는 지점이 고용이다.</p>
+
+  <div class="block why">
+    <span class="tag">왜 이걸 보는가</span>
+    <p class="q">고용이 좋아지면 경제에 좋은 일 아닌가? 그런데 왜 연준은 고용 호조 소식에 긴장할까?</p>
+    <p>고용은 <em>두 얼굴</em>을 갖기 때문이다. 소득을 만들어 성장을 밀어올리는 동시에, 임금을 밀어올려 물가를 자극한다.</p>
+  </div>
+
+  <h3 class="sec">1-1. 고용의 두 경로</h3>
+
+  <figure>
+    <div class="figtitle">고용이 성장과 물가로 갈라지는 두 경로</div>
+    <div class="figsub">연준의 이중 책무(Dual Mandate)가 여기서 충돌한다</div>
+    <svg viewBox="0 0 800 320" role="img" aria-label="고용 증가가 소비를 통해 성장으로, 임금을 통해 물가로 이어지는 두 경로">
+      <g font-family="Pretendard, Malgun Gothic, sans-serif">
+        <defs>
+          <marker id="ar3" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+            <path d="M0,0 L10,4 L0,8 Z" fill="#7A8095"/>
+          </marker>
+        </defs>
+
+        <!-- center node -->
+        <rect x="310" y="128" width="180" height="64" rx="3" fill="#1E2761"/>
+        <text x="400" y="155" text-anchor="middle" fill="#fff" font-size="18" font-weight="700">고용 증가</text>
+        <text x="400" y="178" text-anchor="middle" fill="#CADCFC" font-size="12.5">취업자 수 · 임금 상승</text>
+
+        <!-- upper path: growth -->
+        <path d="M400,124 L400,96 L200,96 L200,76" fill="none" stroke="#2E7D5B" stroke-width="2.5" marker-end="url(#ar3)"/>
+        <rect x="70" y="24" width="260" height="50" rx="3" fill="#E9F5EF" stroke="#2E7D5B"/>
+        <text x="200" y="45" text-anchor="middle" fill="#2E7D5B" font-size="14.5" font-weight="700">경기 경로 · 소득 → 소비</text>
+        <text x="200" y="64" text-anchor="middle" fill="#4A5163" font-size="12.5">가계소득↑ → 민간소비↑ → GDP↑</text>
+
+        <path d="M400,124 L400,96 L600,96 L600,76" fill="none" stroke="#B23A48" stroke-width="2.5" marker-end="url(#ar3)"/>
+        <rect x="470" y="24" width="260" height="50" rx="3" fill="#FBEEF0" stroke="#B23A48"/>
+        <text x="600" y="45" text-anchor="middle" fill="#B23A48" font-size="14.5" font-weight="700">물가 경로 · 임금 → 서비스 물가</text>
+        <text x="600" y="64" text-anchor="middle" fill="#4A5163" font-size="12.5">임금↑ → 인건비↑ → 슈퍼코어↑</text>
+
+        <!-- lower: fed -->
+        <path d="M200,110 L200,230 L340,230" fill="none" stroke="#7A8095" stroke-width="1.8" stroke-dasharray="4 3" marker-end="url(#ar3)"/>
+        <path d="M600,110 L600,230 L460,230" fill="none" stroke="#7A8095" stroke-width="1.8" stroke-dasharray="4 3" marker-end="url(#ar3)"/>
+        <rect x="270" y="248" width="260" height="60" rx="3" fill="#B8860B"/>
+        <text x="400" y="272" text-anchor="middle" fill="#fff" font-size="15" font-weight="700">연준의 이중 책무</text>
+        <text x="400" y="294" text-anchor="middle" fill="#FBF3DF" font-size="12.5">최대 고용 &amp; 물가 안정 — 서로 충돌한다</text>
+        <path d="M400,236 L400,244" fill="none" stroke="#7A8095" stroke-width="1.8" marker-end="url(#ar3)"/>
+        <line x1="340" y1="230" x2="460" y2="230" stroke="#7A8095" stroke-width="1.8" stroke-dasharray="4 3"/>
+      </g>
+    </svg>
+    <figcaption><b>여기서 배울 것:</b> 연준의 두 목표(<b>최대 고용</b>과 <b>물가 안정</b>)는 평시에는 같이 가지만, 과열 국면에서는 정면으로 충돌한다. 고용이 너무 좋으면 물가 목표가 위협받는다. 이 긴장이 통화정책 논쟁의 핵심이다.</figcaption>
+  </figure>
+
+  <p>정리하면 고용 지표는 <strong>1부에서 배운 성장 스토리</strong>와 <strong>3부에서 배운 물가 스토리</strong>를 동시에 건드린다.
+  그래서 매월 첫째 금요일 미국 고용보고서(NFP)는 <em>매크로 캘린더에서 CPI와 함께 가장 변동성이 큰 이벤트</em>다.</p>
+
+  <div class="block key">
+    <span class="tag">핵심 정리</span>
+    <p>고용을 볼 때는 항상 두 질문을 동시에 던져야 한다.<br>
+    ① <b>소득 창출이 잘 되고 있는가</b>(성장 관점) &nbsp; ② <b>임금 압력이 과한가</b>(물가 관점)<br>
+    같은 "고용 호조"라도 어느 질문의 답으로 쓰이느냐에 따라 결론이 반대가 된다.</p>
+  </div>
+
+  <div class="connect">고용 지표를 읽으려면 먼저 그 숫자가 어떻게 만들어지는지 알아야 한다. 여기에 신입이 가장 많이 헷갈리는 구조가 있다.</div>
+</section>
+
+<!-- ============================= 2장 ============================= -->
+<section class="chapter" id="ch2">
+  <span class="chno">CHAPTER 2</span>
+  <h2>두 개의 조사 — 가구조사와 사업체조사</h2>
+  <p class="lede">"실업률은 내렸는데 취업자는 줄었다"는 모순 같은 헤드라인이 나오는 이유. 답은 <em>두 숫자가 서로 다른 설문에서 나온다</em>는 데 있다.</p>
+
+  <div class="block why">
+    <span class="tag">왜 이걸 보는가</span>
+    <p class="q">같은 달, 같은 나라 고용 통계인데 왜 두 지표가 반대 방향을 가리킬 수 있나?</p>
+    <p>애초에 <em>다른 사람들에게 다른 질문을 한 결과</em>이기 때문이다.</p>
+  </div>
+
+  <h3 class="sec">2-1. 조사 구조의 차이</h3>
+
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>구분</th><th>가구조사 (Household Survey)</th><th>사업체조사 (Establishment Survey)</th></tr></thead>
+    <tbody>
+      <tr><td>조사 대상</td><td>약 6만 가구에게 "일하십니까?"</td><td>약 12만 사업체에게 "몇 명 고용 중입니까?"</td></tr>
+      <tr><td>산출 지표</td><td><b>실업률</b>, 경제활동참가율, 고용률</td><td><b>비농업고용(NFP)</b>, 시간당 평균임금, 주당 근로시간</td></tr>
+      <tr><td>성격</td><td>비율(%) 지표</td><td>절대 인원(명) 지표</td></tr>
+      <tr><td>표본 크기</td><td>작다 → <b>변동성이 크다</b></td><td>크다 → <b>안정적</b></td></tr>
+      <tr><td>자영업자</td><td><b>포함</b></td><td>제외(급여 명부 기준)</td></tr>
+      <tr><td>겸직자</td><td>1명으로 계산</td><td><b>2건으로 중복 계산</b></td></tr>
+      <tr><td>시장 반응</td><td>보조적</td><td><b>훨씬 민감하게 반응</b></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p>이 차이가 만드는 결과가 중요하다. <strong>경기 침체 초기</strong>에는 정규직에서 밀려난 사람들이 <em>프리랜서·자영업으로 이동</em>하는데,
+  가구조사는 이들을 <em>취업자로 잡지만</em> 사업체조사는 <em>급여 명부에서 사라진 것으로 잡는다.</em>
+  그래서 "실업률은 안 오르는데 NFP는 부진한" 조합이 나온다. 반대로 겸직이 늘면 NFP는 부풀려진다.</p>
+
+  <div class="block analogy">
+    <span class="tag">비유</span>
+    <p><strong>같은 콘서트의 관객 수를 두 방식으로 세는 것과 같다.</strong><br>
+    <em>가구조사</em> — 동네에서 무작위로 사람들을 붙잡고 "오늘 콘서트 갔다 왔어요?"라고 묻는다. 표본이 작아 오차가 크지만 <em>암표로 들어간 사람도 잡힌다.</em><br>
+    <em>사업체조사</em> — 티켓 판매 기록을 센다. 정확하지만 <em>한 사람이 두 장 샀으면 2명으로 센다.</em><br>
+    둘 다 맞는 숫자이고, 둘이 다른 것도 정상이다.</p>
+  </div>
+
+  <div class="block trap">
+    <span class="tag">신입이 틀리는 지점</span>
+    <p><b>함정 1 — 두 지표의 불일치를 "통계 오류"라고 쓴다.</b><br>
+    불일치는 오류가 아니라 <b>정보</b>다. 특히 <b>경기 전환기에 벌어지는 갭</b>은 노동시장 구조 변화(자영업 이동, 겸직 증가)를 알려준다.</p>
+    <p><b>함정 2 — 실업률 하나로 고용을 판단한다.</b><br>
+    실업률은 <b>가구조사 기반의 비율 지표</b>이며 다음 장에서 볼 참가율 착시에 취약하다. 반드시 NFP·참가율·임금과 세트로 봐야 한다.</p>
+    <p><b>함정 3 — 한국 통계에 미국 개념을 그대로 쓴다.</b><br>
+    한국은 통계청 <b>경제활동인구조사</b>가 가구조사에 해당하며, <b>취업자 수 증감</b>이 NFP와 유사한 역할을 한다. 다만 자영업 비중이 미국보다 훨씬 높아 해석이 다르다.</p>
+  </div>
+
+  <div class="connect">시장이 가장 크게 반응하는 사업체조사 지표, NFP를 정확히 읽는 법으로 간다.</div>
+</section>
+
+<!-- ============================= 3장 ============================= -->
+<section class="chapter" id="ch3">
+  <span class="chno">CHAPTER 3</span>
+  <h2>NFP 읽는 법 — 헤드라인보다 수정치</h2>
+  <p class="lede">매월 첫째 금요일 밤 9시 30분(한국시간 22:30). 이 순간 전 세계 채권시장이 정지했다가 튄다.</p>
+
+  <div class="block why">
+    <span class="tag">왜 이걸 보는가</span>
+    <p class="q">NFP가 예상을 크게 상회했는데 채권금리가 오히려 급락했다. 무슨 일이 있었나?</p>
+    <p>거의 확실하게 <em>직전 두 달 수치가 크게 하향 수정</em>됐을 것이다. 시장은 헤드라인만 보지 않는다.</p>
+  </div>
+
+  <h3 class="sec">3-1. NFP의 구조</h3>
+
+  <p><strong>NFP(Non-Farm Payrolls, 비농업고용)</strong>는 농업을 제외한 산업의 급여 명부상 고용자 수 <em>증감</em>이다.
+  "이번 달에 몇 명이 새로 고용됐나"를 천 명 단위로 발표한다.</p>
+
+  <p>중요한 건 매월 발표에 <strong>세 개의 숫자</strong>가 함께 나온다는 점이다.</p>
+
+  <figure>
+    <div class="figtitle">NFP 발표에 담긴 세 개의 숫자</div>
+    <div class="figsub">헤드라인이 좋아도 순증이 마이너스일 수 있다</div>
+    <svg viewBox="0 0 800 300" role="img" aria-label="NFP 헤드라인과 직전 2개월 수정치를 합산하는 방식">
+      <g font-family="Pretendard, Malgun Gothic, sans-serif">
+        <!-- headline -->
+        <rect x="50" y="50" width="200" height="90" rx="3" fill="#2E7D5B"/>
+        <text x="150" y="78" text-anchor="middle" fill="#fff" font-size="13.5" font-weight="700">① 당월 헤드라인</text>
+        <text x="150" y="110" text-anchor="middle" fill="#fff" font-size="26" font-weight="800">+180K</text>
+        <text x="150" y="131" text-anchor="middle" fill="#E9F5EF" font-size="12">컨센서스 +150K 상회</text>
+        <text x="150" y="162" text-anchor="middle" fill="#2E7D5B" font-size="13" font-weight="700">언론이 보도하는 숫자</text>
+
+        <!-- revisions -->
+        <rect x="300" y="50" width="200" height="90" rx="3" fill="#B23A48"/>
+        <text x="400" y="78" text-anchor="middle" fill="#fff" font-size="13.5" font-weight="700">② 직전 2개월 수정</text>
+        <text x="400" y="110" text-anchor="middle" fill="#fff" font-size="26" font-weight="800">−95K</text>
+        <text x="400" y="131" text-anchor="middle" fill="#FBEEF0" font-size="12">전월 −55K, 전전월 −40K</text>
+        <text x="400" y="162" text-anchor="middle" fill="#B23A48" font-size="13" font-weight="700">실무자가 먼저 보는 숫자</text>
+
+        <!-- net -->
+        <rect x="550" y="50" width="200" height="90" rx="3" fill="#1E2761"/>
+        <text x="650" y="78" text-anchor="middle" fill="#fff" font-size="13.5" font-weight="700">③ 실질 순증</text>
+        <text x="650" y="110" text-anchor="middle" fill="#D9A93A" font-size="26" font-weight="800">+85K</text>
+        <text x="650" y="131" text-anchor="middle" fill="#CADCFC" font-size="12">① + ② = 실제 고용 모멘텀</text>
+        <text x="650" y="162" text-anchor="middle" fill="#1E2761" font-size="13" font-weight="700">시장이 가격에 반영하는 값</text>
+
+        <text x="275" y="105" text-anchor="middle" fill="#7A8095" font-size="22" font-weight="700">+</text>
+        <text x="525" y="105" text-anchor="middle" fill="#7A8095" font-size="22" font-weight="700">=</text>
+
+        <!-- conclusion -->
+        <rect x="50" y="196" width="700" height="76" rx="3" fill="#EEF3FD" stroke="#CADCFC"/>
+        <text x="400" y="222" text-anchor="middle" fill="#1E2761" font-size="15" font-weight="700">헤드라인은 컨센서스를 30K 상회했지만, 수정치를 반영한 실질 순증은 컨센서스를 크게 하회</text>
+        <text x="400" y="248" text-anchor="middle" fill="#4A5163" font-size="13.5">→ 시장은 <tspan font-weight="700" fill="#B23A48">고용 둔화</tspan>로 해석 · 금리 하락 · 인하 기대 확대</text>
+        <text x="400" y="266" text-anchor="middle" fill="#7A8095" font-size="12.5">"NFP 서프라이즈인데 왜 금리가 빠지지?"의 정답</text>
+      </g>
+    </svg>
+    <figcaption><b>실무 규칙:</b> NFP 발표를 볼 땐 헤드라인보다 <b>revisions(수정치)</b>를 먼저 확인하라. 전문 트레이딩 데스크는 발표 3초 안에 이 합산을 한다.</figcaption>
+  </figure>
+
+  <h3 class="sec">3-2. NFP와 함께 봐야 할 것들</h3>
+
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>항목</th><th>왜 보나</th></tr></thead>
+    <tbody>
+      <tr><td><b>시간당 평균임금(AHE)</b></td><td>물가 경로의 핵심. YoY 4% 이상이면 서비스 물가 압력이 지속된다는 신호</td></tr>
+      <tr><td><b>주당 근로시간</b></td><td>기업은 해고 전에 <b>근로시간부터 줄인다.</b> 고용 둔화의 선행 신호</td></tr>
+      <tr><td>업종별 구성</td><td>정부·의료·레저처럼 경기 둔감 업종만 늘고 제조·건설이 줄면 <b>질이 나쁜 고용</b></td></tr>
+      <tr><td>임시직 고용</td><td>대표적 선행지표. 임시직이 먼저 줄고 정규직이 나중에 줄어든다</td></tr>
+      <tr><td>참가율</td><td>다음 장의 주제. 실업률 해석의 전제 조건</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="block trap">
+    <span class="tag">신입이 틀리는 지점</span>
+    <p><b>함정 1 — 헤드라인만 보고 즉시 결론을 쓴다.</b><br>
+    NFP는 <b>표본 조사 + 계절조정 + 사업체 출생·사망 모형 보정</b>이 겹친 추정치다. 단월 수치의 오차 범위가 크다. <b>3개월 이동평균</b>을 함께 보는 것이 기본이다.</p>
+    <p><b>함정 2 — 연간 벤치마크 개정을 모른다.</b><br>
+    BLS는 매년 <b>QCEW(실업보험 기록)</b>를 기준으로 NFP를 대규모 소급 수정한다. 수십만 명 단위가 한 번에 조정되는 경우가 있으며, 이때 과거 1년의 고용 그림이 통째로 바뀐다.</p>
+    <p><b>함정 3 — 파업·기상·계절 요인을 무시한다.</b><br>
+    대형 파업이 있던 달, 허리케인이 지나간 달의 NFP는 <b>일회성 왜곡</b>이다. 다음 달 반대 방향으로 되돌아온다. 발표 당일 BLS 보도자료의 특이사항(notes)을 읽는 습관이 필요하다.</p>
+  </div>
+
+  <div class="connect">이제 가구조사 쪽 대표 지표인 실업률로 간다. 여기에 매크로에서 가장 유명한 착시가 있다.</div>
+</section>
+
+<!-- ============================= 4장 ============================= -->
+<section class="chapter" id="ch4">
+  <span class="chno">CHAPTER 4</span>
+  <h2>실업률의 착시 — 참가율을 봐야 하는 이유</h2>
+  <p class="lede">실업률이 떨어졌다는 뉴스를 보고 안심하면 안 되는 경우가 있다. 그것도 꽤 자주.</p>
+
+  <div class="block why">
+    <span class="tag">왜 이걸 보는가</span>
+    <p class="q">실업률이 4.0%에서 3.8%로 떨어졌다. 좋은 소식인가?</p>
+    <p>확인해야 한다. <em>취업자가 늘어서 떨어진 것인지, 구직을 포기한 사람이 늘어서 떨어진 것인지</em>에 따라 의미가 정반대다.</p>
+  </div>
+
+  <h3 class="sec">4-1. 실업률의 분모가 문제다</h3>
+
+  <div class="formula">
+    <div class="eq">실업률 = 실업자 ÷ 경제활동인구 × 100</div>
+    <div class="note">경제활동인구 = 취업자 + 실업자 &nbsp;/&nbsp; 실업자 = 일이 없고 <b>구직 활동을 한</b> 사람</div>
+  </div>
+
+  <p>핵심은 <strong>"구직 활동을 한"</strong>이라는 조건이다. 일자리를 찾다가 포기한 사람은 <em>실업자가 아니라 비경제활동인구</em>로 분류된다.
+  즉 <strong>분자(실업자)와 분모(경제활동인구)에서 동시에 빠진다.</strong> 그 결과 실업률이 <em>내려간다.</em></p>
+
+  <figure>
+    <div class="figtitle">실업률 하락의 두 가지 정반대 시나리오</div>
+    <div class="figsub">숫자는 똑같이 4.0% → 3.8%</div>
+    <svg viewBox="0 0 800 320" role="img" aria-label="취업자 증가로 인한 실업률 하락과 구직 포기로 인한 실업률 하락 비교">
+      <g font-family="Pretendard, Malgun Gothic, sans-serif">
+        <!-- Scenario A -->
+        <rect x="40" y="30" width="330" height="250" rx="3" fill="#E9F5EF" stroke="#2E7D5B"/>
+        <text x="205" y="58" text-anchor="middle" fill="#2E7D5B" font-size="16" font-weight="800">시나리오 A · 정상적 개선</text>
+        <text x="205" y="80" text-anchor="middle" fill="#4A5163" font-size="13">취업자가 실제로 늘어남</text>
+
+        <text x="70" y="115" fill="#1F2430" font-size="13.5" font-weight="700">발생 원인</text>
+        <text x="70" y="136" fill="#4A5163" font-size="13">경기 회복 → 기업 채용 확대</text>
+
+        <text x="70" y="168" fill="#1F2430" font-size="13.5" font-weight="700">경제활동참가율</text>
+        <text x="205" y="168" fill="#2E7D5B" font-size="15" font-weight="800">상승 또는 유지 ↑</text>
+
+        <text x="70" y="200" fill="#1F2430" font-size="13.5" font-weight="700">NFP · 취업자 수</text>
+        <text x="205" y="200" fill="#2E7D5B" font-size="15" font-weight="800">증가 ↑</text>
+
+        <rect x="60" y="220" width="290" height="42" rx="3" fill="#2E7D5B"/>
+        <text x="205" y="246" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">진짜 고용 개선 — 소비 여력 증가</text>
+
+        <!-- Scenario B -->
+        <rect x="430" y="30" width="330" height="250" rx="3" fill="#FBEEF0" stroke="#B23A48"/>
+        <text x="595" y="58" text-anchor="middle" fill="#B23A48" font-size="16" font-weight="800">시나리오 B · 착시</text>
+        <text x="595" y="80" text-anchor="middle" fill="#4A5163" font-size="13">구직을 포기한 사람이 늘어남</text>
+
+        <text x="460" y="115" fill="#1F2430" font-size="13.5" font-weight="700">발생 원인</text>
+        <text x="460" y="136" fill="#4A5163" font-size="13">고용 침체 → 구직 단념 → 통계에서 제외</text>
+
+        <text x="460" y="168" fill="#1F2430" font-size="13.5" font-weight="700">경제활동참가율</text>
+        <text x="595" y="168" fill="#B23A48" font-size="15" font-weight="800">하락 ↓</text>
+
+        <text x="460" y="200" fill="#1F2430" font-size="13.5" font-weight="700">NFP · 취업자 수</text>
+        <text x="595" y="200" fill="#B23A48" font-size="15" font-weight="800">정체 또는 감소 ↓</text>
+
+        <rect x="450" y="220" width="290" height="42" rx="3" fill="#B23A48"/>
+        <text x="595" y="246" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">실질적 고용 악화 — 통계적 착시</text>
+
+        <text x="400" y="305" text-anchor="middle" fill="#1E2761" font-size="14" font-weight="700">두 시나리오를 가르는 열쇠 = 경제활동참가율(LFPR)</text>
+      </g>
+    </svg>
+    <figcaption><b>실무 규칙:</b> 실업률 변화를 봤을 때 <b>즉시 참가율을 확인</b>하라. 참가율이 함께 떨어지며 실업률이 내렸다면 그건 개선이 아니라 악화다.</figcaption>
+  </figure>
+
+  <h3 class="sec">4-2. 보조 지표들</h3>
+
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>지표</th><th>내용</th><th>쓰임</th></tr></thead>
+    <tbody>
+      <tr><td>경제활동참가율<br>(LFPR)</td><td>생산가능인구 중 경제활동인구 비율</td><td>실업률 해석의 <b>전제 조건</b></td></tr>
+      <tr><td>고용률<br>(E/P ratio)</td><td>생산가능인구 중 취업자 비율</td><td>참가율 착시에 <b>영향받지 않는</b> 지표. 실무에서 선호</td></tr>
+      <tr><td>U-6 광의 실업률</td><td>실업자 + 구직단념자 + 비자발적 시간제</td><td>노동시장의 <b>숨은 유휴</b>를 포착</td></tr>
+      <tr><td>Sahm Rule</td><td>실업률 3개월 이평이 직전 12개월 최저 대비 +0.5%p</td><td><b>실시간 침체 신호</b> (2부 7장과 연결)</td></tr>
+      <tr><td>JOLTS 구인건수</td><td>기업이 올린 빈 일자리 수</td><td>구인/실업자 비율로 <b>노동시장 타이트함</b> 측정</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p>실무 팁: <em>실업자 1명당 구인건수(V/U ratio)</em>가 1.0을 크게 넘으면 노동시장이 과열이라는 뜻이다.
+  이 비율이 정상 수준으로 내려오면서도 실업률이 크게 안 오르는 상황이 <strong>연착륙</strong>의 이상적 경로다.</p>
+
+  <div class="block trap">
+    <span class="tag">신입이 틀리는 지점</span>
+    <p><b>함정 1 — 참가율 하락을 전부 '구직 단념'으로 해석한다.</b><br>
+    참가율은 <b>인구 고령화</b> 같은 구조적 요인으로도 장기적으로 하락한다. 단기 변동(경기적)과 장기 추세(구조적)를 구분해야 한다. 실무에서는 <b>25~54세 핵심연령층(prime-age) 참가율</b>을 봐서 고령화 효과를 걷어낸다.</p>
+    <p><b>함정 2 — 실업률이 낮으니 경제가 좋다고 결론 낸다.</b><br>
+    2부에서 배웠듯 <b>실업률은 후행지표</b>다. 침체 진입 시점의 실업률은 대개 역사적 저점 부근이다. 낮은 실업률은 현재의 결과이지 미래의 예고가 아니다.</p>
+    <p><b>함정 3 — 한국 실업률을 미국과 같은 감각으로 본다.</b><br>
+    한국은 자영업 비중이 높고 구직 단념자·취업준비생 규모가 커서 <b>실업률이 구조적으로 낮게 나온다.</b> 한국에서는 <b>고용률</b>과 <b>확장실업률(체감실업률 U-6 유사)</b>을 함께 보는 것이 표준이다.</p>
+  </div>
+
+  <div class="connect">고용의 '양'을 봤으니 이제 '가격'을 볼 차례다. 임금이 물가로 넘어가는 경로가 3부와 만나는 지점이다.</div>
+</section>
+
+<!-- ============================= 5장 ============================= -->
+<section class="chapter" id="ch5">
+  <span class="chno">CHAPTER 5</span>
+  <h2>임금-물가 나선 — 필립스 곡선의 실무판</h2>
+  <p class="lede">"실업률이 낮으면 물가가 오른다"는 60년 된 관계. 최근엔 자주 깨지지만, 중앙은행은 여전히 이 렌즈로 본다.</p>
+
+  <div class="block why">
+    <span class="tag">왜 이걸 보는가</span>
+    <p class="q">고용이 좋은데 왜 연준이 금리 인하를 주저할까?</p>
+    <p>고용이 타이트하면 <em>임금이 오르고, 임금은 서비스 물가로 넘어가기 때문</em>이다. 3부에서 배운 슈퍼코어가 여기서 다시 등장한다.</p>
+  </div>
+
+  <h3 class="sec">5-1. 필립스 곡선</h3>
+
+  <p><strong>필립스 곡선</strong>은 <em>실업률과 임금(물가) 상승률 사이의 역의 관계</em>를 말한다. 실업률이 낮을수록 기업이 사람을 구하기 어려워 임금을 더 줘야 하고, 그 인건비가 가격으로 전가된다는 논리다.</p>
+
+  <figure>
+    <div class="figtitle">실업률과 임금 상승률의 역관계</div>
+    <div class="figsub">실업률이 임계 수준 아래로 내려가면 임금이 가팔라진다</div>
+    <svg viewBox="0 0 800 320" role="img" aria-label="실업률 하락에 따라 임금 상승률이 가팔라지는 필립스 곡선">
+      <g font-family="Pretendard, Malgun Gothic, sans-serif">
+        <!-- axes -->
+        <line x1="80" y1="260" x2="740" y2="260" stroke="#DFE3EF" stroke-width="1.5"/>
+        <line x1="80" y1="40" x2="80" y2="260" stroke="#DFE3EF" stroke-width="1.5"/>
+        <text x="410" y="292" text-anchor="middle" fill="#7A8095" font-size="13">실업률 (%) — 오른쪽으로 갈수록 높음</text>
+        <text x="30" y="150" fill="#7A8095" font-size="13" transform="rotate(-90 30 150)">임금 상승률 (%)</text>
+
+        <!-- ticks -->
+        <text x="180" y="280" text-anchor="middle" fill="#7A8095" font-size="11.5">3.0</text>
+        <text x="330" y="280" text-anchor="middle" fill="#7A8095" font-size="11.5">4.0</text>
+        <text x="480" y="280" text-anchor="middle" fill="#7A8095" font-size="11.5">5.0</text>
+        <text x="630" y="280" text-anchor="middle" fill="#7A8095" font-size="11.5">6.0</text>
+        <text x="70" y="70" text-anchor="end" fill="#7A8095" font-size="11.5">6.0</text>
+        <text x="70" y="140" text-anchor="end" fill="#7A8095" font-size="11.5">4.5</text>
+        <text x="70" y="210" text-anchor="end" fill="#7A8095" font-size="11.5">3.0</text>
+
+        <!-- curve -->
+        <path d="M140,60 Q200,120 280,170 Q360,208 470,228 Q580,242 730,248"
+              fill="none" stroke="#B8860B" stroke-width="3.5"/>
+
+        <!-- danger zone -->
+        <rect x="80" y="40" width="180" height="220" fill="#B23A48" opacity=".07"/>
+        <text x="170" y="112" text-anchor="middle" fill="#B23A48" font-size="13.5" font-weight="800">과열 구간</text>
+        <text x="170" y="132" text-anchor="middle" fill="#B23A48" font-size="12">구인난 → 임금 급등</text>
+        <text x="170" y="150" text-anchor="middle" fill="#B23A48" font-size="12">→ 서비스 물가 압력</text>
+
+        <rect x="470" y="40" width="270" height="220" fill="#2E7D5B" opacity=".07"/>
+        <text x="605" y="112" text-anchor="middle" fill="#2E7D5B" font-size="13.5" font-weight="800">유휴 구간</text>
+        <text x="605" y="132" text-anchor="middle" fill="#2E7D5B" font-size="12">노동 공급 여유</text>
+        <text x="605" y="150" text-anchor="middle" fill="#2E7D5B" font-size="12">→ 임금 압력 제한적</text>
+
+        <!-- points -->
+        <circle cx="180" cy="88" r="6" fill="#B23A48"/>
+        <text x="196" y="82" fill="#B23A48" font-size="12.5" font-weight="700">실업률 3.5% · 임금 +5.5%</text>
+        <circle cx="470" cy="228" r="6" fill="#2E7D5B"/>
+        <text x="486" y="222" fill="#2E7D5B" font-size="12.5" font-weight="700">실업률 5.0% · 임금 +2.8%</text>
+
+        <!-- fed target zone -->
+        <line x1="80" y1="196" x2="740" y2="196" stroke="#1E2761" stroke-width="1.5" stroke-dasharray="6 4"/>
+        <text x="740" y="190" text-anchor="end" fill="#1E2761" font-size="12" font-weight="700">물가 2%와 양립 가능한 임금 상승률(약 3~3.5%)</text>
+      </g>
+    </svg>
+    <figcaption><b>실무 기준선:</b> 물가 목표 2%와 양립 가능한 임금 상승률은 대략 <b>2% + 생산성 증가율(약 1~1.5%)</b> = <b>3~3.5%</b>다. 임금이 4% 이상에서 고착되면 중앙은행은 물가 목표 달성이 어렵다고 판단한다. 이 계산식을 기억해두면 임금 지표를 볼 때마다 즉시 판정할 수 있다.</figcaption>
+  </figure>
+
+  <h3 class="sec">5-2. 임금 지표들</h3>
+
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>지표</th><th>특징</th></tr></thead>
+    <tbody>
+      <tr><td>시간당 평균임금(AHE)</td><td>NFP와 함께 매월 발표. <b>속보성이 좋지만</b> 업종 구성 변화에 왜곡된다(고임금 업종 비중이 늘면 저절로 상승)</td></tr>
+      <tr><td>고용비용지수(ECI)</td><td>분기별. 구성 변화를 보정해 <b>가장 정확한 임금 지표</b>로 평가받는다. 연준이 중시</td></tr>
+      <tr><td>애틀랜타 연은 임금추적지수</td><td>동일 개인의 임금 변화를 추적. 구성 효과 제거</td></tr>
+      <tr><td>단위노동비용(ULC)</td><td>임금 ÷ 생산성. <b>생산성이 함께 오르면 임금이 올라도 물가 압력은 없다</b>는 걸 보여주는 핵심 지표</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p>여기서 중요한 논리 하나. <em>임금 상승 자체가 인플레이션은 아니다.</em> 생산성이 같이 오르면 기업은 가격을 안 올려도 인건비를 감당한다.
+  그래서 진짜 봐야 할 건 <strong>단위노동비용(임금 상승률 − 생산성 증가율)</strong>이다.</p>
+
+  <div class="block trap">
+    <span class="tag">신입이 틀리는 지점</span>
+    <p><b>함정 1 — 필립스 곡선을 절대 법칙으로 쓴다.</b><br>
+    2010년대에는 실업률이 사상 최저인데도 물가가 안 올라 "필립스 곡선이 죽었다"는 논쟁이 있었다. 세계화·기대 앵커링·노조 약화가 관계를 약화시킨 것으로 설명된다. <b>곡선은 상황에 따라 기울기가 변한다.</b></p>
+    <p><b>함정 2 — 명목임금 상승을 무조건 호재로 본다.</b><br>
+    <b>실질임금 = 명목임금 − 물가</b>다. 임금이 4% 올라도 물가가 5% 오르면 근로자는 가난해진 것이다. 소비 여력을 볼 땐 반드시 실질로 환산한다.</p>
+    <p><b>함정 3 — AHE 상승을 임금 상승으로 단정한다.</b><br>
+    저임금 업종에서 해고가 집중되면 <b>남은 사람들의 평균 임금이 올라</b> AHE가 상승한다. 실제 임금 인상이 아닌 <b>구성 효과</b>다. ECI나 임금추적지수로 교차 확인해야 한다.</p>
+  </div>
+
+  <div class="connect">이제 1회차의 마지막 개념적 퍼즐이다. 왜 같은 뉴스가 어떤 날은 호재이고 어떤 날은 악재인가.</div>
+</section>
+
+<!-- ============================= 6장 ============================= -->
+<section class="chapter" id="ch6">
+  <span class="chno">CHAPTER 6</span>
+  <h2>같은 뉴스, 반대 해석 — 국면 매트릭스</h2>
+  <p class="lede">"Good news is bad news"라는 말이 실제로 어떻게 작동하는지 그림 한 장으로 정리한다.</p>
+
+  <div class="block why">
+    <span class="tag">왜 이걸 보는가</span>
+    <p class="q">고용 지표가 나쁘게 나왔는데 주가가 급등했다. 시장이 미친 건가?</p>
+    <p>아니다. 시장은 <em>고용 그 자체가 아니라 고용이 바꿀 금리 경로</em>를 보고 있다. 국면에 따라 그 계산이 뒤집힌다.</p>
+  </div>
+
+  <h3 class="sec">6-1. 매트릭스</h3>
+
+  <figure>
+    <div class="figtitle">경제 뉴스 해석 매트릭스</div>
+    <div class="figsub">같은 지표, 국면에 따라 정반대의 시장 반응</div>
+    <svg viewBox="0 0 800 380" role="img" aria-label="긴축 국면과 침체 국면에서 고용 호조와 부진이 주식시장에 미치는 영향 매트릭스">
+      <g font-family="Pretendard, Malgun Gothic, sans-serif">
+        <!-- headers -->
+        <text x="400" y="26" text-anchor="middle" fill="#1E2761" font-size="15" font-weight="800">거시 국면 (Macro Environment)</text>
+        <rect x="230" y="40" width="270" height="42" fill="#B23A48"/>
+        <text x="365" y="67" text-anchor="middle" fill="#fff" font-size="15" font-weight="700">인플레이션 · 긴축 국면</text>
+        <rect x="510" y="40" width="270" height="42" fill="#2E7D5B"/>
+        <text x="645" y="67" text-anchor="middle" fill="#fff" font-size="15" font-weight="700">불황 · 침체 우려 국면</text>
+
+        <text x="120" y="30" text-anchor="middle" fill="#1E2761" font-size="14" font-weight="800">지표 결과</text>
+
+        <!-- row 1 -->
+        <rect x="20" y="92" width="200" height="130" fill="#EEF3FD" stroke="#CADCFC"/>
+        <text x="120" y="140" text-anchor="middle" fill="#1E2761" font-size="16" font-weight="800">고용 호조</text>
+        <text x="120" y="164" text-anchor="middle" fill="#4A5163" font-size="13">NFP 상회</text>
+        <text x="120" y="184" text-anchor="middle" fill="#4A5163" font-size="13">실업률 하락</text>
+        <text x="120" y="204" text-anchor="middle" fill="#4A5163" font-size="13">임금 상승</text>
+
+        <rect x="230" y="92" width="270" height="130" fill="#FBEEF0" stroke="#B23A48"/>
+        <text x="365" y="124" text-anchor="middle" fill="#B23A48" font-size="17" font-weight="800">"Good is Bad"</text>
+        <text x="365" y="150" text-anchor="middle" fill="#4A5163" font-size="13">과열 지속 → 금리 인상 우려 확대</text>
+        <text x="365" y="172" text-anchor="middle" fill="#4A5163" font-size="13">할인율 상승 → 밸류에이션 압박</text>
+        <text x="365" y="200" text-anchor="middle" fill="#B23A48" font-size="14.5" font-weight="700">→ 증시 하락 · 금리 상승</text>
+
+        <rect x="510" y="92" width="270" height="130" fill="#E9F5EF" stroke="#2E7D5B"/>
+        <text x="645" y="124" text-anchor="middle" fill="#2E7D5B" font-size="17" font-weight="800">"Good is Good"</text>
+        <text x="645" y="150" text-anchor="middle" fill="#4A5163" font-size="13">침체 우려 완화 → 이익 전망 개선</text>
+        <text x="645" y="172" text-anchor="middle" fill="#4A5163" font-size="13">연착륙 기대 강화</text>
+        <text x="645" y="200" text-anchor="middle" fill="#2E7D5B" font-size="14.5" font-weight="700">→ 증시 상승</text>
+
+        <!-- row 2 -->
+        <rect x="20" y="232" width="200" height="130" fill="#EEF3FD" stroke="#CADCFC"/>
+        <text x="120" y="280" text-anchor="middle" fill="#1E2761" font-size="16" font-weight="800">고용 부진</text>
+        <text x="120" y="304" text-anchor="middle" fill="#4A5163" font-size="13">NFP 하회</text>
+        <text x="120" y="324" text-anchor="middle" fill="#4A5163" font-size="13">실업률 상승</text>
+        <text x="120" y="344" text-anchor="middle" fill="#4A5163" font-size="13">임금 둔화</text>
+
+        <rect x="230" y="232" width="270" height="130" fill="#E9F5EF" stroke="#2E7D5B"/>
+        <text x="365" y="264" text-anchor="middle" fill="#2E7D5B" font-size="17" font-weight="800">"Bad is Good"</text>
+        <text x="365" y="290" text-anchor="middle" fill="#4A5163" font-size="13">과열 진정 → 금리 인상 중단 기대</text>
+        <text x="365" y="312" text-anchor="middle" fill="#4A5163" font-size="13">피벗(Pivot) 기대감 형성</text>
+        <text x="365" y="340" text-anchor="middle" fill="#2E7D5B" font-size="14.5" font-weight="700">→ 증시 반등 · 금리 하락</text>
+
+        <rect x="510" y="232" width="270" height="130" fill="#FBEEF0" stroke="#B23A48"/>
+        <text x="645" y="264" text-anchor="middle" fill="#B23A48" font-size="17" font-weight="800">"Bad is Bad"</text>
+        <text x="645" y="290" text-anchor="middle" fill="#4A5163" font-size="13">침체 현실화 → 기업 이익 급감 우려</text>
+        <text x="645" y="312" text-anchor="middle" fill="#4A5163" font-size="13">금리 인하로도 상쇄 불가</text>
+        <text x="645" y="340" text-anchor="middle" fill="#B23A48" font-size="14.5" font-weight="700">→ 증시 급락</text>
+      </g>
+    </svg>
+    <figcaption><b>사용법:</b> 지표 발표 후 시장 반응을 해석할 때 <b>먼저 "지금 시장의 지배적 내러티브는 무엇인가"를 정한 뒤</b> 이 표를 적용한다. 내러티브를 잘못 잡으면 모든 해석이 뒤집힌다.</figcaption>
+  </figure>
+
+  <h3 class="sec">6-2. 내러티브는 어떻게 알아내나</h3>
+
+  <p>"지금 시장이 무엇을 무서워하는가"를 파악하는 실무적 방법들이다.</p>
+
+  <ul>
+    <li><strong>주식-채권 상관관계</strong> — 금리가 오를 때 주가가 빠지면 <em>시장의 관심은 인플레이션</em>이다. 금리가 내릴 때 주가도 빠지면 <em>관심은 침체</em>다. 이 상관관계 부호가 국면을 알려준다.</li>
+    <li><strong>연준 인사들의 발언 빈도</strong> — 물가 얘기가 많은가, 고용 얘기가 많은가.</li>
+    <li><strong>선물시장 금리 경로(FedWatch)</strong> — 시장이 인상을 반영 중인가 인하를 반영 중인가.</li>
+    <li><strong>신용 스프레드</strong> — 벌어지고 있다면 침체 내러티브가 지배적이다.</li>
+  </ul>
+
+  <div class="block key">
+    <span class="tag">핵심 정리</span>
+    <p>매크로 리서치의 결론 문장은 <b>"지표 → 정책 → 자산"</b> 순서로 쓰여야 한다.<br>
+    "고용이 좋아서 주가가 오른다"(지표 → 자산)는 <b>중간 고리가 빠진 문장</b>이다.<br>
+    "고용 호조 → 인하 기대 후퇴 → 할인율 상승 → 성장주 밸류에이션 압박" — 이렇게 <b>정책 고리를 반드시 경유</b>해야 한다.</p>
+  </div>
+
+  <div class="connect">이제 4개 영역을 다 배웠다. 마지막으로 이걸 하나의 판단으로 묶는 방법을 정리한다.</div>
+</section>
+
+<!-- ============================= 7장 ============================= -->
+<section class="chapter" id="ch7">
+  <span class="chno">CHAPTER 7</span>
+  <h2>종합 프레임워크 — 4개 영역을 하나로</h2>
+  <p class="lede">1회차 전체를 한 장에 압축한다. 리포트를 읽을 때 이 표를 옆에 놓고 칸을 채워나가면 된다.</p>
+
+  <h3 class="sec">7-1. 영역별 핵심 지표와 함정 세트</h3>
+
+  <p>지표만 외우는 게 아니라 <em>지표와 그 함정을 세트로 기억하는 것</em>이 이 표의 목적이다.</p>
+
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>영역</th><th>핵심 체크 지표</th><th>반드시 함께 확인할 함정</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>01. 성장<br>Growth</td>
+        <td>실질 GDP 성장률, <b>항목별 기여도</b>, 잠재성장률·GDP갭, GDPNow</td>
+        <td>측정 기준(QoQ/YoY/<b>SAAR 4배 증폭</b>) · 재고 착시 · 불황형 흑자 · 속보치 수정 · 컨센서스 대비</td>
+      </tr>
+      <tr>
+        <td>02. 경기<br>Cycle</td>
+        <td>PMI(<b>신규주문</b>), 소매판매 컨트롤그룹, 한국 수출(일평균), 장단기 금리차</td>
+        <td>선행/동행/<b>후행 혼동</b> · 소프트-하드 괴리 · <b>조업일수</b> · PMI를 성장률로 오독 · 침체의 두 정의</td>
+      </tr>
+      <tr>
+        <td>03. 물가<br>Inflation</td>
+        <td>근원 CPI·<b>근원 PCE</b>, 슈퍼코어, MoM 연율, 기대인플레(5y5y)</td>
+        <td><b>기저효과</b> · CPI/PCE 혼동 · 주거비 12~18개월 시차 · 레벨 vs 레이트 · 헤드라인 하락 오독</td>
+      </tr>
+      <tr>
+        <td>04. 고용<br>Employment</td>
+        <td>NFP(<b>수정치 포함</b>), 참가율, 고용률, AHE·ECI, JOLTS</td>
+        <td>두 조사의 불일치 · <b>참가율 착시</b> · AHE 구성 효과 · 실업률의 후행성 · 실질임금 환산</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3 class="sec">7-2. 결론을 쓰는 문장 틀</h3>
+
+  <figure>
+    <div class="figtitle">4개 영역 → 하나의 판단</div>
+    <div class="figsub">리서치 결론은 이 사슬을 따라 쓰인다</div>
+    <svg viewBox="0 0 800 290" role="img" aria-label="성장 경기 물가 고용 네 영역이 정책 판단을 거쳐 자산 시사점으로 종합되는 구조">
+      <g font-family="Pretendard, Malgun Gothic, sans-serif">
+        <defs>
+          <marker id="ar4" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+            <path d="M0,0 L10,4 L0,8 Z" fill="#B8860B"/>
+          </marker>
+        </defs>
+        <!-- 4 inputs -->
+        <rect x="20" y="30" width="150" height="52" rx="3" fill="#1E2761"/>
+        <text x="95" y="52" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">성장</text>
+        <text x="95" y="71" text-anchor="middle" fill="#CADCFC" font-size="11.5">체력이 어떤가</text>
+
+        <rect x="20" y="94" width="150" height="52" rx="3" fill="#2E3A7A"/>
+        <text x="95" y="116" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">경기</text>
+        <text x="95" y="135" text-anchor="middle" fill="#CADCFC" font-size="11.5">사이클 어디인가</text>
+
+        <rect x="20" y="158" width="150" height="52" rx="3" fill="#2E3A7A"/>
+        <text x="95" y="180" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">물가</text>
+        <text x="95" y="199" text-anchor="middle" fill="#CADCFC" font-size="11.5">과열됐는가</text>
+
+        <rect x="20" y="222" width="150" height="52" rx="3" fill="#1E2761"/>
+        <text x="95" y="244" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">고용</text>
+        <text x="95" y="263" text-anchor="middle" fill="#CADCFC" font-size="11.5">둘을 잇는 가교</text>
+
+        <!-- arrows to synth -->
+        <path d="M175,56 L250,130" fill="none" stroke="#B8860B" stroke-width="2" marker-end="url(#ar4)"/>
+        <path d="M175,120 L250,140" fill="none" stroke="#B8860B" stroke-width="2" marker-end="url(#ar4)"/>
+        <path d="M175,184 L250,164" fill="none" stroke="#B8860B" stroke-width="2" marker-end="url(#ar4)"/>
+        <path d="M175,248 L250,174" fill="none" stroke="#B8860B" stroke-width="2" marker-end="url(#ar4)"/>
+
+        <!-- synthesis -->
+        <rect x="262" y="112" width="200" height="80" rx="3" fill="#B8860B"/>
+        <text x="362" y="140" text-anchor="middle" fill="#fff" font-size="15" font-weight="700">실물 국면 판정</text>
+        <text x="362" y="162" text-anchor="middle" fill="#FBF3DF" font-size="12">과열 / 연착륙 / 둔화 / 침체</text>
+        <text x="362" y="181" text-anchor="middle" fill="#FBF3DF" font-size="12">+ 무효화 조건 명시</text>
+
+        <path d="M467,152 L520,152" fill="none" stroke="#B8860B" stroke-width="2.5" marker-end="url(#ar4)"/>
+
+        <!-- policy -->
+        <rect x="530" y="112" width="120" height="80" rx="3" fill="#2E3A7A"/>
+        <text x="590" y="145" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">정책 경로</text>
+        <text x="590" y="166" text-anchor="middle" fill="#CADCFC" font-size="11.5">인상/동결/인하</text>
+
+        <path d="M655,152 L700,152" fill="none" stroke="#B8860B" stroke-width="2.5" marker-end="url(#ar4)"/>
+
+        <!-- asset -->
+        <rect x="706" y="112" width="80" height="80" rx="3" fill="#1E2761"/>
+        <text x="746" y="145" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">자산</text>
+        <text x="746" y="166" text-anchor="middle" fill="#D9A93A" font-size="11.5">2회차</text>
+
+        <text x="590" y="230" text-anchor="middle" fill="#7A8095" font-size="12.5">1회차는 여기까지가 범위 —</text>
+        <text x="590" y="250" text-anchor="middle" fill="#7A8095" font-size="12.5">정책 경로와 자산 가격은 2회차에서 다룬다</text>
+      </g>
+    </svg>
+    <figcaption>1부 0장에서 봤던 4단계 사슬이 여기서 완성된다. <b>1회차 4권이 전부 왼쪽 네 상자를 채우는 작업이었다.</b></figcaption>
+  </figure>
+
+  <div class="block key">
+    <span class="tag">결론 문장 템플릿</span>
+    <p><b>"성장은 [잠재 대비 위치]이고, 사이클은 [국면]에 있으며, 물가는 [층위별 상태], 고용은 [양·가격 상태]다.
+    따라서 중앙은행은 [정책 방향]할 명분이 [강하다/약하다].
+    단, [지표]가 [조건]이 되면 이 판단은 무효다."</b></p>
+    <p>이 한 문단을 매주 스스로 채워보는 것이 1회차 학습의 실전 과제다.</p>
+  </div>
+</section>
+
+<!-- ============================= 8장 ============================= -->
+<section class="chapter" id="ch8">
+  <span class="chno">CHAPTER 8</span>
+  <h2>복합 문장 해부 실습</h2>
+  <p class="lede">실제 리서치 문장은 4개 영역이 한 문장에 섞여 나온다. 1회차의 최종 시험이다.</p>
+
+  <div class="block decode">
+    <span class="tag">실습 원문</span>
+    <div class="quote">"성장률은 연율 0.6%로 둔화, CPI는 기저효과로 낮아졌으나 슈퍼코어는 끈적, NFP는 상회"</div>
+    <div class="dl">
+      <div><b>"연율 0.6%"</b><span><em>SAAR 기준</em>이다. 전기비로는 약 0.15%. 잠재성장률(약 2%)을 크게 하회 → <em>GDP갭이 마이너스로 벌어지는 중</em>. 성장 엔진이 확실히 약해졌다.</span></div>
+      <div><b>"CPI는 기저효과로 낮아졌으나"</b><span>필자가 이미 <em>MoM을 확인했다는 신호</em>. YoY 하락은 착시이며 실제 물가 모멘텀은 안 꺾였다는 뜻.</span></div>
+      <div><b>"슈퍼코어는 끈적"</b><span>에너지·식품·주거비를 다 뺀 <em>인건비 주도 서비스 물가</em>가 안 내려온다. 임금 압력이 살아 있다는 확인.</span></div>
+      <div><b>"NFP는 상회"</b><span>고용은 아직 견조. 슈퍼코어가 끈적한 이유를 <em>고용이 설명해준다.</em> 두 지표가 서로를 검증하는 구조.</span></div>
+      <div><b>영역별 종합</b><span>성장 <em>약함</em> / 물가 <em>안 잡힘</em> / 고용 <em>강함</em> — 성장은 식는데 물가는 안 잡히는 <em>스태그플레이션적 조합</em>.</span></div>
+      <div><b>정책 함의</b><span>인하하자니 물가가 걸리고, 인상하자니 성장이 걸린다. <em>중앙은행의 선택지가 가장 좁은 국면</em>. 결과적으로 <em>고금리 장기화(higher for longer)</em>가 기본 시나리오.</span></div>
+      <div><b>무효화 조건</b><span>NFP가 <em>2개월 연속 크게 하회</em>하거나 슈퍼코어 3개월 연율이 <em>3% 아래</em>로 내려오면 인하 시나리오로 전환.</span></div>
+    </div>
+  </div>
+
+  <h3 class="sec">8-1. 왜 이 조합이 어려운가</h3>
+
+  <p>성장과 물가가 <strong>같은 방향</strong>일 때는 정책이 쉽다. 둘 다 뜨거우면 올리고, 둘 다 식으면 내린다.
+  문제는 <em>성장은 식는데 물가는 안 잡히는</em> 조합이다. 이때 중앙은행은 이중 책무의 두 목표가 정면 충돌하는 상황에 놓인다(4부 1장).</p>
+
+  <p>이 국면에서 시장이 던지는 질문은 하나다. <strong>"연준은 어느 쪽을 먼저 포기할 것인가."</strong>
+  역사적으로 연준은 <em>물가를 우선</em>해왔고(1970년대의 학습 효과), 그래서 고용이 실제로 무너지는 걸 확인하기 전까지는 인하를 미루는 경향이 있다.</p>
+
+  <div class="block trap">
+    <span class="tag">실습할 때 흔한 실수</span>
+    <p><b>영역별로 나열만 하고 종합하지 않는다.</b> "성장은 둔화, 물가는 혼조, 고용은 견조" — 여기서 멈추면 요약이지 분석이 아니다.
+    <b>세 개가 동시에 성립할 때 중앙은행이 어떤 딜레마에 놓이는지</b>까지 밀고 가야 리서치가 된다.</p>
+  </div>
+</section>
+
+<!-- ============================= 9장 ============================= -->
+<section class="chapter" id="ch9">
+  <span class="chno">CHAPTER 9</span>
+  <h2>대가들의 렌즈 — 달리오, 소로스, 드러켄밀러</h2>
+  <p class="lede">같은 데이터를 봐도 프레임이 다르면 다른 결론이 나온다. 검증된 프레임 몇 개를 빌려 쓰는 것부터 시작하면 된다.</p>
+
+  <h3 class="sec">9-1. 레이 달리오 — 경제는 기계다</h3>
+
+  <p><strong>브리지워터</strong> 창업자. 핵심 철학은 <em>"THE ECONOMIC MACHINE"</em>, 즉 경제를 <strong>독립된 부품들이 맞물려 작동하는 기계</strong>로 본다.</p>
+
+  <ul>
+    <li><strong>생산성 성장 추세</strong> — 장기적으로 생활수준을 결정하는 유일한 요인. 완만하게 우상향한다.</li>
+    <li><strong>단기 부채 사이클(5~8년)</strong> — 신용 팽창과 수축의 반복. 우리가 흔히 말하는 경기순환이 이것이다.</li>
+    <li><strong>장기 부채 사이클(50~75년)</strong> — 부채가 누적되다 디레버리징이 발생하는 대형 파동.</li>
+  </ul>
+
+  <p>실무적 시사점: <em>지금의 경기 부진이 단기 사이클상의 조정인지, 장기 부채 사이클의 전환점인지</em>를 구분하라는 것이다.
+  1부에서 배운 <strong>경기적 둔화 vs 구조적 둔화</strong> 구분과 정확히 같은 문제의식이다.</p>
+
+  <h3 class="sec">9-2. 조지 소로스 — 재귀성</h3>
+
+  <p>핵심은 <strong>재귀성(Reflexivity)</strong>이다. 시장 참여자의 인식이 <em>현실을 반영할 뿐 아니라 현실을 바꾼다</em>는 것.</p>
+
+  <div class="block analogy">
+    <span class="tag">연결</span>
+    <p>이 개념은 우리가 이미 3부 6장에서 만났다. <strong>기대인플레이션의 자기실현적 예언</strong>이 정확히 재귀성이다.
+    "물가가 오를 것"이라는 <em>인식</em>이 임금 요구와 가격 인상이라는 <em>행동</em>을 낳고, 그 결과 물가가 <em>실제로</em> 오른다.
+    소로스는 이 구조가 물가뿐 아니라 <em>자산 가격 전반</em>에서 작동한다고 봤다 — 주가 상승이 담보 가치를 올리고, 그것이 대출을 늘려 다시 주가를 올리는 식이다.</p>
+  </div>
+
+  <h3 class="sec">9-3. 드러켄밀러 · 튜더 존스 — 유동성과 추세</h3>
+
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>인물</th><th>핵심 프레임</th><th>실무 적용</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>스탠리<br>드러켄밀러</td>
+        <td>"시장을 움직이는 건 이익이 아니라 <b>유동성</b>이다"</td>
+        <td>중앙은행 대차대조표, 순유동성, 정책 경로를 최우선으로 본다. <b>물가 지표 → 정책 → 유동성</b> 순으로 추적</td>
+      </tr>
+      <tr>
+        <td>폴 튜더 존스</td>
+        <td>"먼저 잃지 않는 것. <b>추세와 국면</b> 판단이 전부"</td>
+        <td>국면 판정(2부 8장)과 <b>무효화 조건</b> 설정. 틀렸을 때 빠르게 인정하는 규칙</td>
+      </tr>
+      <tr>
+        <td>루이스 베이컨</td>
+        <td>자산 간 <b>상관관계</b>의 변화를 신호로 읽음</td>
+        <td>주식-채권 상관 부호로 시장 내러티브를 역추적(4부 6장)</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="block key">
+    <span class="tag">이 장의 목적</span>
+    <p>대가의 이름을 외우는 게 목적이 아니다. <b>"나는 어떤 렌즈로 보고 있는가"를 자각하는 것</b>이 목적이다.<br>
+    유동성 렌즈로 보면 중앙은행이 전부고, 사이클 렌즈로 보면 부채 국면이 전부다.
+    <b>렌즈를 밝히지 않은 주장은 검증할 수 없다.</b> 발표할 때 "저는 ○○ 관점에서 봅니다"라고 먼저 말하는 습관을 들여라.</p>
+  </div>
+</section>
+
+<!-- ============================= 10장 ============================= -->
+<section class="chapter" id="ch10">
+  <span class="chno">CHAPTER 10</span>
+  <h2>2회차로 가는 다리 · 학습 로드맵</h2>
+
+  <h3 class="sec">10-1. 1회차에서 무엇을 했나</h3>
+
+  <p>4권에 걸쳐 우리가 한 일은 <strong>4단계 사슬의 앞쪽 두 칸을 채우는 것</strong>이었다.</p>
+
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>권</th><th>다룬 것</th><th>남긴 핵심 질문</th></tr></thead>
+    <tbody>
+      <tr><td>1부 성장</td><td>GDP 해부, 측정 기준, 기여도, 잠재성장률·GDP갭, 컨센서스, 데이터 수정</td><td>"이 경제의 체력은 잠재 대비 어디인가?"</td></tr>
+      <tr><td>2부 경기</td><td>선행/동행/후행, 소프트-하드, PMI, 소비, 한국 수출, 침체의 정의</td><td>"사이클의 어느 국면인가?"</td></tr>
+      <tr><td>3부 물가</td><td>CPI·PCE, 근원·슈퍼코어, 기저효과, 기대인플레, 레벨과 레이트</td><td>"물가 압력이 통화정책을 움직일 수준인가?"</td></tr>
+      <tr><td>4부 고용·종합</td><td>두 조사, NFP, 참가율, 임금-물가, 국면 매트릭스, 종합 프레임</td><td>"성장과 물가 중 어느 쪽이 더 급한가?"</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3 class="sec">10-2. 2회차에서 다룰 것</h3>
+
+  <p>실물 지표가 중앙은행의 기준금리 결정을 좌우한다는 것까지 왔다. 2회차는 그 다음 두 칸이다.</p>
+
+  <ul>
+    <li><strong>금리 결정 원리</strong> — 테일러 준칙, 중립금리(r*), 실질금리, 점도표와 포워드 가이던스, 성명서 문장 비교(diff) 해독법, 정책 파급 시차</li>
+    <li><strong>자산 가격 파급 경로</strong> — 할인율 원리, 수익률곡선, 신용 스프레드, 환율(달러 스마일), 주식 멀티플, 부동산, 사이클 국면별 자산 성과</li>
+  </ul>
+
+  <p>1회차에서 만든 <em>실물 국면 판정</em>이 2회차의 <strong>입력값</strong>이 된다. 그래서 1회차를 대충 하면 2회차가 통째로 흔들린다.</p>
+
+  <h3 class="sec">10-3. 실력을 올리는 최소 루틴</h3>
+
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>주기</th><th>할 일</th><th>왜</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>매일 10분</td>
+        <td>FRED에서 관심 지표 1개 차트 보기 (기준·기간·단위를 소리 내어 확인)</td>
+        <td>차트 축을 읽는 습관이 모든 오독을 막는다</td>
+      </tr>
+      <tr>
+        <td>매주 30분</td>
+        <td>7장의 <b>결론 문장 템플릿</b>을 직접 채워보기 + 무효화 조건 명시</td>
+        <td>판단을 기록해야 나중에 검증할 수 있다</td>
+      </tr>
+      <tr>
+        <td>매월 1시간</td>
+        <td><b>한국은행 통화정책방향 의결문</b> 1편 + <b>기재부 그린북</b> 요약 읽기. 전월 대비 <b>문장이 어떻게 바뀌었는지</b> 비교</td>
+        <td>공식 문서의 문장 변화가 곧 정책 스탠스 변화다</td>
+      </tr>
+      <tr>
+        <td>분기 1회</td>
+        <td>지난 분기에 쓴 판단을 다시 꺼내 <b>맞았는지 틀렸는지 채점</b></td>
+        <td>논거와 결과를 연결하는 기록이 곧 실력의 증거다</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="block key">
+    <span class="tag">마무리 — 분석가의 4가지 태도</span>
+    <p><b>1. 지표는 숫자가 아니라 신호다.</b> 경제 통계는 수많은 경제 주체의 활동과 심리가 응축된 결과물이다.<br>
+    <b>2. 불일치와 시차를 추적하라.</b> 지표들이 어긋나는 지점에만 정보가 있다. 다 같은 방향일 땐 아무도 리서치를 안 읽는다.<br>
+    <b>3. 프레임을 밝혀라.</b> 어떤 렌즈로 보는지 말하지 않은 주장은 검증할 수 없다.<br>
+    <b>4. 무효화 조건을 먼저 적어라.</b> 틀릴 수 있는 방법을 미리 정해두지 않은 판단은 판단이 아니라 희망이다.</p>
+  </div>
+</section>
+
+<!-- ============================= 부록 ============================= -->
+<section class="chapter" id="appendix">
+  <span class="chno">APPENDIX</span>
+  <h2>부록 — 고용 용어사전 · FRED 코드</h2>
+
+  <h3 class="sec">A. 고용·매크로 핵심 용어</h3>
+  <div class="glossary">
+    <div class="gterm">
+      <div class="t">NFP<small>Non-Farm Payrolls</small></div>
+      <div class="d">비농업 부문 급여 명부상 고용자 수 증감. 매월 첫째 금요일 발표되며 <b>금융시장 변동성이 가장 큰 지표</b> 중 하나. 헤드라인보다 <b>직전 2개월 수정치</b>가 중요하다.</div>
+    </div>
+    <div class="gterm">
+      <div class="t">이중 책무<small>Dual Mandate</small></div>
+      <div class="d">연준에 부여된 두 가지 목표 — <b>최대 고용</b>과 <b>물가 안정</b>. 평시에는 양립하지만 과열·스태그플레이션 국면에서는 정면 충돌한다.</div>
+    </div>
+    <div class="gterm">
+      <div class="t">경제활동참가율<small>LFPR</small></div>
+      <div class="d">생산가능인구 중 경제활동인구(취업자+실업자) 비율. <b>실업률 해석의 전제 조건</b>. 구직 단념이 늘면 참가율과 실업률이 함께 하락하는 착시가 생긴다.</div>
+    </div>
+    <div class="gterm">
+      <div class="t">고용률<small>Employment-Population Ratio</small></div>
+      <div class="d">생산가능인구 중 취업자 비율. 분모가 인구 전체라 <b>참가율 착시의 영향을 받지 않는다.</b> 실무에서 실업률의 보완재로 선호된다.</div>
+    </div>
+    <div class="gterm">
+      <div class="t">Sahm Rule<small>삼의 법칙</small></div>
+      <div class="d">실업률 3개월 이동평균이 직전 12개월 최저치보다 <b>0.5%p 이상</b> 상승하면 침체 진입으로 판정. 실시간성이 좋아 널리 인용된다.</div>
+    </div>
+    <div class="gterm">
+      <div class="t">JOLTS<small>Job Openings and Labor Turnover Survey</small></div>
+      <div class="d">구인건수·이직률 통계. <b>구인건수 ÷ 실업자 수(V/U)</b>가 노동시장 타이트함의 대표 척도다. 자발적 이직률(quits rate)은 근로자의 자신감을 보여준다.</div>
+    </div>
+    <div class="gterm">
+      <div class="t">AHE<small>Average Hourly Earnings</small></div>
+      <div class="d">시간당 평균임금. NFP와 함께 발표되어 속보성이 좋으나 <b>업종 구성 변화에 왜곡</b>된다. 정확한 임금 판단은 ECI로 교차 확인한다.</div>
+    </div>
+    <div class="gterm">
+      <div class="t">ECI<small>Employment Cost Index</small></div>
+      <div class="d">고용비용지수. 분기별 발표. 구성 효과를 보정해 <b>가장 신뢰도 높은 임금 지표</b>로 평가받으며 연준이 중시한다.</div>
+    </div>
+    <div class="gterm">
+      <div class="t">단위노동비용<small>ULC</small></div>
+      <div class="d">임금 상승률 − 생산성 증가율. <b>임금 상승이 곧 인플레이션은 아니라는 것</b>을 보여주는 지표. 생산성이 함께 오르면 물가 압력이 상쇄된다.</div>
+    </div>
+    <div class="gterm">
+      <div class="t">필립스 곡선<small>Phillips Curve</small></div>
+      <div class="d">실업률과 임금(물가) 상승률의 역관계. 기울기는 시대·국면에 따라 변하며 2010년대에는 크게 평평해졌다는 논쟁이 있었다.</div>
+    </div>
+  </div>
+
+  <h3 class="sec">B. FRED 코드 — 고용 편</h3>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>지표</th><th>FRED 코드</th><th>빈도</th><th>비고</th></tr></thead>
+    <tbody>
+      <tr><td>비농업고용 총계</td><td>PAYEMS</td><td>월</td><td>레벨 값. 전월차가 곧 NFP</td></tr>
+      <tr><td>실업률</td><td>UNRATE</td><td>월</td><td>가구조사 기반</td></tr>
+      <tr><td>경제활동참가율</td><td>CIVPART</td><td>월</td><td>실업률 해석의 전제</td></tr>
+      <tr><td>핵심연령 참가율(25~54)</td><td>LNS11300060</td><td>월</td><td>고령화 효과 제거</td></tr>
+      <tr><td>고용률</td><td>EMRATIO</td><td>월</td><td>참가율 착시에 강함</td></tr>
+      <tr><td>U-6 광의 실업률</td><td>U6RATE</td><td>월</td><td>숨은 유휴 포착</td></tr>
+      <tr><td>시간당 평균임금</td><td>CES0500000003</td><td>월</td><td>YoY로 변환해 사용</td></tr>
+      <tr><td>고용비용지수</td><td>ECIALLCIV</td><td>분기</td><td>연준이 중시하는 임금 지표</td></tr>
+      <tr><td>구인건수(JOLTS)</td><td>JTSJOL</td><td>월</td><td>UNEMPLOY와 나눠 V/U 계산</td></tr>
+      <tr><td>실업자 수</td><td>UNEMPLOY</td><td>월</td><td>V/U 비율의 분모</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3 class="sec">C. 한국 고용 통계</h3>
+  <ul>
+    <li><strong>통계청 고용동향</strong> — 매월 중순 발표. 취업자 수 증감, 실업률, 고용률, 경제활동참가율</li>
+    <li><strong>확장실업률(고용보조지표 3)</strong> — 미국 U-6에 대응하는 체감 실업률</li>
+    <li><strong>고용노동부 사업체노동력조사</strong> — 임금·근로시간 (미국 사업체조사에 해당)</li>
+    <li><strong>주의</strong> — 한국은 자영업 비중이 높고 취업준비생 규모가 커서 실업률이 구조적으로 낮게 나온다. <b>고용률과 확장실업률 병행</b>이 필수</li>
+  </ul>
+</section>
+
+<!-- ============================= 셀프체크 ============================= -->
+<section class="selfcheck" id="check">
+  <h2>셀프체크 — 4부 및 1회차 종합</h2>
+  <p class="lede">앞의 여섯 문항은 4부, 뒤의 네 문항은 1~4부 통합 문제다.</p>
+
+  <details>
+    <summary>고용이 좋아지는데 왜 중앙은행이 긴장할 수 있나?</summary>
+    <div class="answer">
+      <p>고용은 <b>두 경로</b>로 작동하기 때문이다. ①경기 경로 — 소득↑ → 소비↑ → GDP↑ (좋은 일). ②물가 경로 — 임금↑ → 인건비↑ → 서비스 물가(슈퍼코어)↑ (위험한 일).
+      연준의 이중 책무인 <b>최대 고용과 물가 안정이 과열 국면에서 정면 충돌</b>하며, 고용이 너무 좋으면 물가 목표가 위협받는다. (1장)</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>"실업률은 하락했는데 NFP는 감소"라는 헤드라인이 어떻게 가능한가?</summary>
+    <div class="answer">
+      <p><b>두 지표가 서로 다른 조사에서 나오기 때문이다.</b> 실업률은 <b>가구조사</b>(6만 가구에 "일하십니까"), NFP는 <b>사업체조사</b>(12만 사업체의 급여 명부)에서 나온다.
+      가구조사는 자영업자·프리랜서를 포함하지만 사업체조사는 제외한다. 침체 초기에 정규직에서 자영업으로 이동하면 실업률은 안 오르는데 NFP는 감소한다. 불일치는 오류가 아니라 <b>노동시장 구조 변화라는 정보</b>다. (2장)</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>NFP가 컨센서스를 크게 상회했는데 채권금리가 급락했다. 무엇을 확인해야 하나?</summary>
+    <div class="answer">
+      <p><b>직전 2개월 수정치(revisions)</b>다. 당월 헤드라인이 +180K로 좋아도 전월·전전월이 합계 −95K 하향 수정됐다면 실질 순증은 +85K로 오히려 컨센서스를 크게 하회한다.
+      시장은 <b>헤드라인 + 수정치</b>를 합산한 값에 반응한다. 추가로 3개월 이동평균, 주당 근로시간, 임시직 고용도 함께 본다. (3장)</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>실업률이 4.0%에서 3.8%로 떨어졌다. 좋은 소식인지 판단하려면?</summary>
+    <div class="answer">
+      <p><b>경제활동참가율을 즉시 확인해야 한다.</b> 실업률의 분모는 경제활동인구(취업자+실업자)인데, 구직을 포기한 사람은 분자와 분모에서 동시에 빠져 <b>실업률이 내려간다.</b>
+      참가율이 함께 하락했다면 <b>개선이 아니라 악화</b>다. 참가율 착시에 강한 <b>고용률</b>이나 <b>U-6 광의 실업률</b>을 함께 보는 것이 실무 표준이다. (4장)</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>임금이 4% 오르면 무조건 인플레이션 압력인가?</summary>
+    <div class="answer">
+      <p><b>아니다. 생산성을 봐야 한다.</b> 진짜 지표는 <b>단위노동비용(임금 상승률 − 생산성 증가율)</b>이다. 생산성이 함께 오르면 기업은 가격을 올리지 않고도 인건비를 감당한다.
+      물가 목표 2%와 양립 가능한 임금 상승률은 대략 <b>2% + 생산성 증가율(1~1.5%) = 3~3.5%</b>다. 이 선을 넘어 고착되면 중앙은행이 물가 목표 달성을 어렵다고 본다. (5장)</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>고용 지표가 부진했는데 주가가 급등했다. 어떻게 설명하나?</summary>
+    <div class="answer">
+      <p><b>긴축 국면의 "Bad is Good"</b>이다. 시장은 고용 자체가 아니라 <b>고용이 바꿀 금리 경로</b>를 본다.
+      과열이 진정되면 금리 인상 중단·인하(피벗) 기대가 형성되고, 할인율 하락이 밸류에이션을 밀어올린다.
+      단 <b>침체 우려 국면에서는 같은 뉴스가 "Bad is Bad"</b>로 뒤집히므로, 먼저 <b>시장의 지배적 내러티브</b>를 파악해야 한다. (6장)</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>[종합] "성장률은 연율 0.6%로 둔화, CPI는 기저효과로 낮아졌으나 슈퍼코어는 끈적, NFP는 상회"를 한 문장으로 종합하면?</summary>
+    <div class="answer">
+      <p><b>"성장은 약해지는데 물가는 안 잡히고 고용은 아직 견조한, 중앙은행의 선택지가 가장 좁은 국면."</b></p>
+      <p>연율 0.6%는 잠재(약 2%)를 크게 하회해 GDP갭이 벌어지는 중이고, CPI YoY 하락은 기저효과 착시이며, 슈퍼코어가 끈적한 이유는 견조한 고용이 임금을 떠받치기 때문이다.
+      성장과 물가가 반대 방향이라 이중 책무가 충돌하며, 결과적으로 <b>고금리 장기화</b>가 기본 시나리오가 된다. (8장)</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>[종합] 1회차에서 배운 4개 영역 각각의 "대표 함정"을 하나씩 말하면?</summary>
+    <div class="answer">
+      <p><b>성장</b> — 측정 기준 혼동(QoQ/SAAR 4배 증폭)과 재고 착시.<br>
+      <b>경기</b> — 후행지표(실업률)로 현재를 판단하는 것, 그리고 조업일수를 무시한 수출 해석.<br>
+      <b>물가</b> — 기저효과로 인한 YoY 착시, 그리고 주거비의 12~18개월 시차.<br>
+      <b>고용</b> — 참가율을 확인하지 않은 실업률 해석, 그리고 NFP 수정치 누락.<br>
+      각 영역의 지표는 <b>함정과 세트로 기억</b>해야 한다. (7장)</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>[종합] "고용이 좋아서 주가가 오른다"는 문장은 왜 불완전한가?</summary>
+    <div class="answer">
+      <p><b>정책이라는 중간 고리가 빠졌기 때문이다.</b> 매크로 결론은 반드시 <b>지표 → 정책 → 자산</b> 순서를 경유해야 한다.
+      올바른 형태는 "고용 호조 → 인하 기대 후퇴 → 할인율 상승 → 성장주 밸류에이션 압박"처럼 각 고리를 명시하는 것이다.
+      고리를 생략하면 국면이 바뀌었을 때 왜 결론이 뒤집히는지 설명할 수 없다. (6장·7장)</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>[종합] 리서치 결론에 반드시 붙여야 하는 한 문장은?</summary>
+    <div class="answer">
+      <p><b>무효화 조건</b>이다. "단, [지표]가 [조건]이 되면 이 판단은 무효다."<br>
+      틀릴 수 있는 방법을 미리 정해두지 않은 판단은 판단이 아니라 희망이며, 나중에 논거와 결과를 연결해 검증할 수도 없다.
+      국면 판정은 단정이 아니라 <b>조건부 판단</b>이어야 한다. (2부 8장 · 4부 7장)</p>
+    </div>
+  </details>
+</section>
+
+<nav class="footnav">
+  <a class="ghost" href="3부_물가.html">← 3부 · 물가(Inflation)</a>
+  <a href="index.html">전체 목차로 →</a>
+</nav>
+
+</div>
+</body>
+</html>

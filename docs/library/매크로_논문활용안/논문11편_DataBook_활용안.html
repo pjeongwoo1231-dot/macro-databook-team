@@ -1,0 +1,680 @@
+<title>논문 11편 → Data Book 반영안</title>
+<style>
+:root{
+  --ground:#f2f3f0; --panel:#fbfbf9; --sunk:#e8eae5;
+  --ink:#171a18; --ink-2:#3c423e; --ink-3:#6b716b;
+  --rule:#d5d9d2; --rule-2:#c2c7bf;
+  --accent:#2c6b58; --accent-soft:#e0ece7;
+  --alert:#8f4a26; --alert-soft:#f3e6dc;
+  --code-bg:#eceee9;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --ground:#121513; --panel:#191d1a; --sunk:#1f2421;
+    --ink:#e5e8e3; --ink-2:#b9bfb9; --ink-3:#868d86;
+    --rule:#2b312d; --rule-2:#3a423c;
+    --accent:#69b394; --accent-soft:#1d2f28;
+    --alert:#d2916a; --alert-soft:#2e211a;
+    --code-bg:#1c211e;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#121513; --panel:#191d1a; --sunk:#1f2421;
+  --ink:#e5e8e3; --ink-2:#b9bfb9; --ink-3:#868d86;
+  --rule:#2b312d; --rule-2:#3a423c;
+  --accent:#69b394; --accent-soft:#1d2f28;
+  --alert:#d2916a; --alert-soft:#2e211a;
+  --code-bg:#1c211e;
+}
+:root[data-theme="light"]{
+  --ground:#f2f3f0; --panel:#fbfbf9; --sunk:#e8eae5;
+  --ink:#171a18; --ink-2:#3c423e; --ink-3:#6b716b;
+  --rule:#d5d9d2; --rule-2:#c2c7bf;
+  --accent:#2c6b58; --accent-soft:#e0ece7;
+  --alert:#8f4a26; --alert-soft:#f3e6dc;
+  --code-bg:#eceee9;
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Malgun Gothic","맑은 고딕",system-ui,sans-serif;
+  font-size:16.5px; line-height:1.75;
+  -webkit-font-smoothing:antialiased;
+}
+.mono{font-family:ui-monospace,"Cascadia Mono",Consolas,"SFMono-Regular",monospace}
+.wrap{max-width:60rem; margin:0 auto; padding:0 1.5rem 6rem}
+.col{max-width:44rem}
+
+/* ---------- masthead ---------- */
+header.top{border-bottom:1px solid var(--rule); margin-bottom:3.5rem}
+.top-inner{max-width:60rem; margin:0 auto; padding:3.5rem 1.5rem 2.75rem}
+.eyebrow{
+  font-family:ui-monospace,"Cascadia Mono",Consolas,monospace;
+  font-size:.7rem; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--accent); margin:0 0 1.1rem;
+}
+h1{
+  font-size:clamp(2rem,5vw,2.9rem); line-height:1.14; letter-spacing:-.022em;
+  font-weight:800; margin:0 0 1.1rem; text-wrap:balance; max-width:22ch;
+}
+.deck{font-size:1.06rem; color:var(--ink-2); margin:0; max-width:46rem}
+.deck strong{color:var(--ink); font-weight:650}
+.stamp{
+  display:flex; flex-wrap:wrap; gap:.5rem 1.5rem; margin-top:2rem;
+  font-family:ui-monospace,"Cascadia Mono",Consolas,monospace;
+  font-size:.72rem; letter-spacing:.05em; color:var(--ink-3);
+}
+.stamp b{color:var(--ink-2); font-weight:600}
+
+/* ---------- sections ---------- */
+section{margin:0 0 4.5rem}
+h2{
+  font-size:1.45rem; line-height:1.25; letter-spacing:-.018em; font-weight:750;
+  margin:0 0 .5rem; text-wrap:balance;
+  padding-top:1.1rem; border-top:2px solid var(--ink);
+}
+h2 .num{
+  font-family:Georgia,"Iowan Old Style","Times New Roman",serif;
+  font-style:italic; font-weight:400; color:var(--accent);
+  margin-right:.6rem; font-size:1.15rem;
+}
+.sub{color:var(--ink-3); font-size:.94rem; margin:0 0 2rem; max-width:44rem}
+h3{font-size:1.02rem; font-weight:700; letter-spacing:-.008em; margin:2.25rem 0 .6rem}
+p{margin:0 0 1.05rem; max-width:44rem}
+ul,ol{margin:0 0 1.05rem; padding-left:1.15rem; max-width:44rem}
+li{margin-bottom:.5rem}
+li::marker{color:var(--ink-3)}
+a{color:var(--accent); text-decoration-thickness:1px; text-underline-offset:2px}
+a:focus-visible,summary:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:2px}
+code{
+  font-family:ui-monospace,"Cascadia Mono",Consolas,monospace; font-size:.86em;
+  background:var(--code-bg); padding:.1em .38em; border-radius:3px;
+}
+strong{font-weight:680}
+
+/* ---------- paper index ---------- */
+.tablewrap{overflow-x:auto; margin:0 0 1.25rem; border:1px solid var(--rule); border-radius:4px; background:var(--panel)}
+table{border-collapse:collapse; width:100%; min-width:44rem; font-size:.88rem}
+th,td{text-align:left; padding:.7rem .85rem; border-bottom:1px solid var(--rule); vertical-align:top}
+thead th{
+  font-family:ui-monospace,"Cascadia Mono",Consolas,monospace;
+  font-size:.68rem; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--ink-3); font-weight:600; background:var(--sunk);
+  position:sticky; top:0;
+}
+tbody tr:last-child td{border-bottom:none}
+td.yr{font-family:Georgia,"Iowan Old Style",serif; color:var(--ink-3); white-space:nowrap; font-variant-numeric:tabular-nums}
+td.ttl{font-weight:600; min-width:14rem}
+td.use{color:var(--ink-2)}
+.grp{
+  font-family:ui-monospace,"Cascadia Mono",Consolas,monospace; font-size:.66rem;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--accent);
+  background:var(--accent-soft); padding:.1rem .4rem; border-radius:3px; white-space:nowrap;
+}
+.grp.mkt{color:var(--alert); background:var(--alert-soft)}
+
+/* ---------- action cards ---------- */
+.card{
+  background:var(--panel); border:1px solid var(--rule); border-radius:5px;
+  padding:1.5rem 1.6rem; margin:0 0 1.5rem;
+}
+.card > *:last-child{margin-bottom:0}
+.card-head{display:flex; gap:1rem; align-items:baseline; margin-bottom:.35rem}
+.pri{
+  font-family:Georgia,"Iowan Old Style",serif; font-size:1.5rem; line-height:1;
+  color:var(--accent); font-weight:700; font-variant-numeric:tabular-nums;
+  flex:none; min-width:2.2rem;
+}
+.card h3{margin:0; font-size:1.1rem; letter-spacing:-.012em}
+.meta{
+  display:flex; flex-wrap:wrap; gap:.4rem .6rem; margin:.85rem 0 1.1rem;
+  padding-left:3.2rem;
+}
+.tag{
+  font-family:ui-monospace,"Cascadia Mono",Consolas,monospace; font-size:.68rem;
+  letter-spacing:.04em; color:var(--ink-3);
+  border:1px solid var(--rule-2); border-radius:3px; padding:.15rem .45rem;
+}
+.tag b{color:var(--ink-2); font-weight:600}
+.card-body{padding-left:3.2rem}
+.card-body > *:last-child{margin-bottom:0}
+@media (max-width:640px){
+  .meta,.card-body{padding-left:0}
+  .card-head{gap:.7rem}
+  .pri{font-size:1.2rem; min-width:1.8rem}
+}
+
+/* ---------- code ---------- */
+pre{
+  background:var(--code-bg); border:1px solid var(--rule); border-radius:4px;
+  padding:.9rem 1rem; overflow-x:auto; margin:0 0 1.05rem;
+  font-family:ui-monospace,"Cascadia Mono",Consolas,monospace;
+  font-size:.79rem; line-height:1.6; color:var(--ink-2);
+}
+pre code{background:none; padding:0; font-size:inherit}
+.filename{
+  font-family:ui-monospace,"Cascadia Mono",Consolas,monospace;
+  font-size:.68rem; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--ink-3); margin:0 0 .3rem;
+}
+
+/* ---------- callouts ---------- */
+.note{
+  border-left:3px solid var(--accent); background:var(--accent-soft);
+  padding:.85rem 1.1rem; border-radius:0 4px 4px 0; margin:0 0 1.05rem;
+  font-size:.92rem; color:var(--ink-2); max-width:44rem;
+}
+.warn{
+  border-left:3px solid var(--alert); background:var(--alert-soft);
+  padding:.85rem 1.1rem; border-radius:0 4px 4px 0; margin:0 0 1.05rem;
+  font-size:.92rem; color:var(--ink-2); max-width:44rem;
+}
+.note b,.warn b{color:var(--ink)}
+.note p:last-child,.warn p:last-child{margin-bottom:0}
+.note .lbl,.warn .lbl{
+  display:block; font-family:ui-monospace,"Cascadia Mono",Consolas,monospace;
+  font-size:.66rem; letter-spacing:.13em; text-transform:uppercase;
+  margin-bottom:.3rem;
+}
+.note .lbl{color:var(--accent)}
+.warn .lbl{color:var(--alert)}
+
+/* ---------- rules list ---------- */
+.rule-item{border-top:1px solid var(--rule); padding:1.35rem 0}
+.rule-item:last-child{border-bottom:1px solid var(--rule)}
+.rule-item h3{margin:0 0 .45rem}
+.rule-item .src{
+  font-family:ui-monospace,"Cascadia Mono",Consolas,monospace;
+  font-size:.68rem; color:var(--ink-3); letter-spacing:.04em; margin:0 0 .6rem;
+}
+
+/* ---------- checklist ---------- */
+.check{list-style:none; padding:0; max-width:44rem}
+.check li{
+  display:flex; gap:.85rem; align-items:flex-start;
+  border-bottom:1px solid var(--rule); padding:.7rem 0; margin:0;
+}
+.check li:first-child{border-top:1px solid var(--rule)}
+.check .box{
+  flex:none; width:1rem; height:1rem; margin-top:.35rem;
+  border:1.5px solid var(--rule-2); border-radius:2px;
+}
+.check .who{
+  font-family:ui-monospace,"Cascadia Mono",Consolas,monospace;
+  font-size:.68rem; color:var(--ink-3); margin-left:auto; flex:none;
+  padding-left:1rem; white-space:nowrap;
+}
+
+footer{border-top:1px solid var(--rule); margin-top:1rem; padding-top:1.5rem; color:var(--ink-3); font-size:.83rem}
+</style>
+
+<header class="top">
+  <div class="top-inner">
+    <p class="eyebrow">매크로 경제학회 · Data Book</p>
+    <h1>논문 11편을 Data Book에 어떻게 꽂을 것인가</h1>
+    <p class="deck">받은 11개 파일(중복 1건 제외 <strong>10편</strong>)은 두 덩어리다. <strong>경기선행지표 6편</strong>은 파이프라인 ①(무엇을 수집할 것인가)에, <strong>주식시장·공매도 4편</strong>은 파이프라인 ③(수집한 것을 어떻게 판단할 것인가)에 붙는다. 아래는 현재 <code>indicators.yaml</code> 199개 지표와 한 줄씩 대조해서 <em>지금 없는 것 · 지금 잘못 쓰고 있는 것 · 만들 수 있는데 안 만든 것</em>만 골라낸 반영안이다.</p>
+    <div class="stamp">
+      <span><b>대조 기준</b> indicators.yaml (199지표 / team_1~4)</span>
+      <span><b>작성</b> 2026-08-06</span>
+      <span><b>신규 제안</b> 지표 6 · 파생 3 · 판단규칙 5</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<section>
+  <h2><span class="num">I.</span>읽은 것 — 11편이 각각 무엇을 주는가</h2>
+  <p class="sub">"이 논문이 Data Book의 어느 칸을 바꾸는가"만 적었다. 전체 요약이 아니라 쓸모 기준의 색인이다.</p>
+
+  <div class="tablewrap">
+    <table>
+      <thead>
+        <tr><th>구분</th><th>논문</th><th>연도</th><th>Data Book에 주는 것</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="grp">선행지표</span></td>
+          <td class="ttl">Krüger, <em>A Wavelet Evaluation of Some Leading Business Cycle Indicators</em> (독일, JBCR 17:293)</td>
+          <td class="yr">2021</td>
+          <td class="use">선행지표의 <b>리드타임을 숫자로</b> 준다. 중앙값 리드 — 신규수주 3.6개월(가장 안정), 기업기대지수 12.8개월, 주가지수 5.1개월(불안정), 텀스프레드 12.1개월(매우 불안정, 저금리기 선행성 상실).</td>
+        </tr>
+        <tr>
+          <td><span class="grp">선행지표</span></td>
+          <td class="ttl">Jonath·Khorasani·O'Connell, <em>The consumer-to-producer temperature gradient</em> (Financial Innovation 12:75)</td>
+          <td class="yr">2026</td>
+          <td class="use">소비자심리(CSI) − PMI를 온도차로 변환한 <b>CPTG 파생지표</b>. 설비가동률을 4개월 선행. 입력 두 개 중 하나(미시간)는 이미 수집 중.</td>
+        </tr>
+        <tr>
+          <td><span class="grp">선행지표</span></td>
+          <td class="ttl">박성근 외, <em>산업경기 모니터링 분석방안 연구: 제조업 중심</em> (산업연구원 2020-02)</td>
+          <td class="yr">2020</td>
+          <td class="use">국내 <b>속보지표 3종 제조법</b> — ①전력사용량(조업일 보정) ②국면전환모형 잠재요인(1.5개월 선행) ③뉴스 토픽·감성 종합스코어. 셋 다 지금 Data Book에 없다.</td>
+        </tr>
+        <tr>
+          <td><span class="grp">선행지표</span></td>
+          <td class="ttl">김동하, <em>중국 경제 선행지표의 유효성에 관한 연구</em> (中蘇硏究 37:1)</td>
+          <td class="yr">2013</td>
+          <td class="use">중국 지표 <b>취사 기준</b>. PMI가 최우수, 경기선행지수는 통화량·착공프로젝트·물류지수가 유효, <b>CCI는 쓰지 말 것</b>(지역·소득 편차).</td>
+        </tr>
+        <tr>
+          <td><span class="grp">선행지표</span></td>
+          <td class="ttl">이정형·조신섭, <em>Analysis of Composite Index Using the Time Series Model</em> (한국자료분석학회지 1:1)</td>
+          <td class="yr">1999</td>
+          <td class="use">한국 선행↔동행 시차 <b>3~4개월</b>. 지표 선정 6기준(경제적 중요성·통계적 적합성·전환점 타이밍·순환 부합성·평활성·속보성) — Data Book 지표 채택 심사표로 그대로 쓸 수 있다.</td>
+        </tr>
+        <tr>
+          <td><span class="grp">선행지표</span></td>
+          <td class="ttl">오대정, <em>미국 경기 고점 아직 멀었다</em> (매경이코노미 경제지표 읽기)</td>
+          <td class="yr">2024</td>
+          <td class="use">실무 해석 프레임. 후행(고용)·동행(생산)보다 선행을 보고, 단일 수치가 아니라 <b>20년 레인지 안 현재 위치</b>로 읽는다. 5단계 레짐 분석 1단계 템플릿.</td>
+        </tr>
+        <tr>
+          <td><span class="grp mkt">주식시장</span></td>
+          <td class="ttl">우민철·김명애, <em>한국 주식시장에서 공매도거래 유인</em> (한국증권학회지 46:1) <span class="tag">중복 2부</span></td>
+          <td class="yr">2017</td>
+          <td class="use">공매도비중은 미래수익률을 음(−)으로 예측 → <b>정보거래 신호</b>. 대형·고외국인주에선 과열 진정, 소형주에선 하락 가속. 공매도 잔고를 수급지표로 편입할 근거.</td>
+        </tr>
+        <tr>
+          <td><span class="grp mkt">주식시장</span></td>
+          <td class="ttl">이준서·빈기범·장광익, <em>주가와 공매도간 인과 관계에 관한 실증 연구</em> (한국증권학회지 39:3)</td>
+          <td class="yr">2010</td>
+          <td class="use">인과 방향이 <b>주가하락 → 공매도</b>. 반대 증거 없음. 매매일지에서 "공매도 때문에 빠졌다"를 논거로 못 쓰게 하는 근거.</td>
+        </tr>
+        <tr>
+          <td><span class="grp mkt">주식시장</span></td>
+          <td class="ttl">서기수·강희건, <em>미국 금리 인하 시기에 경제 주요 지표들의 수익률 변동성 전이 연구</em> (FPR 18:2)</td>
+          <td class="yr">2025</td>
+          <td class="use">금리인하 3개 구간 <b>전부에서 원유선물↔미 국채금리</b> 전이가 등장. 2팀(물가·금리)과 4팀(원자재)이 같은 축을 본다는 뜻.</td>
+        </tr>
+        <tr>
+          <td><span class="grp mkt">주식시장</span></td>
+          <td class="ttl">나규연·제상영, <em>글로벌 충격과 한·미·일 주가 동조화의 관계</em> (산업경제연구 38:6)</td>
+          <td class="yr">2025</td>
+          <td class="use">충격기엔 동조화가 <b>강해지고</b> 동시에 <b>더 흔들린다</b>. 분산 효과가 가장 필요할 때 사라진다 → 무효화 트리거 항목.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="warn">
+    <span class="lbl">파일 상태</span>
+    <p><code>한국 주식시장에서 공매도거래 유인.pdf</code>와 <code>… (1).pdf</code>는 동일 논문 중복본이다. 중국 선행지표 논문은 <b>스캔 이미지 PDF라 텍스트 추출이 안 돼</b> 페이지를 이미지로 렌더링해 읽었다 — 나중에 인용문을 복사해 쓰려면 OCR을 한 번 걸어두는 편이 낫다.</p>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">II.</span>지표에 바로 반영할 것 — 우선순위 6건</h2>
+  <p class="sub">각 항목은 근거 논문 · 붙일 팀 · 구현 난이도 순으로 정리했다. yaml 스니펫은 현재 파일의 표기 관례(<code>tier</code> / <code>method</code> / <code>source</code> / <code>note</code>)를 그대로 따랐다.</p>
+
+  <div class="card">
+    <div class="card-head"><span class="pri">1</span><h3>CPTG — 소비자·생산자 온도차 파생지표</h3></div>
+    <div class="meta">
+      <span class="tag"><b>근거</b> Jonath 2026</span>
+      <span class="tag"><b>팀</b> team_1</span>
+      <span class="tag"><b>method</b> derived</span>
+      <span class="tag"><b>난이도</b> 낮음 (입력 확보 시)</span>
+    </div>
+    <div class="card-body">
+      <p>논문의 발상은 단순하다. 소비자가 사면 현금이 소비자→생산자로 흐르는데, 이건 열이 뜨거운 쪽에서 찬 쪽으로 흐르는 것과 같은 구조다. 그래서 소비자심리와 PMI를 각각 0~10도 척도의 "온도"로 바꾸고 그 <b>차이</b>를 본다. 지수 두 개를 따로 볼 때와 달리, 차이는 부호가 곧 경기 확장/수축을 뜻한다.</p>
+      <pre><code>T_C = CSI / 20          # 미시간 CSI 기준 100 → 5.0°G (0~200 스케일)
+T_P = PMI / 10          # ISM PMI 기준 50 → 5.0°G (0~100 스케일)
+CPTG = T_C − T_P        # 양수 = 확장 압력, 음수 = 수축 압력</code></pre>
+      <p>검증 결과의 핵심: 설비가동률(CU)에 대한 회귀에서 <b>R²가 lag 4개월에서 최대</b>였고(소비자 온도 단독은 lag 2, 생산자 온도 단독은 lag 5), 잔차 군집을 반영한 예측식에서는 CU 예측 상관이 최대 96%까지 올라갔다. 단순 회귀만 쓰면 69%다. 660개월 이상의 데이터로 GDP·실업률에서도 같은 방향의 상관이 나왔다.</p>
+
+      <div class="warn">
+        <span class="lbl">먼저 풀어야 할 블로커</span>
+        <p>현재 <code>indicators.yaml</code>에서 <b>ISM PMI는 숫자가 아니라 뉴스 헤드라인으로 들어온다</b>(<code>method: news</code>, 라이선스 때문에 FRED·DBnomics 경로가 전부 막힌 상태). 즉 <code>T_P</code>를 계산할 입력이 없다. 미시간(<code>UMCSENT</code>)은 이미 숫자로 들어오므로 절반은 있다.</p>
+      </div>
+      <p><b>해법:</b> 지역 연준 제조업 서베이를 합성해 PMI 대용으로 쓴다. 필라델피아·엠파이어스테이트·댈러스·캔자스시티·리치먼드 서베이는 FRED에서 무료이고 확산지수라 성질이 같다. 0 기준 확산지수를 50 기준으로 재척도(<code>50 + index/4</code> 수준)해 평균 내면 ISM과 높은 동행성을 갖는 합성 PMI가 된다. 다만 재척도 계수는 실측으로 맞춰야 하므로 <b>첫 구현 시 ISM 실측값과 회귀해 계수를 고정</b>하고 <code>note</code>에 기록해 둘 것.</p>
+      <p class="filename">indicators.yaml — team_1</p>
+      <pre><code>  - name: 합성 제조업 PMI (지역 연준 서베이 평균, ISM 대용)
+    tier: 1
+    method: api
+    source: fred
+    series_id: [GACDFSA066MSFRBPHI, GACDISA066MSFRBNY]   # 미검증 — 첫 실행 시 확인
+    note: >-
+      ISM 원자료가 유료라 숫자 수집 불가한 문제의 우회. 0기준 확산지수를 50기준으로
+      재척도해 평균. 재척도 계수는 ISM 실측 회귀로 고정할 것(현재 임시값).
+
+  - name: CPTG (소비자−생산자 온도차)
+    tier: 1
+    method: derived
+    formula: UMCSENT/20 − 합성PMI/10  (양수=확장 압력, 음수=수축 압력)
+    note: >-
+      Jonath et al.(2026) Financial Innovation. 설비가동률을 4개월 선행(R² 최대 lag=4).
+      부호 전환이 레짐 전환 후보 신호 — 단독 판단 금지, 설비가동률·산업생산과 삼각 검증.</code></pre>
+      <p class="filename">databook/derived.py — compute() 안에 추가</p>
+      <pre><code>if "CPTG" in name:
+    csi, pmi = _latest(results, "UMCSENT"), _latest(results, "합성 제조업 PMI")
+    if not (csi and pmi):
+        return result(ind, "fail", error="구성요소 미수집 (UMCSENT·합성 PMI 필요)")
+    cptg = csi[1] / 20 - pmi[1] / 10
+    obs = [{"date": max(csi[0], pmi[0]), "value": round(cptg, 3),
+            "label": "CPTG(°G) — 양수=확장, 음수=수축, 설비가동률 4개월 선행"}]
+    return result(ind, "ok", observations=obs, source_url="FRED UMCSENT + 지역 연준 서베이")</code></pre>
+      <div class="note">
+        <span class="lbl">그대로 믿지 말 것</span>
+        <p>96%라는 상관은 잔차를 사후에 군집으로 나눈 뒤 군집별 회귀식을 적용해 얻은 값이다. 표본 내 과적합 가능성이 있고, 저자 소속이 자문사(Profit and Entropy)라는 점도 감안해야 한다. <b>이 논문은 8주차 Red Team 반증 워크숍 소재로 최적</b>이다 — 지표는 만들되, 검증은 학회가 직접 한다.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="pri">2</span><h3>설비가동률(TCU) 신설</h3></div>
+    <div class="meta">
+      <span class="tag"><b>근거</b> Jonath 2026</span>
+      <span class="tag"><b>팀</b> team_1</span>
+      <span class="tag"><b>method</b> api / fred</span>
+      <span class="tag"><b>난이도</b> 매우 낮음</span>
+    </div>
+    <div class="card-body">
+      <p>CPTG의 검증 대상이자 그 자체로 선행 성격을 갖는 지표인데, 현재 team_1에 산업생산(<code>INDPRO</code>)은 있어도 <b>설비가동률은 없다</b>. 생산량은 "얼마나 만들었나"이고 가동률은 "여력이 얼마나 남았나"라, 설비투자와 물가 압력을 동시에 예고한다. CPTG를 만들지 않더라도 단독으로 넣을 값어치가 있다.</p>
+      <pre><code>  - name: 설비가동률 (Capacity Utilization)
+    tier: 2
+    method: api
+    source: fred
+    series_id: TCU
+    note: CPTG 검증 대상. 산업생산(INDPRO)이 '얼마나 만들었나'라면 이건 '여력이 얼마나 남았나'</code></pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="pri">3</span><h3>제조업 신규수주 총액 — 가장 안정적인 선행지표</h3></div>
+    <div class="meta">
+      <span class="tag"><b>근거</b> Krüger 2021</span>
+      <span class="tag"><b>팀</b> team_1</span>
+      <span class="tag"><b>method</b> api / fred</span>
+      <span class="tag"><b>난이도</b> 매우 낮음</span>
+    </div>
+    <div class="card-body">
+      <p>웨이블릿 분석의 실무적 결론 한 줄은 이거다. <b>네 개 선행지표 중 신규수주만이 리드가 짧고(3.6개월) 동시에 안정적</b>이었다. 신뢰구간 [2.80, 5.42]로 좁다. 반면 주가지수는 리드 5.1개월에 구간 [0.72, 8.33], 텀스프레드는 12.1개월에 [11.84, 23.29]로, 언제 신호가 올지 사실상 모른다는 뜻이다.</p>
+      <p>현재 team_1에는 <code>설비투자 (코어 자본재 수주)</code>만 있다. 이건 비국방 항공기 제외 자본재 수주라 <b>투자 사이클</b> 지표이고, 논문이 말하는 총 신규수주와는 커버리지가 다르다. 총액을 별도로 두면 "수주는 도는데 자본재만 안 돈다" 같은 구간을 잡아낼 수 있다.</p>
+      <pre><code>  - name: 제조업 신규수주 (총액)
+    tier: 1
+    method: api
+    source: fred
+    series_id: AMTMNO   # 미검증 — 첫 실행 시 확인
+    note: >-
+      Krüger(2021) 웨이블릿 분석 기준, 검증된 선행지표 중 리드가 가장 안정적
+      (중앙값 3.6개월, 90% CI [2.80, 5.42]). 기존 '코어 자본재 수주'는 투자 사이클용이라 별개.</code></pre>
+      <div class="warn">
+        <span class="lbl">외적 타당성 주의</span>
+        <p>Krüger의 숫자는 <b>독일 데이터</b>다. 3.6개월·12.8개월 같은 값을 한국·미국에 그대로 옮겨 적으면 안 된다. 빌려올 것은 <em>숫자</em>가 아니라 <em>"리드가 얼마나 안정적인지를 위상차로 측정한다"는 방법론</em>과, <b>실물 지표의 리드가 금융 지표의 리드보다 안정적</b>이라는 서열이다. 이 서열은 국가와 무관하게 재현될 가능성이 높다.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="pri">4</span><h3>KRX 공매도 잔고·비중 신설</h3></div>
+    <div class="meta">
+      <span class="tag"><b>근거</b> 우민철·김명애 2017</span>
+      <span class="tag"><b>팀</b> team_3</span>
+      <span class="tag"><b>method</b> api / pykrx</span>
+      <span class="tag"><b>난이도</b> 낮음</span>
+    </div>
+    <div class="card-body">
+      <p>team_3에 <code>외국인 수급(KOSPI 일별 순매수)</code>과 <code>신용융자 잔고·고객예탁금</code>은 있는데 <b>공매도가 없다</b>. 논문의 발견은 공매도비중이 <b>미래 수익률과 유의한 음(−) 관계</b>라는 것 — 즉 공매도 주체는 정보거래자로 볼 근거가 있고, 그 잔고는 심리가 아니라 <b>정보 신호</b>로 읽어야 한다.</p>
+      <p>다만 해석은 종목군에 따라 갈린다. 시가총액·주가·외국인지분이 높은 그룹에서는 과거수익률과 공매도가 양(+) 관계 — 오른 걸 판다, 즉 <b>과열을 진정시키는 추세역행</b>. 낮은 그룹에서는 음(−) 관계 — 빠지는 걸 더 판다, 즉 <b>하락을 가속하는 추세순응</b>. 같은 수치라도 대형주 잔고와 소형주 잔고는 반대 의미다.</p>
+      <pre><code>  - name: KOSPI/KOSDAQ 공매도 거래대금·비중
+    tier: 2
+    method: api
+    source: krx
+    note: >-
+      우민철·김명애(2017): 공매도비중은 미래수익률과 음(−) → 심리가 아닌 정보 신호로 해석.
+      단 대형·고외국인주는 추세역행(과열 진정), 소형주는 추세순응(하락 가속) — 시장 분리 필수.
+
+  - name: 공매도 잔고 상위 종목 (KOSPI·KOSDAQ)
+    tier: 3
+    method: api
+    source: krx
+    note: 잔고 급증 종목은 개별 악재 선반영 후보. 지수 레벨 판단이 아니라 종목 스캔용.</code></pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="pri">5</span><h3>통계청 선행종합지수 순환변동치 — 한국 원본 지표</h3></div>
+    <div class="meta">
+      <span class="tag"><b>근거</b> 이정형·조신섭 1999</span>
+      <span class="tag"><b>팀</b> team_1</span>
+      <span class="tag"><b>method</b> api / kosis</span>
+      <span class="tag"><b>난이도</b> 낮음</span>
+    </div>
+    <div class="card-body">
+      <p>지금 한국 경기 판단을 <code>OECD 경기선행지수 CLI (한국·중국)</code>에 의존하고 있는데, 메모상 이 시리즈는 <b>2024-01 기준 스테일 경고</b>가 붙어 있는 상태다. 통계청이 매월 산업활동동향과 함께 내는 <b>선행종합지수 순환변동치</b>가 원본이자 최신이고, KOSIS로 자동 수집된다.</p>
+      <p>논문은 한국 선행↔동행 시차가 통상 <b>3~4개월</b>임을 보고했고, 회귀모형보다 전달함수(transfer function) 모형의 예측력을 비교했다. 학회 목적상 중요한 건 모형이 아니라 시차값이다 — <b>선행지수가 꺾이면 동행지수는 대략 한 분기 뒤에 꺾인다</b>는 기준선을 갖고 있으면, "이번엔 다르다"는 판단이 필요할 때 무엇을 근거로 대야 하는지가 분명해진다.</p>
+      <pre><code>  - name: 한국 선행종합지수 순환변동치 (통계청)
+    tier: 1
+    method: api
+    source: kosis
+    note: >-
+      OECD CLI(한국)가 스테일이라 원본으로 대체·병행. 이정형·조신섭(1999) 기준
+      선행↔동행 시차 통상 3~4개월. 동행지수 순환변동치와 함께 수집해 시차 직접 확인.
+
+  - name: 한국 동행종합지수 순환변동치 (통계청)
+    tier: 1
+    method: api
+    source: kosis
+    note: 선행지수와 쌍으로 봐야 리드가 보인다. 단독 수집은 의미 반감.</code></pre>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="pri">6</span><h3>한국 전력사용량 — 산업생산 '깜깜이 기간' 메우기</h3></div>
+    <div class="meta">
+      <span class="tag"><b>근거</b> 박성근 외 2020</span>
+      <span class="tag"><b>팀</b> team_1</span>
+      <span class="tag"><b>method</b> api / data.go.kr</span>
+      <span class="tag"><b>난이도</b> 중간</span>
+    </div>
+    <div class="card-body">
+      <p>산업활동동향은 1~2개월 시차를 두고 나온다. 그 사이의 "깜깜이 기간"에 실물을 볼 수 있는 게 전력사용량이다 — 실시간 집계가 되니까. 문제는 전력이 경기보다 <b>조업일수와 기온</b>에 훨씬 크게 흔들린다는 것이고, 논문의 기여는 그걸 어떻게 걷어내는지다.</p>
+      <p>추정된 조업일 효과: 제조업 기준 <b>월요일 −5%, 토요일 −12%, 일요일 −20%, 명절 −38%</b>. 업종별 편차가 크다 — C28~C31(전기장비·기계·자동차·기타운송)은 명절에 64~83%까지 빠지는 반면, C19·C20·C26(석유정제·화학·전자부품)은 일요일에도 1~14%밖에 안 빠진다. 연속공정 산업이라 그렇다.</p>
+      <p>조업일 보정 후 X-12 ARIMA 계절조정을 걸면 25개 산업 평균 상관계수가 <b>0.14 → 0.33</b>으로 두 배 이상 올라간다. 그리고 코로나로 생산이 급변한 2020년 3~7월 표본외 예측 실험에서 개선폭이 가장 컸다 — <b>불확실성이 클 때 더 유용하다</b>는 뜻이라, 학회 목적에 정확히 맞는다.</p>
+      <div class="note">
+        <span class="lbl">단계적으로</span>
+        <p>완전한 조업일 보정 + X-12 ARIMA는 이 프로젝트의 stdlib 중심 구조에 비해 무겁다. <b>1단계로 원계열 전력사용량만 수집</b>해 전년동월비로 보고, 계절조정은 유용성이 확인된 뒤 Phase 2로 미루는 걸 권한다. 원계열만으로도 상관 0.14 — 없는 것보다는 낫고, 무엇보다 <b>발표 시차가 없다</b>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">III.</span>한 단계 위 — 계산해서 만드는 것 3건</h2>
+  <p class="sub">지표를 하나 더 긁어오는 게 아니라, 이미 있는 데이터에서 새 신호를 뽑는 작업이다. 셋 다 논문이 방법을 구체적으로 준다.</p>
+
+  <div class="card">
+    <div class="card-head"><span class="pri">7</span><h3>모든 선행지표에 '리드 라벨' 붙이기</h3></div>
+    <div class="meta">
+      <span class="tag"><b>근거</b> Krüger 2021 · 이정형 1999</span>
+      <span class="tag"><b>팀</b> 전 팀</span>
+      <span class="tag"><b>형태</b> yaml 메타 필드</span>
+    </div>
+    <div class="card-body">
+      <p>지금 Data Book은 199개 수치를 나열하지만, 각 수치가 <b>몇 개월 뒤를 말하는지</b>는 어디에도 안 적혀 있다. 팀원 입장에서 ISM(선행)과 실업률(후행)이 같은 표에 같은 굵기로 붙어 있으면, 자연히 최근에 발표된 것 위주로 읽게 된다 — 그게 오대정 칼럼이 지적하는 바로 그 실수다.</p>
+      <p>해법은 코드가 아니라 <b>메타데이터 한 줄</b>이다. 각 지표에 <code>lead_months</code>와 <code>lead_stability</code>를 붙이고, 렌더 단계에서 표에 함께 찍는다.</p>
+      <pre><code>  - name: 제조업 신규수주 (총액)
+    lead_months: 3~4          # 이 지표가 말하는 시점
+    lead_stability: 높음       # 리드가 안정적인가 (높음/중간/낮음)
+
+  - name: 커브 2s10s
+    lead_months: 12+
+    lead_stability: 낮음       # Krüger(2021): CI [11.8, 23.3], 저금리기 선행성 상실</code></pre>
+      <p>이렇게만 해도 주간 회의에서 "지금 뭘 보고 있는 건가"가 달라진다. <b>리드 3개월짜리와 12개월짜리를 한 문장 안에 섞어 쓰는 것</b>이 매크로 판단에서 가장 흔한 오류다.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="pri">8</span><h3>한·미 롤링 상관계수 — 분산 효과 소멸 감지</h3></div>
+    <div class="meta">
+      <span class="tag"><b>근거</b> 나규연·제상영 2025</span>
+      <span class="tag"><b>팀</b> team_3 → team_4</span>
+      <span class="tag"><b>method</b> derived</span>
+    </div>
+    <div class="card-body">
+      <p>논문은 MGARCH-DCC로 한·미·일 동태적 조건부 상관을 추정했는데, 결과가 실무적으로 뼈아프다. <b>2009 금융위기, 2011 유럽재정위기, 2013 테이퍼 탠트럼, 2018 미중 무역전쟁, 2020 코로나</b> — 이 다섯 충격기에 동조화가 강해지는 동시에 동조화 자체의 변동성도 커졌다. <b>분산 효과가 가장 필요한 순간에 사라진다</b>는 말이다.</p>
+      <p>MGARCH-DCC를 이 파이프라인에 구현하는 건 과하다(pandas 이상의 계량 스택이 필요하다). 대신 <b>60일 롤링 상관</b>이면 같은 이야기의 90%를 한다. KOSPI·S&P500 일간 수익률은 이미 수집 경로가 있다.</p>
+      <pre><code>  - name: 한미 주가 60일 롤링 상관 (동조화 프록시)
+    tier: 2
+    method: derived
+    formula: corr(KOSPI 일간수익률, S&P500 일간수익률, window=60)
+    note: >-
+      나규연·제상영(2025): 글로벌 충격기에 동조화 강화 + 동조화 변동성 확대.
+      0.8 상회 시 4팀 무효화 트리거 — "국가 분산으로 헤지된다"는 전제가 깨진 구간.</code></pre>
+      <p>논문이 WTI를 외생변수로 넣어 유가–주가의 밀접한 관계를 확인했다는 점도 그냥 넘기면 안 된다. 이건 다음 항목(변동성 전이)과 같은 축을 가리킨다.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><span class="pri">9</span><h3>뉴스 감성 스코어링 — news.py Phase 2</h3></div>
+    <div class="meta">
+      <span class="tag"><b>근거</b> 박성근 외 2020, 4장</span>
+      <span class="tag"><b>팀</b> 전 팀</span>
+      <span class="tag"><b>형태</b> news.py 확장</span>
+    </div>
+    <div class="card-body">
+      <p>지금 <code>news.py</code>는 주당 4,800건 넘는 헤드라인을 끌어오지만 <b>세지도 채점하지도 않는다</b>. 사람이 다 읽는 건 불가능하니, 사실상 대부분이 안 읽힌 채 쌓인다. 논문 4장이 정확히 이 문제의 방법을 준다.</p>
+      <p>절차는 토픽 추출(NMF) → 감성 분석(나이브 베이즈) → 종합스코어다. 그런데 논문의 진짜 발견은 <b>어떤 토픽을 쓰느냐</b>에 있다. 네 가지 기준(전체 토픽 / 키워드 빈도 상위 / 토픽-생산 상관 상위 10 / 상위 5)을 비교했더니, <b>토픽-생산 상관 최상위 5개로 축약한 스코어가 6개 업종 중 5개에서 가장 높은 상관</b>을 보였다(철강만 근소하게 예외). 많이 언급된 토픽이 아니라 <b>실제 생산과 같이 움직인 토픽</b>만 남기라는 뜻이다.</p>
+      <div class="warn">
+        <span class="lbl">이 프로젝트 원칙과의 충돌 지점</span>
+        <p>이 프로젝트에는 <b>"수집 단계에서 취사선택 금지"</b>라는 확립된 원칙이 있다(인위적 상한을 걷어내 1,169건 → 4,828건으로 늘린 이력). 토픽 축약은 이 원칙과 부딪히는 것처럼 보이지만 그렇지 않다 — <b>수집은 여전히 전량</b>이고, 축약은 수집 이후 <b>스코어 계산 단계</b>에서만 일어난다. 원문 헤드라인은 전부 다이제스트에 남긴 채, 그 위에 점수 한 줄을 얹는 구조로 가야 원칙이 유지된다. 이 경계를 코드 주석에 명시할 것.</p>
+      </div>
+      <p>구현 부담이 크므로(NMF·나이브베이즈는 scikit-learn 의존) 우선순위는 마지막이다. 다만 <b>감성 사전 기반 단순 스코어</b>만이라도 먼저 얹으면 팀별 다이제스트의 온도를 한눈에 볼 수 있다.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">IV.</span>판단 규칙 — 5단계 레짐 분석에 꽂는 것</h2>
+  <p class="sub">지표를 늘리는 것과 별개로, 이 논문들은 "수집한 숫자를 어떻게 읽으면 안 되는가"를 알려준다. 학회 운영방안 v4의 5단계 레짐 분석과 매매일지 규칙에 그대로 넣을 문장들이다.</p>
+
+  <div class="rule-item">
+    <h3>규칙 1 — 지표는 수치가 아니라 '레인지 안 위치'로 읽는다</h3>
+    <p class="src">근거: 오대정(2024) 경제지표 읽기</p>
+    <p>칼럼의 사례가 명쾌하다. 2024년 4월 ISM 제조업지수 49.2는 컨센서스(50.0)를 밑돌아 "부진"으로 보도됐지만, 20년 레인지에 놓고 보면 <b>과거 경기저점을 이제 막 벗어나는 수준</b>이었다. 경기선행지수도 상승 사이클의 중반이었고, 한 사이클이 약 3년임을 감안하면 최소 1년은 상승 여지가 있다는 판단이 나온다. <b>같은 숫자가 컨센서스 대비로는 악재, 사이클 위치로는 호재</b>였다.</p>
+    <p><b>적용:</b> Data Book 렌더 단계에서 tier 1 지표에 <b>20년 백분위</b>를 병기한다. 5단계 레짐 분석 1단계를 "컨센서스 대비 서프라이즈"가 아니라 "사이클상 현 위치"로 못 박는다. 후행(고용)·동행(산업생산)·선행 지표를 구분해 표기하고, 선행부터 읽는 순서를 강제한다.</p>
+  </div>
+
+  <div class="rule-item">
+    <h3>규칙 2 — "공매도 때문에 빠졌다"는 매매일지 논거로 쓸 수 없다</h3>
+    <p class="src">근거: 이준서·빈기범·장광익(2010) · 우민철·김명애(2017)</p>
+    <p>2010년 논문은 2006.1~2008.9, 678일치 기업별·일별 공매도 자료로 VAR·Panel VAR·도구변수를 전부 돌렸다. 결과는 일관됐다 — <b>시장 전체에서도 개별종목에서도 공매도가 주가하락을 유발했다는 증거는 없었고</b>, 반대로 <b>주가하락이 공매도를 그랜저 인과한다</b>는 증거는 강했다. 개별기업 악재로 인한 주가하락이 공매도의 동시대적 원인으로 나타났다.</p>
+    <p>인과가 반대인 기업도 일부 있었는데, 그 기업들은 <b>규모가 크고 유동성이 높고 공매도 대금이 크고 외국인 비중·시장베타가 높은 반면 개별위험은 낮은</b> 특성을 보였다. 즉 대형 유동주에 한정된 현상이지, 소외주가 공매도로 폭락한다는 통념과는 방향이 다르다.</p>
+    <p><b>적용:</b> 매매일지에 "공매도 탓"을 매크로 논거로 적는 것을 금지한다. 대신 공매도 잔고는 <b>선행 정보 신호</b>로 읽는다 — 잔고 급증은 아직 가격에 반영되지 않은 악재의 존재를 시사한다는 것이 2017년 논문의 함의다.</p>
+  </div>
+
+  <div class="rule-item">
+    <h3>규칙 3 — 텀스프레드는 무효화 트리거를 달고 쓴다</h3>
+    <p class="src">근거: Krüger(2021)</p>
+    <p>2s10s와 3m10y는 team_2에 모두 있지만, "역전되면 침체"라는 통념 그대로 쓰이면 위험하다. 웨이블릿 분석에서 텀스프레드의 리드 중앙값은 12.1개월인데 <b>90% 신뢰구간이 [11.84, 23.29]</b>다. 신호가 온 뒤 1년일 수도 2년일 수도 있다는 뜻이다. 더 결정적으로, ECB의 장기 저금리 정책이 지속된 <b>최근 구간에서는 선행 기능 자체를 잃었다</b>.</p>
+    <p><b>적용:</b> team_4 무효화 트리거 목록에 <b>"정책금리가 실효하한 부근일 때 텀스프레드 신호를 무효 처리"</b>를 명문화한다. 커브 지표에는 반드시 다른 선행지표(신규수주·CPTG·선행종합지수)와의 삼각 검증을 요구한다.</p>
+  </div>
+
+  <div class="rule-item">
+    <h3>규칙 4 — 중국은 PMI로 보고, CCI는 보지 않는다</h3>
+    <p class="src">근거: 김동하(2013)</p>
+    <p>중국 선행지표 3종을 유효성 기준으로 심사한 결과가 갈렸다. <b>PMI는 예측력과 구성지수 간 인과관계가 다른 어떤 선행지표보다 뛰어났다.</b> 경기지수 중 선행지수는 <b>통화량·착공프로젝트·물류지수</b>가 유의한 적합도를 보였고, 분기 GDP 변화와 대조했을 때 선행지표 역할을 충분히 했다. 반면 <b>CCI(소비자신뢰지수)는 광범위한 지역별·소득별 편차와 소비품 구성 차이 때문에 현실을 반영하지 못한다</b>고 판정됐다.</p>
+    <p>주의점도 둘 있다. 중국 PMI는 <b>국유기업 비중이 높아</b> 조건에 따라 예측력이 떨어지고, <b>춘절·국경절 계절요인</b>이 PMI와 뚜렷한 관계를 갖는다. 또 관방 통계인 '등록실업률'이 현실을 반영하지 못하는 약점은 경기지수의 '종업원지수'로 보정할 수 있다.</p>
+    <p><b>적용:</b> team_1의 <code>글로벌 성장 (중국 공식 PMI)</code>은 유지하되 <code>note</code>에 국유기업 편향과 춘절 왜곡을 기록한다. 중국 CCI는 <b>추가하지 않는다</b>(현재도 없음 — 앞으로도 넣지 말 것). team_3의 <code>중국 신용 임펄스(TSF)</code>가 수동 슬롯으로 남아 있는데, 논문 기준으로 <b>착공프로젝트·물류지수</b>가 같은 계열의 유효 지표이므로 자동 수집 가능한 대체재를 이쪽에서 찾는 것이 낫다.</p>
+  </div>
+
+  <div class="rule-item">
+    <h3>규칙 5 — 원유↔미 국채금리 축은 2팀·4팀이 함께 본다</h3>
+    <p class="src">근거: 서기수·강희건(2025)</p>
+    <p>1999.1~2023.12 일별 데이터에 Hafner &amp; Herwartz(2006) LM 검정을 적용해 미 3개월 국채금리와 10개 지표 간 변동성 전이를 봤다. 전체 기간에서는 미 국채금리와 <b>원달러 환율·다우지수·금 선물</b> 사이에 양방향 전이가 확인됐다.</p>
+    <p>구간별로 쪼개면 방향이 계속 바뀐다. 1차 금리하락 구간에서는 콜금리·원유선물이 미 국채금리로 전이를 <b>주고</b>, 2차 구간에서는 원달러·원유선물이 미 국채금리로부터 전이를 <b>받고</b>, 3차 구간에서는 원유선물이 유일하게 미 국채금리로 전이를 <b>줬다</b>. 방향은 요동쳐도 <b>세 구간 모두에 원유선물이 등장한다</b>는 것이 핵심이다.</p>
+    <p><b>적용:</b> team_2(물가·정책·금리 + 유가 담당)와 team_4(원자재)가 매주 <b>같은 축</b>을 보고 있다는 사실을 주간 회의 구조에 반영한다. 두 팀이 유가에 대해 서로 다른 결론을 내면 그 자체가 논의 안건이 되도록 한다. 또한 금리 국면이 바뀔 때마다 전이 방향이 바뀌므로, <b>"지난 인하기엔 이랬다"를 이번 인하기에 그대로 적용하지 않는다</b>.</p>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">V.</span>10주 커리큘럼에 어떻게 넣는가</h2>
+  <p class="sub">운영방안 v4의 주차 구조에 이 논문들을 배치했다. 전부를 다 읽히는 게 아니라, 각 주차 목표에 필요한 것만 붙인다.</p>
+
+  <div class="tablewrap">
+    <table>
+      <thead>
+        <tr><th>주차</th><th>v4 활동</th><th>붙일 논문</th><th>산출물</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="yr">2~4주</td>
+          <td class="ttl">리서치 뜯어보기</td>
+          <td class="use">오대정 칼럼(1편, 짧다) → Krüger 웨이블릿</td>
+          <td class="use">칼럼으로 "지표를 레인지로 읽는 법"을 먼저 몸에 익힌 뒤, 논문으로 "그 리드가 얼마나 못 미더운가"를 배운다. 순서가 중요하다.</td>
+        </tr>
+        <tr>
+          <td class="yr">2~4주</td>
+          <td class="ttl">지표 채택 심사</td>
+          <td class="use">이정형·조신섭(1999) 6기준</td>
+          <td class="use">경제적 중요성·통계적 적합성·전환점 타이밍·순환 부합성·평활성·속보성. 신규 지표 제안 시 이 6칸을 채우게 하는 <b>지표 심사표</b> 양식.</td>
+        </tr>
+        <tr>
+          <td class="yr">6주</td>
+          <td class="ttl">가격시그널 검증</td>
+          <td class="use">서기수·강희건 / 나규연·제상영</td>
+          <td class="use">변동성 전이와 동조화를 다루므로 가격시그널 주차에 정확히 맞는다. 한미 롤링 상관(항목 8)을 이 주차에 팀이 직접 계산해 보게 한다.</td>
+        </tr>
+        <tr>
+          <td class="yr">8주</td>
+          <td class="ttl">Red Team 반증 워크숍</td>
+          <td class="use">Jonath CPTG(2026)</td>
+          <td class="use">★ 최적 소재. 열역학 유추라는 강한 이론 주장 + 사후 군집으로 끌어올린 96% 상관. <b>"이 지표를 채택할 것인가"를 학회가 표결</b>하는 형태로 운영.</td>
+        </tr>
+        <tr>
+          <td class="yr">8주</td>
+          <td class="ttl">이벤트 플레이북</td>
+          <td class="use">이준서 외 / 우민철·김명애</td>
+          <td class="use">공매도 금지 조치 같은 규제 이벤트가 왔을 때의 대응. 2008년 사례가 그대로 플레이북 원본이 된다.</td>
+        </tr>
+        <tr>
+          <td class="yr">상시</td>
+          <td class="ttl">Data Book 운영</td>
+          <td class="use">박성근 외(2020) / 김동하(2013)</td>
+          <td class="use">읽히는 논문이 아니라 <b>운영자가 참조하는 매뉴얼</b>. 속보지표 제조법과 중국 지표 취사 기준은 운영 가이드 부록으로.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">VI.</span>안 하는 것</h2>
+  <p class="sub">논문에 나오지만 이 파이프라인에 넣지 않기로 판단한 것들. 근거를 남겨두면 나중에 같은 논의를 반복하지 않는다.</p>
+
+  <ul>
+    <li><b>MGARCH-DCC 직접 구현</b> — 나규연·제상영이 쓴 모형. 이 프로젝트는 stdlib + PyYAML 중심 구조이고 계량 스택(arch, statsmodels)을 들이면 배포 난이도가 급증한다. 60일 롤링 상관이 같은 이야기의 대부분을 한다.</li>
+    <li><b>국면전환모형 잠재요인 추출</b> — 박성근 외 3장. 잠재요인이 순환변동치를 1.5개월 선행한다는 결과는 매력적이지만, Chang et al.(2017) 모형 추정은 학회 운영 도구가 감당할 범위를 넘는다. 게다가 논문 스스로 <b>120여 개 정보변수를 넣은 Random Forest가 AR(1)보다 나을 게 없었다</b>고 보고한다 — 잠재요인이 워낙 persistent해서다. 복잡도 대비 실익이 낮다.</li>
+    <li><b>중국 CCI(소비자신뢰지수)</b> — 김동하(2013)가 명시적으로 유효성을 부정. 넣지 않는다.</li>
+    <li><b>웨이블릿 위상차 분석 자체</b> — Krüger의 방법론을 우리 데이터에 재현하는 것. R WaveletComp 의존이고, 학회 산출물은 "검증된 판단 기록"이지 계량 논문이 아니다. 결론(실물 리드 &gt; 금융 리드의 안정성)만 가져다 쓴다.</li>
+    <li><b>전력사용량 X-12 ARIMA 계절조정</b> — 1단계에서는 보류. 원계열 전년동월비부터 시작해 유용성이 확인되면 Phase 2로.</li>
+  </ul>
+</section>
+
+<section>
+  <h2><span class="num">VII.</span>실행 체크리스트</h2>
+  <p class="sub">위 항목을 손을 대는 순서대로 늘어놓은 것. 위 세 개는 오늘 저녁에 끝낼 수 있는 분량이다.</p>
+
+  <ul class="check">
+    <li><span class="box"></span><span>설비가동률 <code>TCU</code> · 제조업 신규수주 <code>AMTMNO</code>를 team_1에 추가 → <code>run</code> 1회로 시리즈 ID 검증</span><span class="who">운영자</span></li>
+    <li><span class="box"></span><span>통계청 선행·동행 종합지수 순환변동치(KOSIS)를 team_1에 추가, 스테일 상태인 OECD CLI(한국)와 병행 비교</span><span class="who">운영자</span></li>
+    <li><span class="box"></span><span>tier 1 지표에 <code>lead_months</code> · <code>lead_stability</code> 필드 부여 (먼저 team_1만)</span><span class="who">운영자</span></li>
+    <li><span class="box"></span><span>team_4 무효화 트리거에 <b>"저금리기 텀스프레드 무효"</b> · <b>"한미 상관 0.8 상회"</b> 2건 명문화</span><span class="who">4팀</span></li>
+    <li><span class="box"></span><span>KRX 공매도 거래대금·비중 fetcher 신설 (pykrx), team_3 수급 블록에 배치</span><span class="who">운영자</span></li>
+    <li><span class="box"></span><span>지역 연준 서베이 합성 PMI 구현 → ISM 실측과 회귀해 재척도 계수 고정</span><span class="who">운영자</span></li>
+    <li><span class="box"></span><span><code>derived.py</code>에 CPTG 핸들러 추가, 설비가동률과의 lag 상관을 직접 재현해 4개월 리드 확인</span><span class="who">운영자</span></li>
+    <li><span class="box"></span><span>한미 60일 롤링 상관 파생지표 추가</span><span class="who">운영자</span></li>
+    <li><span class="box"></span><span>매매일지 양식에 "공매도 탓 금지" 문구 + 지표 심사표 6기준 양식 배포</span><span class="who">학회 운영</span></li>
+    <li><span class="box"></span><span>한국 전력사용량 원계열 수집 (data.go.kr) — 조업일 보정은 Phase 2</span><span class="who">운영자</span></li>
+    <li><span class="box"></span><span>8주차 Red Team 안건으로 CPTG 채택 여부 상정</span><span class="who">학회 운영</span></li>
+    <li><span class="box"></span><span>중국 선행지표 논문 스캔본 OCR (인용문 재활용용)</span><span class="who">—</span></li>
+  </ul>
+</section>
+
+<footer>
+  <p>대조 기준: <code>C:\Users\test\Documents\macro-databook\indicators.yaml</code> (team_1~4, 199지표) 및 <code>databook/derived.py</code>. 시리즈 ID에 <code>미검증</code> 주석이 붙은 항목은 FRED 페이지가 자동 조회를 차단해 확인하지 못한 것으로, 첫 <code>run</code> 시 응답으로 검증해야 한다.</p>
+</footer>
+
+</div>
