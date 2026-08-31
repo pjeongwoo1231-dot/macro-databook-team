@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>매크로 경제 읽기 1회차 · 2부 경기순환(Cycle)</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="cover">
+  <div class="cover-in">
+    <div class="series">SCOPE · 매크로 경제 읽기 1회차 「경기와 물가」</div>
+    <div class="partno">PART 2 OF 4</div>
+    <h1>경기순환(Cycle)<br>— 지금 사이클 어디인가</h1>
+    <p class="sub">GDP는 분기가 끝나고 한 달 뒤에야 나온다. 그 사이에도 경제는 계속 움직인다.
+    이 시차를 메우는 고빈도 지표들을 다룬다.</p>
+    <div class="meta">
+      <span>상경대학 경제학회 SCOPE</span>
+      <span>독학용 확장판</span>
+      <span>예상 학습시간 80분</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<div class="goals">
+  <h3>이 권을 덮을 때 할 수 있어야 하는 것</h3>
+  <ol>
+    <li>지표를 보면 그게 <b>선행·동행·후행</b> 중 무엇인지 즉시 분류할 수 있다.</li>
+    <li><b>PMI 52.3</b>이라는 숫자를 "경제가 52.3% 성장했다"로 오독하지 않고 정확히 해석할 수 있다.</li>
+    <li>소프트 데이터와 하드 데이터가 <b>엇갈릴 때 어느 쪽을 믿을지</b> 판단 기준을 갖는다.</li>
+    <li>한국 수출 지표가 왜 <b>전 세계 투자자가 보는 지표</b>인지 설명할 수 있다.</li>
+    <li>"경기 침체다"라는 주장을 들었을 때 <b>어떤 정의를 쓰고 있는지</b> 되물을 수 있다.</li>
+  </ol>
+</div>
+
+<nav class="toc">
+  <h3>목차</h3>
+  <ol>
+    <li><a href="#ch1">GDP만으로 부족한 이유 — 시차와 사이클</a></li>
+    <li><a href="#ch2">선행·동행·후행 — 지표에는 순번이 있다</a></li>
+    <li><a href="#ch3">소프트 vs 하드 — 심리가 먼저, 실물이 나중</a></li>
+    <li><a href="#ch4">PMI 정독 — 50이라는 마법의 숫자</a></li>
+    <li><a href="#ch5">소비 지표 — 헤드라인 말고 컨트롤 그룹</a></li>
+    <li><a href="#ch6">한국 수출 — 세계에서 가장 빠른 실물 지표</a></li>
+    <li><a href="#ch7">침체의 정의 — 두 개의 서로 다른 자</a></li>
+    <li><a href="#ch8">실전 독해 — ISM 차트로 국면 판정하기</a></li>
+    <li><a href="#appendix">부록 — 경기 지표 캘린더 · FRED 코드</a></li>
+    <li><a href="#check">셀프체크</a></li>
+  </ol>
+</nav>
+
+<!-- ============================= 1장 ============================= -->
+<section class="chapter" id="ch1">
+  <span class="chno">CHAPTER 1</span>
+  <h2>GDP만으로 부족한 이유 — 시차와 사이클</h2>
+  <p class="lede">GDP는 훌륭한 지표지만 치명적 약점이 있다. <em>너무 늦게 나오고, 나올 때는 이미 끝난 이야기</em>라는 것이다.</p>
+
+  <div class="block why">
+    <span class="tag">왜 이걸 보는가</span>
+    <p class="q">3분기 GDP가 발표되는 시점은 10월 말이다. 그런데 우리는 지금 10월 중순의 경제를 알고 싶다. 어떻게 하나?</p>
+    <p>답은 <em>더 자주 나오는 지표들로 GDP를 대체 추정하는 것</em>이다. 매월, 매주, 심지어 매일 나오는 지표들이 있고, 그것들이 경기순환 분석의 재료가 된다.</p>
+  </div>
+
+  <h3 class="sec">1-1. GDP의 세 가지 한계</h3>
+
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>한계</th><th>구체적으로</th><th>이걸 메우는 지표</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>발표 시차</td>
+        <td>분기 종료 후 30일이 지나야 속보치가 나온다. 최악의 경우 4개월 전 경제를 지금 보는 셈</td>
+        <td>PMI(월초), 수출(월초·20일 속보), 소매판매(월중)</td>
+      </tr>
+      <tr>
+        <td>낮은 빈도</td>
+        <td>1년에 네 번뿐. 분기 중간에 방향이 바뀌어도 잡아내지 못한다</td>
+        <td>월간·주간 지표의 조합</td>
+      </tr>
+      <tr>
+        <td>사후성</td>
+        <td>이미 일어난 생산의 집계다. 앞으로 어떻게 될지는 알려주지 않는다</td>
+        <td>신규수주, PMI, 주가, 장단기 금리차 등 선행지표</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="block analogy">
+    <span class="tag">비유</span>
+    <p><strong>GDP는 종합병원 정밀검진이고, 고빈도 지표는 매일 재는 체온과 혈압이다.</strong>
+    정밀검진이 정확하지만 1년에 한 번밖에 못 받는다면, 그 사이 상태 변화는 체온계로 추적해야 한다.
+    <em>정확도는 낮지만 빈도가 높은 지표가, 정확하지만 느린 지표를 이기는 순간이 있다.</em> 특히 <em>경기 전환기</em>에 그렇다.</p>
+  </div>
+
+  <h3 class="sec">1-2. 경기순환이란 무엇인가</h3>
+
+  <p><strong>경기순환(Business Cycle)</strong>은 경제 활동이 확장과 수축을 반복하는 파동이다. 통상 <em>회복 → 확장 → 둔화 → 수축</em>의 네 국면으로 나눈다.
+  중요한 건 이 파동이 <strong>잠재성장률 추세선 주위를 오르내린다</strong>는 점이다(1부 4장의 GDP갭과 정확히 같은 그림이다).</p>
+
+  <figure>
+    <div class="figtitle">경기순환 4국면과 지표의 반응 시차</div>
+    <div class="figsub">같은 사이클에서도 지표마다 반응하는 시점이 다르다</div>
+    <svg viewBox="0 0 800 340" role="img" aria-label="경기순환 파동 위에 선행 동행 후행 지표의 반응 시점을 표시한 도표">
+      <g font-family="Pretendard, Malgun Gothic, sans-serif">
+        <!-- trend line -->
+        <line x1="60" y1="180" x2="770" y2="180" stroke="#1E2761" stroke-width="1.5" stroke-dasharray="6 4"/>
+        <text x="66" y="172" fill="#1E2761" font-size="12" font-weight="700">추세(잠재성장 경로)</text>
+
+        <!-- cycle wave -->
+        <path d="M60,220 Q160,220 230,140 Q300,60 400,90 Q470,112 520,190 Q580,282 660,268 Q730,255 770,200"
+              fill="none" stroke="#B8860B" stroke-width="3.5"/>
+
+        <!-- phase labels -->
+        <text x="150" y="252" text-anchor="middle" fill="#2E7D5B" font-size="14" font-weight="800">회복</text>
+        <text x="300" y="45" text-anchor="middle" fill="#2E7D5B" font-size="14" font-weight="800">확장</text>
+        <text x="470" y="95" text-anchor="middle" fill="#B23A48" font-size="14" font-weight="800">둔화</text>
+        <text x="630" y="308" text-anchor="middle" fill="#B23A48" font-size="14" font-weight="800">수축</text>
+
+        <!-- peak & trough -->
+        <circle cx="352" cy="76" r="5" fill="#1E2761"/>
+        <text x="352" y="66" text-anchor="middle" fill="#1E2761" font-size="12" font-weight="700">정점(Peak)</text>
+        <circle cx="643" cy="272" r="5" fill="#1E2761"/>
+        <text x="643" y="292" text-anchor="middle" fill="#1E2761" font-size="12" font-weight="700">저점(Trough)</text>
+
+        <!-- lead / coincident / lag markers around the peak -->
+        <line x1="270" y1="105" x2="270" y2="330" stroke="#2E7D5B" stroke-width="1.5" stroke-dasharray="4 3"/>
+        <text x="270" y="326" text-anchor="middle" fill="#2E7D5B" font-size="12.5" font-weight="700">선행지표 꺾임</text>
+        <line x1="352" y1="80" x2="352" y2="330" stroke="#B8860B" stroke-width="1.5" stroke-dasharray="4 3"/>
+        <text x="360" y="326" text-anchor="start" fill="#B8860B" font-size="12.5" font-weight="700">동행지표 꺾임</text>
+        <line x1="460" y1="105" x2="460" y2="308" stroke="#B23A48" stroke-width="1.5" stroke-dasharray="4 3"/>
+        <text x="468" y="304" text-anchor="start" fill="#B23A48" font-size="12.5" font-weight="700">후행지표 꺾임</text>
+
+        <text x="270" y="128" text-anchor="middle" fill="#2E7D5B" font-size="11.5">PMI · 신규수주</text>
+        <text x="352" y="128" text-anchor="middle" fill="#B8860B" font-size="11.5">산업생산 · GDP</text>
+        <text x="500" y="128" text-anchor="middle" fill="#B23A48" font-size="11.5">실업률 · 임금</text>
+
+        <text x="60" y="322" fill="#7A8095" font-size="12">시간 →</text>
+      </g>
+    </svg>
+    <figcaption><b>여기서 배울 것:</b> 정점을 지날 때 세 종류 지표가 <b>차례로</b> 꺾인다. 실업률이 오르기 시작할 때는 이미 경기가 꺾인 지 한참 지난 뒤다. 이 시차 구조가 다음 장의 전부다.</figcaption>
+  </figure>
+
+  <div class="connect">지표에 순번이 있다는 걸 알았다. 이제 그 순번을 정확히 외워야 한다. 실무에서 가장 자주 쓰는 분류다.</div>
+</section>
+
+<!-- ============================= 2장 ============================= -->
+<section class="chapter" id="ch2">
+  <span class="chno">CHAPTER 2</span>
+  <h2>선행·동행·후행 — 지표에는 순번이 있다</h2>
+  <p class="lede">지표를 봤을 때 "이건 몇 번째로 움직이는 놈인가"를 아는 것. 이것만 해도 리포트 독해 수준이 한 단계 올라간다.</p>
+
+  <div class="block why">
+    <span class="tag">왜 이걸 보는가</span>
+    <p class="q">실업률이 사상 최저인데 어떤 애널리스트는 "곧 침체가 온다"고 한다. 이 사람은 무엇을 보고 있는 걸까?</p>
+    <p><em>실업률은 후행지표</em>이기 때문이다. 실업률이 최저일 때가 오히려 사이클 정점 부근인 경우가 많다. 그 사람은 선행지표를 보고 말하는 것이다.</p>
+  </div>
+
+  <h3 class="sec">2-1. 세 분류</h3>
+
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>구분</th><th>대표 지표</th><th>경기와의 관계</th><th>해석할 때 유의점</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>선행<br>Leading</td>
+        <td>주가, PMI(특히 신규수주), 건축허가, 소비자심리, 장단기 금리차, 한국 수출</td>
+        <td>경기보다 <b>3~9개월 먼저</b> 움직인다. 경제의 '예고편'</td>
+        <td>노이즈가 크다. <b>한 달 튀는 것에 반응하지 말고 3개월 연속 방향</b>을 봐라</td>
+      </tr>
+      <tr>
+        <td>동행<br>Coincident</td>
+        <td>산업생산, 실질 GDP, 취업자 수, 소매판매</td>
+        <td>경기와 <b>같이 움직인다.</b> 현재 위치 확인용</td>
+        <td>확인은 되지만 예측은 안 된다. <b>"지금 어디 있나"에만 답한다</b></td>
+      </tr>
+      <tr>
+        <td>후행<br>Lagging</td>
+        <td>실업률, 임금상승률, 기업 재고, 대출 연체율, 소비자물가</td>
+        <td>경기보다 <b>3~12개월 늦게</b> 움직인다. 사후 확인용</td>
+        <td><b>가장 위험한 오독의 원천.</b> 후행지표가 좋다고 경기가 좋다고 말하면 안 된다</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="block analogy">
+    <span class="tag">비유</span>
+    <p><strong>비 오는 날 우산 가게로 생각해보자.</strong><br>
+    ① <em>선행</em> — 기상청 예보(PMI). 아직 비는 안 오지만 확률이 올라갔다.<br>
+    ② <em>동행</em> — 지금 창밖에 내리는 비(산업생산). 실제로 젖고 있다.<br>
+    ③ <em>후행</em> — 지하실에 고인 물(실업률). 비가 그친 뒤에도 계속 차오르고, 한참 뒤에야 빠진다.<br>
+    지하실 물만 보고 "아직 비 온다"고 판단하면 이미 해가 뜬 다음에 우산을 사는 셈이다.</p>
+  </div>
+
+  <h3 class="sec">2-2. 실무에서 이 분류를 쓰는 법</h3>
+
+  <p>순번을 아는 목적은 <strong>지표들이 서로 엇갈릴 때 우선순위를 정하기 위해서</strong>다. 실제 상황은 대개 이렇게 온다.</p>
+
+  <ul>
+    <li><strong>선행 ↓ · 동행 → · 후행 ↑</strong> — 전형적인 <em>사이클 정점 부근</em>. PMI는 꺾였는데 실업률은 아직 최저인 구간. 이때 "고용이 좋으니 괜찮다"고 말하면 늦는다.</li>
+    <li><strong>선행 ↑ · 동행 ↓ · 후행 ↓</strong> — 전형적인 <em>바닥 통과</em>. PMI가 반등하는데 실업률은 계속 오르는 구간. 주식시장이 실물보다 먼저 오르는 이유가 여기 있다.</li>
+    <li><strong>전부 같은 방향</strong> — 사이클 중반. 판단이 쉽고 논쟁도 적다. 리서치 수요도 낮다.</li>
+  </ul>
+
+  <p>정리하면, <em>리서치가 돈이 되는 구간은 언제나 지표들이 엇갈리는 전환기</em>다. 그리고 전환기에는 <strong>선행지표에 더 큰 가중치</strong>를 준다.</p>
+
+  <div class="block trap">
+    <span class="tag">신입이 틀리는 지점</span>
+    <p><b>함정 1 — 후행지표로 현재를 판단한다.</b><br>
+    "실업률 3.5%로 완전고용인데 침체라니?"는 순서를 모르는 발언이다. 미국 역대 침체 진입 시점의 실업률은 대부분 <b>역사적 저점 부근</b>이었다. 실업률은 침체가 시작되고 나서야 오른다.</p>
+    <p><b>함정 2 — 선행지표 한 달치에 반응한다.</b><br>
+    선행지표는 정확도를 속도와 맞바꾼 지표다. 오신호(false signal)가 잦다. <b>3개월 연속 방향</b>, 그리고 <b>여러 선행지표의 동시 확인</b>이 실무 기준이다.</p>
+    <p><b>함정 3 — 국가·산업 구조를 무시하고 분류를 그대로 적용한다.</b><br>
+    한국에서 <b>수출</b>은 강력한 선행지표지만, 내수 중심 국가에선 그렇지 않다. 분류는 절대 진리가 아니라 <b>해당 경제 구조에서 검증된 경험칙</b>이다.</p>
+  </div>
+
+  <div class="connect">지표의 순번을 배웠다. 그런데 순번과는 다른 축의 분류가 하나 더 있다. 그 지표가 <b>설문</b>인가 <b>실측</b>인가.</div>
+</section>
+
+<!-- ============================= 3장 ============================= -->
+<section class="chapter" id="ch3">
+  <span class="chno">CHAPTER 3</span>
+  <h2>소프트 vs 하드 — 심리가 먼저, 실물이 나중</h2>
+  <p class="lede">둘이 엇갈리는 순간이 경기 전환기다. 그리고 그 순간에 어느 쪽을 믿느냐가 리서치의 실력이다.</p>
+
+  <div class="block why">
+    <span class="tag">왜 이걸 보는가</span>
+    <p class="q">소비자심리지수는 급락했는데 소매판매는 여전히 견조하다. 소비는 무너지고 있는 건가, 아닌 건가?</p>
+    <p>이 질문에는 <em>정답이 아니라 판단 기준</em>이 필요하다. 그 기준을 세우는 것이 이 장의 목표다.</p>
+  </div>
+
+  <h3 class="sec">3-1. 두 종류의 데이터</h3>
+
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>구분</th><th>소프트 데이터 (Soft)</th><th>하드 데이터 (Hard)</th></tr></thead>
+    <tbody>
+      <tr><td>정체</td><td>설문 조사. "어떻게 느끼십니까"</td><td>실제 거래·생산의 집계. "무엇이 일어났습니까"</td></tr>
+      <tr><td>대표 지표</td><td>PMI, 소비자심리지수(CCSI), 기업경기실사지수(BSI), 미시간대 소비자심리</td><td>산업생산, 소매판매, 수출입, 고용, 주택착공</td></tr>
+      <tr><td>속도</td><td><b>빠르다.</b> 월초 발표, 심리 변화 즉시 반영</td><td><b>느리다.</b> 집계 기간 필요</td></tr>
+      <tr><td>정확도</td><td>낮다. 뉴스 헤드라인·정치 이벤트에 과민 반응</td><td>높다. 실제로 일어난 일이다</td></tr>
+      <tr><td>역할</td><td>방향을 <b>예고</b>한다</td><td>실물을 <b>사후 검증</b>한다</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3 class="sec">3-2. 괴리가 발생할 때의 판단 원칙</h3>
+
+  <figure>
+    <div class="figtitle">소프트-하드 괴리의 두 가지 패턴</div>
+    <div class="figsub">어느 쪽이 먼저 움직였는지가 해석을 가른다</div>
+    <svg viewBox="0 0 800 300" role="img" aria-label="소프트 데이터와 하드 데이터의 괴리 패턴 비교">
+      <g font-family="Pretendard, Malgun Gothic, sans-serif">
+        <!-- panel A -->
+        <text x="40" y="30" fill="#1E2761" font-size="15" font-weight="800">패턴 A · 소프트가 먼저 꺾임</text>
+        <line x1="40" y1="150" x2="370" y2="150" stroke="#DFE3EF"/>
+        <path d="M40,110 Q110,100 160,118 Q230,145 300,175 L370,190" fill="none" stroke="#B8860B" stroke-width="3"/>
+        <path d="M40,120 Q120,112 200,110 Q280,110 320,124 L370,145" fill="none" stroke="#1E2761" stroke-width="3"/>
+        <text x="120" y="98" fill="#B8860B" font-size="12.5" font-weight="700">소프트(PMI)</text>
+        <text x="220" y="102" fill="#1E2761" font-size="12.5" font-weight="700">하드(생산)</text>
+        <rect x="250" y="60" width="120" height="26" rx="3" fill="#FBEEF0"/>
+        <text x="310" y="78" text-anchor="middle" fill="#B23A48" font-size="12.5" font-weight="700">둔화 예고 신호</text>
+        <text x="40" y="215" fill="#4A5163" font-size="13">심리가 실물을 앞서 꺾였다.</text>
+        <text x="40" y="236" fill="#4A5163" font-size="13">→ 전환기일 가능성. <tspan font-weight="700" fill="#B23A48">소프트에 가중치</tspan></text>
+        <text x="40" y="257" fill="#7A8095" font-size="12.5">단, 2~3개월 연속 확인 필수</text>
+
+        <!-- divider -->
+        <line x1="400" y1="20" x2="400" y2="280" stroke="#DFE3EF" stroke-dasharray="4 4"/>
+
+        <!-- panel B -->
+        <text x="430" y="30" fill="#1E2761" font-size="15" font-weight="800">패턴 B · 소프트만 튀고 하드는 무반응</text>
+        <line x1="430" y1="150" x2="760" y2="150" stroke="#DFE3EF"/>
+        <path d="M430,120 Q470,175 510,120 Q550,90 590,125 Q640,165 690,120 L760,128" fill="none" stroke="#B8860B" stroke-width="3"/>
+        <path d="M430,122 Q520,118 610,116 Q690,115 760,118" fill="none" stroke="#1E2761" stroke-width="3"/>
+        <text x="600" y="185" fill="#B8860B" font-size="12.5" font-weight="700">소프트(심리)</text>
+        <text x="640" y="106" fill="#1E2761" font-size="12.5" font-weight="700">하드(소비)</text>
+        <rect x="640" y="55" width="120" height="26" rx="3" fill="#E9F5EF"/>
+        <text x="700" y="73" text-anchor="middle" fill="#2E7D5B" font-size="12.5" font-weight="700">노이즈일 가능성</text>
+        <text x="430" y="215" fill="#4A5163" font-size="13">심리만 뉴스에 반응해 요동친다.</text>
+        <text x="430" y="236" fill="#4A5163" font-size="13">→ <tspan font-weight="700" fill="#2E7D5B">하드에 가중치.</tspan> 실제 지출은 유지 중</text>
+        <text x="430" y="257" fill="#7A8095" font-size="12.5">정치 이벤트·유가 급등기에 흔함</text>
+      </g>
+    </svg>
+    <figcaption><b>실무 원칙:</b> ①소프트가 <b>추세적으로</b> 꺾였다면 예고 신호로 받아들인다. ②소프트가 <b>일시적으로</b> 튀는데 하드가 조용하면 하드를 믿는다. ③다만 <b>급격한 충격(금융위기·팬데믹)</b> 국면에서는 하드 데이터가 나오기 전에 상황이 끝나므로 소프트가 절대적으로 유용하다.</figcaption>
+  </figure>
+
+  <p>실무에서 자주 쓰는 보조 원칙이 하나 더 있다. <strong>돈이 실제로 오간 기록은 설문보다 강하다.</strong>
+  카드 결제 데이터, 통행량, 항만 물동량처럼 <em>실측 기반 고빈도 데이터</em>는 소프트의 속도와 하드의 신뢰도를 어느 정도 동시에 갖는다. 최근 리서치가 이런 대체 데이터(alternative data)에 힘을 쏟는 이유다.</p>
+
+  <div class="block trap">
+    <span class="tag">신입이 틀리는 지점</span>
+    <p><b>함정 1 — 심리지표를 성장률처럼 읽는다.</b><br>
+    소비자심리지수가 95에서 105로 올랐다고 소비가 10% 늘어나는 게 아니다. 심리지표는 <b>기준선 대비 위치와 방향</b>만 의미가 있는 서수(ordinal) 성격의 지표다.</p>
+    <p><b>함정 2 — 괴리를 발견하고 그냥 "혼조"라고 쓴다.</b><br>
+    "지표가 엇갈려 방향성이 불분명하다"는 문장은 분석이 아니다. <b>어느 쪽이 먼저 움직였는지</b>, <b>과거 유사 국면에서 어느 쪽이 맞았는지</b>를 근거로 한쪽에 무게를 실어야 리서치다.</p>
+    <p><b>함정 3 — 소프트 데이터의 정치적 편향을 모른다.</b><br>
+    미국 소비자심리 조사는 응답자의 지지 정당에 따라 체감 경제 평가가 크게 갈리는 것으로 알려져 있다. 정권 교체 직후 심리지표가 급변하면 <b>실물이 아니라 정치가 바뀐 것</b>일 수 있다.</p>
+  </div>
+
+  <div class="connect">이제 소프트 데이터의 대장을 만나러 간다. 전 세계 매크로 트레이더가 매월 첫 영업일에 동시에 쳐다보는 숫자, PMI다.</div>
+</section>
+
+<!-- ============================= 4장 ============================= -->
+<section class="chapter" id="ch4">
+  <span class="chno">CHAPTER 4</span>
+  <h2>PMI 정독 — 50이라는 마법의 숫자</h2>
+  <p class="lede">PMI는 매크로 지표 중 가장 자주 인용되면서 동시에 가장 자주 오독되는 지표다. 오독의 원인은 단 하나, <em>이게 성장률이 아니라는 걸 모르기 때문</em>이다.</p>
+
+  <div class="block why">
+    <span class="tag">왜 이걸 보는가</span>
+    <p class="q">PMI가 52에서 51로 떨어졌다. 경제는 나빠진 건가?</p>
+    <p>이 질문에 "네"라고 답하면 절반만 맞다. 정확한 답은 <em>"여전히 확장 중인데, 확장의 폭이 줄었다"</em>이다. 왜 그런지 이해하려면 PMI가 무엇을 세는 숫자인지부터 알아야 한다.</p>
+  </div>
+
+  <h3 class="sec">4-1. PMI는 '비율'이지 '성장률'이 아니다</h3>
+
+  <p><strong>PMI(Purchasing Managers' Index, 구매관리자지수)</strong>는 기업의 구매 담당자들에게 이렇게 묻는다.
+  <em>"지난달과 비교해 신규주문/생산/고용/납기/재고가 늘었습니까, 같습니까, 줄었습니까?"</em></p>
+
+  <div class="formula">
+    <div class="eq">PMI = (증가 응답 %) + 0.5 × (동일 응답 %)</div>
+    <div class="note">감소 응답은 0으로 처리 → 결과는 항상 0~100 사이, 기준선은 50</div>
+  </div>
+
+  <p>즉 PMI는 <strong>"좋아졌다고 답한 기업의 비율"</strong>에 가깝다. 절반이 늘고 절반이 줄면 50이 나온다.
+  따라서 <em>PMI 52는 "확장 중"을 뜻하고, PMI가 55에서 52로 내려온 건 "여전히 확장 중이지만 확장 기업의 비중이 줄었다"</em>는 뜻이다.</p>
+
+  <figure>
+    <div class="figtitle">PMI 눈금 읽는 법</div>
+    <div class="figsub">기준선 50이 확장과 수축을 가른다</div>
+    <svg viewBox="0 0 800 240" role="img" aria-label="PMI 지수의 구간별 의미를 나타낸 눈금 그래픽">
+      <g font-family="Pretendard, Malgun Gothic, sans-serif">
+        <!-- bar -->
+        <rect x="60" y="80" width="340" height="46" fill="#B23A48" opacity=".78"/>
+        <rect x="400" y="80" width="340" height="46" fill="#2E7D5B" opacity=".78"/>
+        <line x1="400" y1="62" x2="400" y2="144" stroke="#1E2761" stroke-width="3"/>
+
+        <text x="230" y="110" text-anchor="middle" fill="#fff" font-size="17" font-weight="800">경기 수축 (Contraction)</text>
+        <text x="570" y="110" text-anchor="middle" fill="#fff" font-size="17" font-weight="800">경기 확장 (Expansion)</text>
+
+        <text x="60" y="164" fill="#7A8095" font-size="12.5">0</text>
+        <text x="400" y="164" text-anchor="middle" fill="#1E2761" font-size="15" font-weight="800">50</text>
+        <text x="740" y="164" text-anchor="end" fill="#7A8095" font-size="12.5">100</text>
+        <text x="400" y="52" text-anchor="middle" fill="#1E2761" font-size="13" font-weight="700">기준선</text>
+
+        <!-- markers -->
+        <g>
+          <line x1="330" y1="126" x2="330" y2="150" stroke="#B23A48" stroke-width="2"/>
+          <text x="330" y="188" text-anchor="middle" fill="#B23A48" font-size="12.5" font-weight="700">48</text>
+          <text x="330" y="207" text-anchor="middle" fill="#7A8095" font-size="11.5">위축 국면</text>
+
+          <line x1="468" y1="126" x2="468" y2="150" stroke="#2E7D5B" stroke-width="2"/>
+          <text x="468" y="188" text-anchor="middle" fill="#2E7D5B" font-size="12.5" font-weight="700">52</text>
+          <text x="468" y="207" text-anchor="middle" fill="#7A8095" font-size="11.5">완만한 확장</text>
+
+          <line x1="605" y1="126" x2="605" y2="150" stroke="#2E7D5B" stroke-width="2"/>
+          <text x="605" y="188" text-anchor="middle" fill="#2E7D5B" font-size="12.5" font-weight="700">58</text>
+          <text x="605" y="207" text-anchor="middle" fill="#7A8095" font-size="11.5">강한 확장 · 과열 조짐</text>
+        </g>
+
+        <rect x="60" y="216" width="680" height="0" fill="none"/>
+        <text x="400" y="234" text-anchor="middle" fill="#4A5163" font-size="13">55에서 52로 하락 = 여전히 확장, 다만 <tspan font-weight="700" fill="#B8860B">확장의 폭이 축소</tspan></text>
+      </g>
+    </svg>
+    <figcaption><b>주의:</b> 50 아래로 내려갔다고 곧바로 GDP가 마이너스가 되는 건 아니다. 제조업 PMI 기준으로 <b>대략 42~45 아래</b>가 되어야 전체 경제 위축과 연결된다는 경험칙이 있다(제조업이 GDP의 일부이기 때문).</figcaption>
+  </figure>
+
+  <h3 class="sec">4-2. 세부 항목이 진짜 정보다</h3>
+
+  <p>헤드라인 PMI만 보는 사람과 세부 항목을 보는 사람의 차이가 크다. ISM 제조업 PMI는 다섯 개 세부 지수의 가중 평균인데, 각각이 다른 이야기를 한다.</p>
+
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>세부 지수</th><th>무엇을 말하나</th><th>실무 활용</th></tr></thead>
+    <tbody>
+      <tr><td>신규주문<br>New Orders</td><td>앞으로 만들어야 할 물량</td><td><b>가장 중요한 선행 항목.</b> 헤드라인보다 이걸 먼저 본다</td></tr>
+      <tr><td>생산<br>Production</td><td>현재 만들고 있는 양</td><td>동행 성격. 산업생산 지표와 연결</td></tr>
+      <tr><td>고용<br>Employment</td><td>채용 계획</td><td>NFP 발표 전 힌트로 활용(4부와 연결)</td></tr>
+      <tr><td>납기<br>Supplier Deliveries</td><td>납품이 느려지는가</td><td>느려지면 수요 과열 또는 공급망 병목. <b>해석에 맥락 필요</b></td></tr>
+      <tr><td>재고<br>Inventories</td><td>창고 상황</td><td>신규주문/재고 비율이 높으면 향후 생산 증가 신호</td></tr>
+      <tr><td>지불가격<br>Prices Paid</td><td>원자재 조달 가격</td><td><b>인플레이션 선행 신호.</b> 3부 물가 파트와 직결</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p>실무 팁 하나. <strong>신규주문 − 재고</strong>를 계산해보라. 주문은 늘어나는데 재고가 줄고 있다면 곧 생산을 늘려야 한다는 뜻으로, <em>수개월 뒤 산업생산 반등</em>을 예고하는 조합이다. 반대면 감산 압력이다.</p>
+
+  <h3 class="sec">4-3. 어떤 PMI를 봐야 하나</h3>
+
+  <ul>
+    <li><strong>ISM(미국)</strong> — 제조업·서비스업. 역사가 길고 시장 영향력이 가장 크다. 매월 첫 영업일(제조업), 셋째 영업일(서비스업) 발표.</li>
+    <li><strong>S&amp;P Global PMI</strong> — 전 세계 국가를 동일 방법론으로 조사해 <em>국가 간 비교</em>에 유리. 속보치(Flash)가 월 중순에 먼저 나온다.</li>
+    <li><strong>차이나 PMI</strong> — 국가통계국(NBS, 국유기업 중심)과 차이신(Caixin, 중소·수출기업 중심)이 따로 있고 <em>둘이 자주 엇갈린다</em>. 엇갈릴 때 그 자체가 중국 경제 구조를 말해준다.</li>
+  </ul>
+
+  <div class="block trap">
+    <span class="tag">신입이 틀리는 지점</span>
+    <p><b>함정 1 — PMI를 성장률로 읽는다.</b><br>
+    "PMI 52 = 2% 성장"이 아니다. PMI는 <b>방향에 대한 응답 비율</b>이며, 강도(얼마나 많이 늘었는지)는 담기지 않는다. 대기업 한 곳이 생산을 두 배로 늘려도 응답은 그냥 '증가' 한 표다.</p>
+    <p><b>함정 2 — 서비스업 PMI를 무시한다.</b><br>
+    선진국 경제는 GDP의 70% 이상이 서비스다. 제조업 PMI가 50 아래인데도 경제가 버티는 국면은 <b>서비스가 떠받치고 있는 것</b>이며, 이 조합이 최근 미국 경제의 핵심 특징이었다.</p>
+    <p><b>함정 3 — 납기 지연을 무조건 호황으로 읽는다.</b><br>
+    납기 지연은 원래 <b>수요 과열</b> 신호로 해석되지만, 팬데믹 공급망 마비나 지정학적 물류 차질에서도 똑같이 나타난다. <b>수요가 몰려서 느린 건지 공급이 끊겨서 느린 건지</b>를 구분해야 한다.</p>
+  </div>
+
+  <div class="connect">기업 쪽 지표를 봤으니 이제 가계 쪽으로 간다. 소비 지표에도 헤드라인 함정이 있다.</div>
+</section>
+
+<!-- ============================= 5장 ============================= -->
+<section class="chapter" id="ch5">
+  <span class="chno">CHAPTER 5</span>
+  <h2>소비 지표 — 헤드라인 말고 컨트롤 그룹</h2>
+  <p class="lede">소매판매 헤드라인은 자동차 몇 대와 기름값에 휘둘린다. 실무자는 그래서 다른 숫자를 본다.</p>
+
+  <div class="block why">
+    <span class="tag">왜 이걸 보는가</span>
+    <p class="q">소매판매가 +0.4%로 견조하게 나왔는데, 왜 리포트는 "소비 둔화 우려"라고 쓸까?</p>
+    <p>헤드라인 안에 <em>변동성이 큰 항목이 섞여 있어서</em>다. 그것들을 걷어내면 다른 그림이 나온다.</p>
+  </div>
+
+  <h3 class="sec">5-1. 컨트롤 그룹(Control Group)이란</h3>
+
+  <p>미국 소매판매 통계에서 <strong>컨트롤 그룹</strong>은 헤드라인에서 다음 네 항목을 제외한 값이다.</p>
+
+  <ul>
+    <li><strong>자동차</strong> — 단가가 커서 몇 대 차이로 전체가 출렁인다</li>
+    <li><strong>주유소</strong> — 유가 변동이 그대로 반영된다. 기름값이 오르면 '판매액'이 늘어난 것처럼 보인다</li>
+    <li><strong>건축자재</strong> — 날씨와 주택 사이클에 좌우된다</li>
+    <li><strong>음식서비스</strong> — 변동성이 크고 별도 통계 처리</li>
+  </ul>
+
+  <p>이렇게 걷어내고 남은 것이 <em>가계의 기저 소비력</em>이다. 게다가 컨트롤 그룹은 <strong>GDP의 개인소비지출(PCE) 추계에 직접 투입</strong>되기 때문에, 실무자들은 이 숫자로 다음 분기 GDP의 C 항목을 예측한다.</p>
+
+  <figure>
+    <div class="figtitle">헤드라인과 컨트롤 그룹이 반대 방향인 경우</div>
+    <div class="figsub">전월비(MoM, %) 기준</div>
+    <svg viewBox="0 0 800 280" role="img" aria-label="소매판매 헤드라인과 컨트롤 그룹의 상반된 결과 비교">
+      <g font-family="Pretendard, Malgun Gothic, sans-serif">
+        <line x1="80" y1="150" x2="740" y2="150" stroke="#1E2761" stroke-width="2"/>
+        <text x="748" y="155" fill="#1E2761" font-size="13" font-weight="700">0</text>
+
+        <!-- headline -->
+        <rect x="180" y="90" width="120" height="60" fill="#2E7D5B" opacity=".82"/>
+        <text x="240" y="78" text-anchor="middle" fill="#2E7D5B" font-size="20" font-weight="800">+0.4%</text>
+        <text x="240" y="180" text-anchor="middle" fill="#1F2430" font-size="15" font-weight="700">전체 소매판매</text>
+        <text x="240" y="202" text-anchor="middle" fill="#7A8095" font-size="12.5">Headline</text>
+        <text x="240" y="228" text-anchor="middle" fill="#4A5163" font-size="12.5">자동차 판매 호조 +</text>
+        <text x="240" y="247" text-anchor="middle" fill="#4A5163" font-size="12.5">유가 상승분이 금액을 키움</text>
+
+        <!-- control -->
+        <rect x="500" y="150" width="120" height="34" fill="#B23A48" opacity=".82"/>
+        <text x="560" y="206" text-anchor="middle" fill="#B23A48" font-size="20" font-weight="800">−0.2%</text>
+        <text x="560" y="130" text-anchor="middle" fill="#1F2430" font-size="15" font-weight="700">컨트롤 그룹</text>
+        <text x="560" y="108" text-anchor="middle" fill="#7A8095" font-size="12.5">Core / Control Group</text>
+        <text x="560" y="240" text-anchor="middle" fill="#4A5163" font-size="12.5">자동차·주유소·건자재·외식 제외</text>
+        <text x="560" y="259" text-anchor="middle" fill="#B23A48" font-size="12.5" font-weight="700">→ 실질 소비 체력은 위축</text>
+
+        <!-- arrow -->
+        <path d="M320,120 L480,120" stroke="#7A8095" stroke-width="1.5" stroke-dasharray="5 4"/>
+        <text x="400" y="112" text-anchor="middle" fill="#7A8095" font-size="12.5">변동 항목 제거</text>
+      </g>
+    </svg>
+    <figcaption><b>실무 결론:</b> 이런 조합에서 리포트는 "헤드라인 호조에도 <b>내수 기저 소비력은 둔화</b>"라고 쓴다. 헤드라인만 보고 "소비 견조"라고 쓰면 다음 달 GDP 추정에서 틀린다.</figcaption>
+  </figure>
+
+  <h3 class="sec">5-2. 소비를 볼 때 함께 보는 지표들</h3>
+
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>지표</th><th>보는 이유</th></tr></thead>
+    <tbody>
+      <tr><td>실질 가처분소득</td><td>소비의 재원. 소득이 안 늘면 소비 지속 불가</td></tr>
+      <tr><td>저축률</td><td>저축률이 낮아지며 소비가 유지된다면 <b>빚과 예금을 헐어 쓰는 중</b>이라는 뜻 — 지속 불가</td></tr>
+      <tr><td>신용카드 연체율</td><td>가계의 균열을 가장 먼저 보여주는 지표 중 하나</td></tr>
+      <tr><td>소비자심리(CCSI, 미시간대)</td><td>소프트 데이터. 하드와의 괴리를 확인</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p>여기서 나오는 실무 문장 하나를 기억해두면 좋다. <em>"소비가 견조한데 저축률이 급락하고 연체율이 오르고 있다면, 그 소비는 체력이 아니라 마지막 힘이다."</em></p>
+
+  <div class="block trap">
+    <span class="tag">신입이 틀리는 지점</span>
+    <p><b>함정 1 — 명목 소매판매를 실질로 착각한다.</b><br>
+    소매판매는 <b>금액 기준(명목)</b>이다. 물가가 3% 올랐는데 소매판매가 2% 늘었다면 <b>실질 소비는 감소</b>한 것이다. 인플레이션이 높은 국면에서 반드시 물가로 나눠 봐야 한다.</p>
+    <p><b>함정 2 — 심리지표와 실제 지출이 어긋날 때 심리를 믿는다.</b><br>
+    "소비자들은 경제가 나쁘다고 답하지만 카드는 계속 긁는다"는 상황이 실제로 자주 있다. <b>돈이 오간 기록(하드)</b>이 설문보다 강하다는 원칙을 여기에 적용한다.</p>
+    <p><b>함정 3 — 한국 지표에 미국 개념을 그대로 쓴다.</b><br>
+    한국 통계청 <b>소매판매액지수</b>에는 미국식 '컨트롤 그룹'이 그대로 있지는 않다. 대신 <b>승용차 제외</b> 계열, <b>내구재/준내구재/비내구재</b> 구분을 활용해 같은 목적을 달성한다.</p>
+  </div>
+
+  <div class="connect">이제 한국 투자자에게 가장 중요한 지표로 간다. 한국에서 나오지만 전 세계가 보는 지표다.</div>
+</section>
+
+<!-- ============================= 6장 ============================= -->
+<section class="chapter" id="ch6">
+  <span class="chno">CHAPTER 6</span>
+  <h2>한국 수출 — 세계에서 가장 빠른 실물 지표</h2>
+  <p class="lede">해외 헤지펀드 매니저가 한국 관세청 홈페이지를 새벽에 들여다보는 이유가 있다.</p>
+
+  <div class="block why">
+    <span class="tag">왜 이걸 보는가</span>
+    <p class="q">왜 미국 투자자가 한국 수출 데이터를 볼까? 한국 경제 규모는 세계 GDP의 2% 남짓인데.</p>
+    <p>규모 때문이 아니라 <em>속도와 위치</em> 때문이다. 한국 수출은 <em>전 세계 제조업 사이클의 가장 빠른 온도계</em>다.</p>
+  </div>
+
+  <h3 class="sec">6-1. 세 가지 강점</h3>
+
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>강점</th><th>내용</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>압도적 속도</td>
+        <td>관세청이 <b>매월 1일</b> 전월 확정치를 발표한다. 게다가 <b>1~10일, 1~20일 속보치</b>까지 월 중에 두 번 더 나온다. 세계 주요국 중 이만큼 빠른 무역 통계가 없다</td>
+      </tr>
+      <tr>
+        <td>글로벌 사이클의 앞단</td>
+        <td>한국은 반도체·기계·화학 등 <b>중간재·자본재</b>를 수출한다. 최종 소비재보다 공급망에서 앞에 있어, 글로벌 수요 변화가 먼저 나타난다</td>
+      </tr>
+      <tr>
+        <td>구조의 투명성</td>
+        <td>품목별(반도체·자동차·선박), 지역별(대미·대중·대EU) 세부 통계가 함께 나와 <b>어느 지역 수요가 꺾였는지</b>까지 즉시 파악 가능</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="block analogy">
+    <span class="tag">비유</span>
+    <p><strong>강 상류의 수질 측정소와 같다.</strong> 하류(미국 소매판매, 최종 소비)에 오염이 도달하려면 몇 달이 걸린다.
+    상류에 있는 한국 수출은 <em>같은 변화를 몇 달 먼저 감지한다.</em> 그래서 규모가 작아도 전 세계가 본다.</p>
+  </div>
+
+  <h3 class="sec">6-2. 반드시 일평균으로 봐라</h3>
+
+  <p>수출 통계에서 신입이 100% 걸려 넘어지는 함정이 <strong>조업일수</strong>다. 설이나 추석이 낀 달, 공휴일 배치가 다른 달은 <em>영업일 수 자체가 다르다.</em>
+  2월에 수출이 전년비 −10%라고 해도, 그해 설 연휴가 2월에 있었다면 그건 경기 악화가 아니라 <em>달력 문제</em>다.</p>
+
+  <div class="formula">
+    <div class="eq">일평균 수출액 = 총 수출액 ÷ 조업일수</div>
+    <div class="note">경기 판단은 반드시 이 값의 전년동기비로 한다</div>
+  </div>
+
+  <p>관세청과 산업부는 매월 보도자료에 <strong>일평균 수출액</strong>을 함께 발표한다. 실무자는 총액이 아니라 이 숫자를 본다.</p>
+
+  <h3 class="sec">6-3. 무엇을 쪼개 볼 것인가</h3>
+
+  <ul>
+    <li><strong>반도체</strong> — 물량과 단가를 분리한다. <em>물량은 느는데 단가가 빠지는 것</em>은 공급 과잉 신호이고, 반대는 사이클 개선 신호다.</li>
+    <li><strong>대중국 수출</strong> — 중국 내수와 중국을 경유한 재수출이 섞여 있다. 중국 경기의 대리 지표로 널리 쓰인다.</li>
+    <li><strong>대미국 수출</strong> — 미국 최종 수요를 반영. 관세·통상 이슈가 있을 땐 선주문(front-loading) 효과에 주의.</li>
+    <li><strong>선박</strong> — 계약과 인도 시점 차이가 커서 특정 월에 몰린다. <em>수출 총액을 왜곡하는 단골 항목</em>이므로 "선박 제외" 수치를 함께 본다.</li>
+  </ul>
+
+  <div class="block decode">
+    <span class="tag">리포트 해독</span>
+    <div class="quote">"10월 수출은 전년비 +4.2% 증가했으나, 조업일수 증가(+1.5일)를 감안한 일평균 수출은 −1.8%로 감소 전환했다.
+    반도체는 +12% 증가했으나 단가 상승 효과가 대부분이었으며, 대중 수출은 3개월 연속 감소했다."</div>
+    <div class="dl">
+      <div><b>"전년비 +4.2%"</b><span>헤드라인. 여기서 멈추면 "수출 호조"라는 <em>틀린 결론</em>에 도달한다.</span></div>
+      <div><b>"일평균 −1.8%"</b><span>진짜 숫자. <em>조업일수를 걷어내니 감소 전환</em>. 이 문장이 리포트의 핵심이다.</span></div>
+      <div><b>"반도체 단가 효과"</b><span>물량이 아니라 가격이 올린 것. <em>실물 수요 개선으로 보기 어렵다.</em></span></div>
+      <div><b>"대중 3개월 연속 감소"</b><span>일회성이 아닌 <em>추세</em>. 중국 수요 둔화가 확인 단계에 들어섰다.</span></div>
+      <div><b>종합</b><span>"헤드라인 증가, <em>내용은 둔화</em>" — 글로벌 제조업 사이클 하강 신호로 해석 가능.</span></div>
+    </div>
+  </div>
+
+  <div class="connect">지표들이 다 나빠지고 있다고 하자. 그럼 이건 침체인가? 이 질문에 답하려면 '침체'라는 단어의 정의부터 정해야 한다.</div>
+</section>
+
+<!-- ============================= 7장 ============================= -->
+<section class="chapter" id="ch7">
+  <span class="chno">CHAPTER 7</span>
+  <h2>침체의 정의 — 두 개의 서로 다른 자</h2>
+  <p class="lede">뉴스에서 "기술적 침체 진입"이라는 말과 "공식 침체는 아니다"라는 말이 같은 날 나오는 이유.</p>
+
+  <div class="block why">
+    <span class="tag">왜 이걸 보는가</span>
+    <p class="q">GDP가 두 분기 연속 마이너스였는데도 "미국은 침체가 아니다"라는 발표가 나왔다. 누가 거짓말을 하는 걸까?</p>
+    <p>거짓말이 아니라 <em>서로 다른 정의를 쓰고 있는 것</em>이다. 실제로 2022년 상반기 미국에서 정확히 이 일이 있었다.</p>
+  </div>
+
+  <h3 class="sec">7-1. 두 가지 정의</h3>
+
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>구분</th><th>기술적 정의 (Technical)</th><th>공식 판정 (NBER)</th></tr></thead>
+    <tbody>
+      <tr><td>기준</td><td><b>실질 GDP 2분기 연속 마이너스</b></td><td>고용·소득·생산·판매 등 <b>다수 지표의 광범위하고 지속적인 위축</b></td></tr>
+      <tr><td>판정 주체</td><td>없음(언론·시장의 관행적 기준)</td><td>NBER 경기순환판정위원회(미국)</td></tr>
+      <tr><td>속도</td><td>빠르다. GDP 발표 즉시 판정 가능</td><td><b>매우 느리다.</b> 침체 시작 후 6~18개월 뒤 소급 발표</td></tr>
+      <tr><td>장점</td><td>기계적이고 명확. 국가 간 비교 가능</td><td>정확하고 종합적</td></tr>
+      <tr><td>한계</td><td>고용이 멀쩡해도 침체로 판정될 수 있음. GDP 수정 시 뒤집힘</td><td><b>실시간 투자 판단엔 무용지물.</b> 알았을 땐 이미 끝나 있음</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="block analogy">
+    <span class="tag">비유</span>
+    <p><strong>체온 37.5도 = 발열</strong>이라는 기계적 기준(기술적 정의)과, <strong>의사가 여러 증상을 종합해 "독감입니다"라고 진단</strong>하는 것(NBER)의 차이다.
+    체온계는 즉시 답을 주지만 운동 직후에도 37.5도가 나온다. 의사의 진단은 정확하지만 진료를 받아야 하고 시간이 걸린다.
+    <em>둘 다 필요하고, 둘이 어긋날 때가 정보가 가장 많은 순간이다.</em></p>
+  </div>
+
+  <h3 class="sec">7-2. 실무에서는 어떻게 쓰나</h3>
+
+  <p>투자자는 NBER 발표를 기다릴 수 없다. 그래서 <strong>실시간 침체 확률 지표</strong>를 쓴다.</p>
+
+  <ul>
+    <li><strong>장단기 금리차(10년−2년, 10년−3개월)</strong> — 역전되면 침체 선행 신호로 오래 검증되어 왔다. 다만 <em>역전 시점부터 실제 침체까지 12~24개월 시차</em>가 있어 타이밍 도구로는 부적합하다.</li>
+    <li><strong>Sahm Rule</strong> — 실업률 3개월 이동평균이 직전 12개월 최저치보다 <em>0.5%p 이상</em> 올라가면 침체 진입으로 본다. 실시간성이 좋아 최근 널리 인용된다.</li>
+    <li><strong>ISM 제조업 PMI 42~45 이하</strong> — 경험칙 기준선.</li>
+    <li><strong>실질 소매판매·산업생산 동반 감소</strong> — NBER이 실제로 보는 지표들의 축약판.</li>
+  </ul>
+
+  <div class="block trap">
+    <span class="tag">신입이 틀리는 지점</span>
+    <p><b>함정 1 — 정의를 밝히지 않고 "침체"라고 쓴다.</b><br>
+    리포트에서 침체를 언급할 땐 <b>어느 정의인지</b> 반드시 명시해야 한다. "기술적 침체 조건 충족" / "NBER 기준 미충족" 두 문장이 동시에 성립할 수 있다.</p>
+    <p><b>함정 2 — 침체 = 주가 하락이라고 단순 매핑한다.</b><br>
+    주식시장은 선행지표라서 <b>침체가 공식화되는 시점엔 이미 바닥을 지난 경우</b>가 많다. 역사적으로 증시 저점은 침체 한복판에서 형성되는 경향이 있다.</p>
+    <p><b>함정 3 — 장단기 금리차 역전을 매도 신호로 쓴다.</b><br>
+    역전은 <b>경고등</b>이지 타이밍이 아니다. 역전 이후에도 주가가 1년 넘게 오른 사례가 여럿이다. 신호의 <b>정확도와 시점</b>은 별개 문제다.</p>
+  </div>
+
+  <div class="connect">마지막으로 실제 차트 한 장을 놓고 지금까지 배운 걸 전부 적용해 국면을 판정해본다.</div>
+</section>
+
+<!-- ============================= 8장 ============================= -->
+<section class="chapter" id="ch8">
+  <span class="chno">CHAPTER 8</span>
+  <h2>실전 독해 — ISM 차트로 국면 판정하기</h2>
+  <p class="lede">차트 한 장에서 몇 개의 문장을 뽑아낼 수 있는지가 실력이다.</p>
+
+  <figure>
+    <div class="figtitle">미국 ISM 제조업 PMI 추이</div>
+    <div class="figsub">팬데믹 과열 → 고금리 장기 위축 → 기준선 재돌파 시도</div>
+    <svg viewBox="0 0 800 340" role="img" aria-label="ISM 제조업 PMI의 장기 추이와 50선 돌파 시도">
+      <g font-family="Pretendard, Malgun Gothic, sans-serif">
+        <!-- grid -->
+        <line x1="70" y1="60" x2="770" y2="60" stroke="#F0F2F8"/>
+        <line x1="70" y1="105" x2="770" y2="105" stroke="#F0F2F8"/>
+        <line x1="70" y1="150" x2="770" y2="150" stroke="#F0F2F8"/>
+        <line x1="70" y1="195" x2="770" y2="195" stroke="#1E2761" stroke-width="2"/>
+        <line x1="70" y1="240" x2="770" y2="240" stroke="#F0F2F8"/>
+        <text x="62" y="64" text-anchor="end" fill="#7A8095" font-size="11.5">65</text>
+        <text x="62" y="109" text-anchor="end" fill="#7A8095" font-size="11.5">60</text>
+        <text x="62" y="154" text-anchor="end" fill="#7A8095" font-size="11.5">55</text>
+        <text x="62" y="199" text-anchor="end" fill="#1E2761" font-size="12" font-weight="800">50</text>
+        <text x="62" y="244" text-anchor="end" fill="#7A8095" font-size="11.5">45</text>
+        <text x="778" y="199" fill="#1E2761" font-size="11.5" font-weight="700">기준선</text>
+
+        <!-- contraction zone -->
+        <rect x="70" y="195" width="700" height="80" fill="#B23A48" opacity=".06"/>
+
+        <!-- line -->
+        <path d="M75,95 Q120,62 165,72 Q210,84 255,110 Q300,140 345,182 Q390,222 435,236 Q470,244 505,240 Q545,236 585,228 Q625,220 665,208 Q705,198 745,186"
+              fill="none" stroke="#B8860B" stroke-width="3.5"/>
+
+        <!-- annotations -->
+        <circle cx="150" cy="66" r="5" fill="#B23A48"/>
+        <text x="150" y="46" text-anchor="middle" fill="#B23A48" font-size="12.5" font-weight="700">공급망 과열기</text>
+        <text x="150" y="30" text-anchor="middle" fill="#7A8095" font-size="11.5">수요 폭발 + 납기 지연</text>
+
+        <circle cx="358" cy="195" r="6" fill="#1E2761"/>
+        <text x="358" y="172" text-anchor="middle" fill="#1E2761" font-size="12.5" font-weight="700">50선 하향 이탈</text>
+
+        <circle cx="470" cy="243" r="5" fill="#B23A48"/>
+        <text x="470" y="272" text-anchor="middle" fill="#B23A48" font-size="12.5" font-weight="700">고금리發 장기 위축</text>
+        <text x="470" y="290" text-anchor="middle" fill="#7A8095" font-size="11.5">기준선 아래 장기 체류</text>
+
+        <circle cx="745" cy="186" r="6" fill="#2E7D5B"/>
+        <text x="700" y="160" text-anchor="middle" fill="#2E7D5B" font-size="12.5" font-weight="700">기준선 재돌파 시도</text>
+        <text x="700" y="143" text-anchor="middle" fill="#7A8095" font-size="11.5">신규주문 개선 선행</text>
+
+        <!-- x labels -->
+        <line x1="70" y1="300" x2="770" y2="300" stroke="#DFE3EF"/>
+        <text x="80" y="318" fill="#7A8095" font-size="11.5">2021</text>
+        <text x="290" y="318" fill="#7A8095" font-size="11.5">2023</text>
+        <text x="500" y="318" fill="#7A8095" font-size="11.5">2025</text>
+        <text x="720" y="318" fill="#7A8095" font-size="11.5">2026</text>
+      </g>
+    </svg>
+    <figcaption>차트에서 뽑아낼 수 있는 문장들: ①과열 후 급락은 <b>재고 조정 사이클</b>의 전형이다. ②기준선 아래 체류 기간이 이례적으로 길었다 — 고금리가 제조업을 눌렀다는 뜻. ③최근 반등은 아직 <b>기준선 아래</b>다. "회복"이라 쓰려면 50 돌파와 <b>2개 분기 이상 연속 확장</b>이 확인되어야 한다.</figcaption>
+  </figure>
+
+  <h3 class="sec">8-1. 국면 판정 체크리스트</h3>
+
+  <p>실제로 "지금 사이클 어디인가"를 판정할 때 쓰는 순서다. 이 순서대로 채워 넣으면 리포트 한 단락이 나온다.</p>
+
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>단계</th><th>확인 항목</th><th>질문</th></tr></thead>
+    <tbody>
+      <tr><td>1. 선행</td><td>PMI 신규주문, 건축허가, 장단기 금리차, 한국 수출(일평균)</td><td>방향이 3개월 연속 같은가?</td></tr>
+      <tr><td>2. 동행</td><td>산업생산, 소매판매(컨트롤), 취업자 수</td><td>선행이 예고한 방향을 실물이 확인해주는가?</td></tr>
+      <tr><td>3. 후행</td><td>실업률, 임금, 재고</td><td>아직 반대 방향이라면 <b>전환기 초입</b>이다</td></tr>
+      <tr><td>4. 소프트-하드</td><td>심리 vs 실제 지출</td><td>괴리가 있다면 어느 쪽이 먼저 움직였나?</td></tr>
+      <tr><td>5. 결론</td><td>회복/확장/둔화/수축 중 하나로 명시</td><td><b>무효화 조건</b>도 함께 적었는가?</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="block key">
+    <span class="tag">핵심 정리</span>
+    <p>국면 판정은 <b>단정</b>이 아니라 <b>조건부 판단</b>이어야 한다.
+    "확장 초입으로 판단한다. <b>단, PMI 신규주문이 2개월 연속 50 아래로 재하락하면 이 판단은 무효다</b>" — 이 형식으로 쓰는 습관이 리서치의 기본기다.</p>
+  </div>
+</section>
+
+<!-- ============================= 부록 ============================= -->
+<section class="chapter" id="appendix">
+  <span class="chno">APPENDIX</span>
+  <h2>부록 — 경기 지표 캘린더 · FRED 코드</h2>
+
+  <h3 class="sec">A. 한 달의 리듬</h3>
+  <p>매크로 담당자의 한 달은 이 순서로 돌아간다. 이 캘린더를 외워두면 "이번 주에 뭘 봐야 하나"를 매번 검색하지 않아도 된다.</p>
+
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>시점</th><th>지표</th><th>성격</th></tr></thead>
+    <tbody>
+      <tr><td>1일</td><td>한국 수출입(전월 확정)</td><td>선행 · 글로벌 사이클</td></tr>
+      <tr><td>1영업일</td><td>미국 ISM 제조업 PMI</td><td>선행 · 소프트</td></tr>
+      <tr><td>3영업일</td><td>미국 ISM 서비스업 PMI</td><td>선행 · 소프트</td></tr>
+      <tr><td>첫째 금요일</td><td>미국 고용보고서(NFP)</td><td>동행~후행 · 하드 (4부에서 상세)</td></tr>
+      <tr><td>10~15일</td><td>미국 CPI</td><td>후행 · 하드 (3부에서 상세)</td></tr>
+      <tr><td>15일 전후</td><td>미국 소매판매 · 산업생산</td><td>동행 · 하드</td></tr>
+      <tr><td>20일경</td><td>한국 수출 20일 속보</td><td>선행 · 초고속</td></tr>
+      <tr><td>23일경</td><td>S&amp;P Global PMI 속보(Flash)</td><td>선행 · 소프트</td></tr>
+      <tr><td>말일</td><td>한국 산업활동동향 · 미국 PCE 물가</td><td>동행 / 후행</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3 class="sec">B. FRED 코드 — 경기 편</h3>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>지표</th><th>FRED 코드</th><th>빈도</th><th>비고</th></tr></thead>
+    <tbody>
+      <tr><td>ISM 제조업 PMI</td><td>MANEMP 계열 / NAPM(구)</td><td>월</td><td>ISM 라이선스 정책상 FRED 게재가 제한될 수 있음 — ISM 공식 사이트 병행</td></tr>
+      <tr><td>산업생산지수</td><td>INDPRO</td><td>월</td><td>동행지표 핵심</td></tr>
+      <tr><td>소매판매(총액)</td><td>RSAFS</td><td>월</td><td>명목 기준</td></tr>
+      <tr><td>소매판매 컨트롤그룹</td><td>RSFSXMV 계열</td><td>월</td><td>자동차 제외 등 변형 계열 확인 필요</td></tr>
+      <tr><td>장단기 금리차(10Y−2Y)</td><td>T10Y2Y</td><td>일</td><td>침체 선행 신호</td></tr>
+      <tr><td>장단기 금리차(10Y−3M)</td><td>T10Y3M</td><td>일</td><td>연준이 더 중시하는 계열</td></tr>
+      <tr><td>실업률(Sahm Rule용)</td><td>SAHMREALTIME</td><td>월</td><td>실시간 침체 신호 지표</td></tr>
+      <tr><td>NBER 침체 기간</td><td>USREC</td><td>월</td><td>차트 음영 처리용 더미 변수</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3 class="sec">C. 한국 경기 지표는 어디서</h3>
+  <ul>
+    <li><strong>관세청 수출입 통계</strong>(unipass.customs.go.kr) — 1일·10일·20일 속보</li>
+    <li><strong>산업통상자원부 월간 수출입 동향</strong> — 품목별·지역별 해설이 붙은 보도자료</li>
+    <li><strong>통계청 산업활동동향</strong> — 산업생산·소매판매·설비투자·<b>경기선행지수 순환변동치</b></li>
+    <li><strong>한국은행 기업경기실사지수(BSI)</strong> · <strong>소비자동향조사(CCSI)</strong> — 국내 소프트 데이터</li>
+  </ul>
+</section>
+
+<!-- ============================= 셀프체크 ============================= -->
+<section class="selfcheck" id="check">
+  <h2>셀프체크 — 2부</h2>
+  <p class="lede">답을 먼저 떠올린 다음 펼쳐서 맞춰보라.</p>
+
+  <details>
+    <summary>실업률이 사상 최저인데 "곧 침체"라고 말하는 애널리스트는 무엇을 근거로 하는가?</summary>
+    <div class="answer">
+      <p><b>실업률은 후행지표</b>이기 때문이다. 실업률은 경기가 꺾이고 한참 뒤에야 오르기 시작하므로, 역사적으로 침체 진입 시점의 실업률은 오히려 저점 부근이었다.
+      그 애널리스트는 <b>선행지표(PMI 신규수주, 장단기 금리차, 건축허가 등)</b>를 보고 말하는 것이다. (2장)</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>PMI가 55에서 52로 하락했다. 경제가 위축된 것인가?</summary>
+    <div class="answer">
+      <p><b>아니다.</b> 52는 여전히 기준선 50 위이므로 <b>확장 국면</b>이다. 다만 "좋아졌다"고 답한 기업의 비율이 줄었으므로 <b>확장의 폭이 축소</b>된 것이다.
+      PMI는 성장률이 아니라 <b>증가 응답 비율(+동일 응답의 절반)</b>이라는 점을 기억해야 한다. (4장)</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>ISM 제조업 PMI에서 헤드라인보다 먼저 봐야 할 세부 지수는 무엇이고 왜인가?</summary>
+    <div class="answer">
+      <p><b>신규주문(New Orders)</b>이다. 앞으로 생산해야 할 물량을 뜻하므로 헤드라인 PMI보다도 선행성이 높다.
+      추가로 <b>신규주문 대비 재고</b> 조합을 보면(주문↑·재고↓) 향후 생산 증가를 예고하는 신호가 된다. 지불가격(Prices Paid)은 인플레이션 선행 신호로 물가 파트와 연결된다. (4장)</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>소비자심리지수는 급락했는데 소매판매는 견조하다. 어느 쪽을 믿어야 하나?</summary>
+    <div class="answer">
+      <p>원칙적으로 <b>하드 데이터(소매판매)</b>에 무게를 둔다. 실제 돈이 오간 기록이 설문보다 강하기 때문이다.
+      다만 소프트 데이터가 <b>일시적 급변이 아니라 2~3개월 추세적으로 꺾이고 있다면</b> 전환기 예고 신호로 해석해 가중치를 옮겨야 한다.
+      "혼조"라고만 쓰는 것은 분석이 아니다. 어느 쪽이 먼저 움직였는지를 근거로 한쪽에 무게를 실어야 한다. (3장)</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>소매판매 헤드라인이 +0.4%인데 리포트가 "소비 둔화"라고 쓴 이유는?</summary>
+    <div class="answer">
+      <p><b>컨트롤 그룹</b>이 마이너스였기 때문이다. 헤드라인에는 자동차·주유소·건축자재·음식서비스처럼 변동성이 큰 항목이 섞여 있어, 자동차 몇 대나 유가 상승만으로도 좋아 보일 수 있다.
+      이를 제외한 컨트롤 그룹이 가계의 기저 소비력을 보여주며, <b>GDP의 소비 항목 추계에 직접 투입</b>된다. (5장)</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>2월 수출이 전년비 −10%였다. 경기가 나빠진 것이라고 결론 내려도 되나?</summary>
+    <div class="answer">
+      <p><b>안 된다. 조업일수부터 확인해야 한다.</b> 설 연휴 위치에 따라 영업일 수가 달라져 총액이 크게 왜곡된다.
+      경기 판단은 반드시 <b>일평균 수출액(총액 ÷ 조업일수)</b>의 전년동기비로 해야 한다. 추가로 선박처럼 특정 월에 몰리는 항목을 제외한 수치도 함께 본다. (6장)</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>왜 해외 투자자들이 한국 수출 데이터를 볼까?</summary>
+    <div class="answer">
+      <p>①<b>속도</b> — 매월 1일 확정치에 더해 10일·20일 속보까지 나와 세계에서 가장 빠른 무역 통계다.
+      ②<b>위치</b> — 한국은 반도체·기계·화학 등 중간재·자본재를 수출하므로 공급망 앞단에 있어 글로벌 수요 변화가 먼저 나타난다.
+      ③<b>투명성</b> — 품목별·지역별 세부 통계가 함께 나와 어느 지역 수요가 꺾였는지 즉시 파악된다. (6장)</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>GDP가 2분기 연속 마이너스인데 "침체가 아니다"라는 발표가 나올 수 있는 이유는?</summary>
+    <div class="answer">
+      <p><b>정의가 두 개이기 때문이다.</b> 기술적 정의는 실질 GDP 2분기 연속 마이너스라는 기계적 기준이고,
+      NBER 공식 판정은 고용·소득·생산·판매 등 다수 지표의 광범위하고 지속적인 위축을 종합적으로 본다.
+      고용이 견조하면 기술적 조건을 충족해도 NBER은 침체로 판정하지 않는다. 리포트에서 침체를 언급할 땐 <b>어느 정의인지 반드시 명시</b>해야 한다. (7장)</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>장단기 금리차가 역전됐다. 지금 주식을 팔아야 하나?</summary>
+    <div class="answer">
+      <p>역전은 <b>경고등이지 타이밍 신호가 아니다.</b> 역전 시점부터 실제 침체까지 통상 12~24개월의 시차가 있고, 그 사이 주가가 계속 오른 사례도 여럿이다.
+      신호의 <b>정확도(방향이 맞는가)</b>와 <b>시점(언제인가)</b>은 별개 문제다. 실시간 판단에는 Sahm Rule이나 ISM 수준 같은 보조 지표를 함께 본다. (7장)</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>"현재 경기는 확장 초입으로 판단한다"라는 문장에 반드시 덧붙여야 할 것은?</summary>
+    <div class="answer">
+      <p><b>무효화 조건</b>이다. 예: "단, PMI 신규주문이 2개월 연속 50 아래로 재하락하면 이 판단은 무효다."
+      국면 판정은 단정이 아니라 조건부 판단이어야 하며, 판단이 틀렸다는 걸 무엇으로 알 수 있는지를 미리 적어두는 것이 리서치의 기본기다. (8장)</p>
+    </div>
+  </details>
+</section>
+
+<nav class="footnav">
+  <a class="ghost" href="1부_성장.html">← 1부 · 성장(Growth)</a>
+  <a href="3부_물가.html">3부 · 물가 — 정책의 방아쇠 →</a>
+</nav>
+
+</div>
+</body>
+</html>
