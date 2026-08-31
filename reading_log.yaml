@@ -133,3 +133,21 @@ read:
   - file: "BIS-AER-2026"
     note: "호르무즈는 실제로 닫혔다 — 공급 손실은 1970년대보다 컸다"
     # 같은 보고서에서 "관세 인플레는 사라진 게 아니라 기업 마진에 유예돼 있다"도 나왔다
+
+  # ── 2026-08-31 · 미 국채시장 배치 ────────────────────────────────
+  - file: "NBER-W35098-Treasury-Supply-Shocks"
+    note: "국채 발행 충격은 물량과 만기로 갈린다 — 실물 부호가 반대다"
+  - file: "NBER-W34018-Revisiting-the-Interest-Rate-Effects-of-Federal-Debt"
+    note: "부채비율 1%p는 장기금리를 약 3bp 올린다 — 그중 4분의 3이 기간프리미엄이다"
+  - file: "BIS-WP-1270-Stablecoins-and-safe-asset-prices"
+    note: "스테이블코인 유입이 단기 국채금리를 낮춘다 — 크기가 측정됐다"
+  - file: "FRBNY-Staff-Report-1070-Dealer-Capacity-and-US-Treasury-Market-Functionality"
+    note: "국채 유동성은 딜러 여력이 차면 비선형적으로 무너진다"
+  - file: "OFRBrief-26-01-Hedge-Fund-Participation-in-Cleared-Repo"
+    note: "국채 베이시스 트레이드는 헤지펀드 레포에 얹혀 있다"
+  - file: "CFTC-2024-The-Treasury-Cash-Futures-Basis-Trade-and-Effective-Risk-Management-Practices"
+    note: "국채 베이시스 트레이드는 헤지펀드 레포에 얹혀 있다"
+  - file: "FSB-Leverage-in-Nonbank-Financial-Intermediation-Final-report-2025"
+    note: "국채 베이시스 트레이드는 헤지펀드 레포에 얹혀 있다"
+  - file: "IMF-Global-Financial-Stability-Report-April-2026"
+    skip: "IMF-GFSR-Apr-2026-Ch1/Ch2와 같은 보고서의 통합본 — 중복"
