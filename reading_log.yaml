@@ -273,3 +273,7 @@ read:
     note: "인플레 목표제가 환율 목표를 대체해야 유연화가 가능하다 — 양극화는 선진국 이야기다"
   - file: "Fama-CommodityFuturesPrices-1987"
     note: "저장이론은 검출되고 위험프리미엄은 잘 안 검출된다 — 같은 자료에서"
+  - file: "Joskow-ContractDurationRelationshipSpecific-1987"
+    note: "장기계약은 비효율이 아니라 관계특수적 투자의 산물이다 — 그래서 규제완화가 문제를 키운다"
+  - file: "Hubbard-RegulationLongTermContracting-1986"
+    note: "장기계약은 비효율이 아니라 관계특수적 투자의 산물이다 — 그래서 규제완화가 문제를 키운다"
