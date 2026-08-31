@@ -249,3 +249,9 @@ read:
     skip: "의학 논문. 저자명 충돌로 인한 오다운로드(광물경제학자 Crowson과 동명이인)"
   - file: "Population   Development Rev - 2024 - Karra - Economic Foundations of Contraceptive Transitions  Theories and a Review of"
     skip: "피임 전환의 경제학 리뷰. 인구·거시 축에서 멀어 현재 볼트 구조에 붙는 자리가 없다"
+
+  # ── 2026-09-01 · Desktop 새 폴더 (141편, 최초 스캔) ──────────────
+  - file: "working-paper-744-why-you-should-use-hodrick-prescott-filter-least-generate-credit-gaps"
+    note: "HP 필터는 이론적으로 틀렸지만 실시간 조기경보에서는 대안들보다 낫다"
+  - file: "working-paper-380-characterising-financial-cycle-dont-lose-sight-medium-term"
+    note: "금융순환은 경기순환보다 길고, 둘이 겹칠 때 침체가 깊어진다"
