@@ -153,3 +153,5 @@ read:
     skip: "IMF-GFSR-Apr-2026-Ch1/Ch2와 같은 보고서의 통합본 — 중복"
   - file: "US-Treasury-TBAC-Quarterly-Refunding-Presentation-August-2026"
     note: "바이백으로는 장기금리를 못 누른다 — 한도가 응찰의 10분의 1이다"
+  - file: "Federal-Reserve-Monetary-Policy-Report-July-2026"
+    note: "미 정책금리는 실질 0 근처에 있다 — 물가 3%대에 명목 3.75%"
