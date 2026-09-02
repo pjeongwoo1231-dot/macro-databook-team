@@ -564,7 +564,9 @@ def collect(what: str = "all", since: str = DEFAULT_SINCE, top: int = 100,
             resume: bool = True, interval: float = 0.18, workers: int = 8) -> int:
     env = load_env()
     if not (env.get("TOSSINVEST_CLIENT_ID") and env.get("TOSSINVEST_CLIENT_SECRET")):
-        print("TOSSINVEST_CLIENT_ID/SECRET 없음 (.env 확인) — `python -m databook setup`")
+        print("TOSSINVEST_CLIENT_ID/SECRET 없음 — 이 키는 **각자 본인 앱**으로 발급합니다"
+              "(허용 IP가 사람마다 달라 공유가 불가능). https://developers.tossinvest.com "
+              "→ 앱 생성 → 본인 공인 IP 등록 → `python -m databook setup`")
         return 1
     kinds = kinds or KINDS
     bad = [k for k in kinds if k not in _KIND_EP]

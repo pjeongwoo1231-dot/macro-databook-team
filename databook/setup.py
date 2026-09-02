@@ -39,7 +39,7 @@ KEY_SPECS: list[tuple[str, str, str, bool, str, int]] = [
     ("E_STAT_APP_ID", "일본 e-Stat (기계수주·광공업생산·가계조사)", "https://www.e-stat.go.jp/api/",
      False, "★URL 칸에 localhost·사설IP는 거부된다. 공개 저장소 주소를 넣으면 통과", 3),
     ("TOSSINVEST_CLIENT_ID", "토스증권 Open API — Client ID", "https://developers.tossinvest.com",
-     False, "★개인 계좌 자격증명. 팀원은 비워 두세요. 허용 IP 등록 필수(미등록 시 403)", 10),
+     False, "★팀 공용 키가 없습니다 — 본인 앱을 만들고 본인 IP를 등록하세요(5분·무료)", 10),
     ("TOSSINVEST_CLIENT_SECRET", "토스증권 Open API — Client Secret", "https://developers.tossinvest.com",
      False, "위 ID와 같은 앱. 토큰이 동시 1개만 유효해 두 프로세스를 같이 돌리면 서로 401", 0),
     ("EIA_API_KEY", "미 에너지정보청 (원유·가스)", "https://www.eia.gov/opendata/register.php",
@@ -57,6 +57,18 @@ KEY_SPECS: list[tuple[str, str, str, bool, str, int]] = [
 ]
 REQUIRED = [k for k, _, _, req, _, _ in KEY_SPECS if req]
 KEY_NAMES = {k for k, *_ in KEY_SPECS}
+
+# ── 남에게 받아 쓸 수 없는 키 ────────────────────────────────────────────
+# 자격증명에 **발급자의 환경**이 묶여 있어, 키를 그대로 넘겨받아도 내 자리에서는 실패한다.
+# 그래서 이런 항목은 "팀원은 비워 두세요"가 아니라 **각자 자기 것을 발급**하는 게 정답이다.
+# (예전 안내는 비워 두라고 했다 — 그러면 국내 수급 10개가 팀원 전원에게서 영원히 빈다.)
+PERSONAL_KEYS: dict[str, str] = {
+    "TOSSINVEST_CLIENT_ID":
+        "앱에 **허용 IP를 등록**해야 하고 등록한 IP 밖에서 부르면 403이다. "
+        "게다가 토큰이 계정당 동시에 하나뿐이라, 한 키를 둘이 쓰면 서로 401을 만든다.",
+    "TOSSINVEST_CLIENT_SECRET": "위 Client ID와 같은 앱에서 함께 나온다.",
+}
+TOSS_LANDING = "https://developers.tossinvest.com"
 
 PATH_SPECS: list[tuple[str, str, str]] = [
     ("OBSIDIAN_VAULT_PATH", "Obsidian 볼트 경로 (설정하면 볼트에도 바로 출력)",
@@ -131,11 +143,87 @@ def _get(url: str, timeout: int = 12) -> str:
         return r.read().decode("utf-8", "replace")
 
 
-def verify_key(name: str, value: str) -> tuple[bool | None, str]:
+def public_ip(timeout: int = 5) -> str:
+    """토스 앱에 등록할 **내 공인 IP**. 실패하면 빈 문자열 — 설정을 막지 않는다.
+
+    공유기 뒤라 `ipconfig`가 보여주는 사설 IP(192.168.*)는 등록해도 소용이 없다.
+    등록해야 하는 건 밖에서 보이는 주소라 외부에 한 번 물어봐야 안다.
+    """
+    for url in ("https://api.ipify.org", "https://ifconfig.me/ip"):
+        try:
+            ip = _get(url, timeout=timeout).strip()
+        except Exception:
+            continue
+        if ip and len(ip) <= 45 and all(c in "0123456789abcdefABCDEF.:" for c in ip):
+            return ip
+    return ""
+
+
+def _toss_http_msg(code: int) -> tuple[bool | None, str]:
+    """토스 응답 코드를 사람이 고칠 수 있는 말로 바꾼다.
+
+    **403과 401을 구분하는 것이 핵심**이다 — 403은 키가 맞는데 IP가 틀린 것이라
+    키를 다시 발급받으면 시간만 버린다.
+    """
+    if code == 403:
+        ip = public_ip()
+        where = f" · 지금 이 PC의 공인 IP: {ip}" if ip else ""
+        return False, (f"허용 IP 미등록 — 키는 맞고 **IP가 안 맞습니다**. "
+                       f"{TOSS_LANDING} 앱 설정에서 허용 IP를 등록하세요{where}")
+    if code in (400, 401):
+        return False, f"인증 실패(HTTP {code}) — Client ID/Secret을 다시 확인하세요"
+    return None, f"확인 못 함(HTTP {code})"
+
+
+def _verify_toss(cid: str, sec: str) -> tuple[bool | None, str]:
+    """토큰을 실제로 발급하고 GET까지 한 번 해 본다.
+
+    토큰만 받아 보고 끝내면 안 된다 — **IP 검사는 호출 단계에서** 걸리므로
+    토큰이 나와도 실제 조회에서 403이 난다.
+
+    ⚠ 토큰은 계정당 동시에 하나뿐이라, 여기서 발급하면 돌고 있던 수집의 토큰이 죽는다.
+      그래서 수집이 잡고 있는 락을 존중하고, 못 잡으면 확인을 건너뛴다.
+    """
+    if not sec:
+        return None, "Client Secret이 없어 확인 못 함 — 같은 앱의 Secret도 넣으세요"
+    from .tosslock import toss_lock
+    with toss_lock("setup 키 확인", wait=0, quiet=True) as held:
+        if not held:
+            return None, "다른 작업이 토스 API를 쓰는 중 — 확인 건너뜀"
+        body = urllib.parse.urlencode({"grant_type": "client_credentials",
+                                       "client_id": cid, "client_secret": sec}).encode()
+        req = urllib.request.Request(
+            "https://openapi.tossinvest.com/oauth2/token", data=body,
+            headers={"Content-Type": "application/x-www-form-urlencoded",
+                     "User-Agent": "macro-databook/0.1 (setup check)"})
+        try:
+            tok = json.loads(urllib.request.urlopen(req, timeout=30).read()).get("access_token")
+        except urllib.error.HTTPError as e:
+            return _toss_http_msg(e.code)
+        except Exception as e:
+            return None, f"확인 못 함({type(e).__name__})"
+        if not tok:
+            return False, "토큰이 오지 않았습니다 — Client ID/Secret을 다시 확인하세요"
+        try:
+            probe = urllib.request.Request(
+                "https://openapi.tossinvest.com/api/v1/market-indicators/prices?symbols=KOSPI",
+                headers={"Authorization": "Bearer " + tok, "Accept": "application/json",
+                         "User-Agent": "macro-databook/0.1 (setup check)"})
+            urllib.request.urlopen(probe, timeout=30).read()
+        except urllib.error.HTTPError as e:
+            return _toss_http_msg(e.code)
+        except Exception as e:
+            return None, f"토큰은 받았으나 호출 확인 못 함({type(e).__name__})"
+    return True, "정상 — 토큰 발급 + 실호출까지 확인"
+
+
+def verify_key(name: str, value: str, peer: dict[str, str] | None = None) -> tuple[bool | None, str]:
     """(성공?, 메시지). None = 확인 수단 없음 — 형식만 보고 넘어간다."""
     if not value:
         return None, "비어 있음"
     try:
+        if name == "TOSSINVEST_CLIENT_ID":
+            return _verify_toss(value, (peer or {}).get("TOSSINVEST_CLIENT_SECRET", ""))
         if name == "FRED_API_KEY":
             d = json.loads(_get("https://api.stlouisfed.org/fred/series?series_id=DGS10"
                                 f"&api_key={urllib.parse.quote(value)}&file_type=json"))
@@ -163,7 +251,7 @@ def verify_key(name: str, value: str) -> tuple[bool | None, str]:
     return None, "확인 수단 없음(형식만)"
 
 
-VERIFIABLE = ("FRED_API_KEY", "E_STAT_APP_ID", "ECOS_API_KEY")
+VERIFIABLE = ("FRED_API_KEY", "E_STAT_APP_ID", "ECOS_API_KEY", "TOSSINVEST_CLIENT_ID")
 
 
 # ─────────────────────────── 마법사 ───────────────────────────
@@ -195,19 +283,46 @@ def _print_plan(env: dict[str, str]) -> list[tuple]:
         print("모든 키가 설정돼 있습니다.\n")
         return []
 
-    print("── 아직 없는 키 — 아래 링크를 한꺼번에 열어 발급받은 뒤 붙여넣으세요")
-    # 팀원이 채우지 않아야 하는 항목(토스=개인 계좌)은 맨 뒤로 민다
-    miss = sorted(miss, key=lambda s: (not s[3], s[0].startswith("TOSSINVEST")))
-    for k, label, url, req, help_, n in miss:
+    def _row(spec: tuple) -> None:
+        k, label, url, req, help_, n = spec
         tag = "필수" if req else "선택"
         cnt = f"{n}개" if n else "—"
         print(f"   [{tag}] {label}")
         print(f"        {cnt:>8}   {url}")
         if help_:
             print(f"        └ {help_}")
-    print("\n   ※ 지금 다 받을 필요 없습니다. 엔터로 건너뛰면 그 지표만 '수집 실패'로 표시되고")
-    print("      나머지는 정상 동작합니다. 나중에 `python -m databook setup`으로 다시 채우면 됩니다.\n")
-    return miss
+
+    shared = sorted([x for x in miss if x[0] not in PERSONAL_KEYS], key=lambda x: not x[3])
+    personal = [x for x in miss if x[0] in PERSONAL_KEYS]
+
+    if shared:
+        print("── 아직 없는 키 — 아래 링크를 한꺼번에 열어 발급받은 뒤 붙여넣으세요")
+        for spec in shared:
+            _row(spec)
+        print("\n   ※ 지금 다 받을 필요 없습니다. 엔터로 건너뛰면 그 지표만 '수집 실패'로 표시되고")
+        print("      나머지는 정상 동작합니다. 나중에 `python -m databook setup`으로 다시 채우면 됩니다.\n")
+
+    # 남의 것을 받아 쓸 수 없는 키는 **따로 세워** 안내한다.
+    # 위 목록에 섞어 두면 "선택"으로 보여서 아무도 안 받고, 국내 수급이 팀 전체에서 빈다.
+    if personal:
+        print("── 본인 것만 통하는 키 — 남에게 받아 쓸 수 없습니다")
+        for spec in personal:
+            _row(spec)
+        ip = public_ip()
+        print()
+        print("   토스 앱은 **허용 IP에 묶여** 있습니다. 남의 Client ID/Secret을 그대로 넣으면")
+        print("   키가 맞아도 403이 납니다. 각자 앱을 만들고 자기 IP를 등록하세요 (무료·즉시).")
+        print(f"     1) {TOSS_LANDING} 로그인 → 앱 생성")
+        if ip:
+            print(f"     2) 허용 IP에 지금 이 PC의 공인 IP를 등록:  {ip}")
+        else:
+            print("     2) 허용 IP에 지금 이 PC의 **공인 IP**를 등록")
+            print("        (자동 조회 실패 — https://api.ipify.org 를 브라우저로 열면 나옵니다)")
+        print("     3) 발급된 Client ID / Secret을 아래에 붙여넣기")
+        print("   ※ 공유기·회사망·핫스팟은 IP가 바뀝니다. 바뀌면 다시 등록해야 403이 풀립니다.")
+        print("   ※ 안 넣어도 나머지는 정상입니다 — 국내 수급 지표 10개만 비어 있게 됩니다.\n")
+
+    return shared + personal
 
 
 def run_wizard() -> int:
@@ -223,7 +338,8 @@ def run_wizard() -> int:
             return 0
         print()
         for k, label, url, req, help_, _n in ask_list:
-            v = _ask(f"{label}\n   {k} = ")
+            mark = "  ← 본인 앱에서 발급한 값" if k in PERSONAL_KEYS else ""
+            v = _ask(f"{label}{mark}\n   {k} = ")
             if v:
                 values[k] = v
             print()
@@ -245,7 +361,7 @@ def run_wizard() -> int:
     if checks:
         print("── 키 확인 중…")
         for k, v in checks:
-            ok, msg = verify_key(k, v)
+            ok, msg = verify_key(k, v, values)
             mark = "✓" if ok else ("✗" if ok is False else "?")
             print(f"   {mark} {k}: {msg}")
         print()

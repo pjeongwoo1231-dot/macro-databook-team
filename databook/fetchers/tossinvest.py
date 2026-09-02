@@ -58,11 +58,31 @@ LANDING = "https://developers.tossinvest.com"
 _TOKEN: dict[str, Any] = {}
 
 
+def _ip_hint(msg: str = "") -> str:
+    """403을 **고칠 수 있는 문장**으로 바꾼다.
+
+    이 API는 허용 IP 밖의 호출을 403으로 막는다. 네트워크가 바뀌면(집↔학교↔핫스팟)
+    키는 그대로인데 조용히 여기로 온다 — 그때 "HTTP 403"만 보면 키를 다시 발급받으러 간다.
+    등록해야 하는 주소는 사설 IP가 아니라 **공인 IP**라 밖에 한 번 물어봐야 안다.
+    """
+    ip = ""
+    try:
+        with urllib.request.urlopen("https://api.ipify.org", timeout=5) as r:
+            ip = r.read().decode("ascii", "replace").strip()[:45]
+    except Exception:
+        pass
+    where = f" 지금 이 PC의 공인 IP는 {ip} 입니다." if ip else ""
+    return (f"HTTP 403 — 토스 앱에 **허용 IP가 등록되지 않았습니다**(키 문제가 아닙니다).{where}"
+            f" {LANDING} 앱 설정에서 허용 IP를 갱신하세요. (원문: {msg})")
+
+
 def _token(env: dict[str, str]) -> str:
     cid = env.get("TOSSINVEST_CLIENT_ID") or os.environ.get("TOSSINVEST_CLIENT_ID")
     sec = env.get("TOSSINVEST_CLIENT_SECRET") or os.environ.get("TOSSINVEST_CLIENT_SECRET")
     if not (cid and sec):
-        raise RuntimeError("TOSSINVEST_CLIENT_ID/SECRET 미설정")
+        raise RuntimeError(
+            "TOSSINVEST_CLIENT_ID/SECRET 미설정 — 팀 공용 키는 없습니다(허용 IP가 사람마다 달라 공유가 불가능). "
+            f"{LANDING} 에서 본인 앱을 만든 뒤 `python -m databook setup`으로 넣으세요")
     if _TOKEN.get("v") and time.time() < _TOKEN.get("exp", 0):
         return _TOKEN["v"]
     body = urllib.parse.urlencode({"grant_type": "client_credentials",
@@ -70,7 +90,15 @@ def _token(env: dict[str, str]) -> str:
     req = urllib.request.Request(BASE + "/oauth2/token", data=body,
                                  headers={"Content-Type": "application/x-www-form-urlencoded",
                                           "User-Agent": "MacroVault/1.0"})
-    d = json.loads(urllib.request.urlopen(req, timeout=40).read())
+    try:
+        d = json.loads(urllib.request.urlopen(req, timeout=40).read())
+    except urllib.error.HTTPError as e:
+        if e.code == 403:
+            raise RuntimeError(_ip_hint("토큰 발급 단계")) from None
+        if e.code in (400, 401):
+            raise RuntimeError(f"HTTP {e.code} — Client ID/Secret이 틀렸습니다. "
+                               "`python -m databook setup`에서 다시 넣으세요") from None
+        raise
     _TOKEN["v"] = d["access_token"]
     _TOKEN["exp"] = time.time() + int(d.get("expires_in", 3600)) - 120
     return _TOKEN["v"]
@@ -106,6 +134,8 @@ def _get(path: str, env: dict[str, str], **q: Any) -> Any:
                 refreshed = True
                 time.sleep(1.0)
                 continue
+            if e.code == 403:
+                raise RuntimeError(_ip_hint(msg))
             raise RuntimeError(f"HTTP {e.code}: {msg}")
         except (urllib.error.URLError, TimeoutError, OSError) as e:
             # 오래 도는 백필에서 SSL 순단(TLSV1_ALERT_INTERNAL_ERROR)·타임아웃이 실제로 난다.
