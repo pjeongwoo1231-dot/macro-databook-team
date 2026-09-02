@@ -21,6 +21,8 @@ def main() -> int:
                      help="--only 실행에서도 산출물을 덮어쓴다 (그날 노트가 그 소스만 남는다)")
     run.add_argument("--dry-run", action="store_true", help="네트워크 호출 없이 yaml 파싱·렌더 경로만 검증")
     run.add_argument("--no-setup", action="store_true", help="필수 키가 없어도 설정 마법사를 띄우지 않음")
+    run.add_argument("--force-publish", action="store_true",
+                     help="직전 발행보다 크게 나빠져도 볼트에 쓴다 (기본은 차단 — 2026-09-01 사고 방지)")
     run.add_argument("--no-news", action="store_true",
                      help="뉴스 다이제스트를 건너뛴다 (기본은 수집 끝에 자동 생성)")
     sub.add_parser("setup", help="대화형 키 설정 마법사 (.env 생성/갱신)")
@@ -308,6 +310,8 @@ def main() -> int:
         print(f"\n확인 실행(--only {args.only}): 성공 {ok} — 볼트·스냅샷은 덮어쓰지 않았다")
         print("  산출물까지 갱신하려면 --only 없이 전량 실행하거나 --render-anyway 를 붙일 것")
         return 0
+    if getattr(args, "force_publish", False):
+        env = {**env, "DATABOOK_FORCE_PUBLISH": "1"}
     md_paths = render_markdown(results, ts, env)
     snap = render_snapshot(results, ts, env)
     if env.get("OBSIDIAN_VAULT_PATH"):

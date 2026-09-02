@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 from .core import OUTPUT_DIR, TEAM_META
+from .publish import filter_targets
 from .vaultlink import load_nodes, map_results
 
 STATUS_LABEL = {"manual": "수동 입력", "stub": "미구현", "fail": "수집 실패"}
@@ -285,6 +286,16 @@ def render_markdown(results: list[dict[str, Any]], run_ts: str, env: dict[str, s
         targets.append((Path(team), "04_DataBook"))
     if vault:
         targets.append((Path(vault), "04_DataBook"))
+
+    # ★ 발행 가드 — 망가진 런이 볼트를 덮어쓰지 못하게 막는다(2026-09-01 사고).
+    #   로컬 output/은 남기고 볼트 대상만 떨어뜨린다. 허브·스냅샷도 같은 판정을 따라야
+    #   하므로 **여기서 한 번** 걸러 아래 전부가 같은 목록을 쓰게 한다.
+    ok_now = sum(1 for r in results if r["status"] == "ok")
+    dry = bool(results) and all(r.get("error") == "dry-run" for r in results)
+    targets = filter_targets(targets, ok_now, env, dry=dry)
+    published = {str(Path(root)) for root, _ in targets}
+
+    if vault and str(Path(vault)) in published:
         # 허브는 볼트의 노드 이름에 의존하므로 볼트가 있을 때만 만든다.
         by_node = map_results(results, load_nodes(vault))
         hub = _hub_note(results, run_ts, date_str, by_node)
@@ -311,9 +322,14 @@ def render_snapshot(results: list[dict[str, Any]], run_ts: str, env: dict[str, s
     path = OUTPUT_DIR / f"snapshot_{run_ts[:10]}.json"
     payload = {"generated_at_utc": run_ts, "indicator_count": len(results), "indicators": results}
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=1), encoding="utf-8")
+    ok_now = sum(1 for r in results if r["status"] == "ok")
     for key in ("OBSIDIAN_VAULT_PATH", "TEAM_VAULT_PATH"):
         v = (env or {}).get(key, "").strip().strip('"')
         if not v:
+            continue
+        # 노트를 막았으면 스냅샷도 막는다 — 안 그러면 노트와 스냅샷의 기준이 어긋난다.
+        # 여기서는 조용히 판정한다(이유는 render_markdown이 이미 출력했다).
+        if not filter_targets([(Path(v), "04_DataBook")], ok_now, env, quiet=True):
             continue
         dest = Path(v) / "04_DataBook" / "snapshots" / path.name
         dest.parent.mkdir(parents=True, exist_ok=True)

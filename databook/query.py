@@ -54,6 +54,21 @@ def _snapshots() -> list[Path]:
     return []
 
 
+def _no_snapshot_hint() -> str:
+    """스냅샷이 없을 때 **왜 없는지**를 짚어 준다.
+
+    볼트는 받고 있는데 스냅샷만 없는 경우가 실제로 있다 — 옵시디언 싱크는 기본값이
+    마크다운만이라 `.json`을 **안 내려받는다**. 그때 "run을 돌리세요"는 틀린 안내다.
+    """
+    v = (load_env().get("OBSIDIAN_VAULT_PATH") or "").strip().strip('"')
+    if v and (Path(v) / "04_DataBook").is_dir():
+        return ("볼트는 받고 있는데 스냅샷(.json)이 없습니다 — 옵시디언 싱크는 기본값이 "
+                "마크다운만이라 .json을 내려받지 않습니다.\n"
+                "  설정 → 동기화 → **'기타 모든 파일 형식'을 켜고** 잠시 기다리세요. "
+                "(직접 수집한다면 `python -m databook run`)")
+    return "스냅샷이 없습니다. 먼저 `python -m databook run`을 돌리세요."
+
+
 def _load(path: Path) -> list[dict[str, Any]]:
     d = json.loads(path.read_text(encoding="utf-8"))
     if isinstance(d, dict):
@@ -83,7 +98,7 @@ def _fmt(v: Any) -> str:
 def cmd_show(terms: list[str], points: int) -> int:
     snaps = _snapshots()
     if not snaps:
-        print("스냅샷이 없습니다. 먼저 `python -m databook run`을 돌리세요.")
+        print(_no_snapshot_hint())
         return 1
     inds = _load(snaps[0])
     hits = [i for i in inds if _match(i, terms)]
@@ -166,7 +181,7 @@ def cmd_diff(days_back: int, terms: list[str], since: str | None = None,
     """
     snaps = _snapshots()
     if len(snaps) < 2:
-        print("비교할 스냅샷이 2개 이상 필요합니다.")
+        print("비교할 스냅샷이 2개 이상 필요합니다. " + _no_snapshot_hint())
         return 1
 
     cur_i = 0
