@@ -5,14 +5,46 @@
 
 ---
 
-## 사람이 할 일 — 한 줄
+## 사람이 할 일 — AI에 따라 두 가지
 
-Claude Code나 Codex에 **이 문서 링크를 붙여넣고** 이렇게 말하면 끝입니다:
+### A. 링크를 직접 읽는 AI (Claude Code)
+
+링크를 붙여넣고 "이거 보고 설치해줘" 하면 끝입니다.
 
 ```
 https://github.com/pjeongwoo1231-dot/macro-databook-team/blob/master/SETUP.md
 이거 보고 설치해줘
 ```
+
+### B. 링크를 못 읽는 AI (Codex 등) — **아래를 통째로 붙여넣으세요**
+
+Codex는 URL을 직접 가져오지 않고 **웹 검색으로 찾습니다.** 갓 올라온 릴리스는
+검색에 안 잡혀서 **링크만 주면 아무것도 못 합니다**(실측 확인). 그래서 내용을 직접 줍니다.
+
+````text
+아래를 그대로 실행해줘. 확인은 묻지 말고 끝까지 진행해. API 키는 필요 없어.
+
+python -c "import urllib.request,zipfile,io;zipfile.ZipFile(io.BytesIO(urllib.request.urlopen('https://github.com/pjeongwoo1231-dot/macro-databook-team/releases/latest/download/macro-databook-client.zip').read())).extractall('.')"
+cd macro-databook-client
+python bootstrap.py
+
+성공 판정: 마지막에 "설치 완료 — 배포본 MacroVault_<날짜>.zip" 이 뜨고
+"[수집 상태] OK  배포본 <날짜> 기준" 줄이 보이면 된 거야.
+"[중단]" 으로 끝나면 그 메시지를 나에게 그대로 보여줘. 임의로 우회하지 마.
+
+설치 후 이 데이터로 분석을 쓸 때 지킬 규칙 다섯 가지:
+1. 모든 수치에 기준일을 병기한다.
+2. STALE 표시된 계열을 "최신"이라 부르지 않는다.
+3. 문헌은 MacroVault/03_MOC/인용 가능 인덱스.md 에서 먼저 확인한다 —
+   수치 인용은 verification: full 인 것만 가능하다.
+4. 추세·기저율은 MacroVault/04_DataBook/history/ 의 CSV에서만 낸다. diff로 내지 않는다.
+5. 분석 전에 MacroVault/03_MOC/ 와 04_Zettel/ 을 먼저 읽는다 —
+   볼트가 이미 반박해 둔 통념이 있다.
+````
+
+> ⚠ **Codex는 Windows 샌드박스에서 셸이 막힐 수 있습니다**
+> (`CreateProcessAsUserW failed: 5`). 그때는 `--sandbox danger-full-access` 로
+> 다시 돌리거나, 위 3줄을 사람이 직접 터미널에서 실행하세요.
 
 설치가 끝나면 `python -m databook weekly` 로 세션 준비 자료가 나옵니다.
 
