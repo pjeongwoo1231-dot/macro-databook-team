@@ -46,7 +46,9 @@ def collect() -> list[tuple[Path, str]]:
         for f in sorted(base.rglob("*")):
             if not f.is_file() or set(f.parts) & SKIP_PARTS:
                 continue
-            if f.suffix in (".pyc", ".pyo"):
+            # 수집 PC에는 손으로 고치며 남긴 `.bak-<날짜>` 사본이 쌓여 있다(17건 실측).
+            # 팀원에게 나갈 이유가 없고, 나가면 어느 게 진짜인지 헷갈린다.
+            if f.suffix in (".pyc", ".pyo") or ".bak" in f.name:
                 continue
             out.append((f, f.relative_to(ROOT).as_posix()))
     return out
