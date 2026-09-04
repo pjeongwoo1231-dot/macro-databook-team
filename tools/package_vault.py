@@ -77,6 +77,10 @@ EXCLUDE_DIRS = (
     # 배포본이 두 배가 되고, 받은 사람은 어느 쪽이 진짜인지 알 수 없다.
     "MacroVault",
     "MacroVault_dist",
+    # `DATABOOK_OUTPUT_DIR`이 볼트를 가리킨 채 `run`이 돌면 수집 산출물이 볼트 안에
+    # `Macro/`로 떨어진다. 발행 가드(publish.py)는 `04_DataBook/`만 지키므로 이 경로는
+    # 그냥 통과한다 — 2026-09-04에 키 없는 런의 168/333짜리가 실제로 여기 남아 있었다.
+    "Macro",
 )
 # 어디에 있든 빼는 폴더명
 EXCLUDE_ANY = {".obsidian", ".git", ".trash", "__pycache__", ".DS_Store",
