@@ -8,6 +8,20 @@
 - 지표 목록·API 매핑의 단일 소스(SSOT)는 `indicators.yaml` — 지표 추가 시 코드 수정 불필요
 - 문서의 지표 2티어제 반영 (1티어=해석 필수, 2티어=수치 인용)
 
+## 설치 — 팀원은 이것만 (API 키 필요 없음)
+
+```bash
+git clone https://github.com/pjeongwoo1231-dot/macro-databook-team.git
+cd macro-databook-team
+python bootstrap.py
+```
+
+최신 배포본(지표 333개 · 문헌 1,206편 · 장기 시계열 180계열)을 받아 `~/MacroVault`에 풀고
+`weekly`·`show`·`diff`가 바로 되게 만듭니다. 매주 다시 돌리면 배포본만 갱신됩니다.
+**AI에게 시키려면 [`SETUP.md`](SETUP.md) 링크를 주세요** — 그대로 따라 설치합니다.
+
+수집까지 직접 돌릴 담당자(1명)만 [`TEAM_SETUP.md`](TEAM_SETUP.md)의 키 설정을 봅니다.
+
 ## 실행 방법
 
 ```bash

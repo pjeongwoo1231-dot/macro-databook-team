@@ -28,27 +28,31 @@ LOG = OUTPUT_DIR / "daily.log"
 # 릴리스 본문. 팀원이 처음 보는 화면이라 **여기서 끝나야 한다** — 다른 문서로 보내지 않는다.
 NOTES = """매크로 학회 공용 볼트 주간 배포본입니다. **API 키가 하나도 필요 없습니다.**
 
-## 받는 법 — 읽기만 할 사람 (대부분)
-
-1. 아래 `MacroVault_<기준일>.zip`(약 16MB)을 받아 압축을 풉니다
-2. Obsidian → **다른 폴더를 볼트로 열기** → 압축 푼 `MacroVault` 폴더
-3. 볼트가 열리면 **`팀 안내 (먼저 읽기).md`** 를 먼저 여세요
-
-설치도 계정도 설정도 필요 없습니다. 폴더 이름은 **날짜 없이 항상 `MacroVault`**라
-다음 주 ZIP을 같은 자리에 풀면 그대로 갱신됩니다.
-
-## `weekly`·`show`·`diff`까지 쓸 사람 (세션 준비 담당)
-
-Python과 이 저장소가 필요합니다 — 설치는 `TEAM_SETUP.md` §1 (3분).
-그다음 `.env`에 **한 줄만** 적으면 됩니다. **여기도 API 키는 필요 없습니다.**
-
-```
-OBSIDIAN_VAULT_PATH=C:\\Users\\<이름>\\MacroVault
-```
+## 설치 — 명령 세 줄
 
 ```bash
-python -m databook weekly     # 세션 준비 자료 한 번에
+git clone https://github.com/pjeongwoo1231-dot/macro-databook-team.git
+cd macro-databook-team
+python bootstrap.py
 ```
+
+의존성 설치 · 이 ZIP 내려받기 · `~/MacroVault`에 풀기 · `.env` 기록 · 확인 실행까지
+`bootstrap.py`가 다 합니다. **매주 다시 돌리면 배포본만 최신으로 갈립니다.**
+
+**AI(Claude Code · Codex)에게 시키려면** 아래 링크를 주고 "이거 보고 설치해줘" 하세요:
+https://github.com/pjeongwoo1231-dot/macro-databook-team/blob/master/SETUP.md
+
+```bash
+python -m databook weekly            # 세션 준비 자료 한 번에
+python -m databook show 중국 PPI     # 지표 하나 찾아보기
+python -m databook diff              # 지난 스냅샷 대비 바뀐 것
+```
+
+## ZIP만 받아 Obsidian으로 보고 싶다면
+
+아래 `MacroVault_<기준일>.zip`을 받아 압축을 풀고, Obsidian →
+**다른 폴더를 볼트로 열기** → `MacroVault` 폴더. 열리면
+**`팀 안내 (먼저 읽기).md`** 부터 보세요. 설치도 계정도 필요 없습니다.
 
 ## 인용하기 전에
 

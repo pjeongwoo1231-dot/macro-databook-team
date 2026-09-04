@@ -12,21 +12,30 @@
 
 **출력물에는 해석 문구가 없습니다** — 숫자·기준일·출처 링크만. 판단은 사람 몫이라는 게 이 도구의 규칙입니다.
 
-### 0-1. 먼저 내가 어느 쪽인지 정하세요 — 대부분은 키가 필요 없습니다
+### 0-1. 이 문서는 **수집 담당자용**입니다 — 나머지는 `SETUP.md`
 
-| | 읽기만 하는 사람 (대부분) | 수집 담당 (1명) |
+> **조회만 할 사람(= 팀원 전원)은 이 문서를 볼 필요가 없습니다.**
+> [`SETUP.md`](SETUP.md) 링크를 Claude Code나 Codex에 주고 "이거 보고 설치해줘"
+> 하면 끝납니다. 또는 직접:
+>
+> ```bash
+> git clone https://github.com/pjeongwoo1231-dot/macro-databook-team.git
+> cd macro-databook-team
+> python bootstrap.py
+> ```
+>
+> **API 키는 하나도 필요 없습니다.** 배포본 ZIP을 받아 `weekly`·`show`·`diff`가 바로 됩니다.
+
+| | 조회 (팀원 전원) | 수집 담당 (1명) |
 |---|---|---|
-| 하는 일 | 옵시디언 싱크로 Data Book을 받아 읽는다 | 매일 `run`을 돌려 볼트에 발행한다 |
-| 설치 | **없음** (옵시디언만) | 이 저장소 + Python |
+| 하는 일 | `weekly`·`show`·`diff`로 배포본을 읽는다 | 매일 `run`을 돌려 배포본을 만든다 |
+| 설치 | `python bootstrap.py` 한 번 | 이 문서 §1 ~ §4 전부 |
 | API 키 | **하나도 필요 없음** | 전부 필요 |
-| 볼 것 | §4-1 (`.json` 토글) | §1 ~ §4 전부 |
+| 갱신 | 매주 `python bootstrap.py` 다시 | 월요일 배치가 자동 발행 |
 
 **수집은 한 사람만 돌리는 게 맞습니다.** 여러 명이 같은 볼트에 발행하면 서로 덮어씁니다 —
 2026-09-01에 키 없는 환경에서 돌린 런이 팀 전원의 Data Book을 311개에서 168개로
-바꿔 놓은 게 정확히 그 사고입니다(§4-2).
-
-읽기만 하는 사람도 `show`·`diff`를 쓰고 싶으면 저장소를 받되 **키는 여전히 필요 없습니다**
-(볼트에 온 스냅샷을 읽습니다 — §4-1의 토글만 켜세요).
+바꿔 놓은 게 정확히 그 사고입니다(§4-2). 조회는 배포본을 읽을 뿐이라 이 위험이 없습니다.
 
 키가 필요한 건 **직접 수집을 돌릴 때뿐**입니다. 그때도:
 - **333개 중 184개는 키가 아예 필요 없습니다.** FRED 하나만 받으면 294개가 돕니다
@@ -198,26 +207,28 @@ DATABOOK_OUTPUT_DIR=C:\Users\<이름>\macro-data\output
 볼트에 `01_Indicators/` 폴더가 있으면 `04_DataBook/DataBook 지표 소환.md` 허브를 만들어
 지표 노드를 `[[...]]`로 부릅니다. 볼트가 없으면 이 단계는 자동으로 건너뜁니다.
 
-### 4-1. 배포본(ZIP)을 받아 쓰는 사람 — 볼트 경로만 적으면 끝입니다
+### 4-1. 조회만 하는 사람 — `python bootstrap.py` 하나로 끝납니다
 
 > ⚠ **2026-09-02부로 배포가 바뀌었습니다.** 옵시디언 싱크 → **주 1회 ZIP(GitHub Releases)**.
 > 예전 안내였던 "설정 → 동기화 → '기타 모든 파일 형식' 켜기"는 **이제 하지 마세요** —
 > 켤 싱크가 없습니다. 그 안내를 따라가다 막힌 것이면 잘못은 안내 쪽입니다.
 
-받는 법:
-
-1. **https://github.com/pjeongwoo1231-dot/macro-databook-team/releases/latest** 에서 `MacroVault_<기준일>.zip`(약 16MB)을 받아 압축을 풉니다
-2. Obsidian → **다른 폴더를 볼트로 열기** → 압축 푼 `MacroVault` 폴더
-3. 볼트가 열리면 **`팀 안내 (먼저 읽기).md`** 를 먼저 여세요
-4. `show`·`diff`·`weekly`까지 쓸 사람만 이 저장소의 `.env`에 한 줄 적습니다
-
-> 압축 푼 폴더 이름은 **날짜 없이 항상 `MacroVault`**입니다. 다음 주 ZIP을 같은 자리에
-> 풀면 그대로 갱신되고, `.env`는 **한 번 적으면 계속 유효**합니다.
-> 지금 받은 게 언제 것인지는 `python -m databook weekly`의 `[수집 상태]` 줄이 알려줍니다.
-
+```bash
+git clone https://github.com/pjeongwoo1231-dot/macro-databook-team.git
+cd macro-databook-team
+python bootstrap.py
 ```
-OBSIDIAN_VAULT_PATH=C:\Users\<이름>\MacroVault
-```
+
+`bootstrap.py`가 의존성 설치 · 최신 배포본 내려받기 · `~/MacroVault`에 풀기 ·
+`.env` 기록 · **확인 실행**까지 합니다. AI에게 시키려면 [`SETUP.md`](SETUP.md)를 주세요.
+
+> `.env`의 다른 줄은 건드리지 않습니다 — 수집 담당자가 돌려도 API 키가 날아가지 않습니다.
+> 압축 푼 폴더는 **날짜 없이 항상 `MacroVault`**라 `.env`는 한 번 적으면 계속 유효합니다.
+> 지금 받은 게 언제 것인지는 `weekly`의 `[수집 상태]` 줄이 알려줍니다.
+> **매주 `python bootstrap.py`를 다시 돌리면 배포본만 최신으로 갈립니다.**
+
+Obsidian으로도 볼 수 있습니다 — **다른 폴더를 볼트로 열기** → `~/MacroVault`,
+열리면 `팀 안내 (먼저 읽기).md`부터.
 
 **API 키는 한 개도 필요 없습니다.** 배포본에 스냅샷(`04_DataBook/snapshots/*.json`)과
 장기 시계열(`04_DataBook/history/`, 180계열)이 들어 있어서 그대로 읽습니다.
