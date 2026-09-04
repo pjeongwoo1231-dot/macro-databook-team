@@ -22,3 +22,10 @@ _hub_preview.md
 *.base
 *.canvas
 무제*
+
+# 볼트 사본은 저장소에 두지 않는다 — 배포는 GitHub Releases의 MacroVault_<날짜>.zip 이다.
+# 예전 docs/vault/ 는 260자 초과 경로 395개로 Windows 체크아웃을 깨뜨렸다.
+docs/vault/
+
+# 원문 PDF는 git 밖(수집 PC의 macro-data/library-pdfs/)에 둔다 — docs/PDF-INDEX.md 참조
+*.pdf
