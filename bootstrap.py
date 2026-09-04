@@ -104,25 +104,46 @@ def fetch_release() -> tuple[str, bytes]:
     return a["name"], blob
 
 
+MARKER = ".databook-dist"   # 이 스크립트가 만든 배포본임을 표시한다
+
+
 def extract(blob: bytes, vault: Path) -> Path:
     """ZIP을 푼다. 최상위는 항상 `MacroVault/` 로 고정돼 있다.
 
-    기존 볼트가 있으면 **지우고 다시 푼다** — 배포본은 읽기용 사본이라 그래도 된다.
-    (섞어 두면 지난주에 삭제된 노트가 남아 '있는데 왜 안 보이지'가 된다.)
+    ⚠ **지우기 전에 우리가 만든 것인지 확인한다.** 배포본은 읽기용 사본이라 통째로
+    갈아끼우는 게 맞지만, `--vault`를 잘못 준 사람의 폴더까지 지우면 안 된다.
+    그래서 `.databook-dist` 표시가 있을 때만 지운다. 표시가 없는 폴더가 이미 있으면
+    **아무것도 지우지 않고 멈춘다** — 이 경우 사람이 판단해야 한다.
+
+    (섞어서 풀지 않는 이유: 지난주에 삭제된 노트가 남아 '있는데 왜 안 보이지'가 된다.)
     """
     z = zipfile.ZipFile(io.BytesIO(blob))
     tops = {n.split("/")[0] for n in z.namelist()}
     if tops != {"MacroVault"}:
         die(f"ZIP 최상위가 예상과 다릅니다: {sorted(tops)}",
             "배포본이 잘못 만들어졌습니다 — 수집 담당자에게 알려주세요.")
+
     if vault.exists():
-        say("3/4", f"기존 볼트를 지우고 다시 풉니다 — {vault}")
+        if any(vault.iterdir()) and not (vault / MARKER).exists():
+            die(f"{vault} 에 이미 내용이 있는데 배포본 표시({MARKER})가 없습니다.",
+                "실수로 다른 폴더를 지정했을 수 있어 **아무것도 지우지 않았습니다.**\n"
+                "       비어 있는 새 폴더를 --vault 로 주거나, 이 폴더가 정말 배포본이면\n"
+                "       직접 지운 뒤 다시 돌리세요.")
+        say("3/4", f"기존 배포본을 지우고 다시 풉니다 — {vault}")
         shutil.rmtree(vault)
+
     vault.parent.mkdir(parents=True, exist_ok=True)
-    z.extractall(vault.parent)
-    got = vault.parent / "MacroVault"
-    if got != vault:
-        got.rename(vault)
+    # 임시 폴더에 풀고 마지막에 옮긴다 — 중간에 끊겨도 반쪽 볼트가 남지 않는다.
+    staging = vault.parent / f".{vault.name}.part"
+    if staging.exists():
+        shutil.rmtree(staging)
+    z.extractall(staging)
+    (staging / "MacroVault" / MARKER).write_text(
+        "이 폴더는 bootstrap.py가 만든 배포본 사본입니다. 여기서 고친 내용은\n"
+        "다음 실행에서 사라집니다. 작성한 것은 제출함에 올리세요.\n",
+        encoding="utf-8")
+    (staging / "MacroVault").rename(vault)
+    shutil.rmtree(staging, ignore_errors=True)
     return vault
 
 

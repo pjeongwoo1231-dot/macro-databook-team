@@ -157,9 +157,13 @@ def _dispatch(cmd: str, extra: list[str]) -> int:
         if not v:
             _log("       OBSIDIAN_VAULT_PATH가 없어 건너뜀 — 배포본을 만들 볼트가 없다")
             return 0
-        script = Path(v) / "_System" / "package_vault.py"
+        # 저장소의 `tools/` 가 정본이다. 볼트 사본은 배포본에 실려 나갈 뿐 —
+        # 버전관리 밖에 있는 것을 실행하면 언제 바뀌었는지 아무도 모른다.
+        script = ROOT / "tools" / "package_vault.py"
         if not script.exists():
-            _log(f"       {script} 없음 — 볼트에 패키저가 없다")
+            script = Path(v) / "_System" / "package_vault.py"   # 옛 자리 폴백
+        if not script.exists():
+            _log(f"       패키저를 찾을 수 없다 — {ROOT / 'tools' / 'package_vault.py'}")
             return 1
         import runpy
         import sys
