@@ -355,8 +355,15 @@ def render_digest(by_team: dict[str, list[dict[str, str]]], run_ts: str) -> str:
 def write_digest(content: str, run_ts: str, env: dict[str, str]) -> list[Path]:
     rel = f"_News/NewsDigest_{run_ts[:10]}.md"
     # 로컬 output/은 "Macro/"(이 프로젝트 자체 관례), 실제 Obsidian vault는 "04_DataBook/"(vault 관례).
-    targets: list[tuple[Path, str]] = [(OUTPUT_DIR, "Macro")]
     vault = (env or {}).get("OBSIDIAN_VAULT_PATH", "").strip().strip('"')
+    # OUTPUT_DIR이 볼트 안이면 로컬 출력을 버린다 — render.py와 동일 규칙.
+    # 여기만 빠뜨리면 볼트 안에 `Macro/_News/`가 남는다(같은 구멍의 다른 입구).
+    from .render import _inside
+    targets: list[tuple[Path, str]] = []
+    if vault and _inside(OUTPUT_DIR, Path(vault)):
+        print(f"[경고] DATABOOK_OUTPUT_DIR이 볼트 안입니다({OUTPUT_DIR}) — 로컬 뉴스 출력을 건너뜁니다.")
+    else:
+        targets.append((OUTPUT_DIR, "Macro"))
     # 팀 볼트에도 같이 쓴다 — render.py와 동일 규칙
     team = (env or {}).get("TEAM_VAULT_PATH", "").strip().strip('"')
     if team and team != vault:

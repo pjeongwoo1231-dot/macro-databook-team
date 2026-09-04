@@ -266,6 +266,15 @@ def archive_old_runs(root: Path, prefix: str, keep: int = KEEP_RUNS_DEFAULT) -> 
     return moved
 
 
+def _inside(child: Path, parent: Path) -> bool:
+    """child가 parent와 같거나 그 안에 있으면 True. 경로 비교는 resolve 후에 한다."""
+    try:
+        c, p = child.resolve(), parent.resolve()
+    except OSError:
+        return False
+    return c == p or p in c.parents
+
+
 def render_markdown(results: list[dict[str, Any]], run_ts: str, env: dict[str, str] | None = None) -> list[Path]:
     date_str = run_ts[:10]
     written: list[Path] = []
@@ -277,8 +286,20 @@ def render_markdown(results: list[dict[str, Any]], run_ts: str, env: dict[str, s
         files[f"{folder}/DataBook_{letter}_{date_str}.md"] = _team_note(team_key, team_rows, run_ts, date_str)
     files[f"DataBook_{date_str}.md"] = _index_note(results, run_ts, date_str)
 
-    targets: list[tuple[Path, str]] = [(OUTPUT_DIR, "Macro")]
     vault = (env or {}).get("OBSIDIAN_VAULT_PATH", "").strip().strip('"')
+
+    # ★ OUTPUT_DIR이 볼트 안이면 로컬 출력을 **버린다**(볼트 출력은 그대로 간다).
+    #   `Macro/`는 이 프로젝트의 로컬 관례 폴더인데, OUTPUT_DIR이 볼트를 가리키면
+    #   볼트 안에 `Macro/`가 생긴다. 발행 가드(filter_targets)는 `04_DataBook/`만 보므로
+    #   **이 경로는 그냥 통과한다** — 2026-09-04에 키 없는 런의 168/333짜리가 실제로
+    #   `<vault>/Macro/`에 남아 있었다(팀 볼트는 가드가 지켜냈다).
+    #   로컬 사본을 잃는 건 감수한다. 볼트를 오염시키는 쪽이 훨씬 비싸다.
+    targets: list[tuple[Path, str]] = []
+    if vault and _inside(OUTPUT_DIR, Path(vault)):
+        print(f"[경고] DATABOOK_OUTPUT_DIR이 볼트 안입니다({OUTPUT_DIR}) — "
+              f"로컬 Macro/ 출력을 건너뜁니다. 볼트 밖으로 옮기세요.")
+    else:
+        targets.append((OUTPUT_DIR, "Macro"))
     # 팀 공유용 볼트 — 개인 볼트의 논문·제텔·데일리노트를 함께 내보내지 않으려고 분리한다.
     # Data Book만 들어가므로 그대로 옵시디언 공유·GitHub 어느 쪽에 올려도 안전하다.
     team = (env or {}).get("TEAM_VAULT_PATH", "").strip().strip('"')
