@@ -126,7 +126,7 @@ def build_notes(vault: Path, asof: str, zip_path: Path | None = None) -> str:
             f" 수치 금지 {g('p_none')}. `05_Library` {g('n_lib')}편은 전부 미판정이라 인용할 수 없습니다.",
             "",
             "인용 전에 볼트의 **`03_MOC/인용 가능 인덱스.md`** 에서 이름을 찾으세요 —",
-            "이 릴리스에 `인용-가능-인덱스.md` 로도 첨부돼 있어 ZIP을 받지 않고 바로 볼 수 있습니다.",
+            "이 릴리스에 **`citation-index.md`** 로도 첨부돼 있어 ZIP을 받지 않고 바로 볼 수 있습니다.",
         ]
     lines += [
         "",
@@ -294,7 +294,9 @@ def _dispatch(cmd: str, extra: list[str]) -> int:
         # 17MB ZIP을 받게 하면 안 본다. 릴리스 화면에서 바로 열리게 한다.
         cite = Path(v) / "03_MOC" / "인용 가능 인덱스.md"
         if cite.exists():
-            flat = Path(dist) / "인용-가능-인덱스.md"   # 자산 이름에 공백을 쓰지 않는다
+            # 자산 파일명은 **ASCII만** 쓴다. GitHub이 비ASCII를 떨궈서
+            # `인용-가능-인덱스.md`가 `-.-.md`가 됐다(실측).
+            flat = Path(dist) / "citation-index.md"
             shutil.copyfile(cite, flat)
             assets.append(str(flat))
         if not shutil.which("gh"):
