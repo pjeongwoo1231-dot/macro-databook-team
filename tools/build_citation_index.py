@@ -10,7 +10,32 @@ import re
 from datetime import date
 from pathlib import Path
 
-V = Path(".").resolve()
+def _vault() -> Path:
+    """볼트 위치. 예전엔 cwd를 볼트로 가정했는데, 이 스크립트가 저장소(`tools/`)로
+    옮겨 오면서 그 가정이 깨졌다 — 저장소에서 돌리면 논문 폴더를 못 찾고 죽는다.
+    `--vault` > `OBSIDIAN_VAULT_PATH` > cwd 순으로 찾는다.
+    """
+    import argparse
+    import os
+    ap = argparse.ArgumentParser(description="인용 가능 인덱스 생성")
+    ap.add_argument("--vault", default="")
+    a, _ = ap.parse_known_args()
+    v = a.vault or os.environ.get("OBSIDIAN_VAULT_PATH", "").strip().strip('"')
+    if not v:
+        env = Path(__file__).resolve().parent.parent / ".env"
+        if env.exists():
+            for line in env.read_text(encoding="utf-8", errors="replace").splitlines():
+                if line.strip().startswith("OBSIDIAN_VAULT_PATH") and "=" in line:
+                    v = line.split("=", 1)[1].strip().strip('"')
+                    break
+    p = Path(v).expanduser().resolve() if v else Path(".").resolve()
+    if not (p / "02_Papers").is_dir():
+        raise SystemExit(f"[중단] 볼트가 아닙니다: {p}\n"
+                         "       --vault <볼트경로> 를 주거나 OBSIDIAN_VAULT_PATH를 설정하세요.")
+    return p
+
+
+V = _vault()
 FOLDERS = ["02_Papers", "05_Library", "04_Zettel"]
 
 
