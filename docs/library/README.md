@@ -1,6 +1,6 @@
 # 원문 라이브러리 — 코퍼스와 교재
 
-`docs/vault/`가 **정리된 노트와 그에 딸린 원문**이라면, 여기는 **아직 정리되지 않은 원문 더미**다.
+볼트(`MacroVault`)가 **정리된 노트와 그에 딸린 원문**이라면, 여기는 **아직 정리되지 않은 원문 더미**다.
 읽고 제텔로 분해할 대상이지, 이미 판정에 쓰이는 자료가 아니다.
 
 ## 들어 있는 것
@@ -31,18 +31,20 @@
 
 ## 정리되면 옮긴다
 
-여기 있는 원문을 읽고 노트로 만들면 그 노트는 `docs/vault/02_Papers/`나
+여기 있는 원문을 읽고 노트로 만들면 그 노트는 **볼트의** `02_Papers/`나
 `04_Zettel/`로 가고, 원문은 볼트의 `06_SourceArchive/`·`Attachments/`로 간다.
 **이 폴더가 줄어드는 것이 정상이다.**
 
-분해 절차는 `docs/vault/CLAUDE.md` §14-3(제텔카스텐 파이프라인)에 있다 —
+분해 절차는 볼트의 `_System/docs/CLAUDE-원본-v3.0-MR-OS.md` §14-3(제텔카스텐 파이프라인)에 있다 —
 실증 논문과 이론 논문의 프롬프트가 다르다.
 
-## clone 이 무겁다
+## 원문 PDF는 이제 git에 없다
 
-이 폴더 때문에 저장소가 약 860MB다. 노트만 필요하면:
+2026-09-04에 PDF 365건(571MB)을 수집 PC의 `~/macro-data/library-pdfs/`로 옮겼다.
+파일명이 Windows MAX_PATH(260자)를 넘어 **clone 체크아웃 자체를 깨뜨렸기** 때문이다.
+목록과 위치는 `docs/PDF-INDEX.md`에 있다. 정리 노트(`.md`)는 여기 그대로 있다.
 
-```bash
-git clone --filter=blob:none --sparse https://github.com/pjeongwoo1231-dot/macro-databook-team
-cd macro-databook-team && git sparse-checkout set docs/vault databook docs/prompts
-```
+`docs/vault/`도 같은 날 제거했다 — 볼트 사본이었고, 이제 배포본
+(GitHub Releases의 `MacroVault_<날짜>.zip`)이 그 역할을 한다.
+
+**팀원은 저장소를 clone하지 않는다.** 조회는 340KB 클라이언트로 한다 — `SETUP.md` 참조.

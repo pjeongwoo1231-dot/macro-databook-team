@@ -28,4 +28,6 @@ _hub_preview.md
 docs/vault/
 
 # 원문 PDF는 git 밖(수집 PC의 macro-data/library-pdfs/)에 둔다 — docs/PDF-INDEX.md 참조
-*.pdf
+# 문헌 아카이브만 막는다. 저장소 전체에 `*.pdf`를 걸면 나중에 정말 넣어야 할
+# 작은 PDF(예시·스펙 부록)까지 조용히 빠진다 — 넓은 규칙은 나중에 원인을 못 찾는다.
+docs/**/*.pdf
