@@ -90,10 +90,17 @@ def fetch_release() -> tuple[str, bytes]:
     except Exception as e:
         die(f"릴리스 정보를 못 받았습니다 ({type(e).__name__}: {e}).",
             f"브라우저로 https://github.com/{REPO}/releases/latest 가 열리는지 보세요.")
-    assets = [a for a in meta.get("assets", []) if a["name"].endswith(".zip")]
+    # 릴리스에는 자산이 둘이다 — 볼트 배포본(`MacroVault_<날짜>.zip`)과
+    # 이 스크립트가 들어 있던 클라이언트(`macro-databook-client.zip`).
+    # **이름으로 골라야 한다.** 순서로 고르면 자산이 늘어날 때 조용히 엉뚱한 걸 받는다
+    # (실제로 클라이언트를 추가한 날 그렇게 깨졌다).
+    assets = [a for a in meta.get("assets", [])
+              if a["name"].startswith("MacroVault_") and a["name"].endswith(".zip")]
     if not assets:
-        die("릴리스에 ZIP 자산이 없습니다.", "수집 담당자에게 배포본이 올라갔는지 물어보세요.")
-    a = assets[0]
+        names = [a["name"] for a in meta.get("assets", [])]
+        die(f"릴리스에 볼트 배포본(MacroVault_*.zip)이 없습니다. 있는 자산: {names}",
+            "수집 담당자에게 배포본이 올라갔는지 물어보세요.")
+    a = sorted(assets, key=lambda x: x["name"])[-1]
     mb = a["size"] / 1048576
     say("3/4", f"{a['name']} ({mb:.1f} MB) 내려받는 중…")
     try:

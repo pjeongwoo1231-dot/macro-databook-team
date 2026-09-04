@@ -28,14 +28,23 @@ API 키를 묻지 마세요 — 필요 없습니다. 사용자에게 물어볼 �
 작업 폴더는 사용자 홈(`~` / `C:\Users\<이름>`)을 쓰세요.
 
 ```bash
-git clone https://github.com/pjeongwoo1231-dot/macro-databook-team.git
-cd macro-databook-team
+python -c "import urllib.request,zipfile,io;zipfile.ZipFile(io.BytesIO(urllib.request.urlopen('https://github.com/pjeongwoo1231-dot/macro-databook-team/releases/latest/download/macro-databook-client.zip').read())).extractall('.')"
+cd macro-databook-client
 python bootstrap.py
 ```
 
 `python`이 없다는 오류가 나면 `python3` 또는 `py -3` 로 바꿔 다시 시도하세요.
-`macro-databook-team` 폴더가 이미 있으면 `git clone` 대신 그 안에서
-`git pull` 후 `python bootstrap.py` 를 돌리세요 — **다시 돌려도 안전합니다.**
+`macro-databook-client` 폴더가 이미 있으면 그냥 덮어써도 됩니다 —
+**다시 돌려도 안전합니다.**
+
+> ⛔ **`git clone` 을 쓰지 마세요.** 이 저장소는 `.git` 2.5GB이고,
+> `docs/library/` 의 논문 PDF 파일명이 Windows MAX_PATH(260자)를 넘어
+> **체크아웃이 실패합니다**(`error: unable to create file ...: Filename too long`).
+> `--depth 1` 로도 안 됩니다 — 실패 지점이 전송이 아니라 체크아웃이라서입니다.
+> 위 클라이언트 ZIP은 340KB이고 조회에 필요한 전부가 들어 있습니다.
+>
+> 압축 해제에 `tar` 를 쓰지 마세요. Git Bash의 GNU tar는 zip을 못 읽습니다
+> (`This does not look like a tar archive`). 위 파이썬 한 줄이 확실합니다.
 
 `bootstrap.py` 가 하는 일 (당신이 따로 할 필요 없습니다):
 
@@ -96,6 +105,13 @@ Obsidian으로 볼트도 열 수 있습니다 — **다른 폴더를 볼트로 �
 
 ## 직접 수집까지 돌릴 사람 (담당자 1명)
 
-여기까지는 **조회 전용**입니다. 매일 수집을 돌려 배포본을 만드는 사람은
-`TEAM_SETUP.md` 를 보세요 — API 키 설정과 일일 배치가 거기 있습니다.
+여기까지는 **조회 전용**입니다. 매일 수집을 돌려 배포본을 만드는 사람만
+전체 저장소가 필요하고, 그때는 **긴 경로를 먼저 켜야 합니다**:
+
+```bash
+git config --global core.longpaths true
+git clone https://github.com/pjeongwoo1231-dot/macro-databook-team.git
+```
+
+그다음 `TEAM_SETUP.md` 의 API 키 설정과 일일 배치를 보세요.
 수집은 **한 사람만** 돌립니다. 여러 명이 같은 볼트에 발행하면 서로 덮어씁니다.

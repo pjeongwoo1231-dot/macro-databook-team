@@ -38,7 +38,11 @@ _FILL = re.compile(r"채울 값[:：]\s*([^.⚠]+)")
 
 
 def _latest_snapshot() -> list[dict[str, Any]]:
-    snaps = sorted(OUTPUT_DIR.glob("snapshot_*.json"), reverse=True)
+    # `query._snapshots()`를 쓴다 — 로컬 `output/`이 없으면 볼트를 본다.
+    # 예전엔 OUTPUT_DIR만 봐서, 배포본만 받는 사람에게 STALE 판정이 통째로 죽고
+    # "먼저 run을 돌리세요"라는 **틀린 안내**가 나갔다(그 사람들은 수집을 안 돌린다).
+    from .query import _snapshots
+    snaps = _snapshots()
     if not snaps:
         return []
     d = json.loads(snaps[0].read_text(encoding="utf-8"))
@@ -107,7 +111,8 @@ def cmd_todo(kind: str, as_json: bool, limit: int) -> int:
         return 0
 
     if not _latest_snapshot() and kind in ("all", "stale"):
-        print("⚠ 스냅샷이 없어 STALE 판정을 못 합니다 — 먼저 `python -m databook run`\n")
+        from .query import _no_snapshot_hint
+        print("⚠ 스냅샷이 없어 STALE 판정을 못 합니다.\n  " + _no_snapshot_hint() + "\n")
 
     m = data.get("manual", [])
     if m:

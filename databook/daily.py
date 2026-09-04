@@ -179,6 +179,21 @@ def _dispatch(cmd: str, extra: list[str]) -> int:
             sys.argv = argv
         _log(f"       배포본 → {dist}")
 
+        # 조회용 클라이언트(약 340KB)도 같이 싼다. **팀원은 `git clone`을 못 한다** —
+        # 이 저장소는 .git 2.5GB에 docs/의 PDF 파일명이 Windows MAX_PATH(260자)를 넘어
+        # 체크아웃이 깨진다(`Filename too long`). 그래서 조회에 필요한 것만 따로 준다.
+        client = ROOT / "tools" / "package_client.py"
+        if client.exists():
+            argv = sys.argv
+            sys.argv = [str(client), "--out", dist]
+            try:
+                runpy.run_path(str(client), run_name="__main__")
+            except SystemExit as e:
+                if e.code not in (0, None):
+                    _log(f"       클라이언트 빌드 실패 (rc={e.code}) — 볼트 배포본은 정상")
+            finally:
+                sys.argv = argv
+
         # GitHub Release로 올린다 — 팀원이 링크 하나로 받는 자리다.
         # 업로드 실패는 배치를 깨지 않는다 — ZIP은 이미 로컬에 있고 손으로 올리면 된다.
         zips = sorted(Path(dist).glob("MacroVault_*.zip"))
@@ -186,6 +201,10 @@ def _dispatch(cmd: str, extra: list[str]) -> int:
             return 0
         z = zips[-1]
         tag = f"vault-{z.stem[len('MacroVault_'):]}"
+        assets = [str(z)]
+        cz = Path(dist) / "macro-databook-client.zip"
+        if cz.exists():
+            assets.append(str(cz))
         import shutil
         import subprocess
         if not shutil.which("gh"):
@@ -194,12 +213,12 @@ def _dispatch(cmd: str, extra: list[str]) -> int:
         # 같은 태그가 있으면 자산만 덮어쓴다. 없으면 새로 만든다.
         exists = subprocess.run(["gh", "release", "view", tag], cwd=str(ROOT),
                                 capture_output=True).returncode == 0
-        cmd_gh = (["gh", "release", "upload", tag, str(z), "--clobber"] if exists else
-                  ["gh", "release", "create", tag, str(z),
+        cmd_gh = (["gh", "release", "upload", tag, *assets, "--clobber"] if exists else
+                  ["gh", "release", "create", tag, *assets,
                    "--title", f"MacroVault 배포본 {tag[len('vault-'):]}", "--notes", NOTES])
         r = subprocess.run(cmd_gh, cwd=str(ROOT), capture_output=True, text=True)
         if r.returncode == 0:
-            _log(f"       릴리스 {'갱신' if exists else '생성'} {tag}")
+            _log(f"       릴리스 {'갱신' if exists else '생성'} {tag} · 자산 {len(assets)}개")
         else:
             _log(f"       릴리스 업로드 실패({tag}) — {r.stderr.strip()[:160]}")
         return 0
