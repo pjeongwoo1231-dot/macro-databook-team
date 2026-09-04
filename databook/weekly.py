@@ -14,7 +14,7 @@
    `diff`는 **어디를 새로 볼지 고르는 길잡이**일 뿐 재료가 아니다.
 
 그래서 세 층을 함께 준다
-    1. 기준 시점의 **전체 상태** — DataBook_<as-of>.md (지표 328개, 각자 다른 기준일)
+    1. 기준 시점의 **전체 상태** — DataBook_<as-of>.md (지표 전체, 각자 다른 기준일)
     2. 직전 세션 이후 **변경분** — 무엇을 새로 확인할지
     3. **장기 시계열** 위치      — 추세·기저율을 실제로 재는 곳
 
@@ -207,7 +207,8 @@ def run(since: str | None = None, limit: int = 30, asof: str | None = None) -> i
     print("─" * 68 + f"\n## 1. 기준 시점({end})의 전체 상태 — 본 재료\n" + "─" * 68)
     for line in _databook_paths(end):
         print(f"  {line}")
-    print("  → 지표 328개의 값·기준일·출처·note가 전부 여기 있다. 분석은 여기서 시작한다.")
+    from .setup import TOTAL_COUNT
+    print(f"  → 지표 {TOTAL_COUNT}개의 값·기준일·출처·note가 전부 여기 있다. 분석은 여기서 시작한다.")
     print("     각 지표는 **저마다 다른 기준일**을 갖는다(GDP는 분기, CPI는 월, 유가는 일).")
     print("     수치를 인용할 땐 그 지표의 기준일을 반드시 함께 적는다.")
 

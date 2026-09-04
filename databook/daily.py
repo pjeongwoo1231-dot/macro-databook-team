@@ -37,7 +37,10 @@ STEPS: list[tuple[str, str, list[str]]] = [
     ("intel", "정보 수집 (API·RSS, 검색엔진 미사용)", []),
     ("vintage", "빈티지 인덱스 재구성 (개정 이력)", []),
     ("unitcheck", "단위 정합성 검사", []),
-    ("site", "시황 사이트 재생성", []),   # 항상 마지막 — 위 단계 결과를 굳힌다
+    ("site", "시황 사이트 재생성", []),
+    # 배포본은 **월요일에만** 싼다 — 세션이 화요일이라 그 전날 것이 그 주의 정본이 된다.
+    # 매일 싸면 팀원이 어느 ZIP을 봐야 할지 몰라 기준일이 갈린다(그게 인용 사고의 씨앗이다).
+    ("package", "주간 배포본 ZIP (월요일만)", []),   # 항상 마지막 — 위 단계 결과를 굳힌다
 ]
 
 
@@ -99,6 +102,38 @@ def _dispatch(cmd: str, extra: list[str]) -> int:
         ok = sum(1 for r in results if r["status"] == "ok")
         _log(f"       수집 성공 {ok}/{len(results)}")
         return 0
+    if cmd == "package":
+        # 볼트를 통째로 싸서 팀원에게 줄 ZIP을 만든다. 월요일이 아니면 아무것도 안 한다.
+        # (`DATABOOK_PACKAGE_ALWAYS=1`이면 요일 무시 — 급히 다시 배포할 때 쓴다)
+        import os
+        from datetime import date
+        if date.today().weekday() != 0 and not os.environ.get("DATABOOK_PACKAGE_ALWAYS"):
+            _log("       월요일이 아니라 건너뜀 (강제: DATABOOK_PACKAGE_ALWAYS=1)")
+            return 0
+        from .core import load_env
+        v = (load_env().get("OBSIDIAN_VAULT_PATH") or "").strip().strip('"')
+        if not v:
+            _log("       OBSIDIAN_VAULT_PATH가 없어 건너뜀 — 배포본을 만들 볼트가 없다")
+            return 0
+        script = Path(v) / "_System" / "package_vault.py"
+        if not script.exists():
+            _log(f"       {script} 없음 — 볼트에 패키저가 없다")
+            return 1
+        import runpy
+        import sys
+        dist = os.environ.get("DATABOOK_DIST_DIR", "").strip() or str(Path(v).parent / "MacroVault_dist")
+        argv = sys.argv
+        sys.argv = [str(script), "--out", dist]
+        try:
+            runpy.run_path(str(script), run_name="__main__")
+        except SystemExit as e:
+            if e.code not in (0, None):
+                return int(e.code or 1)
+        finally:
+            sys.argv = argv
+        _log(f"       배포본 → {dist}")
+        return 0
+
     if cmd == "consensus":
         from .consensus import run as f
         return f()

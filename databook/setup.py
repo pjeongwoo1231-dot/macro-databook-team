@@ -5,7 +5,8 @@
 1. **먼저 전체를 보여주고 나서 묻는다.** 하나씩 물으면 발급 사이트를 왔다갔다 하게 된다.
    시작하자마자 *없는 키 + 발급 링크 + 그 키가 살리는 지표 수*를 표로 먼저 뿌리고,
    사용자가 탭을 한꺼번에 열어 키를 다 받아온 뒤 한 번에 붙여넣게 한다.
-2. **없어도 되는 걸 없어도 된다고 말한다.** 328개 중 **184개는 키가 아예 필요 없다.**
+2. **없어도 되는 걸 없어도 된다고 말한다.** 전체 중 절반 이상은 키가 아예 필요 없다
+   (정확한 수는 indicators.yaml에서 매번 실측한다 — 하드코딩하지 않는다).
    FRED 하나만 넣어도 289개가 돈다. 이걸 안 알려주면 팀원이 키 12개를 다 받아야 하는 줄 안다.
 3. **모르는 키를 지우지 않는다.** 예전 구현은 `KEY_SPECS`에 없는 항목을 .env에서 **날렸다**
    (E_STAT_APP_ID·DATABOOK_OUTPUT_DIR이 그렇게 사라졌다). 이제 기존 .env를 파싱해
@@ -24,6 +25,44 @@ import urllib.request
 from pathlib import Path
 
 from .core import ROOT, load_env
+
+# ── 지표 수는 **indicators.yaml에서 실측한다.** 하드코딩하지 않는다 ──────────
+# 예전엔 TOTAL_COUNT=328, FRED=105처럼 손으로 적어 뒀는데, 지표를 늘릴 때마다
+# 같이 고쳐야 해서 실제로 드리프트했다(2026-09-04 시점 실측 333·110).
+# 팀원에게 "328개 중 184개는 키가 필요 없다"고 말해 놓고 숫자가 틀리면
+# 그 안내 전체의 신뢰가 깎인다. 그래서 yaml을 SSOT로 두고 매번 센다.
+SOURCE_KEY: dict[str, str] = {
+    "fred": "FRED_API_KEY",
+    "ecos": "ECOS_API_KEY",
+    "ecos_keystat": "ECOS_API_KEY",
+    "kosis": "KOSIS_API_KEY",
+    "data_go_kr": "DATA_GO_KR_KEY",
+    "e_stat": "E_STAT_APP_ID",
+    "tossinvest": "TOSSINVEST_CLIENT_ID",
+    "eia": "EIA_API_KEY",
+    "bls": "BLS_API_KEY",
+    "lendborr": "DATA_GO_KR_LENDBORR_KEY",
+    "opinet": "OPINET_API_KEY",
+    "naver_datalab": "NAVER_CLIENT_ID",
+}
+# ⚠ 여기 없는 source는 **키가 필요 없다**는 뜻이다. 새 소스가 키를 요구하면
+#    여기 추가해야 한다 — 안 하면 "키 없어도 된다"고 잘못 세게 된다.
+
+
+def _measure() -> tuple[int, int, dict[str, int]]:
+    from .core import all_indicators, load_registry
+    inds = all_indicators(load_registry())
+    per: dict[str, int] = {}
+    n_keyed = 0
+    for i in inds:
+        k = SOURCE_KEY.get(i.get("source") or "")
+        if k:
+            per[k] = per.get(k, 0) + 1
+            n_keyed += 1
+    return len(inds), len(inds) - n_keyed, per
+
+
+TOTAL_COUNT, NO_KEY_COUNT, KEY_COUNTS = _measure()
 
 # (환경변수, 라벨, 발급처, 필수, 도움말, 살리는 지표 수)
 # ⚠ 지표 수는 indicators.yaml 실측(2026-08-28). 소스를 늘리면 같이 갱신할 것.
@@ -55,6 +94,9 @@ KEY_SPECS: list[tuple[str, str, str, bool, str, int]] = [
     ("NAVER_CLIENT_SECRET", "네이버 검색·데이터랩 — Client Secret", "https://developers.naver.com/apps",
      False, "위 ID와 같은 앱", 0),
 ]
+# KEY_SPECS의 마지막 칸(지표 수)을 실측치로 덮는다 — 손으로 적힌 값은 무시한다
+KEY_SPECS = [(k, l, u, r, h, KEY_COUNTS.get(k, n)) for k, l, u, r, h, n in KEY_SPECS]
+
 REQUIRED = [k for k, _, _, req, _, _ in KEY_SPECS if req]
 KEY_NAMES = {k for k, *_ in KEY_SPECS}
 
@@ -78,8 +120,6 @@ PATH_SPECS: list[tuple[str, str, str]] = [
 ]
 PATH_NAMES = {k for k, *_ in PATH_SPECS}
 
-NO_KEY_COUNT = 184          # 키가 전혀 필요 없는 지표 수 (실측)
-TOTAL_COUNT = 328
 
 
 def _mask(v: str) -> str:
