@@ -819,11 +819,15 @@ team_2:
     source: fred
     series_id: DGS2
   - name: 미 국채 10Y
-    vault_node: 장단기 금리차
+    vault_node: 미 국채 10Y (장기금리)
     tier: 1
     method: api
     source: fred
     series_id: DGS10
+    note: '2026-09-02 vault_node 재배선 — 종전 「장단기 금리차」는 스프레드 노드라 금리
+      *수준*을 담을 곳이 없었다. NBER W35669(지정학→준비자산) 판독에서 수준 계열이
+      필요해져 「미 국채 10Y (장기금리)」 노드를 신설하고 이 계열을 그쪽으로 옮겼다.
+      커브(2Y·30Y·3m10y·Nelson-Siegel)는 「장단기 금리차」에 그대로 둔다.'
   - name: 미 국채 커브 전 만기 (Nelson-Siegel 추정용)
     vault_node: 장단기 금리차
     tier: 2
@@ -881,17 +885,21 @@ team_2:
     source: fred
     series_id: T10Y3M
   - name: 실질금리 (10Y TIPS)
+    vault_node: 미 국채 10Y (장기금리)
     tier: 1
     method: api
     source: fred
     series_id: DFII10
+    note: '2026-09-02 vault_node 부여 — 명목 10Y의 3분해(실질 + BEI, 그리고 기간프리미엄)
+      가 한 노드에서 모이게 한다.'
   - name: 텀프리미엄 (ACM 10Y)
-    vault_node: 장단기 금리차
+    vault_node: 미 국채 10Y (장기금리)
     tier: 2
     method: api
     source: fred
     series_id: THREEFYTP10
   - name: 미 10년물 국채선물
+    vault_node: 미 국채 10Y (장기금리)
     tier: 2
     method: scrape
     source: yahoo_finance
