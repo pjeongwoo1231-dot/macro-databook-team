@@ -57,7 +57,7 @@ def _snapshots() -> list[Path]:
 def _no_snapshot_hint() -> str:
     """스냅샷이 없을 때 **왜 없는지**를 짚어 준다.
 
-    ⚠ 2026-09-02부로 배포가 **주 1회 ZIP(구글드라이브)**으로 바뀌었다. 그 전의
+    ⚠ 2026-09-02부로 배포가 **주 1회 ZIP(GitHub Releases)**으로 바뀌었다. 그 전의
     옵시디언 싱크 안내("'기타 모든 파일 형식'을 켜세요")는 **이제 틀린 처방**이다 —
     켤 싱크가 없다. 지금 스냅샷이 없는 이유는 셋 중 하나다:
       ① .env에 OBSIDIAN_VAULT_PATH가 없다  ② ZIP에 snapshots/가 빠졌다  ③ 수집을 안 돌렸다
@@ -70,8 +70,9 @@ def _no_snapshot_hint() -> str:
     if (Path(v) / "04_DataBook").is_dir():
         return ("볼트는 있는데 `04_DataBook/snapshots/*.json`이 없습니다 — "
                 "스냅샷이 빠진 배포본입니다.\n"
-                "  구글드라이브에서 **최신 ZIP을 다시 받아** 통째로 덮어쓰세요. "
-                "(직접 수집한다면 `python -m databook run`)")
+                "  Releases에서 **최신 ZIP을 다시 받아** 통째로 덮어쓰세요\n"
+                "  (github.com/pjeongwoo1231-dot/macro-databook-team/releases/latest).\n"
+                "  (직접 수집한다면 `python -m databook run`)")
     return (f"OBSIDIAN_VAULT_PATH가 볼트를 가리키지 않습니다({v}) — "
             "`04_DataBook` 폴더가 있는 상위 폴더를 지정하세요.")
 

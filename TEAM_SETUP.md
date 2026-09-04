@@ -200,13 +200,13 @@ DATABOOK_OUTPUT_DIR=C:\Users\<이름>\macro-data\output
 
 ### 4-1. 배포본(ZIP)을 받아 쓰는 사람 — 볼트 경로만 적으면 끝입니다
 
-> ⚠ **2026-09-02부로 배포가 바뀌었습니다.** 옵시디언 싱크 → **주 1회 ZIP(구글드라이브)**.
+> ⚠ **2026-09-02부로 배포가 바뀌었습니다.** 옵시디언 싱크 → **주 1회 ZIP(GitHub Releases)**.
 > 예전 안내였던 "설정 → 동기화 → '기타 모든 파일 형식' 켜기"는 **이제 하지 마세요** —
 > 켤 싱크가 없습니다. 그 안내를 따라가다 막힌 것이면 잘못은 안내 쪽입니다.
 
 받는 법:
 
-1. 구글드라이브에서 `MacroVault_<기준일>.zip`을 받아 압축을 풉니다
+1. **https://github.com/pjeongwoo1231-dot/macro-databook-team/releases/latest** 에서 `MacroVault_<기준일>.zip`(약 16MB)을 받아 압축을 풉니다
 2. Obsidian → **다른 폴더를 볼트로 열기** → 압축 푼 폴더
 3. `show`·`diff`·`weekly`를 쓰려면 이 저장소의 `.env`에 한 줄만 적습니다
 
@@ -225,7 +225,7 @@ python -m databook weekly            # 배포본 기준일을 [수집 상태]에
 **ZIP 파일명의 날짜가 인용 기준일입니다.** 그 주의 인용은 이 하나로 통일합니다 —
 각자 수집기를 돌려 나온 값은 기준일이 달라 서로 다른 숫자를 말하게 됩니다.
 
-배포본에 **없는 것**: 원문 PDF(구글드라이브 별도 폴더) · `daily.log`(수집자 PC의 로그) ·
+배포본에 **없는 것**: 원문 PDF(용량) · `daily.log`(수집자 PC의 로그) ·
 `history/toss/` 종목 패널(593MB).
 
 #### 배포본을 만드는 쪽 (수집 담당자만)
@@ -246,7 +246,8 @@ DATABOOK_DIST_DIR=<ZIP을 놓을 폴더>     # 안 적으면 볼트 옆 MacroVau
 DATABOOK_PACKAGE_ALWAYS=1               # 요일 무시하고 즉시 다시 배포할 때만
 ```
 
-`DATABOOK_DIST_DIR`을 **공유 폴더(OneDrive·드라이브 동기화 폴더)로 잡으면 업로드도 자동**입니다.
+만들고 나면 **GitHub Release로도 자동 업로드**됩니다(`gh`가 인증돼 있을 때). 태그는 `vault-<기준일>`이고, 같은 태그가 있으면 자산만 덮어씁니다.
+팀원이 받는 곳은 항상 **https://github.com/pjeongwoo1231-dot/macro-databook-team/releases/latest** 입니다.
 
 ### 4-2. 망가진 런은 볼트에 안 들어갑니다
 

@@ -21,9 +21,22 @@ import time
 from datetime import datetime
 from pathlib import Path
 
-from .core import OUTPUT_DIR
+from .core import OUTPUT_DIR, ROOT
 
 LOG = OUTPUT_DIR / "daily.log"
+
+# 릴리스 본문. 팀원이 처음 보는 화면이라 **여기서 끝나야 한다** — 다른 문서로 보내지 않는다.
+NOTES = """주간 배포본입니다. 압축을 풀고 Obsidian에서 '다른 폴더를 볼트로 열기'로 여세요.
+**API 키는 하나도 필요 없습니다.**
+
+**파일명의 날짜가 그 주의 인용 기준일입니다.** 각자 수집기를 돌려 나온 값은
+기준일이 달라 인용에 쓰지 않습니다 — 같은 지표로 서로 다른 숫자를 말하게 됩니다.
+
+문헌을 인용하기 전에 `03_MOC/인용 가능 인덱스.md`에서 이름을 찾으세요.
+
+`weekly`·`show`·`diff`까지 쓰려면 이 저장소를 clone하고 `.env`에 한 줄:
+`OBSIDIAN_VAULT_PATH=<압축 푼 폴더>`
+"""
 
 STEPS: list[tuple[str, str, list[str]]] = [
     # consensus는 run보다 먼저 — FairEconomy는 롤링 1주만 제공하므로 forecast는 발표 전에
@@ -40,7 +53,7 @@ STEPS: list[tuple[str, str, list[str]]] = [
     ("site", "시황 사이트 재생성", []),
     # 배포본은 **월요일에만** 싼다 — 세션이 화요일이라 그 전날 것이 그 주의 정본이 된다.
     # 매일 싸면 팀원이 어느 ZIP을 봐야 할지 몰라 기준일이 갈린다(그게 인용 사고의 씨앗이다).
-    ("package", "주간 배포본 ZIP (월요일만)", []),   # 항상 마지막 — 위 단계 결과를 굳힌다
+    ("package", "주간 배포본 ZIP + 릴리스 (월요일만)", []),   # 항상 마지막 — 위 단계 결과를 굳힌다
 ]
 
 
@@ -132,6 +145,30 @@ def _dispatch(cmd: str, extra: list[str]) -> int:
         finally:
             sys.argv = argv
         _log(f"       배포본 → {dist}")
+
+        # GitHub Release로 올린다 — 팀원이 링크 하나로 받는 자리다.
+        # 업로드 실패는 배치를 깨지 않는다 — ZIP은 이미 로컬에 있고 손으로 올리면 된다.
+        zips = sorted(Path(dist).glob("MacroVault_*.zip"))
+        if not zips:
+            return 0
+        z = zips[-1]
+        tag = f"vault-{z.stem[len('MacroVault_'):]}"
+        import shutil
+        import subprocess
+        if not shutil.which("gh"):
+            _log("       gh 없음 — 릴리스 업로드 생략 (ZIP은 로컬에 있다)")
+            return 0
+        # 같은 태그가 있으면 자산만 덮어쓴다. 없으면 새로 만든다.
+        exists = subprocess.run(["gh", "release", "view", tag], cwd=str(ROOT),
+                                capture_output=True).returncode == 0
+        cmd_gh = (["gh", "release", "upload", tag, str(z), "--clobber"] if exists else
+                  ["gh", "release", "create", tag, str(z),
+                   "--title", f"MacroVault 배포본 {tag[len('vault-'):]}", "--notes", NOTES])
+        r = subprocess.run(cmd_gh, cwd=str(ROOT), capture_output=True, text=True)
+        if r.returncode == 0:
+            _log(f"       릴리스 {'갱신' if exists else '생성'} {tag}")
+        else:
+            _log(f"       릴리스 업로드 실패({tag}) — {r.stderr.strip()[:160]}")
         return 0
 
     if cmd == "consensus":
