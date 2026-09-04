@@ -26,16 +26,41 @@ from .core import OUTPUT_DIR, ROOT
 LOG = OUTPUT_DIR / "daily.log"
 
 # 릴리스 본문. 팀원이 처음 보는 화면이라 **여기서 끝나야 한다** — 다른 문서로 보내지 않는다.
-NOTES = """주간 배포본입니다. 압축을 풀고 Obsidian에서 '다른 폴더를 볼트로 열기'로 여세요.
-**API 키는 하나도 필요 없습니다.**
+NOTES = """매크로 학회 공용 볼트 주간 배포본입니다. **API 키가 하나도 필요 없습니다.**
+
+## 받는 법 — 읽기만 할 사람 (대부분)
+
+1. 아래 `MacroVault_<기준일>.zip`(약 16MB)을 받아 압축을 풉니다
+2. Obsidian → **다른 폴더를 볼트로 열기** → 압축 푼 `MacroVault` 폴더
+3. 볼트가 열리면 **`팀 안내 (먼저 읽기).md`** 를 먼저 여세요
+
+설치도 계정도 설정도 필요 없습니다. 폴더 이름은 **날짜 없이 항상 `MacroVault`**라
+다음 주 ZIP을 같은 자리에 풀면 그대로 갱신됩니다.
+
+## `weekly`·`show`·`diff`까지 쓸 사람 (세션 준비 담당)
+
+Python과 이 저장소가 필요합니다 — 설치는 `TEAM_SETUP.md` §1 (3분).
+그다음 `.env`에 **한 줄만** 적으면 됩니다. **여기도 API 키는 필요 없습니다.**
+
+```
+OBSIDIAN_VAULT_PATH=C:\\Users\\<이름>\\MacroVault
+```
+
+```bash
+python -m databook weekly     # 세션 준비 자료 한 번에
+```
+
+## 인용하기 전에
 
 **파일명의 날짜가 그 주의 인용 기준일입니다.** 각자 수집기를 돌려 나온 값은
 기준일이 달라 인용에 쓰지 않습니다 — 같은 지표로 서로 다른 숫자를 말하게 됩니다.
 
-문헌을 인용하기 전에 `03_MOC/인용 가능 인덱스.md`에서 이름을 찾으세요.
+문헌은 `03_MOC/인용 가능 인덱스.md`에서 **먼저 이름을 찾으세요.**
+문헌 1,206편 중 수치까지 인용 가능한 것은 272편뿐입니다.
 
-`weekly`·`show`·`diff`까지 쓰려면 이 저장소를 clone하고 `.env`에 한 줄:
-`OBSIDIAN_VAULT_PATH=<압축 푼 폴더>`
+## 없는 것
+
+원문 PDF(용량) · `daily.log`(수집자 PC 로그) · `history/toss/` 종목 패널
 """
 
 STEPS: list[tuple[str, str, list[str]]] = [

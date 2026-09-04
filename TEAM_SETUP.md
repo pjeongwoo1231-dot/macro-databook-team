@@ -207,11 +207,16 @@ DATABOOK_OUTPUT_DIR=C:\Users\<이름>\macro-data\output
 받는 법:
 
 1. **https://github.com/pjeongwoo1231-dot/macro-databook-team/releases/latest** 에서 `MacroVault_<기준일>.zip`(약 16MB)을 받아 압축을 풉니다
-2. Obsidian → **다른 폴더를 볼트로 열기** → 압축 푼 폴더
-3. `show`·`diff`·`weekly`를 쓰려면 이 저장소의 `.env`에 한 줄만 적습니다
+2. Obsidian → **다른 폴더를 볼트로 열기** → 압축 푼 `MacroVault` 폴더
+3. 볼트가 열리면 **`팀 안내 (먼저 읽기).md`** 를 먼저 여세요
+4. `show`·`diff`·`weekly`까지 쓸 사람만 이 저장소의 `.env`에 한 줄 적습니다
+
+> 압축 푼 폴더 이름은 **날짜 없이 항상 `MacroVault`**입니다. 다음 주 ZIP을 같은 자리에
+> 풀면 그대로 갱신되고, `.env`는 **한 번 적으면 계속 유효**합니다.
+> 지금 받은 게 언제 것인지는 `python -m databook weekly`의 `[수집 상태]` 줄이 알려줍니다.
 
 ```
-OBSIDIAN_VAULT_PATH=C:\Users\<이름>\MacroVault_2026-09-03
+OBSIDIAN_VAULT_PATH=C:\Users\<이름>\MacroVault
 ```
 
 **API 키는 한 개도 필요 없습니다.** 배포본에 스냅샷(`04_DataBook/snapshots/*.json`)과
