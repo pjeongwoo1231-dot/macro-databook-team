@@ -57,17 +57,23 @@ def _snapshots() -> list[Path]:
 def _no_snapshot_hint() -> str:
     """스냅샷이 없을 때 **왜 없는지**를 짚어 준다.
 
-    볼트는 받고 있는데 스냅샷만 없을 수 있다 — 옵시디언 싱크의 '기타 모든 파일 형식'이
-    꺼져 있으면 `.md`만 오고 `.json`은 안 온다. 그때 "run을 돌리세요"는 틀린 안내다.
-    (켜져 있으면 스냅샷도 그대로 온다 — 2026-09-02 실제 볼트에서 확인)
+    ⚠ 2026-09-02부로 배포가 **주 1회 ZIP(구글드라이브)**으로 바뀌었다. 그 전의
+    옵시디언 싱크 안내("'기타 모든 파일 형식'을 켜세요")는 **이제 틀린 처방**이다 —
+    켤 싱크가 없다. 지금 스냅샷이 없는 이유는 셋 중 하나다:
+      ① .env에 OBSIDIAN_VAULT_PATH가 없다  ② ZIP에 snapshots/가 빠졌다  ③ 수집을 안 돌렸다
     """
     v = (load_env().get("OBSIDIAN_VAULT_PATH") or "").strip().strip('"')
-    if v and (Path(v) / "04_DataBook").is_dir():
-        return ("볼트는 받고 있는데 스냅샷(.json)이 없습니다 — 옵시디언 싱크의 "
-                "'기타 모든 파일 형식'이 꺼져 있으면 .md만 옵니다.\n"
-                "  설정 → 동기화 → **'기타 모든 파일 형식'을 켜고** 잠시 기다리세요. "
+    if not v:
+        return ("볼트 경로가 없습니다 — 배포본을 받아 쓰는 사람은 `.env`에\n"
+                "  OBSIDIAN_VAULT_PATH=<압축 푼 볼트 폴더>\n"
+                "  를 적어야 합니다. (직접 수집한다면 `python -m databook run`)")
+    if (Path(v) / "04_DataBook").is_dir():
+        return ("볼트는 있는데 `04_DataBook/snapshots/*.json`이 없습니다 — "
+                "스냅샷이 빠진 배포본입니다.\n"
+                "  구글드라이브에서 **최신 ZIP을 다시 받아** 통째로 덮어쓰세요. "
                 "(직접 수집한다면 `python -m databook run`)")
-    return "스냅샷이 없습니다. 먼저 `python -m databook run`을 돌리세요."
+    return (f"OBSIDIAN_VAULT_PATH가 볼트를 가리키지 않습니다({v}) — "
+            "`04_DataBook` 폴더가 있는 상위 폴더를 지정하세요.")
 
 
 def _load(path: Path) -> list[dict[str, Any]]:

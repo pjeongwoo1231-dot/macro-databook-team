@@ -44,11 +44,40 @@ def next_session(today: date | None = None) -> date:
     return t + timedelta(days=(_TUE - t.weekday()) % 7)
 
 
+def _vault_root() -> Path | None:
+    """볼트 경로. 배포본을 받아 쓰는 사람에게는 여기가 유일한 자료원이다."""
+    from .core import load_env
+    v = (load_env().get("OBSIDIAN_VAULT_PATH") or "").strip().strip('"')
+    if not v:
+        return None
+    r = Path(v)
+    return r if (r / "04_DataBook").is_dir() else None
+
+
 def _batch_ran_today(today: date | None = None) -> tuple[bool, str]:
-    """daily.log 끝부분에서 오늘 날짜의 '종료' 줄을 찾는다."""
+    """오늘 자료가 최신인지 본다. **수집자와 배포본 수령자를 구분한다.**
+
+    `daily.log`는 `OUTPUT_DIR`에 있고 **배포본에 들어가지 않는다.** 그래서 로그가 없는 것을
+    "배치가 안 돌았다"로 읽으면 배포본만 받는 팀원 전원에게 거짓 경보가 뜬다(실제로 그랬다).
+    그 사람들에게 물어야 할 것은 "배치가 돌았나"가 아니라 **"받은 자료가 언제 것인가"**다.
+    """
     log = OUTPUT_DIR / "daily.log"
     if not log.exists():
-        return False, "daily.log가 없습니다 — 일일 배치가 한 번도 돌지 않았습니다."
+        # 수집자가 아니다 — 볼트가 있으면 배포본 기준일을 알려준다
+        root = _vault_root()
+        if root is None:
+            return False, ("daily.log도 볼트도 없습니다 — 볼트 경로(.env의 OBSIDIAN_VAULT_PATH)를 "
+                           "지정하거나, 수집자라면 `python -m databook daily`를 돌리세요.")
+        snaps = sorted((root / "04_DataBook" / "snapshots").glob("snapshot_*.json"), reverse=True)
+        if not snaps:
+            return False, ("배포본에 스냅샷(.json)이 없습니다 — 받은 ZIP이 오래됐거나 "
+                           "`04_DataBook/snapshots/`가 빠진 배포본입니다. 최신 ZIP을 다시 받으세요.")
+        newest = snaps[0].stem[len("snapshot_"):]
+        lag = (date.today() - date.fromisoformat(newest)).days
+        note = "배포본을 읽습니다 (수집은 담당자 PC에서 돕니다 — 여기서 돌릴 필요 없습니다)"
+        if lag > 9:
+            return False, f"배포본이 {newest} 기준입니다 ({lag}일 전) — 최신 ZIP을 다시 받으세요."
+        return True, f"배포본 {newest} 기준 ({lag}일 전) · {note}"
     stamp = (today or date.today()).isoformat()
     tail = log.read_text(encoding="utf-8", errors="replace").splitlines()[-60:]
     for line in reversed(tail):
@@ -61,14 +90,31 @@ def _batch_ran_today(today: date | None = None) -> tuple[bool, str]:
 
 
 def _databook_paths(asof: date) -> list[str]:
-    """기준 시점의 Data Book 파일. 볼트본과 로컬본 둘 다 알려준다."""
+    """기준 시점의 Data Book 파일. 볼트본과 로컬본 둘 다 알려준다.
+
+    그날 것이 없으면 **가장 가까운 이전 정상본**을 함께 짚는다. 없다고만 하면
+    팀원은 §1(본 재료) 없이 §2 변경분만 들고 글을 쓰게 된다 — 그러면 안 된다.
+    (2026-09-01처럼 망가진 발행이 `_archive/_failed/`로 격리되면 그날은 비게 된다.)
+    """
     from .core import load_env
     out, v = [], (load_env().get("OBSIDIAN_VAULT_PATH") or "").strip().strip('"')
     for root, sub in ((Path(v) if v else None, "04_DataBook"), (OUTPUT_DIR, "Macro")):
         if root is None:
             continue
-        f = root / sub / f"DataBook_{asof.isoformat()}.md"
-        out.append(str(f) if f.exists() else f"{f}   ← 없음(그날 수집이 안 돌았다)")
+        d = root / sub
+        f = d / f"DataBook_{asof.isoformat()}.md"
+        if f.exists():
+            out.append(str(f))
+            continue
+        near = [p for p in sorted(d.glob("DataBook_20*.md"), reverse=True)
+                if p.stem[len("DataBook_"):] < asof.isoformat()]
+        if near:
+            got = near[0].stem[len("DataBook_"):]
+            gap = (asof - date.fromisoformat(got)).days
+            out.append(f"{f}   ← 없음. 가장 가까운 정상본: {near[0].name} ({gap}일 전)")
+            out.append(f"     ⚠ 인용 기준일을 **{got}**로 적으세요 — {asof.isoformat()}가 아닙니다.")
+        else:
+            out.append(f"{f}   ← 없음(그날 수집이 안 돌았고, 그 이전 것도 없습니다)")
     return out
 
 
@@ -79,10 +125,25 @@ def _print_history() -> None:
     주장마다 「추세·사례·이론」 중 둘 이상을 요구하는데, 추세(어디서 어디로 갔나)와
     사례(같은 배열이 과거 몇 번, 그 뒤 무엇이 왔나)는 **여기서만 잴 수 있다.**
     """
-    d = OUTPUT_DIR / "history"
-    files = sorted(d.glob("*.csv")) if d.is_dir() else []
+    # 수집자는 OUTPUT_DIR, 배포본 수령자는 볼트. **둘 다 봐야 한다** —
+    # 예전엔 OUTPUT_DIR만 봐서 배포본만 받는 팀원에게 §3가 통째로 비었다.
+    # (`toss/` 하위 4,300개는 배포에서 빠진다 — 593MB라 ZIP에 못 넣는다.)
+    cands = [OUTPUT_DIR / "history"]
+    root = _vault_root()
+    if root is not None:
+        cands.append(root / "04_DataBook" / "history")
+    d, files = None, []
+    for c in cands:
+        f = sorted(c.glob("*.csv")) if c.is_dir() else []
+        if f:
+            d, files = c, f
+            break
     if not files:
-        print("  장기 시계열이 없습니다 — `python -m databook history` 를 한 번 돌리세요.")
+        if root is not None:
+            print("  장기 시계열이 배포본에 없습니다 — `04_DataBook/history/`가 빠진 ZIP입니다.")
+            print("  최신 ZIP을 다시 받으세요. (수집자라면 `python -m databook history`)")
+        else:
+            print("  장기 시계열이 없습니다 — `python -m databook history` 를 한 번 돌리세요.")
         return
     print(f"  {d}")
     print(f"  계열 {len(files)}개 (FRED·Yahoo·GPR — 대체로 2000년부터)")
