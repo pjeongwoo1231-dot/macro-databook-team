@@ -215,6 +215,7 @@ team_1:
     series_id: UNEMPLOY
     note: 'v/u 비율의 분모. 단위 천명 — JTSJOL과 같은 단위라 그대로 나눌 수 있다'
   - name: v/u 비율 (구인/실업자, 노동시장 과열)
+    unit: '배'
     tier: 1
     method: derived
     formula: JTSJOL ÷ UNEMPLOY (둘 다 천명 단위, FRED)
@@ -733,6 +734,7 @@ team_1:
     note: 확인 완료. 총액만 사용
 
 # ═════════════════════ team_2 : 물가·정책·금리 (Inflation·Policy·Rates) ═════════════════════
+
 team_2:
   # ── 인플레이션 ──
   - name: CPI (헤드라인 / 코어)
@@ -958,6 +960,7 @@ team_2:
     news_queries: ["Treasury quarterly refunding announcement"]
     note: 자동 헤드라인(2026-07-20, Google News) — 재무부 QRA 발표문 자체는 PDF라 구조화 API 없음, 헤드라인으로 발표 시점 포착
   - name: FOMC 성명·의사록·점도표(SEP)
+    unit_check: 'skip'
     vault_node: 통화정책
     tier: 1
     method: api
@@ -1088,6 +1091,7 @@ team_2:
     label: 유로존 PPI YoY(%)
     note: 확인 완료(2026-08-26, +4.3%) — 인플레 동학은 CPI보다 PPI가 앞선다는 검증 논문 계열의 유럽판 입력
   - name: 일본 CPI (코어·코어코어, 월간)
+    unit: '%'
     vault_node: CPI (소비자물가지수)
     tier: 1
     method: api
@@ -1351,6 +1355,7 @@ team_2:
     stat_code: 817Y002
     item_code: ["010200000", "010210000"]   # 확인 완료
   - name: 국고채 커브 2·3·5·10·20·30Y (토스증권, 장중)
+    unit: '% (금리) · %p (스프레드)'
     vault_node: 장단기 금리차
     tier: 1
     method: api
@@ -1404,6 +1409,7 @@ team_2:
     series_id: DHHNGSP
 
 # ═════════════════════ team_3 : 유동성·신용·심리 (Liquidity·Credit·Sentiment) ═════════════════════
+
 team_3:
   - name: 미국 M2
     tier: 1
@@ -1578,6 +1584,7 @@ team_3:
     vault_node: 글로벌 유동성
     note: '주간 $mn. 2026-08-15 신설. RegimeView 8차 개정이 남긴 숙제 — 시장이 소화할 듀레이션 = (재무부 발행 구성) − (연준 보유 구성). ⚠ 이것은 만기별 분포가 아니라 상품별 구성이다(Bills=단기, Notes·Bonds=중장기 대용). 정확한 만기 버킷은 NY Fed SOMA API가 필요하며 아직 미편입. 근거 = QE 효과는 사는 동안이 아니라 들고 있는 동안 지속된다 — 스톡이 플로우를 압도한다'
   - name: 순유동성 (Fed B/S − RRP − TGA)
+    unit: '$bn'
     tier: 1
     method: derived
     formula: WALCL − RRPONTSYD − TGA
@@ -1594,6 +1601,7 @@ team_3:
     series_id: IORB
     note: 레포 스트레스 = SOFR−IORB 스프레드. 파생 슬롯은 아래 별도 항목
   - name: SOFR−IORB 스프레드 (레포 스트레스 판정)
+    unit: '%p'
     vault_node: 글로벌 유동성
     tier: 1
     method: derived
@@ -1628,6 +1636,7 @@ team_3:
     terms: ["10-year", "30-year"]
     note: '2026-08-18 신설 — TreasuryDirect 공개 API(키 불필요). **장기물 수요의 직접 관측치**. 시황이 흔히 쓰는 "30년 입찰금리가 몇 년 만에 최고" 류 주장을 검증하는 계열. 실측 2026-08-13 30년 낙찰 5.216% · 응찰배수 2.39. ⚠ Bill은 할인율 필드라 성격이 다르다'
   - name: 장중 지수 스냅샷 (코스피·코스닥·S&P500)
+    unit: '지수 pt · 전일대비 %'
     tier: 2
     method: scrape
     source: yahoo_intraday
@@ -1798,6 +1807,7 @@ team_3:
     points: 3
     note: '2026-08-27 신설 — 위 지표의 짝. 자체조달이 안 되면 그 자리를 **부채가 메운다**. 실측(전년 대비): **GOOGL 10.9→46.5B(4배)** · **META 28.8→58.7B(2배)** · ORCL 92.6→**129.5B** · AMZN 52.6→65.6B · **CRWV 5.5→14.7B**. 반대로 **MSFT만 40.2→31.1B로 줄였다** — 캐펙스 1위인데 부채는 감축 중이라, 캐펙스 규모와 신용 리스크가 같은 말이 아님을 보여준다. 채권 발행액은 ORCL **46.1B** · GOOGL 64.6B · META 29.9B · CRWV 11.8B. 이자비용은 ORCL **4.6B**, CRWV 0.3→**1.1B(3.7배)**. ⚠⚠ **부채 태그가 회사마다 다르다** — ORCL은 `DebtLongtermAndShorttermCombinedAmount`(유동분 포함), 나머지는 `LongTermDebtNoncurrent`(유동분 제외)다. 라벨 대괄호에 실제 태그를 찍어 두었으니 **기업 간 절대 수준 비교는 태그를 확인한 뒤** 할 것. 증감 추세는 태그가 일관되므로 비교해도 된다. ⚠ MSFT의 발행액이 0인 것은 태그 누락이 아니라 **실제로 발행하지 않는다**는 뜻이다'
   - name: BDC·사모신용 대리지표 (BIZD vs HYG)
+    unit: 'USD'
     tier: 1
     method: scrape
     source: yahoo_finance
@@ -2025,6 +2035,7 @@ team_3:
     endpoint: /coins/markets?vs_currency=usd&order=market_cap_desc&per_page=16&page=1
     note: 상위 10 동적 수집, 스테이블 제외
   - name: 크립토 전체 시총·BTC 도미넌스·거래량
+    unit_check: 'skip'
     vault_node: 글로벌 유동성
     tier: 1
     method: api
@@ -2086,6 +2097,7 @@ team_3:
     method: derived
     formula: (업비트 KRW-BTC ÷ 바이낸스 BTCUSDT × USDKRW) − 1
   - name: 중국 신용 임펄스 (TSF·M1M2·위안대출)
+    unit_check: 'skip'
     tier: 1
     method: api
     source: pboc
@@ -2195,6 +2207,7 @@ team_3:
     points: 5
     note: '2026-08-19 신설. 바로 위 naver_investor(스크랩)와 **같은 원천(KRX)을 공식 REST로** 받는다 — 스크랩이 깨져도 이쪽이 산다. 스크랩에 없던 것이 둘: **코스닥도 같이** 오고, **기관이 연기금·금융투자·투신·보험으로 쪼개진다.** 기관 순매도를 "기관이 팔았다"로 뭉뚱그리면 안 되는 이유가 여기 있다 — 연기금(정책적 매수)과 금융투자(선물 헤지 반대매매)는 방향이 반대인 날이 많다. 단위 억원. ⚠ **당일 값은 장중 갱신치**다(updatedAt 확인). ⚠ 네이버와 값이 어긋나면 어느 쪽이 맞는지 단정하지 말고 **둘 다 기록**할 것 — 집계 시점 차이일 수 있다'
   - name: 반도체 2종목 수급 5종 (공매도·신용·대차·프로그램·외국인 지분율)
+    unit_check: 'skip'
     vault_node: KOSPI
     tier: 1
     method: api
@@ -2215,6 +2228,7 @@ team_3:
     points: 3
     note: '2026-08-19 신설. 반도체 2종목만 보면 **코스피=반도체**라는 착시가 생긴다. 관세·환율 충격은 자동차(005380)에, 중국 배터리 경쟁은 LG엔솔(373220)에 먼저 나타난다 — **같은 외국인 매도라도 종목별로 이유가 다르다**는 걸 확인하는 대조군이다. ⚠ 대조군이지 대표성이 있는 표본이 아니다. 2종목으로 업종을 말하지 말 것 — 업종 단위는 naver_sector(79개 업종)를 쓴다'
   - name: 코스피·코스닥 지수 (토스증권 공식 API)
+    unit: '지수 pt · 변동폭 %'
     vault_node: KOSPI
     tier: 2
     method: api
@@ -2306,6 +2320,7 @@ team_3:
 
 # ═════════════════════ team_4 : 글로벌·지정학·무역 (Global·Geopolitics·Trade) ═════════════════════
 # 4팀은 "레짐"이 아니라 외부 오버레이 + 무효화 트리거 전담. 정성 비중 높음(manual 다수).
+
 team_4:
   - name: 무효화 트리거 관리 (4팀 전담)
     vault_node: "-"
@@ -2345,6 +2360,7 @@ team_4:
     months: 3
     note: '2026-08-26 신설 — 중국 해관총서(GACC) 영문 속보. **중국 파트에서 유일하게 당월에 가까운 자동 계열**이다(NBS 미러는 6개월 지연, NBS 공식 API는 WAF 403). 실측 2026-07 수출 **3,978.5억달러(+23.9%)** · 수입 **2,853.5억달러(+27.5%)** · 무역흑자 **1,125.0억달러**. ⚠ 속보라 이후 개정된다. ⚠ 위안화 표시(CNY)와 달러 표시(USD)의 증가율이 환율 때문에 갈린다 — 여기서는 USD 기준이다'
   - name: 중국 원자재 수입 (원유·철광석·구리·석탄·가스 — 물량과 금액)
+    unit_check: 'skip'
     tier: 1
     method: api
     source: gacc
@@ -2489,6 +2505,7 @@ team_4:
     crea_points: 6
     note: '2026-08-26 신설. CREA Russia Fossil Tracker API(api.russiafossiltracker.com/v0/counter, 2022-02-24~). **왜 필요한가**: 지정학 축의 계열이 지금까지 전부 원인(GPR·뉴스)이나 중간변수(유가)였고 **결과 — 크렘린이 실제로 얼마를 벌었나 — 를 재는 계열이 없었다.** 제재·유가 예측을 채점하려면 이 종속변수가 있어야 한다. 값↑ = 제재에도 수입 증가. ⚠ **당월은 미완성이라 자동 제외한다**(안 그러면 끝이 항상 급감으로 보인다). ⚠ CREA는 선박 추적 기반 추정치이지 러시아 공식 통계가 아니다 — 수준보다 방향·변화율로 읽는다'
   - name: 유럽 TTF 천연가스 선물 (일별)
+    unit: 'EUR/MWh'
     tier: 1
     method: scrape
     source: yahoo_finance
@@ -2546,3 +2563,4 @@ team_4:
     method: news
     news_queries: ["Korea defense export OR shipbuilding order", "방산수출 조선수주 에너지수입"]
     note: 자동 헤드라인(2026-07-20, 네이버+Google News)
+
