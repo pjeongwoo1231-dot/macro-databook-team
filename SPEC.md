@@ -150,3 +150,83 @@ FRBSF 공개 xlsx(`quarterly_tfp.xlsx`)의 `quarterly` 시트를 의존성 없�
 
 **한계** — 분기 데이터이고 **BEA 개정으로 과거치가 소급 수정**된다. 가동률 조정은 모형 기반이다.
 미국 business sector 기준이라 BLS 비농업 노동생산성과 정의가 다르다.
+
+## 볼트 노트 다리 — `11_AutoIndicators/` (2026-09-09 신설)
+
+`databook/fetchers/vault_note.py` · `source: vault_note`. **키 불필요. 네트워크를 쓰지 않는다.**
+
+이 저장소에는 수집기가 **둘**이고, 2026-09-09까지 서로 만나지 않았다.
+
+| 수집기 | 읽는 것 | 쓰는 곳 |
+|---|---|---|
+| `databook/daily.py` | `indicators.yaml` | `04_DataBook/1~4` **팀별 DataKit** |
+| `databook/intel.py` | 자체 소스(portwatch·comtrade·eia_v2·sdmx·socrata·xlsx_url) | `11_AutoIndicators/<id>.md` **24개** |
+
+**문제**: 학회원은 `04_DataBook/1~4`만 보고 공부한다. `intel.py`가 매일 갱신하던 24개는
+**팀 DataKit에 한 번도 실린 적이 없었고**, 볼트 어디서도 링크되지 않는 고아였다.
+
+**해결 방식** — 같은 값을 `daily.py`가 **다시 받아오게 하지 않았다.** 이유 둘:
+portwatch·comtrade 등은 `fetchers/`에 대응 모듈이 없어 포팅 비용이 크고,
+같은 API를 하루 두 번 때릴 이유가 없다. 대신 **디스크에 이미 있는 노트를 읽는다.**
+
+```yaml
+  - name: 해상 요충지 통항 (호르무즈·수에즈·말라카·…)
+    tier: 1
+    method: api
+    source: vault_note
+    series_id: [hormuz_transits, suez_transits, malacca_transits]   # 11_AutoIndicators/<id>.md
+    max_age_days: 21
+```
+
+`series_id`는 문자열 하나 또는 리스트. 노트 frontmatter의 `value`·`period`·`unit`·`label`을 읽는다.
+
+### 순서 의존이 있다
+
+**`intel.py`가 먼저 돌아야 값이 최신이다.** 안 돌았으면 실패하지 않고 **오래된 값이 실린다** —
+그래서 항목마다 `max_age_days`를 반드시 준다(staleness 검사가 잡아낸다).
+노트 자체가 없으면 `status: fail` + 어느 계열인지 이름을 찍는다.
+
+### `period` 표기가 제각각이라 정규화한다
+
+intel 계열은 일별 `2026-09-01` · 월별 `2026-06` · World Bank `2026M08` · 연간 `2024`가 섞여 있다.
+월·연 단위는 **그 기간의 첫날로 내린다**(끝날로 올리면 아직 오지 않은 날짜가 생긴다).
+
+> ⚠ **그래서 한 항목 안에서 기준일이 다를 수 있다.** `원유·가스 교역 물량`이 그렇다 —
+> 중국·한국 수입은 Comtrade **연간**, 미국 수출은 EIA **월별**이다.
+> **인용할 때 기준일을 반드시 함께 적는다.** 연간 계열은 레짐 판정에 쓰지 않는다.
+
+### 등재 시 중복부터 확인할 것 (2026-09-09에 4건 걸렀다)
+
+24개 중 **4개는 이미 팀에 있었다.** 이름이 달라 grep으로 안 잡히니 **계열·출처로 본다.**
+
+| `11_AutoIndicators` | 기존 항목 | 판정 |
+|---|---|---|
+| `us_crude_stocks` | team_4 `미 원유재고 (주간)` (eia) | 중복 — 등재 안 함 |
+| `usd_krw` | team_3 `원/달러` (fred DEXKOUS) | 중복 |
+| `bis_reer_kr` | team_3 `BIS 실질실효환율 REER (원화·달러)` (RBKRBIS) | 중복 |
+| `brent` | team_2 `유가 Brent` (fred DCOILBRENTEU) | 중복 |
+
+반대로 **중복처럼 보였지만 아니었던 것**: `cot_wti`·`cot_copper`.
+team_3의 `CFTC 선물 포지셔닝`은 `CFTC_MARKETS`가 **엔·S&P500·미10Y만** 잡아 원자재가 비어 있었다.
+→ **항목 이름이 넓다고 커버 범위가 넓은 게 아니다. fetcher가 실제로 무엇을 긁는지 본다.**
+
+### 배치 결과 (20계열 / 6항목)
+
+| 팀 | 항목 | 계열 |
+|---|---|---|
+| 1 성장·경기 | 산업금속 월평균 (WB) | `wb_copper` · `wb_iron_ore` · `wb_aluminum` |
+| 2 물가·정책·금리 | 에너지 월평균 (WB) | `wb_brent` · `wb_lng_japan` |
+| 3 유동성·신용·심리 | 원자재 투기적 순포지션 | `cot_wti` · `cot_copper` |
+| 3 | 환율 보조 | `ecb_eurusd` · `bis_reer_cn` |
+| 4 글로벌·지정학·무역 | 해상 요충지 통항 | `hormuz_transits` · `hormuz_tanker_capacity` · `suez_transits` · `malacca_transits` · `bab_el_mandeb_transits` · `taiwan_strait_transits` · `korea_strait_transits` |
+| 4 | 원유·가스 교역 물량 | `china_crude_imports` · `korea_crude_imports` · `us_crude_exports` · `us_ng_exports` |
+
+배치 근거는 **기존 관례**다(구리→1팀 Dr.Copper, COT→3팀, 유가→2팀, 지정학·무역→4팀).
+새 분류 체계를 만들지 않았다.
+
+### 확인 방법
+
+```
+python -m databook run --only vault_note --no-setup
+```
+볼트·스냅샷을 덮어쓰지 않는다. 2026-09-09 기준 **6/6 성공**.

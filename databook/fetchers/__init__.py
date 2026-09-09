@@ -6,6 +6,7 @@ from typing import Any
 from . import bis, bls, boj_api, cftc, china, crea, crypto, deribit, e_stat, europe, fred, frbsf, intl, japan, korea, nbs, nyfed, ofr, research, scrape, sec_xbrl, spreadsheet, tossinvest, us_gov, worldbank
 from .base import result
 from .news import fetch_news_indicator
+from . import vault_note
 
 
 def _lending_fetch(ind, env):
@@ -83,6 +84,8 @@ DISPATCH = {
     "frbsf_tfp": frbsf.fetch,
     "nyfed_pd": nyfed.fetch_pd,
     "nyfed_soma": nyfed.fetch_soma_maturity,
+    # 볼트 11_AutoIndicators/ 노트를 읽어 팀 DataKit에 싣는다 — 네트워크 없음 (2026-09-09 신설)
+    "vault_note": vault_note.fetch,
 }
 
 
