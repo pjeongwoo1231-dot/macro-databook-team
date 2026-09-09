@@ -32,7 +32,7 @@ from typing import Any
 from .core import load_env
 
 # 볼트에서 이미 분해된 것을 찾는 곳
-NOTE_DIRS = ("02_Papers", "04_Zettel", "05_Library", "06_SourceArchive")
+NOTE_DIRS = ("02_Papers", "07_Zettel", "05_Library", "06_SourceArchive")
 # 읽은 원문 대장 — 파일명↔노트 제목 매칭이 실패하는 경우를 사람이 직접 기록한다
 READ_LEDGER = "reading_log.yaml"
 # 원문이 쌓이는 곳 (저장소 기준 상대 + 홈 기준 절대)

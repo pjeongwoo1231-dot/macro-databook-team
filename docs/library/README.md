@@ -32,7 +32,7 @@
 ## 정리되면 옮긴다
 
 여기 있는 원문을 읽고 노트로 만들면 그 노트는 **볼트의** `02_Papers/`나
-`04_Zettel/`로 가고, 원문은 볼트의 `06_SourceArchive/`·`Attachments/`로 간다.
+`07_Zettel/`로 가고, 원문은 볼트의 `06_SourceArchive/`·`Attachments/`로 간다.
 **이 폴더가 줄어드는 것이 정상이다.**
 
 분해 절차는 볼트의 `_System/docs/CLAUDE-원본-v3.0-MR-OS.md` §14-3(제텔카스텐 파이프라인)에 있다 —

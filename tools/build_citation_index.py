@@ -36,7 +36,7 @@ def _vault() -> Path:
 
 
 V = _vault()
-FOLDERS = ["02_Papers", "05_Library", "04_Zettel"]
+FOLDERS = ["02_Papers", "05_Library", "07_Zettel"]
 
 
 def fm(p: Path) -> dict[str, str]:
@@ -104,7 +104,7 @@ for folder in FOLDERS:
 A("")
 # 표만 보면 "제텔 대부분이 못 쓰는 것"으로 읽힌다 — 제텔은 규칙이 다르다.
 # 오독을 뒤 절까지 미루지 않고 표 바로 아래서 끊는다.
-z_none = counts["04_Zettel"].get("(필드없음)", 0)
+z_none = counts["07_Zettel"].get("(필드없음)", 0)
 if z_none:
     A(f"> **제텔의 `(필드없음)` {z_none}개는 결격이 아닙니다.** 제텔은 자기 필드가 아니라 "
       "`source`가 가리키는 원문 노트의 등급을 따릅니다 — 판정법은 이 문서 맨 아래에 있습니다.")
@@ -156,9 +156,9 @@ for name, rel, _ in none:
     A(f"- [[{name}]] · `{rel}`{mark}")
 A("")
 
-A("## 제텔(`04_Zettel`)은 어떻게 판정하나")
+A("## 제텔(`07_Zettel`)은 어떻게 판정하나")
 A("")
-z = counts["04_Zettel"]
+z = counts["07_Zettel"]
 A(f"제텔 {sum(z.values())}개 중 `verification`이 붙은 것은 **{sum(v for k, v in z.items() if k != '(필드없음)')}개**뿐입니다.")
 A("나머지는 `reliability`만 있습니다. **제텔의 인용 가능 여부는 제텔 자신이 아니라 "
   "`source`가 가리키는 원문 노트에서 옵니다.**")

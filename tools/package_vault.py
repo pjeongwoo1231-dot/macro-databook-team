@@ -9,7 +9,7 @@
 넣는다
     04_DataBook/           지표 333개 · 스냅샷 .json · 팀별 노트      18MB
     04_DataBook/history/   장기 시계열 180계열 (추세·기저율의 유일한 출처)  9.9MB
-    02_Papers 05_Library 04_Zettel 03_MOC 01_Indicators …  노트 전부  14MB
+    02_Papers 05_Library 07_Zettel 03_MOC 01_Indicators …  노트 전부  14MB
     06_SourceArchive/**.md 원문 정리 노트 1,509건                    5.6MB
     _System/docs _System/Prompts _System/Templates  운영 규칙·프롬프트
 

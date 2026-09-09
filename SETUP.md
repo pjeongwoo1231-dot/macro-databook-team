@@ -38,7 +38,7 @@ python bootstrap.py
 3. 문헌은 MacroVault/03_MOC/인용 가능 인덱스.md 에서 먼저 확인한다 —
    수치 인용은 verification: full 인 것만 가능하다.
 4. 추세·기저율은 MacroVault/04_DataBook/history/ 의 CSV에서만 낸다. diff로 내지 않는다.
-5. 분석 전에 MacroVault/03_MOC/ 와 04_Zettel/ 을 먼저 읽는다 —
+5. 분석 전에 MacroVault/03_MOC/ 와 07_Zettel/ 을 먼저 읽는다 —
    볼트가 이미 반박해 둔 통념이 있다.
 ````
 
@@ -129,7 +129,7 @@ Obsidian으로 볼트도 열 수 있습니다 — **다른 폴더를 볼트로 �
 - **추세·기저율은 `~/MacroVault/04_DataBook/history/` 의 CSV 180계열에서만 나옵니다.**
   `diff` 의 주간 변경분으로는 낼 수 없습니다 — 그건 어디를 볼지 고르는 길잡이입니다.
 - 볼트가 이미 반박해 둔 통념이 있습니다(예: "구리가 올라 글로벌 성장 회복").
-  분석 전에 `~/MacroVault/03_MOC/` 와 `04_Zettel/` 을 먼저 보세요.
+  분석 전에 `~/MacroVault/03_MOC/` 와 `07_Zettel/` 을 먼저 보세요.
 
 더 깊은 규칙은 볼트의 `_System/docs/` 와 `CLAUDE.md` 에 있습니다.
 

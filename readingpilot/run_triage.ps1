@@ -32,8 +32,8 @@ function S($state, $note) {
     "$Date`t$state`t$note" | Add-Content $Status -Encoding UTF8
 }
 
-$Src = Join-Path $Vault "15-reading\$Date.md"
-$Out = Join-Path $Vault "15-reading\판독\$Date-판독.md"
+$Src = Join-Path $Vault "12_Reading\$Date.md"
+$Out = Join-Path $Vault "12_Reading\판독\$Date-판독.md"
 
 if (-not (Test-Path $Src)) { W "SKIP 읽을거리 없음"; S 'SKIP' 'no-source'; exit 0 }
 

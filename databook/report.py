@@ -521,7 +521,7 @@ def build(asof: dt.date, out: Path) -> dict[str, Any]:
     # 판정
     P.append('<section><span class="num">12</span><h2>트리거 · 레짐 판정</h2>')
     P.append(_slot("트리거 전수 점검 표",
-                   "05_Regime 최신 RegimeView의 트리거를 하나씩 대조. 발동/미발동/관측없음과 남은 거리를 숫자로."))
+                   "09_Regime 최신 RegimeView의 트리거를 하나씩 대조. 발동/미발동/관측없음과 남은 거리를 숫자로."))
     P.append(_slot("레짐 유지 여부", "바꿀 근거가 없으면 '유지'라고 명시. 매주 새 서사를 만들지 않는다."))
     P.append(_slot("무효화 조건", "숫자로. 현재값과 임계를 나란히. 몇 개가 충족되면 개정하는지."))
     P.append(_slot("다음 세션까지 볼 것 3개", "무엇이 어떻게 나오면 판단이 바뀌는지."))

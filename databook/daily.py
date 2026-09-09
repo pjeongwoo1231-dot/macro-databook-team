@@ -57,7 +57,7 @@ def _measure_vault(vault: Path, asof: str, zip_path: Path | None = None) -> dict
             cells = [c.strip() for c in m.group(1).split("|")]
             if len(cells) >= 6:
                 out["p_none_field"], out["p_full"], out["p_na"], out["p_none"], out["p_partial"], out["p_total"] = cells[:6]
-    for folder, key in (("02_Papers", "n_papers"), ("05_Library", "n_lib"), ("04_Zettel", "n_zettel")):
+    for folder, key in (("02_Papers", "n_papers"), ("05_Library", "n_lib"), ("07_Zettel", "n_zettel")):
         d = vault / folder
         if d.is_dir():
             out[key] = str(len(list(d.glob("*.md"))))
@@ -131,7 +131,7 @@ def build_notes(vault: Path, asof: str, zip_path: Path | None = None) -> str:
         "2. `STALE` 표시된 계열을 **\"최신\"이라 부르지 않는다.**",
         f"3. 문헌은 **`citation-index.md`에서 먼저 확인**한다 — 수치 인용은 `full` {g('p_full') or ''}편만.",
         f"4. **추세·기저율은 `04_DataBook/history/` CSV에서만** 낸다 — `diff`로 내지 않는다.",
-        "5. 분석 전에 **`03_MOC/`·`04_Zettel/`을 먼저 읽는다** — 볼트가 반박해 둔 통념이 있다.",
+        "5. 분석 전에 **`03_MOC/`·`07_Zettel/`을 먼저 읽는다** — 볼트가 반박해 둔 통념이 있다.",
         "",
         "각 줄의 이유:",
         "",
@@ -140,11 +140,11 @@ def build_notes(vault: Path, asof: str, zip_path: Path | None = None) -> str:
         f"- **문헌은 `03_MOC/인용 가능 인덱스.md`(이 릴리스의 `citation-index.md`)에서 먼저 찾으세요.**",
         f"  수치까지 인용 가능한 것은 `02_Papers`의 **{g('p_full') or '일부'}편뿐**입니다"
         f"(`verification: full`). `05_Library` {g('n_lib') or ''}편은 전부 미판정이라 인용 금지입니다.",
-        "  제텔(`04_Zettel`)은 자기 필드가 아니라 `source`가 가리키는 원문의 등급을 따릅니다.",
+        "  제텔(`07_Zettel`)은 자기 필드가 아니라 `source`가 가리키는 원문의 등급을 따릅니다.",
         f"- **추세·기저율은 `04_DataBook/history/` 의 CSV {g('hist') or ''}계열에서만 나옵니다.**",
         "  `diff`의 주간 변경분으로는 낼 수 없습니다 — 그건 어디를 볼지 고르는 길잡이입니다.",
         "- 볼트가 **이미 반박해 둔 통념**이 있습니다(예: \"구리가 올라 글로벌 성장 회복\").",
-        "  분석 전에 `03_MOC/` 와 `04_Zettel/` 을 먼저 보세요. 일반 지식으로 쓰면 그 반박에 걸립니다.",
+        "  분석 전에 `03_MOC/` 와 `07_Zettel/` 을 먼저 보세요. 일반 지식으로 쓰면 그 반박에 걸립니다.",
         "",
         f"더 깊은 규칙: 볼트의 `_System/docs/` · `CLAUDE.md` · `{RELEASE_URL}/blob/master/SETUP.md`",
         "",
@@ -162,7 +162,7 @@ def build_notes(vault: Path, asof: str, zip_path: Path | None = None) -> str:
     if g("hist"):
         lines.append(f"| 장기 시계열 | **{g('hist')}계열** (`04_DataBook/history/`, 대체로 2000년~) — 추세·기저율은 여기서만 나옵니다 |")
     if g("n_papers"):
-        lines.append(f"| 문헌 | 02_Papers {g('n_papers')} · 05_Library {g('n_lib')} · 04_Zettel {g('n_zettel')} |")
+        lines.append(f"| 문헌 | 02_Papers {g('n_papers')} · 05_Library {g('n_lib')} · 07_Zettel {g('n_zettel')} |")
     if g("p_full"):
         lines += [
             "",

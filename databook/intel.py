@@ -367,7 +367,7 @@ def write_indicator(vault: Path, s: dict, obs: list[dict], prev: float | None) -
     wait_box = ("> [!warning] 판정 대기\n"
                 "> 직전 값이 없어 방향을 정할 수 없다. 다음 수집에서 판정된다.\n"
                 if direction == "unset" else "")
-    p = vault / "10-indicators" / f"{s['id']}.md"
+    p = vault / "11_AutoIndicators" / f"{s['id']}.md"
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(f"""---
 type: indicator
@@ -414,7 +414,7 @@ def write_reading(vault: Path, feeds: dict[str, list[dict]],
     (2026-08-30: Reuters 20건이 전부 판독 불가였는데 목록상으로는 정상으로 보였다).
     """
     headline_only = headline_only or set()
-    p = vault / "15-reading" / f"{date.today().isoformat()}.md"
+    p = vault / "12_Reading" / f"{date.today().isoformat()}.md"
     p.parent.mkdir(parents=True, exist_ok=True)
     secs, n_read, n_head = [], 0, 0
     for label, items in feeds.items():
@@ -465,7 +465,7 @@ def write_catalysts(vault: Path) -> Path | None:
         tag = "**지남**" if left < 0 else (f"**D-{left}**" if left <= 30 else f"D-{left}")
         hyp = f"[[{c['hypothesis']}]]" if c.get("hypothesis") else "—"
         rows.append(f"| {c['date']} | {tag} | {c.get('label','')} | {hyp} | {c.get('why','')} |")
-    p = vault / "00-dashboard" / "촉매 캘린더.md"
+    p = vault / "00_Dashboard" / "촉매 캘린더.md"
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(f"""---
 type: dashboard
