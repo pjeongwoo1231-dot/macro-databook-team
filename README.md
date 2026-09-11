@@ -22,6 +22,10 @@ python bootstrap.py
 
 수집까지 직접 돌릴 담당자(1명)만 [`TEAM_SETUP.md`](TEAM_SETUP.md)의 키 설정을 봅니다.
 
+옵시디언 **싱크로 라이브 볼트를 함께 쓰면서 각자 다른 논문을 분석**한다면
+[`TEAM_ANALYSIS.md`](TEAM_ANALYSIS.md)를 봅니다 — 배정·파일명 선점 절차와 금지사항.
+⚠ 싱크 볼트에서는 `bootstrap.py`를 돌리지 않습니다(볼트를 통째로 지웁니다 — 가드가 막습니다).
+
 ## 실행 방법
 
 ```bash
