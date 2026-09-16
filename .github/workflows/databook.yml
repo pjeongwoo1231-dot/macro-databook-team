@@ -14,13 +14,22 @@
 name: Weekly Data Book
 
 on:
-  schedule:
-    # 매주 화요일 17:00 KST (= 화요일 08:00 UTC). cron은 UTC 기준.
-    # 학회가 화요일 저녁에 주간 통합분석을 하므로 그 직전에 수집을 끝낸다.
-    # 이 시점엔 전날 미국 종가 + 당일 아시아장이 들어온다
-    # (미국 지표는 08:30 ET = 21:30 KST 발표라 당일분은 다음 주에 잡힌다).
-    - cron: "0 8 * * 2"
-  workflow_dispatch: {}   # Actions 탭에서 수동 실행
+  # ⚠ 2026-09-16 스케줄 정지 — Secrets가 비어 있어 매주 반쪽짜리를 커밋하고 있었다.
+  #   09-08 167/333 · 09-15 166/339 (같은 날 수집 PC는 319/339).
+  #   실패 169건이 전부 키 없음이다 — FRED 110 · ECOS 14 · 토스 10 · KOSIS 3 ·
+  #   DATA_GO_KR 3 · E_STAT 3. 그런데도 워크플로는 성공으로 끝나고 커밋까지 했다.
+  #   더 나쁜 건 그 커밋이 `DataBook 지표 소환.md` 의 「최신」 링크를 그 반쪽 노트로
+  #   덮어쓴다는 것 — 저장소를 볼트로 여는 팀원에게는 그게 최신으로 보인다.
+  #   (2026-09-01 「168/333 사고 산출물」과 같은 사고다. 원인이 여기였다.)
+  #
+  #   되살리는 조건 둘:
+  #     (1) Settings > Secrets and variables > Actions 에 키 등록
+  #     (2) 아래 「수집률 게이트」를 수동 실행으로 한 번 통과시킬 것
+  #   그 다음 이 cron 주석을 풀면 된다. 화요일 17:00 KST = 화요일 08:00 UTC —
+  #   학회가 화요일 저녁에 주간 통합분석을 하므로 그 직전에 수집을 끝낸다.
+  # schedule:
+  #   - cron: "0 8 * * 2"
+  workflow_dispatch: {}   # 당분간 Actions 탭 수동 실행만
 
 permissions:
   contents: write   # 생성물 커밋용
@@ -63,6 +72,41 @@ jobs:
           # 예전엔 `python -m databook.news`를 따로 한 줄 더 돌렸는데,
           # 그러면 5,400여 건을 두 번 긁어 시간만 두 배로 든다.
           python -m databook run --no-setup
+
+      - name: 수집률 게이트 — 반쪽짜리는 커밋하지 않는다
+        # 조용한 부분실패를 막는 자리다. 키가 없으면 수집은 "성공"으로 끝나면서
+        # 절반이 빈 Data Book을 만든다. 그 상태로 커밋하면 지표 소환 노트가 오염되고,
+        # 팀원은 그게 최신인 줄 안다. 그래서 커밋 **앞에서** 끊는다.
+        #
+        # 기준 80% — 수집 PC 실측이 319/339(94%)이고, CI는 토스 10건을 원래 안 받으므로
+        # 키가 정상이면 91% 안팎이 나온다. 49%(키 없음)와 충분히 갈린다.
+        run: |
+          python - <<'PY'
+          import json, pathlib, sys
+
+          snaps = sorted(pathlib.Path("04_DataBook/snapshots").glob("snapshot_*.json"))
+          if not snaps:
+              print("::error::스냅샷이 없다 — 수집 단계가 아무것도 만들지 않았다")
+              sys.exit(1)
+
+          latest = snaps[-1]
+          ind = json.loads(latest.read_text(encoding="utf-8"))["indicators"]
+          ok = sum(1 for v in ind if v.get("observations"))
+          pct = ok / len(ind) * 100
+          print(f"{latest.name}: 관측치 있는 지표 {ok}/{len(ind)} ({pct:.1f}%)")
+
+          if pct < 80:
+              from collections import Counter
+              top = Counter(
+                  (v.get("error") or "사유 없음").split("(")[0].strip()[:60]
+                  for v in ind if not v.get("observations")
+              ).most_common(5)
+              print("::error::수집률 " + f"{pct:.1f}% < 80% — 커밋하지 않는다.")
+              for reason, n in top:
+                  print(f"::error::  {n:>3}건  {reason}")
+              print("::error::키가 비어 있으면 Settings > Secrets and variables > Actions 에 등록할 것")
+              sys.exit(1)
+          PY
 
       - name: 결과 커밋
         run: |
