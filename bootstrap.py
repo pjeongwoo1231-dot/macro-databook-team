@@ -113,6 +113,40 @@ def fetch_release() -> tuple[str, bytes]:
 
 MARKER = ".databook-dist"   # 이 스크립트가 만든 배포본임을 표시한다
 
+# 라이브(싱크) 볼트임을 알려주는 흔적. 하나라도 있으면 절대 지우지 않는다.
+LIVE_SIGNS = (
+    (".obsidian/sync.json", "Obsidian Sync 연결"),
+    (".obsidian/sync", "Obsidian Sync 캐시"),
+    (".git", "Git 저장소"),
+    ("03_MOC/논문배정", "논문 배정 청구 폴더"),
+)
+
+
+def guard_live_vault(vault: Path) -> None:
+    """**싱크 볼트를 배포본으로 착각해 지우는 사고를 막는다.**
+
+    `extract()`는 볼트를 통째로 `rmtree` 한다. 배포본은 읽기용 사본이라 그게 맞지만,
+    옵시디언 싱크가 붙은 **라이브 볼트**에서 이게 돌면 삭제가 팀 전원에게 전파된다.
+    한 사람의 실수가 전원의 자료를 지우는 유일한 경로라 여기서 끊는다.
+
+    ⚠ `.databook-dist` 표시가 있어도 막는다 — 배포본을 한 번 받았던 폴더에 나중에
+    싱크를 붙이는 순서가 실제로 가능하고, 그때 표시는 이미 남아 있다. 그래서 이 검사는
+    MARKER 검사보다 **먼저, 그리고 더 세게** 걸린다.
+    """
+    if not vault.exists():
+        return
+    hits = [(rel, why) for rel, why in LIVE_SIGNS if (vault / rel).exists()]
+    if not hits:
+        return
+    found = "\n".join("         - %s  (%s)" % (rel, why) for rel, why in hits)
+    die("%s 는 라이브(싱크) 볼트로 보입니다 — **아무것도 지우지 않았습니다.**\n"
+        "       발견한 흔적:\n%s" % (vault, found),
+        "배포본 경로와 싱크 볼트는 **상호배타**입니다.\n"
+        "       · 싱크로 라이브 볼트를 쓰는 팀원은 bootstrap.py 를 돌리지 마세요 —\n"
+        "         자료는 싱크로 이미 최신입니다.\n"
+        "       · 배포본도 따로 보려면 --vault 로 **다른 빈 폴더**를 주세요.\n"
+        "         예: python bootstrap.py --vault ~/MacroVault_dist")
+
 
 def extract(blob: bytes, vault: Path) -> Path:
     """ZIP을 푼다. 최상위는 항상 `MacroVault/` 로 고정돼 있다.
@@ -129,6 +163,8 @@ def extract(blob: bytes, vault: Path) -> Path:
     if tops != {"MacroVault"}:
         die(f"ZIP 최상위가 예상과 다릅니다: {sorted(tops)}",
             "배포본이 잘못 만들어졌습니다 — 수집 담당자에게 알려주세요.")
+
+    guard_live_vault(vault)
 
     if vault.exists():
         if any(vault.iterdir()) and not (vault / MARKER).exists():
@@ -208,6 +244,10 @@ def main() -> int:
 
     print("macro-databook 설치 — API 키는 필요 없습니다\n")
     check_python()
+    # 라이브(싱크) 볼트 검사는 **받기 전에** 한다. 어차피 못 쓸 볼트인데
+    # 수십 MB를 내려받고 나서 막는 건 시간 낭비다. extract() 안에도 같은 검사가
+    # 남아 있다 — 그쪽은 함수를 직접 부르는 경로까지 막는 이중 방어다.
+    guard_live_vault(Path(a.vault).expanduser().resolve())
     install_deps(a.full)
     name, blob = fetch_release()
     vault = extract(blob, Path(a.vault).expanduser().resolve())
