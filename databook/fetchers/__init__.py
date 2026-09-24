@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from . import bis, bls, boj_api, cftc, china, crea, crypto, deribit, e_stat, europe, fred, frbsf, intl, japan, korea, nbs, nyfed, ofr, research, scrape, sec_xbrl, spreadsheet, tossinvest, us_gov, worldbank
+from . import autos, bis, bls, boj_api, cftc, china, crea, crypto, deribit, e_stat, europe, fred, frbsf, intl, japan, korea, nbs, nyfed, ofr, research, scrape, sec_xbrl, spreadsheet, tossinvest, us_gov, worldbank
 from .base import result
 from .news import fetch_news_indicator
 from . import vault_note
@@ -32,6 +32,8 @@ SCRAPE_DISPATCH = {
     "gpr": scrape.fetch_gpr,
     "naver_sector": _sector_fetch,
     "yahoo_intraday": scrape.fetch_yahoo_intraday,
+    # Manheim 중고차지수 — Cox Automotive 인사이트 발표문 (2026-09-24 신설)
+    "manheim": autos.fetch_manheim,
 }
 
 DISPATCH = {
@@ -84,6 +86,8 @@ DISPATCH = {
     "frbsf_tfp": frbsf.fetch,
     "nyfed_pd": nyfed.fetch_pd,
     "nyfed_soma": nyfed.fetch_soma_maturity,
+    # NY연은 가계부채·신용 보고서(HHDC) 워크북 — 오토론 연체율 등 (2026-09-24 신설)
+    "nyfed_hhdc": autos.fetch_hhdc,
     # 볼트 11_AutoIndicators/ 노트를 읽어 팀 DataKit에 싣는다 — 네트워크 없음 (2026-09-09 신설)
     "vault_note": vault_note.fetch,
 }

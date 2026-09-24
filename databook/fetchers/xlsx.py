@@ -3,7 +3,7 @@
 xlsx는 XML을 담은 zip이다. openpyxl/pandas를 요구하지 않으려고 필요한 만큼만 직접 읽는다.
 이 도구는 공개 배포본이라 `pip install` 목록을 늘리지 않는 편이 낫다.
 
-지원: 단일 시트의 셀 값 읽기(숫자·문자·공유문자열·날짜 시리얼).
+지원: 단일 시트의 셀 값 읽기(숫자·문자·공유문자열·날짜 시리얼). 시트는 인덱스 또는 **이름**으로 고른다.
 미지원: 수식 재계산, 스타일, 병합셀 해석.
 """
 from __future__ import annotations
@@ -40,8 +40,34 @@ def serial_to_date(v: float) -> date | None:
         return None
 
 
-def read_sheet(data: bytes, sheet_index: int = 0) -> list[list[Any]]:
-    """xlsx 바이트 → 행 리스트. 각 셀은 float | str | None."""
+def _sheet_path_by_name(zf: zipfile.ZipFile, name: str) -> str | None:
+    """시트 이름 → xl/worksheets/*.xml 경로. workbook.xml의 순서가 파일명 순서와
+    일치한다는 보장이 없어(NY연은 HHDC는 73시트에 번호가 어긋난다) rels를 거쳐 푼다."""
+    try:
+        wb = zf.read("xl/workbook.xml").decode("utf-8", "replace")
+        rels = dict(re.findall(r'Id="([^"]+)"[^>]*Target="([^"]+)"',
+                               zf.read("xl/_rels/workbook.xml.rels").decode("utf-8", "replace")))
+    except KeyError:
+        return None
+    for m in re.finditer(r'<sheet([^>]*)/?>', wb):
+        attrs = m.group(1)
+        nm = re.search(r'name="([^"]*)"', attrs)
+        rid = re.search(r'r:id="([^"]+)"', attrs)
+        if not nm or not rid or nm.group(1) != name:
+            continue
+        tgt = rels.get(rid.group(1), "")
+        if not tgt:
+            return None
+        tgt = tgt.lstrip("/")
+        return tgt if tgt.startswith("xl/") else "xl/" + tgt
+    return None
+
+
+def read_sheet(data: bytes, sheet_index: int | str = 0) -> list[list[Any]]:
+    """xlsx 바이트 → 행 리스트. 각 셀은 float | str | None.
+
+    sheet_index가 문자열이면 **시트 이름**으로 찾는다. 이름이 없으면 빈 리스트를 돌려준다
+    (원본 서식이 바뀐 것이므로 조용히 0번 시트로 흘러가면 엉뚱한 표를 싣게 된다)."""
     zf = zipfile.ZipFile(io.BytesIO(data))
 
     shared: list[str] = []
@@ -50,11 +76,17 @@ def read_sheet(data: bytes, sheet_index: int = 0) -> list[list[Any]]:
         for si in re.findall(r"<si>(.*?)</si>", xml, re.S):
             shared.append("".join(re.findall(r"<t[^>]*>(.*?)</t>", si, re.S)))
 
-    sheets = sorted(n for n in zf.namelist()
-                    if n.startswith("xl/worksheets/sheet") and n.endswith(".xml"))
-    if not sheets:
-        return []
-    xml = zf.read(sheets[min(sheet_index, len(sheets) - 1)]).decode("utf-8", "replace")
+    if isinstance(sheet_index, str):
+        path = _sheet_path_by_name(zf, sheet_index)
+        if not path or path not in zf.namelist():
+            return []
+    else:
+        sheets = sorted(n for n in zf.namelist()
+                        if n.startswith("xl/worksheets/sheet") and n.endswith(".xml"))
+        if not sheets:
+            return []
+        path = sheets[min(sheet_index, len(sheets) - 1)]
+    xml = zf.read(path).decode("utf-8", "replace")
 
     rows: dict[int, dict[int, Any]] = {}
     for rm in re.finditer(r"<row[^>]*r=\"(\d+)\"[^>]*>(.*?)</row>", xml, re.S):
