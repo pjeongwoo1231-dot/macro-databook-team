@@ -203,7 +203,7 @@ STEPS: list[tuple[str, str, list[str]]] = [
     ("lending", "대차잔고", ["--days", "5"]),
     ("history", "FRED·Yahoo 증분 + GPR 전이력", []),
     ("tossback", "토스 시장계열 증분(1분봉 포함)", ["--what", "market"]),
-    ("intel", "정보 수집 (API·RSS, 검색엔진 미사용)", []),
+    ("intel", "정보 수집 (API·RSS·유튜브 자막, 검색엔진 미사용)", []),
     ("vintage", "빈티지 인덱스 재구성 (개정 이력)", []),
     ("unitcheck", "단위 정합성 검사", []),
     ("site", "시황 사이트 재생성", []),
@@ -270,6 +270,17 @@ def _dispatch(cmd: str, extra: list[str]) -> int:
         render_snapshot(results, ts, env)
         ok = sum(1 for r in results if r["status"] == "ok")
         _log(f"       수집 성공 {ok}/{len(results)}")
+        # 뉴스는 `__main__.cmd_run` 끝에 달려 있다(2026-07-20 5주 결손을 수습하며 붙인 자리).
+        # 그런데 여기는 그 함수를 타지 않고 파이프라인을 자체 재구현한다 — 그래서 일일 배치로
+        # 넘어온 뒤 **2026-09-04부터 뉴스만 다시 멈춰 있었다.** 배치는 계속 성공으로 찍혀서
+        # 아무도 몰랐다. 같은 누락의 재발이라 여기에도 건다.
+        # 실패해도 Data Book은 이미 기록됐으므로 배치를 실패로 만들지 않는다 — 대신 로그에 남긴다.
+        try:
+            from .news import run_news
+            paths = list(run_news(env))
+            _log(f"       뉴스 다이제스트 {len(paths)}건 → {paths[-1].name if paths else '없음'}")
+        except Exception as e:
+            _log(f"       [WARN] 뉴스 생성 실패({type(e).__name__}: {e}) — Data Book은 정상 기록됨")
         return 0
     if cmd == "package":
         # 볼트를 통째로 싸서 팀원에게 줄 ZIP을 만든다. 월요일이 아니면 아무것도 안 한다.

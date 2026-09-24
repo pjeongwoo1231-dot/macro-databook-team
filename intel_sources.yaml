@@ -309,6 +309,89 @@ indicators:
     verified: true          # 2026-08-21 = 1.1699 (accept 미지정 = generic json)
 
 
+# ==========================================================================
+# 유튜브 — 2026-09-15 신설
+#
+# ⚠ **채널 RSS는 쓸 수 없다.** `feeds/videos.xml?channel_id=`가 실호출에서 전부 404이고
+#    확실히 유효한 대조군 채널조차 500이다(UA 교체·URL 변형 무효). handler: youtube 가 yt-dlp를 쓴다.
+#
+# ⚠ **여기 들어오는 것은 전부 2차 해석이다.** tier는 전부 commentary에서 시작한다.
+#    `cite_ok: false`면 노트에 "직접 인용 금지" 배너가 붙는다 — 수치는 DataBook·원출처로 확인 후에만.
+#    자동생성 자막이라 고유명사가 깨진다(실측: Petrobras→페트로보라스, Pam Bondi→팬본디).
+#
+# max_new: 1회 배치에서 새로 자막을 받을 최대 편수. 편당 8,000~20,000자라 2편이면 충분하다.
+youtube:
+
+  - id: nalji
+    label: 날리지식
+    handler: youtube
+    channel_id: UC4t8p3RRMwWMCOmOgkPItZg
+    axis: geopolitics
+    tier: commentary
+    cite_ok: false
+    limit: 6
+    max_new: 2
+    sub_langs: "ko-orig,ko,en-orig,en"
+    verified: true          # 2026-09-15 실호출: 목록 8건 · 자막 15,194자 판독
+    note: |
+      지정학·제도·에너지 탐사해설. 샘플(FCPA 집행 중단 편)은 인명·문서·기관을 특정해
+      **검증 가능한 형태**로 말한다(팸 본디 서명 문서, Vitol 합의 3개 기관, FT 인용).
+      네 채널 중 출처 명시가 가장 낫다 — 그래도 2차 해석이라 cite_ok는 false다.
+
+  - id: web3world
+    label: web3world
+    handler: youtube
+    channel_id: UC7H3LGAlRWd3_fm5yOS_piw
+    axis: inflation
+    tier: commentary
+    cite_ok: false
+    limit: 6
+    max_new: 2
+    sub_langs: "ko-orig,ko"
+    verified: true          # 2026-09-15 실호출: 목록 8건 · 자막 15,489자 판독
+    note: |
+      제목은 크립토인데 **본문은 매크로 비중이 크다.** 샘플에서 유가 공급충격의 근원물가 전이,
+      공급발 물가에 금리로 대응하는 것의 무용성, 헤드라인 vs 근원 PPI/CPI 컨센 대비를 다뤘다 —
+      **지정학→물가 전달경로 그 자체다.**
+      ⚠ 다만 무출처 구어체이고 수치가 헐겁다. 실측: "유가 100달러 넘어"라고 했으나
+      DataBook WTI는 **97.26**(2026-09-09)이었다. 방향은 맞고 수치는 틀린다 — 포인터로만.
+
+  - id: realvision
+    label: Real Vision
+    handler: youtube
+    channel_id: UCGXWKlq1Oxr3ddEtmKhAkPg
+    axis: liquidity
+    tier: commentary
+    cite_ok: false
+    limit: 6
+    max_new: 1
+    sub_langs: "en-orig,en"
+    verified: true          # 2026-09-15 실호출: 목록 8건 · 자막 20,103자 판독
+    note: |
+      영어 매크로 인터뷰. **편차가 크다** — 샘플(McGlone·Coutts 편)은 20,103자 중 상당부분이
+      블룸버그 시절 회고였다. 반면 게스트 명단(Jim Bianco·Cem Karsan·Weston Nakamura·Daniel Lacalle)은
+      실무자라 포지셔닝·심리 색깔에는 값이 있다. **게스트별로 판단한다.**
+      max_new를 1로 둔 이유 = 잡담 비중이 높아 자막당 수확이 낮다.
+
+  - id: fruiting
+    label: fruiting
+    handler: youtube
+    channel_id: UCUoy2i6pcLrOHhnrDtf3CWg
+    axis: geopolitics
+    tier: commentary
+    cite_ok: false
+    limit: 6
+    max_new: 2
+    sub_langs: "ko-orig,ko"
+    verified: true          # 2026-09-15 실호출: 목록 8건 · 자막 8,002자 판독
+    note: |
+      **네 채널 중 축 적합도가 가장 높다.** 원유 수급·국채 바이백·YCC·이란 물동량·사우디 할인.
+      샘플은 선박 통항 리포트를 들고 "전쟁 전 대비 18%, 모니터링 이래 최저"(9/4 자료)를 말했다.
+      ⚠ **대조 불가로 남았다** — `hormuz_transits` 노드에 12일치(2~7척/일)만 있고
+      **전쟁 전 기준선이 없다.** 방향은 정합적이나 비율은 검증 못 했다.
+      → 이건 채널의 결함이 아니라 **우리 데이터의 공백**이다. 기준선을 채우면 검증 가능해진다.
+      ⚠ 예측이 극단적이다(유가 300불). 전망은 버리고 **데이터 인용만** 취한다.
+
 reading:
 
   # ------------------------------------------------- 실호출로 확인 (2026-08-24)

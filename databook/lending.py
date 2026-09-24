@@ -160,21 +160,51 @@ def collect(days: int = 60, env: dict[str, str] | None = None,
         for c, v in sorted(per_stock.items(), key=lambda x: -x[1]["bal_amt"]):
             w.writerow([c, v["name"], int(v["bal_amt"]), int(v["bal_qty"])])
 
-    # 업종별 집계 — sectors 모듈의 업종↔종목 매핑을 재사용한다
+    # 업종별 집계 — **캐시된 종목↔업종 매핑 파일**을 쓴다.
+    #
+    # 원래는 sectors 모듈의 fetch_list / fetch_sector_members 를 그때그때 불렀는데,
+    # 2026-09-11 네이버가 업종 페이지를 stock.naver.com 으로 옮기면서(302) 두 함수가 다 죽었고
+    # **대차잔고는 멀쩡히 받아놓고도 업종 집계만 0개**가 됐다. 대차 수집 자체는 data.go.kr 이라
+    # 문제가 없었는데 매핑 하나 때문에 통째로 못 쓰게 된 것이다.
+    #
+    # 매핑은 **매일 새로 받을 필요가 없다.** 종목의 업종은 상장·재분류가 있을 때만 바뀐다.
+    # 그래서 마지막으로 성공한 스냅샷(`_symbol_sector.csv`, 4,032종목)을 그대로 쓴다.
+    # 새 업종 소스(data.go.kr 지수시세 등)가 열리면 이 파일을 갱신하는 것으로 끝난다 —
+    # 집계 로직은 그대로 둔다.
     if with_sector:
         try:
-            from .sectors import fetch_list, fetch_sector_members
-            secs = fetch_list()
-            print(f"\n업종별 대차잔고 집계 — {len(secs)}개 업종")
+            from .sectors import SECTOR_DIR
+            mapfile = SECTOR_DIR / "_symbol_sector.csv"
+            if not mapfile.exists():
+                raise FileNotFoundError(f"업종 매핑이 없다: {mapfile}")
+
+            by_sector: dict[str, list[str]] = {}
+            with mapfile.open(encoding="utf-8", newline="") as f:
+                for row in csv.DictReader(f):
+                    sec = (row.get("sector") or "").strip()
+                    sym = (row.get("symbol") or "").strip()
+                    if sec and sym:
+                        by_sector.setdefault(sec, []).append(sym)
+
+            age = (date.today() - date.fromtimestamp(mapfile.stat().st_mtime)).days
+            print(f"\n업종별 대차잔고 집계 — {len(by_sector)}개 업종 "
+                  f"(매핑 {mapfile.name}, {age}일 전 스냅샷)")
+            if age > 90:
+                print("  ⚠ 매핑이 90일 넘게 낡았다 — 신규 상장·업종 재분류가 반영되지 않았다")
+
             out = []
-            for r in secs:
-                mem = fetch_sector_members(r["no"])
+            for sec, mem in by_sector.items():
                 amt = sum(per_stock[c]["bal_amt"] for c in mem if c in per_stock)
                 n = sum(1 for c in mem if c in per_stock)
+                if not n:
+                    continue
                 out.append({"date": f"{latest[:4]}-{latest[4:6]}-{latest[6:]}",
-                            "sector": r["sector"], "bal_amt_bn": round(amt / 1e9, 1),
-                            "n_matched": n, "change_pct": r["change_pct"]})
+                            "sector": sec, "bal_amt_bn": round(amt / 1e9, 1),
+                            "n_matched": n, "change_pct": ""})
             out.sort(key=lambda x: -x["bal_amt_bn"])
+            if not out:
+                raise RuntimeError("매칭된 종목이 하나도 없다 — 매핑과 대차 데이터의 종목코드 형식 확인")
+
             pv = LEND_DIR / f"by_sector_{latest}.csv"
             with pv.open("w", encoding="utf-8", newline="") as f:
                 w = csv.DictWriter(f, fieldnames=["date", "sector", "bal_amt_bn", "n_matched", "change_pct"])

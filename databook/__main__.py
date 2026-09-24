@@ -96,8 +96,24 @@ def main() -> int:
     tp.add_argument("--since", type=int, default=0, help="해당 연도 이후 성명서만")
     tp.add_argument("--ns", action="store_true", help="Nelson-Siegel 요인 사용(기본: 버터플라이 프록시)")
     sub.add_parser("eventreg", help="이벤트 → 코스피 반응 회귀 (갭/장중 분해)")
+    sub.add_parser("zettelmoc", help="판독 초안 → 축별 MOC 재생성 (시황 소환 경로)")
+    zt = sub.add_parser("zettelize", help="BIS 원문 판독 → 제텔 초안 (모델 판독 + 다른 모델 교차검증)")
+    zt.add_argument("--limit", type=int, default=0, help="이번에 처리할 편수 (0=전부)")
+    zt.add_argument("--audit-model", default="", help="교차검증 모델 (판독과 다른 계열이어야 한다)")
+    zt.add_argument("--sleep", type=float, default=0.4, help="호출 간 대기 초")
+    zt.add_argument("--workers", type=int, default=1,
+                    help="동시 처리 워커 수 (3~4 권장, 너무 올리면 429)")
+    sr = sub.add_parser("selfread", help="BIS 원문 자체 판독 (교차검증 없음 — 외부 모델 경로가 막혔을 때)")
+    sr.add_argument("--next", type=int, default=0, dest="nnext", help="다음 N편의 원문을 텍스트로 떨군다")
+    sr.add_argument("--commit", default="", help="판독 JSON → 관문 A 검사 후 초안 확정")
+    bp = sub.add_parser("bispapers", help="BIS Working Papers 신규분 수집 (서지·초록·PDF)")
+    bp.add_argument("--start", type=int, help="시작 번호 (기본: 보유 최대+1)")
+    bp.add_argument("--end", type=int, help="끝 번호 (기본: 연속 404까지)")
+    bp.add_argument("--no-pdf", action="store_true", help="PDF를 받지 않는다")
+    bp.add_argument("--pdf-only", action="store_true",
+                    help="신규 수집 없이, 카탈로그는 있는데 PDF가 없는 건들의 원문만 받는다")
     it = sub.add_parser("intel", help="정보 수집 (EIA·PortWatch·Comtrade·RSS) → 볼트 노트")
-    it.add_argument("--only", choices=["indicators","reading","catalysts"], default="")
+    it.add_argument("--only", choices=["indicators","reading","youtube","catalysts"], default="")
     it.add_argument("--dry-run", action="store_true")
     sm = sub.add_parser("sectormap", help="종목↔업종 매핑 + 파생 지표 + 업종 수급 집계")
     sm.add_argument("--remap", action="store_true", help="업종 매핑을 다시 받는다 (약 80회 요청)")
@@ -174,6 +190,21 @@ def main() -> int:
         from .weekly import run as run_weekly
         return run_weekly(args.since, args.limit, args.asof)
 
+    if args.cmd == "selfread":
+        from .selfread import commit as sr_commit, pick as sr_pick
+        return sr_commit(args.commit) if args.commit else sr_pick(args.nnext or 5)
+    if args.cmd == "zettelmoc":
+        from .zettelmoc import build as moc_build
+        return moc_build()
+    if args.cmd == "zettelize":
+        from .zettelize import run as zt_run
+        return zt_run(args.limit, args.sleep, args.audit_model, args.workers)
+    if args.cmd == "bispapers":
+        if args.pdf_only:
+            from .bispapers import backfill_pdfs
+            return backfill_pdfs()
+        from .bispapers import collect as bis_collect
+        return bis_collect(args.start, args.end, not args.no_pdf)
     if args.cmd == "daily":
         from .daily import run as run_daily
         return run_daily(skip=args.skip)

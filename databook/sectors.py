@@ -161,6 +161,19 @@ def collect(dry_run: bool = False, with_foreign: bool = True) -> int:
             if i % 20 == 0:
                 print(f"    {i}/{len(rows)} …")
 
+    # **0개면 실패다. 성공으로 넘기지 않는다.**
+    # 2026-09-11~14 사흘간 네이버가 업종 페이지를 stock.naver.com으로 옮기면서(302) 수집이
+    # 통째로 0이 됐는데, 여기가 무조건 0을 반환하는 바람에 일일 배치는 사흘 내내 [OK] sectors 로
+    # 찍혔다. 헤더만 있는 91바이트 CSV가 쌓였고 아무도 몰랐다.
+    # 업종은 **소급 수집이 안 되는 스냅샷**이라 조용히 비면 그날은 영영 빈칸이다.
+    if not rows:
+        print(chr(10) + "[FAIL] 업종 0개 — 수집 경로가 끊겼다.")
+        print("       네이버가 /sise/sise_group.naver 를")
+        print("       stock.naver.com/market/stock/kr/industry 로 옮겼다(302).")
+        print("       구 URL 스크랩은 더 이상 동작하지 않는다.")
+        print("       빈 CSV를 쓰지 않는다 — 빈 파일이 쌓이면 수집됐다는 착시만 남는다.")
+        return 1
+
     SECTOR_DIR.mkdir(parents=True, exist_ok=True)
     today = date.today().isoformat()
     p = SECTOR_DIR / f"sectors_{today}.csv"

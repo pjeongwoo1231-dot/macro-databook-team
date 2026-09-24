@@ -78,12 +78,26 @@ _REPORTS = {
     # ⚠ PMI 해설문은 세 지수를 **한 문장에 나열**한다:
     #   「制造业采购经理指数、非制造业商务活动指数和综合PMI产出指数分别为 49.2% 、 49.0% 和 49.3% 」
     #   그래서 지수별로 따로 찾을 수 없고 나열 문장을 통째로 잡아 순서대로 배정한다.
+    # ⚠ **서식이 두 가지다. 둘 다 받는다.**
+    #   (A) 나열형 — 「制造业采购经理指数、非制造业…和综合PMI产出指数分别为 49.2% 、 49.0% 和 49.3% 」
+    #   (B) 개별형 — 「制造业采购经理指数为 49.8% ，比上月上升 0.6 个百分点；非制造业商务活动指数为 49.0% 」
+    #   2026-08 발표문이 (B)로 바뀌면서 (A)만 보던 정규식이 통째로 실패했다(2026-09-15 확인).
+    #   개별형을 먼저 시도하고, 못 찾으면 나열형으로 떨어진다.
     "pmi": ("采购经理指数", [
-        ("제조업 PMI", _PMI_TRIPLE := (
-            r"制造业采购经理指数[^。]{0,40}?分别为\s*([\d.]+)\s*%[^。]{0,20}?"
-            r"([\d.]+)\s*%[^。]{0,20}?([\d.]+)\s*%", 1)),
-        ("비제조업 PMI", (_PMI_TRIPLE[0], 2)),
-        ("종합 PMI 산출지수", (_PMI_TRIPLE[0], 3)),
+        ("제조업 PMI", [
+            (r"制造业采购经理指数为\s*([\d.]+)\s*%", 1),
+            (_PMI_TRIPLE := (
+                r"制造业采购经理指数[^。]{0,40}?分别为\s*([\d.]+)\s*%[^。]{0,20}?"
+                r"([\d.]+)\s*%[^。]{0,20}?([\d.]+)\s*%"), 1),
+        ]),
+        ("비제조업 PMI", [
+            (r"非制造业商务活动指数为\s*([\d.]+)\s*%", 1),
+            (_PMI_TRIPLE, 2),
+        ]),
+        ("종합 PMI 산출지수", [
+            (r"综合\s*PMI\s*产出指数为\s*([\d.]+)\s*%", 1),
+            (_PMI_TRIPLE, 3),
+        ]),
     ]),
 }
 
@@ -182,9 +196,17 @@ def fetch_nbs(ind: dict[str, Any], env: dict[str, str]) -> dict[str, Any]:
 
     obs, missing = [], []
     for label, spec in fields:
-        # spec은 정규식이거나 (정규식, 그룹번호) — 후자는 한 문장에 여러 값이 나열될 때 쓴다
-        pat, grp = spec if isinstance(spec, tuple) else (spec, None)
-        m = re.search(pat, text)
+        # spec은 셋 중 하나다 —
+        #   정규식 / (정규식, 그룹번호) / [(정규식, 그룹번호), ...]  ← 서식이 여러 개일 때
+        # 리스트면 **앞에서부터 시도해 처음 맞는 것**을 쓴다. 서식이 바뀌어도 구버전으로 떨어진다.
+        cands = spec if isinstance(spec, list) else [spec]
+        m, grp = None, None
+        for cand in cands:
+            pat, g = cand if isinstance(cand, tuple) else (cand, None)
+            m = re.search(pat, text)
+            if m:
+                grp = g
+                break
         if not m:
             missing.append(label)
             continue

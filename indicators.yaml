@@ -475,12 +475,13 @@ team_1:
     source: nbs
     report: pmi
     tier: 2
-    note: ⛔ 갱신정지 확인(2026-08-26) — DBnomics·NBS 미러가 2026-02에서 멈췄다.
-      같은 미러의 소매판매(2025-12)·산업생산(2025-12)·고정자산투자(데이터셋 404)까지
-      전부 무너져 있어 NBS 미러 전체를 신뢰하지 않는다. NBS 직접 API는 WAF 403,
-      차이신 PMI는 유료 — 무료 자동 경로가 없다는 것이 결론이다.
-      대체 판정선 — 중국 CLI(OECD, 2026-05 갱신 중) + 한국 대중 수출(관세청 10일·20일)
-      + 구리 가격. 이 세 개로 중국 경기를 판정하고, PMI 값은 기준월을 반드시 명시해 인용할 것
+    note: ✅ 복구(2026-09-15) — **NBS 해설문(sjjd) 직접 파싱으로 살아 있다.** 2026-08 실측 성공
+      (제조업 49.8 · 비제조업 49.0 · 종합 49.5). 앞선 "무료 자동 경로 없음" 결론은 **정정한다** —
+      막힌 것은 DBnomics 미러(2026-02 정지)와 NBS 직접 API(WAF 403)이지 발표문 경로가 아니었다.
+      ⚠ 2026-08 발표문부터 서식이 나열형(「…分别为 X、Y和Z」)에서 개별형(「制造业采购经理指数为 X%」)으로
+      바뀌었고 그래서 파서가 통째로 실패했었다. 지금은 두 서식을 모두 시도한다 — 또 바뀌면 여기부터 본다.
+      교차검증선은 그대로 유지 — 중국 CLI(OECD) + 한국 대중 수출(관세청 10일·20일) + 구리 가격.
+      PMI 값은 기준월을 반드시 명시해 인용할 것
   # ── 주요국 GDP (미검증 — OECD MEI 계열, FRED 미러. 최초 실행 시 실제 키로 확인) ──
   - name: 유로존 실질GDP (QoQ)
     unit: "%"
@@ -2183,6 +2184,42 @@ team_3:
     source: coingecko
     endpoint: /global
     note: 2026-08-18 거래량·회전율 추가(제텔 큐 D-5). 크립토는 위험선호가 아니라 **유동성 민감도** 지표다 — 주간 BTC 수익률의 ΔNFCI 계수 −85.7(t −4.38). 단 "자본유출 대리지표"라는 용도는 표본 밖에서 재현 실패(USD/CNY → 거래량 F=1.09)
+  # ── 크립토 다각화 (2026-09-16 신설) ──────────────────────────────
+  # 팀원 요구로 넓혔다. 기존 10개가 가격·시총·심리에 몰려 있어서
+  # **레버리지·캐리·생산비용·온체인 유동성**이 통째로 비어 있었다.
+  # 전부 무료·키 불필요 (2026-09-16 실호출 200 확인).
+  - name: 비트코인 채굴 경제 (해시레이트·난이도)
+    tier: 2
+    method: api
+    source: mempool
+    endpoint: https://mempool.space/api/v1/mining/hashrate/3m
+    note: 해시레이트는 생산비용의 하한을 만든다. 급락은 채굴자 항복(보유분 매도)의 선행 신호 —
+      반감기 카운트다운만으로는 못 보는 축이다.
+  - name: 체인별 DeFi TVL (온체인 유동성 소재지)
+    tier: 2
+    method: api
+    source: defillama_chains
+    chains: [Ethereum, Solana, Base, Arbitrum, BSC, Tron]
+    endpoint: https://api.llama.fi/v2/chains
+    note: 스테이블코인 시총이 '얼마나'라면 이건 '어디에'다. 체인 간 이동은 수익률 추종이라
+      위험선호의 방향을 보여준다.
+  - name: 코인베이스 프리미엄 (미국 기관 수요)
+    tier: 2
+    method: api
+    source: coinbase_premium
+    endpoint: https://api.exchange.coinbase.com/products/BTC-USD/ticker
+    note: 김치프리미엄의 반대편. 김프가 한국 자본통제·차익거래 실패를 잰다면 이건 미국 매수 강도를 잰다.
+      둘을 같이 봐야 어느 지역이 밀고 있는지 갈린다. ⚠ 두 거래소를 따로 호출해 몇 초 시차가 낀다 —
+      소수점 둘째 자리는 믿지 않는다.
+  - name: 선물 베이시스·연율 캐리 (BTC)
+    tier: 2
+    method: api
+    source: deribit_basis
+    currency: BTC
+    endpoint: https://www.deribit.com/api/v2/public/get_book_summary_by_currency
+    note: 연율 캐리가 달러 조달금리 대비 얼마인가 = 레버리지 수요의 가격. 베이시스 축소는
+      디레버리징 신호로, 가격보다 먼저 움직이는 경우가 많다. ⚠ 잔존 7일 미만 만기는 연율화가 튀어 버린다.
+
   - name: 크립토 Fear & Greed
     tier: 2
     method: api
@@ -2232,6 +2269,7 @@ team_3:
     tier: 2
     method: api
     source: binance
+    symbols: [BTCUSDT, ETHUSDT]
     endpoint: /premiumIndex (fapi), /openInterest
   - name: 김치프리미엄
     tier: 2

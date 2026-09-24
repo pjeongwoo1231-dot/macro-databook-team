@@ -105,7 +105,7 @@ def _prose(raw: str) -> str:
     s = re.sub(r"(?is)<link[^>]*>|<title[^>]*>.*?</title>", " ", s)
     s = re.sub(r'(?is)<div class="(slot|paper)".*?</div>', " ", s)
     s = re.sub(r"(?s)<!--.*?-->", " ", s)
-    s = re.sub(r"(?is)<figure.*?</figure>", " ", s)
+    s = re.sub(r"(?is)<figure\b.*?</figure>", " ", s)
     s = re.sub(r"(?s)<[^>]+>", " ", s)
     s = unicodedata.normalize("NFKC", s)
     return re.sub(r"\s+", " ", s).strip()
