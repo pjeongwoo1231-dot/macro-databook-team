@@ -242,6 +242,8 @@ body{background:var(--paper);color:var(--ink);margin:0;word-break:keep-all;
  font:400 16px/1.75 "IBM Plex Sans KR",-apple-system,"Segoe UI","Malgun Gothic",sans-serif}
 .wrap{max-width:1080px;margin:0 auto;padding:clamp(2rem,5vw,4.5rem) clamp(1.1rem,4vw,2.5rem) 5rem}
 .col{max-width:64ch}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+svg,img{max-width:100%}
 h1,h2,h3{font-family:"Noto Serif KR",Georgia,serif;text-wrap:balance;margin:0}
 h1{font-weight:700;font-size:clamp(1.9rem,4.4vw,3rem);line-height:1.24;letter-spacing:-.015em}
 h2{font-weight:700;font-size:clamp(1.2rem,2.4vw,1.5rem);margin:0 0 .5rem}
@@ -385,7 +387,10 @@ def build(asof: dt.date, out: Path) -> dict[str, Any]:
         "지정학 — 지수가 아니라 가격으로 본다 (직전 대비)")
 
     # ── 문서
-    P = [f"<title>주간 매크로 {asof.isoformat()} (스캐폴드)</title>",
+    # ⚠ 2026-09-27: viewport·charset이 없어 폰에서 980px 데스크톱 폭으로 그려지고 오른쪽이 잘렸다.
+    #   .scroll(표 가로 스크롤)도 CSS에 없어 표가 페이지 폭을 밀어냈다. 09-01 발표본부터 있던 결함이다.
+    P = ['<meta charset="utf-8">', '<meta name="viewport" content="width=device-width,initial-scale=1">',
+         f"<title>주간 매크로 {asof.isoformat()} (스캐폴드)</title>",
          '<link rel="preconnect" href="https://fonts.googleapis.com">',
          '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>',
          '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?'
