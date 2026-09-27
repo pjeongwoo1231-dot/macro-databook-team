@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from .base import get_json, result
+from .base import BROWSER_UA, get_json, get_text, result
 
 FISCAL_BASE = "https://api.fiscaldata.treasury.gov/services/api/fiscal_service"
 
@@ -20,19 +20,22 @@ def fetch_fiscaldata(ind: dict[str, Any], env: dict[str, str]) -> dict[str, Any]
         ]
         return result(ind, "ok", observations=obs, source_url=url) if obs else result(ind, "fail", error="데이터 없음", source_url=url)
     if "operating_cash_balance" in endpoint:
-        data = get_json(url, {"sort": "-record_date", "page[size]": 40})
+        # ⚠ 2026-09-27 수정 — 날짜마다 "Opening Balance"와 "Closing Balance" **두 행**이 온다.
+        #   예전엔 둘 다 받아 "개장잔고"로 적었다 → 9/22 Data Book이 **9/18 개장잔고(= 9/17 마감)**를
+        #   "최신"으로 싣고 있었다(실제 9/18 마감 985,932). **마감잔고 행만** 쓴다.
+        #   API 특이점: 마감잔고 행도 값이 `open_today_bal` 칸에 있고 `close_today_bal`은 null이다.
+        data = get_json(url, {"sort": "-record_date", "page[size]": 60,
+                              "filter": "account_type:eq:Treasury General Account (TGA) Closing Balance"})
         obs = []
         for r in data.get("data", []):
-            if "Treasury General Account" not in str(r.get("account_type", "")):
-                continue
             val = None
-            for field, label in (("close_today_bal", "TGA 마감잔고($mn)"), ("open_today_bal", "TGA 개장잔고($mn)")):
+            for field in ("close_today_bal", "open_today_bal"):
                 v = r.get(field)
                 if v not in (None, "null", ""):
-                    val, lab = float(v), label
+                    val = float(v)
                     break
             if val is not None:
-                obs.append({"date": r["record_date"], "value": val, "label": lab})
+                obs.append({"date": r["record_date"], "value": val, "label": "TGA 마감잔고($mn)"})
             if len(obs) >= 6:
                 break
         return result(ind, "ok", observations=obs, source_url=url) if obs else result(ind, "fail", error="TGA 행 파싱 실패(필드 변경 가능성)", source_url=url)
@@ -68,6 +71,50 @@ def fetch_fiscaldata(ind: dict[str, Any], env: dict[str, str]) -> dict[str, Any]
         return (result(ind, "ok", observations=obs, source_url=url, unit="억달러")
                 if obs else result(ind, "fail", error="해당 분류 없음", source_url=url))
     return result(ind, "fail", error=f"미지원 endpoint: {endpoint}")
+
+
+UMICH_FILES = {
+    # 미시간대 소비자조사 원본 표. **FRED의 MICH·UMCSENT는 라이선스 때문에 한 달 늦다**
+    # (2026-09-25 기준 FRED 최종 = 8월, 원본 = 9월). 레짐 트리거 ⑦이 이 계열을 쓰는데
+    # 09-13·09-22 시황 모두 「STALE」로 판정 불가였다 → 원본을 직접 읽는다(2026-09-27 신설).
+    #  열: Month, YYYY, 값… (월 이름 영문)
+    "sentiment": ("tbmics.csv", [(2, "소비자심리지수")]),
+    "expectations": ("tbmpx1px5.csv", [(2, "기대인플레 1년(%)"), (3, "기대인플레 5~10년(%)")]),
+}
+_MONTHS = {m: i for i, m in enumerate(["January", "February", "March", "April", "May", "June", "July",
+                                         "August", "September", "October", "November", "December"], 1)}
+
+
+def load_umich(kind: str) -> dict[str, list[tuple[str, float]]]:
+    """{라벨: [(YYYY-MM-01, 값), …]} — 원본 CSV 전 이력. history 수집에서도 재사용한다."""
+    fname, cols = UMICH_FILES[kind]
+    text = get_text(f"https://www.sca.isr.umich.edu/files/{fname}", headers={"User-Agent": BROWSER_UA})
+    out: dict[str, list[tuple[str, float]]] = {lab: [] for _, lab in cols}
+    for line in text.splitlines():
+        parts = [x.strip() for x in line.split(",")]
+        if len(parts) < 3 or parts[0] not in _MONTHS or not parts[1].isdigit():
+            continue
+        d = f"{int(parts[1]):04d}-{_MONTHS[parts[0]]:02d}-01"
+        for idx, lab in cols:
+            try:
+                out[lab].append((d, float(parts[idx])))
+            except (IndexError, ValueError):
+                pass
+    return out
+
+
+def fetch_umich(ind: dict[str, Any], env: dict[str, str]) -> dict[str, Any]:
+    kind = ind.get("kind", "expectations")
+    url = f"https://www.sca.isr.umich.edu/files/{UMICH_FILES[kind][0]}"
+    series = load_umich(kind)
+    obs = []
+    for lab, pts in series.items():
+        for d, v in pts[-6:][::-1]:
+            obs.append({"date": d, "value": v, "label": lab})
+    # ⚠ 당월 값은 예비치(둘째 금요일)일 수 있다 — 원본 파일은 예비/확정을 구분해 표시하지 않는다.
+    return (result(ind, "ok", observations=obs, source_url=url,
+                   note=(ind.get("note", "") + " ⚠ 당월 값은 예비치일 수 있음(원본 미표시)").strip())
+            if obs else result(ind, "fail", error="원본 표 파싱 실패", source_url=url))
 
 
 def fetch_treasurydirect(ind: dict[str, Any], env: dict[str, str]) -> dict[str, Any]:

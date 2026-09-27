@@ -346,6 +346,20 @@ def collect(since: str = DEFAULT_SINCE, tier: int | None = None,
                                  "source_url": "https://www.russiafossiltracker.com/",
                                  "fetched_at": date.today().isoformat()})
 
+    if not dry_run and not only and tier is None:
+        # ── 전 이력 재수집형 소스 3개 (2026-09-27 신설) ──────────────────────────
+        # 셋 다 "Data Book에는 값이 뜨는데 history CSV는 멈춰 있던" 계열이다.
+        # 시황 2026-09-22에서 전부 판정을 막았다.
+        for tag, fn in (("DTS", _extra_dts_tga), ("UMICH", _extra_umich), ("PORTWATCH", _extra_portwatch)):
+            try:
+                for m in fn():
+                    manifest.append({**m, "fetched_at": date.today().isoformat()})
+                    ok += 1
+                    print(f"  [{tag}] {m['series_id']:26s} {m['rows']:>6,}행 {m['start']} ~ {m['end']}")
+            except Exception as e:
+                print(f"  [{tag}] FAIL {type(e).__name__}: {e}")
+                fail += 1
+
     if dry_run:
         return 0
     HISTORY_DIR.mkdir(parents=True, exist_ok=True)
@@ -367,3 +381,85 @@ def collect(since: str = DEFAULT_SINCE, tier: int | None = None,
     print(f"  → {HISTORY_DIR}")
     print(f"  → {mpath}")
     return 0
+
+
+# ── 전 이력 재수집형 소스 ─────────────────────────────────────────────────────
+def _manifest_row(sid: str, name: str, rows: dict[str, str], source: str, url: str) -> dict[str, Any]:
+    return {"series_id": sid, "name": name, "team": "", "tier": 2, "units": "",
+            "rows": len(rows), "start": min(rows), "end": max(rows),
+            "csv": f"history/{sid}.csv", "source": source, "source_url": url}
+
+
+def _extra_dts_tga() -> list[dict[str, Any]]:
+    """재무부 일일보고(DTS) TGA **마감잔고**, $mn.
+
+    볼트의 순유동성 3항식은 FRED `WTREGEN`을 쓰는데 그건 **주평균**이다. 세금일 하루에
+    TGA가 $1,200억 뛰어도 주평균엔 희석돼 늦게 찍힌다(2026-09-16: DTS 991,708 vs WTREGEN 877,028).
+    증분: 마지막 날짜 30일 전부터 다시 받아 덮어쓴다.
+    """
+    from .fetchers.us_gov import FISCAL_BASE
+    sid = "DTS_TGA_CLOSE"
+    path = HISTORY_DIR / f"{sid}.csv"
+    rows = read_csv(path)
+    since = (datetime.strptime(max(rows), "%Y-%m-%d").date() - timedelta(days=30)).isoformat() if rows else "2005-10-03"
+    url = f"{FISCAL_BASE}/v1/accounting/dts/operating_cash_balance"
+    page = 1
+    while True:
+        data = get_json(url, {"fields": "record_date,account_type,open_today_bal,close_today_bal",
+                              "filter": f"record_date:gte:{since}",
+                              "sort": "record_date", "page[size]": 10000, "page[number]": page})
+        got = data.get("data", [])
+        for r in got:
+            acct = str(r.get("account_type", ""))
+            # 원본 형식이 세 번 바뀌었다(실측 2026-09-27):
+            #   ~2021-09  "Federal Reserve Account"              — close_today_bal 칸
+            #   2021-10~2022-05 "Treasury General Account (TGA)" — 한 행에 개장·마감 둘 다, close 칸
+            #   2022-06~  "... (TGA) Closing Balance" 별도 행    — 값이 **open_today_bal** 칸(close는 null)
+            if not ("Closing Balance" in acct or acct in ("Federal Reserve Account",
+                                                          "Treasury General Account (TGA)")):
+                continue
+            v = r.get("close_today_bal")
+            if v in (None, "null", ""):
+                v = r.get("open_today_bal")
+            if v not in (None, "null", ""):
+                rows[r["record_date"]] = v
+        if len(got) < 10000:
+            break
+        page += 1
+    write_csv(path, rows)
+    return [_manifest_row(sid, "TGA 마감잔고 (DTS 일별, $mn)", rows, "fiscaldata", url)]
+
+
+def _extra_umich() -> list[dict[str, Any]]:
+    """미시간대 원본 — FRED MICH·UMCSENT보다 한 달 빠르다. 월간이라 전 이력을 덮어쓴다."""
+    from .fetchers.us_gov import load_umich
+    out = []
+    ids = {"소비자심리지수": "UMICH_SENTIMENT", "기대인플레 1년(%)": "UMICH_EXP_1Y",
+           "기대인플레 5~10년(%)": "UMICH_EXP_5_10Y"}
+    for kind in ("sentiment", "expectations"):
+        for lab, pts in load_umich(kind).items():
+            if not pts:
+                continue
+            rows = {d: repr(v) for d, v in pts}
+            sid = ids[lab]
+            write_csv(HISTORY_DIR / f"{sid}.csv", rows)
+            out.append(_manifest_row(sid, f"미시간대 {lab} (원본)", rows, "umich",
+                                     "https://www.sca.isr.umich.edu/tables.html"))
+    return out
+
+
+def _extra_portwatch() -> list[dict[str, Any]]:
+    """PortWatch 초크포인트 — 전이력 재수집(계열당 3~4쪽).
+
+    2026-09-15 백필은 한 번만 돌게 돼 있었고 일일 `intel`은 볼트 노트만 갱신했다 →
+    history CSV가 **09-06에서 얼어** 있었다(원본은 09-20까지 있음). 매일 다시 받는다.
+    """
+    from .intel import backfill_portwatch
+    backfill_portwatch(log=lambda *_: None)
+    out = []
+    for p in sorted(HISTORY_DIR.glob("PORTWATCH_*.csv")):
+        rows = read_csv(p)
+        if rows:
+            out.append(_manifest_row(p.stem, f"PortWatch {p.stem[10:]}", rows, "portwatch",
+                                     "https://portwatch.imf.org/"))
+    return out

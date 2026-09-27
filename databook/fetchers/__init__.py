@@ -44,6 +44,7 @@ DISPATCH = {
     "kosis": korea.fetch_kosis,
     "data_go_kr": korea.fetch_data_go_kr,
     "fiscaldata": us_gov.fetch_fiscaldata,
+    "umich": us_gov.fetch_umich,  # 미시간대 원본 — FRED MICH는 한 달 지연(2026-09-27)
     "treasury_auctions": us_gov.fetch_treasury_auctions,
     "treasurydirect": us_gov.fetch_treasurydirect,
     "cftc_socrata": us_gov.fetch_cftc,

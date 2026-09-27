@@ -854,6 +854,20 @@ team_2:
     source: fred
     series_id: MICH
     vault_node: BEI (기대인플레이션)
+  - name: 미시간대 기대인플레 (원본, 1Y·5~10Y)
+    unit: "%"
+    tier: 1
+    method: api
+    source: umich
+    kind: expectations
+    vault_node: BEI (기대인플레이션)
+    note: '2026-09-27 신설. 위 FRED MICH는 **라이선스로 한 달 늦다** — 09-13 시황에서 7월값(4.2)만 보고 「기대 앵커드」라 했다가 9월 예비치 4.6으로 뒤집혔다. 레짐 트리거 ⑦(MICH ≤ 4.2)은 **이 원본 계열로** 판정한다.'
+  - name: 미시간대 소비자심리 (원본)
+    tier: 2
+    method: api
+    source: umich
+    kind: sentiment
+    note: 'FRED UMCSENT의 원본. FRED보다 한 달 빠르다(2026-09-27 신설).'
   - name: 한국 기대인플레이션 (한은 소비자동향조사)
     unit: "%"
     tier: 1
@@ -1462,6 +1476,13 @@ team_2:
     method: api
     source: fred
     series_id: DCOILBRENTEU
+  - name: 유가 선물 (Brent·WTI 근월물)
+    unit: "USD/bbl"
+    tier: 2
+    method: scrape
+    source: yahoo_finance
+    symbol: ["BZ=F", "CL=F"]
+    note: '2026-09-27 신설. 위 DCOILBRENTEU는 **현물(Dated Brent)** 이다. 평소엔 선물과 $1~2 차이라 하나로 불러도 되지만 2026-09-15 현물 130.80 vs 선물 108.75(괴리 $22)처럼 공급차질기엔 갈라진다. RegimeView 1.1 트리거 ①·⑥의 브렌트는 **현물**로 확정했고 선물은 괴리 감시용. 읽는 법: 괴리 확대 = 실물 조달난(보험·운임·화물 취소), 선물만 하락 = 협상 뉴스를 종이 시장만 반영. 근거 [[시황 2026-09-22 — 종이 유가와 실물 유가]]'
   - name: 천연가스 (Henry Hub)
     tier: 2
     method: api
