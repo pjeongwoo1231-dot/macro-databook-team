@@ -392,6 +392,24 @@ youtube:
       → 이건 채널의 결함이 아니라 **우리 데이터의 공백**이다. 기준선을 채우면 검증 가능해진다.
       ⚠ 예측이 극단적이다(유가 300불). 전망은 버리고 **데이터 인용만** 취한다.
 
+  - id: aspim
+    label: ASPIM 리서치
+    handler: youtube
+    channel_id: UC4noqcTx0lqmKTv3lrrjtBw   # @ASPIM_research
+    axis: liquidity
+    tier: commentary
+    cite_ok: false
+    limit: 6
+    max_new: 2
+    sub_langs: "ko-orig,ko"
+    verified: true          # 2026-10-29 실호출: 목록 8건 · 자막 5,881자 판독 (r-oR2TH4Xr4)
+    note: |
+      신용·채권 시장 차트 해설. 샘플(FOMC 직전 편)은 TLT·IG 회사채·CCC ETF 세 개를 겹쳐 놓고
+      CCC 스프레드가 3월 고점을 넘었고 IG 스프레드도 그 근처까지 왔다고 말했다 — **신용 스프레드 축이다.**
+      편 길이 편차가 크다(2:52~26:35). 짧은 편은 하이라이트일 가능성이 있다.
+      ⚠ 자동자막이 채널명부터 깬다(ASPIM→`SPM 리서치`, FOMC→`FMC`, Warsh→`워시`).
+      스프레드 수준은 DataBook 신용 계열로 대조한 뒤에만 쓴다.
+
 reading:
 
   # ------------------------------------------------- 실호출로 확인 (2026-08-24)
