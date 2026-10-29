@@ -129,7 +129,7 @@ def commit(jpath: str, log=print) -> int:
             bad += 1
             continue
 
-        safe = re.sub(r'[\/:*?"<>|]', "", claim)[:70]
+        safe = re.sub(r'[\/:*?"<>|]', "", claim)[:70].rstrip()
         p = vault / SELF / f"BIS_WP_{n} — {safe}.md"
         p.parent.mkdir(parents=True, exist_ok=True)
         part = "" if got == len(checks) else (

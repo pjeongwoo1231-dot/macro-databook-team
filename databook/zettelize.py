@@ -327,7 +327,8 @@ def _fill(tpl: str, **kw) -> str:
 def write_draft(vault: Path, n: int, title: str, res: dict, checks: list[dict],
                 audit: dict, models: dict, usage: dict) -> Path:
     claim = (res.get("claim") or "(주장 없음)").strip()
-    safe = re.sub(r'[\\/:*?"<>|]', "", claim)[:70]
+    # 70자에서 자르면 끝이 공백일 수 있다 — Obsidian은 링크 대상의 끝 공백을 지워 못 찾는다
+    safe = re.sub(r'[\\/:*?"<>|]', "", claim)[:70].rstrip()
     p = vault / DRAFTS / f"BIS_WP_{n} — {safe}.md"
     p.parent.mkdir(parents=True, exist_ok=True)
 
