@@ -74,6 +74,25 @@ def _measure_vault(vault: Path, asof: str, zip_path: Path | None = None) -> dict
     return out
 
 
+def _pdf_section() -> list[str]:
+    """원문 PDF(구글드라이브) 안내. **링크가 실제로 있을 때만** 싣는다 —
+    링크 없는 안내는 2026-09에 팀원을 헛걸음시킨 그 문서가 된다."""
+    import os
+    from .core import load_env
+    url = (load_env().get("DATABOOK_PDF_DRIVE_URL") or os.environ.get("DATABOOK_PDF_DRIVE_URL", "")).strip().strip('"')
+    if not url:
+        return []
+    return [
+        "## 원문 PDF — 구글드라이브",
+        "",
+        f"ZIP에는 PDF가 없습니다(노트만 16MB). 원문은 **[여기]({url})** 에 있습니다.",
+        "폴더 안 경로가 볼트와 같아서, 받은 `06_SourceArchive`·`Attachments`를",
+        "`~/MacroVault`에 **덮어 합치면** 노트의 PDF 링크가 바로 열립니다. 필요한 하위 폴더만 받아도 됩니다.",
+        "PDF가 있다고 인용 가능한 것은 아닙니다 — 판정은 `citation-index.md`.",
+        "",
+    ]
+
+
 def build_notes(vault: Path, asof: str, zip_path: Path | None = None) -> str:
     v = _measure_vault(vault, asof, zip_path)
     g = v.get
@@ -92,6 +111,7 @@ def build_notes(vault: Path, asof: str, zip_path: Path | None = None) -> str:
         "의존성 설치 · 볼트 ZIP 내려받기 · `~/MacroVault`에 풀기 · `.env` 기록 · 확인 실행까지",
         "`bootstrap.py`가 다 합니다. **매주 다시 돌리면 배포본만 최신으로 갈립니다.**",
         "",
+        *_pdf_section(),
         "",
         "```bash",
         "python -m databook weekly            # 세션 준비 자료 한 번에",
@@ -329,6 +349,22 @@ def _dispatch(cmd: str, extra: list[str]) -> int:
             except SystemExit as e:
                 if e.code not in (0, None):
                     _log(f"       클라이언트 빌드 실패 (rc={e.code}) — 볼트 배포본은 정상")
+            finally:
+                sys.argv = argv
+
+        # 원문 PDF는 ZIP에 안 싣는다 — 구글드라이브 폴더로 미러한다(볼트 경로 그대로).
+        # 드라이브가 안 붙어 있거나 실패해도 배치·릴리스는 계속 간다.
+        mirror = ROOT / "tools" / "mirror_pdfs.py"
+        if mirror.exists():
+            argv = sys.argv
+            sys.argv = [str(mirror), "--vault", v]
+            try:
+                runpy.run_path(str(mirror), run_name="__main__")
+            except SystemExit as e:
+                if e.code not in (0, None):
+                    _log(f"       PDF 미러 실패 (rc={e.code}) — 노트 배포본은 정상")
+            except Exception as e:  # noqa: BLE001 — 미러가 배포를 막으면 안 된다
+                _log(f"       PDF 미러 예외 — {e!r}")
             finally:
                 sys.argv = argv
 
